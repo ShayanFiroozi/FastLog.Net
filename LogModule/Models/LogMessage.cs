@@ -63,7 +63,6 @@ namespace LogModule
         #endregion
 
 
-
         #region Methods
         public StringBuilder GetLogMessage()
         {
@@ -86,6 +85,7 @@ namespace LogModule
 
         }
         #endregion
+
 
     }
 }

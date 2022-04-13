@@ -11,7 +11,7 @@
 
         public string LogFileFullPath { get; }
 
-        public byte LogFileSizeMB { get; }
+        public int LogFileSizeMB { get; }
 
         public void DeleteLogFile();
 

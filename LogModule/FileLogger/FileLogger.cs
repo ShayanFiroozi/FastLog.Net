@@ -19,13 +19,13 @@ namespace LogModule.FileLogger
 
 
 
-        public byte LogFileSizeMB
+        public int LogFileSizeMB
         {
             get
             {
                 try
                 {
-                    return Convert.ToByte((new FileInfo(this.LogFileFullPath).Length / 1024) / 1024);
+                    return Convert.ToInt32((new FileInfo(this.LogFileFullPath).Length / 1024) / 1024);
                 }
                 catch
                 {
