@@ -38,7 +38,7 @@ namespace LogModule
 
         ~Logger()
         {
-            this.Dispose();
+            Dispose();
         }
     }
 }

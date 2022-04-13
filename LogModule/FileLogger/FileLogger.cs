@@ -15,7 +15,7 @@ namespace LogModule.FileLogger
         public string LogFileName { get; }
         public string LogFilePath { get; }
 
-        public string LogFileFullPath => this.LogFilePath + "\\" + this.LogFileName;
+        public string LogFileFullPath => LogFilePath + "\\" + LogFileName;
 
 
 
@@ -25,7 +25,7 @@ namespace LogModule.FileLogger
             {
                 try
                 {
-                    return Convert.ToInt32((new FileInfo(this.LogFileFullPath).Length / 1024) / 1024);
+                    return Convert.ToInt32((new FileInfo(LogFileFullPath).Length / 1024) / 1024);
                 }
                 catch
                 {
@@ -86,8 +86,8 @@ namespace LogModule.FileLogger
         {
             try
             {
-                if (this.LogFileSizeMB
-                     <= this.LOG_FILE_MAX_SIZE_IN_MB)
+                if (LogFileSizeMB
+                     <= LOG_FILE_MAX_SIZE_IN_MB)
                 {
                     return;
                 }
@@ -98,13 +98,14 @@ namespace LogModule.FileLogger
             }
 
 
-            if (!File.Exists(this.LogFileFullPath)) return;
-
-
+            if (!File.Exists(LogFileFullPath))
+            {
+                return;
+            }
 
             try
             {
-                File.Delete(this.LogFileFullPath);
+                File.Delete(LogFileFullPath);
             }
             catch
             {
@@ -123,7 +124,7 @@ namespace LogModule.FileLogger
 
             try
             {
-                using (StreamWriter streamWriter = new(this.LogFileFullPath, append: true))
+                using (StreamWriter streamWriter = new(LogFileFullPath, append: true))
                 {
                     streamWriter.WriteLine(logMessage.GetLogMessage());
                    

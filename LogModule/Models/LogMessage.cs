@@ -12,7 +12,7 @@ namespace LogModule
                           string LogText,
                           string ExtraInfo = "")
         {
-            this.DateTime = DateTime.Now;
+            DateTime = DateTime.Now;
             this.LogType = LogType;
             this.Source = Source;
             this.LogText = LogText;
@@ -68,17 +68,17 @@ namespace LogModule
         {
             StringBuilder finalMessage = new();
 
-            _ = finalMessage.Append(this.DateTime.ToString("yyyy/MM/dd HH:mm:ss"));
+            _ = finalMessage.Append(DateTime.ToString("yyyy/MM/dd HH:mm:ss"));
             _ = finalMessage.Append(" ");
-            _ = finalMessage.Append(this.LogType.ToString());
+            _ = finalMessage.Append(LogType.ToString());
             _ = finalMessage.Append(" -> ");
-            _ = finalMessage.Append(this.Source);
+            _ = finalMessage.Append(Source);
             _ = finalMessage.Append(" , ");
-            _ = finalMessage.Append(this.LogText);
-            if (!string.IsNullOrWhiteSpace(this.ExtraInfo))
+            _ = finalMessage.Append(LogText);
+            if (!string.IsNullOrWhiteSpace(ExtraInfo))
             {
                 _ = finalMessage.Append(" , ");
-                _ = finalMessage.Append(this.ExtraInfo);
+                _ = finalMessage.Append(ExtraInfo);
             }
 
             return finalMessage;

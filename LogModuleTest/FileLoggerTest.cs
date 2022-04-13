@@ -1,4 +1,3 @@
-using LogModule;
 using LogModule.FileLogger;
 using NUnit.Framework;
 using System;
