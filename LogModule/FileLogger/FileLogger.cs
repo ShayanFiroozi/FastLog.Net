@@ -60,9 +60,23 @@ namespace LogModule.FileLogger
             this.LOG_FILE_MAX_SIZE_IN_MB = LOG_FILE_MAX_SIZE_IN_MB;
 
 
+            // Create the log file directory
+
             try
             {
                 Directory.CreateDirectory(this.LogFilePath);
+            }
+            catch
+            {
+
+                throw;
+            }
+
+
+            // Delete the log file if it's bigger than LOG_FILE_MAX_SIZE_IN_MB
+            try
+            {
+                DeleteLogFile();
             }
             catch
             {
