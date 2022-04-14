@@ -11,7 +11,7 @@ namespace LogModule.FileLogger
         #region Properties
 
 
-        public readonly byte LOG_FILE_MAX_SIZE_IN_MB = 0;
+        public readonly int LOG_FILE_MAX_SIZE_IN_MB = 0;
 
         public string LogFileName { get; }
         public string LogFilePath { get; }
@@ -46,7 +46,7 @@ namespace LogModule.FileLogger
 
         public FileLogger(string LogFilePath,
                           string LogFileName,
-                          byte LOG_FILE_MAX_SIZE_IN_MB = 20)
+                          int LOG_FILE_MAX_SIZE_IN_MB = 20)
         {
 
             if (string.IsNullOrWhiteSpace(LogFilePath) ||
