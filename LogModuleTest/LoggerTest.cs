@@ -1,5 +1,6 @@
 using LogModule;
 using NUnit.Framework;
+using System;
 
 namespace LogModuleTest
 {
@@ -35,7 +36,10 @@ namespace LogModuleTest
                                 + "." + this.GetType().Name + "." + System.Reflection.MethodBase.GetCurrentMethod().Name,
                                 "This is an ERROR message from the Test Project !");
 
-            
+
+
+            logger.LogError(new InsufficientExecutionStackException());
+
         }
 
 

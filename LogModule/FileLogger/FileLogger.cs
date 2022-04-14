@@ -99,6 +99,13 @@ namespace LogModule.FileLogger
         {
             try
             {
+
+                if (!File.Exists(LogFileFullPath))
+                {
+                    return;
+                }
+
+
                 if (LogFileSizeMB
                      <= LOG_FILE_MAX_SIZE_IN_MB)
                 {
@@ -111,10 +118,7 @@ namespace LogModule.FileLogger
             }
 
 
-            if (!File.Exists(LogFileFullPath))
-            {
-                return;
-            }
+       
 
             try
             {

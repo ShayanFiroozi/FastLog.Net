@@ -45,6 +45,23 @@ namespace LogModule
         {
             _executeLogging(new LogMessage(LogMessage.LogTypeEnum.ERROR, Source, LogText, ExtraInfo));
         }
+
+
+
+        public void LogError(Exception exception)
+        {
+
+            if (exception == null) return;
+
+            _executeLogging(new LogMessage(LogMessage.LogTypeEnum.ERROR,
+                                           "Source : " + (exception.Source ?? "-"),
+                                           "Message : " + exception.Message ?? "-",
+                                           "InnerMessage : " + (exception.InnerException?.Message ?? "-") + 
+                                           " , " + 
+                                           "StackTrace : " + (exception.StackTrace ?? "-")));
+
+        }
+
         #endregion
 
 
