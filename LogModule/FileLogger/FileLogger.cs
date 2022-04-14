@@ -1,5 +1,6 @@
 ﻿using System;
 using System.IO;
+using System.Threading.Tasks;
 
 namespace LogModule.FileLogger
 {
@@ -114,6 +115,12 @@ namespace LogModule.FileLogger
         }
 
 
+        public async Task DeleteLogFileTaskAsync()
+        {
+            await Task.Run(() => DeleteLogFile());
+        }
+
+
         public void SaveLog(LogMessage logMessage)
         {
 
@@ -137,6 +144,11 @@ namespace LogModule.FileLogger
             }
         }
 
+
+        public async Task SaveLogTaskAsync(LogMessage logMessage)
+        {
+            await Task.Run(()=>SaveLog(logMessage));
+        }
 
         #endregion
 
