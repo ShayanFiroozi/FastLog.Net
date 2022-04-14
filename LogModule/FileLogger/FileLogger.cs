@@ -78,8 +78,6 @@ namespace LogModule.FileLogger
 
 
 
-
-
         #region Methods
 
 

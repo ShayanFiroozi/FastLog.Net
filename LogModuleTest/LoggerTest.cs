@@ -22,9 +22,20 @@ namespace LogModuleTest
 
             logger.RegisterLoggingChannel(fileLogger.fileLogger); // register filelogger in loggerchannels
 
-            logger.ExecuteLogging(logMessage.logMessage); // Executing the logger channel
 
+            logger.LogInfo(System.Reflection.Assembly.GetExecutingAssembly().GetName().Name
+                              + "." + this.GetType().Name + "." + System.Reflection.MethodBase.GetCurrentMethod().Name,
+                              "This is an INFO message from the Test Project !");
 
+            logger.LogWarning(System.Reflection.Assembly.GetExecutingAssembly().GetName().Name
+                              + "." + this.GetType().Name + "." + System.Reflection.MethodBase.GetCurrentMethod().Name,
+                              "This is a WARNING message from the Test Project !");
+
+            logger.LogError(System.Reflection.Assembly.GetExecutingAssembly().GetName().Name
+                                + "." + this.GetType().Name + "." + System.Reflection.MethodBase.GetCurrentMethod().Name,
+                                "This is an ERROR message from the Test Project !");
+
+            
         }
 
 
