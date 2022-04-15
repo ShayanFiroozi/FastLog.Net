@@ -24,21 +24,23 @@ namespace LogModuleTest
             logger.RegisterLoggingChannel(fileLogger.fileLogger); // register filelogger in loggerchannels
 
 
-            logger.LogInfo(System.Reflection.Assembly.GetExecutingAssembly().GetName().Name
-                              + "." + this.GetType().Name + "." + System.Reflection.MethodBase.GetCurrentMethod().Name,
-                              "This is an INFO message from the Test Project !");
+            logger.LogInfo("This is an INFO message from the Test Project !",
+                Source: System.Reflection.Assembly.GetExecutingAssembly().GetName().Name
+                              + "." + this.GetType().Name + "." + System.Reflection.MethodBase.GetCurrentMethod().Name);
 
-            logger.LogWarning(System.Reflection.Assembly.GetExecutingAssembly().GetName().Name
-                              + "." + this.GetType().Name + "." + System.Reflection.MethodBase.GetCurrentMethod().Name,
-                              "This is a WARNING message from the Test Project !");
+            logger.LogWarning("This is a WARNING message from the Test Project !",
+                               Source : System.Reflection.Assembly.GetExecutingAssembly().GetName().Name
+                              + "." + this.GetType().Name + "." + System.Reflection.MethodBase.GetCurrentMethod().Name);
 
-            logger.LogError(System.Reflection.Assembly.GetExecutingAssembly().GetName().Name
-                                + "." + this.GetType().Name + "." + System.Reflection.MethodBase.GetCurrentMethod().Name,
-                                "This is an ERROR message from the Test Project !");
+            logger.LogError("This is an ERROR message from the Test Project !",
+                             Source: System.Reflection.Assembly.GetExecutingAssembly().GetName().Name
+                                + "." + this.GetType().Name + "." + System.Reflection.MethodBase.GetCurrentMethod().Name);
 
 
 
-            logger.LogError(new InsufficientExecutionStackException());
+            logger.LogException(new InsufficientExecutionStackException());
+            logger.LogException(new AccessViolationException());
+            logger.LogException(new InsufficientMemoryException());
 
         }
 

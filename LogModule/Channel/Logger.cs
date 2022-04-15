@@ -23,42 +23,42 @@ namespace LogModule
 
 
         #region LoggingMethod
-        public void LogInfo(string Source,
-                         string LogText,
-                         string ExtraInfo = "")
+        public void LogInfo(string LogText,
+                            string ExtraInfo = "",
+                            string Source = "")
         {
-            _executeLogging(new LogMessage(LogMessage.LogTypeEnum.INFO, Source, LogText, ExtraInfo));
+            _executeLogging(new LogMessage(LogMessage.LogTypeEnum.INFO, LogText, ExtraInfo, Source));
         }
 
 
-        public void LogWarning(string Source,
-                           string LogText,
-                           string ExtraInfo = "")
+        public void LogWarning(string LogText,
+                            string ExtraInfo = "",
+                            string Source = "")
         {
-            _executeLogging(new LogMessage(LogMessage.LogTypeEnum.WARNING, Source, LogText, ExtraInfo));
+            _executeLogging(new LogMessage(LogMessage.LogTypeEnum.WARNING, LogText, ExtraInfo, Source));
         }
 
 
-        public void LogError(string Source,
-                           string LogText,
-                           string ExtraInfo="")
+        public void LogError(string LogText,
+                            string ExtraInfo = "",
+                            string Source = "")
         {
-            _executeLogging(new LogMessage(LogMessage.LogTypeEnum.ERROR, Source, LogText, ExtraInfo));
+            _executeLogging(new LogMessage(LogMessage.LogTypeEnum.ERROR, LogText, ExtraInfo, Source));
         }
 
 
 
-        public void LogError(Exception exception)
+        public void LogException(Exception exception)
         {
 
             if (exception == null) return;
 
-            _executeLogging(new LogMessage(LogMessage.LogTypeEnum.ERROR,
-                                           "Source : " + (exception.Source ?? "-"),
+            _executeLogging(new LogMessage(LogMessage.LogTypeEnum.EXCEPTION,
                                            "Message : " + exception.Message ?? "-",
                                            "InnerMessage : " + (exception.InnerException?.Message ?? "-") + 
                                            " , " + 
-                                           "StackTrace : " + (exception.StackTrace ?? "-")));
+                                           "StackTrace : " + (exception.StackTrace ?? "-"),
+                                           "Source : " + (exception.Source ?? "-")));
 
         }
 

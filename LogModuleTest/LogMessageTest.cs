@@ -12,29 +12,18 @@ namespace LogModuleTest
         public void Setup()
         {
             logMessage = new LogMessage(
-                                        LogMessage.LogTypeEnum.ERROR,
-                                        "LogMessageTest.LogMessage_Constructor_Test()",
-                                        "Testing");
+                                        LogMessage.LogTypeEnum.ERROR, "This is a test message",
+                                        "This is an error from the LogMessageTest module.",
+                                        "LogModuleTest.LogMessageTest.Setup()");
+
+
+            //logMessage = new LogMessage(
+            //                           LogMessage.LogTypeEnum.ERROR, "This is a test message",
+            //                           null,
+            //                           "Setup() Method.");
 
         }
 
-
-
-        [Test]
-        public void LogMessage_Constructor_Test()
-        {
-          
-            Assert.That(
-                        logMessage.LogType == LogMessage.LogTypeEnum.ERROR
-                         &&
-                        logMessage.Source == "LogMessageTest.LogMessage_Constructor_Test()"
-                         &&
-                        logMessage.LogText == "Testing"
-                         &&
-                        logMessage.ExtraInfo == string.Empty);
-
-
-        }
 
 
         [Test]

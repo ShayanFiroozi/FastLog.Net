@@ -8,15 +8,15 @@ namespace LogModule
 
         #region Constructors
         public LogMessage(LogTypeEnum LogType,
-                          string Source,
                           string LogText,
-                          string ExtraInfo = "")
+                          string ExtraInfo = "",
+                          string Source = "")
         {
             DateTime = DateTime.Now;
             this.LogType = LogType;
-            this.Source = Source;
             this.LogText = LogText;
             this.ExtraInfo = ExtraInfo;
+            this.Source = Source;
         }
 
         #endregion
@@ -29,7 +29,9 @@ namespace LogModule
         {
             INFO = 0,
             WARNING = 1,
-            ERROR = 2
+            ERROR = 2,
+            EXCEPTION = 3
+             
         }
 
 
@@ -70,16 +72,31 @@ namespace LogModule
 
             _ = finalMessage.Append(DateTime.ToString("yyyy/MM/dd HH:mm:ss"));
             _ = finalMessage.Append(" ");
+
+            _ = finalMessage.Append("(");
             _ = finalMessage.Append(LogType.ToString());
+            _ = finalMessage.Append(")");
             _ = finalMessage.Append(" -> ");
-            _ = finalMessage.Append(Source);
-            _ = finalMessage.Append(" , ");
+
             _ = finalMessage.Append(LogText);
+
+
             if (!string.IsNullOrWhiteSpace(ExtraInfo))
             {
-                _ = finalMessage.Append(" , ");
+                _ = finalMessage.Append(" , Details : ");
                 _ = finalMessage.Append(ExtraInfo);
             }
+
+            if (!string.IsNullOrWhiteSpace(Source))
+            {
+                _ = finalMessage.Append(" , Source : ");
+                _ = finalMessage.Append(Source);
+            }
+
+
+            _ = finalMessage.Append(Environment.NewLine);
+
+
 
             return finalMessage;
 
