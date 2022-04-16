@@ -21,43 +21,8 @@ namespace LogModule
             _loggingChannels.Clear();
         }
 
-
-        private bool disposed = false;
-
-        private void Dispose(bool disposing)
-        {
-            if (disposed) return;
-
-            if (disposing)
-            {
-                try
-                {
-                    ClearLoggingChannel();
-                    _loggingChannels = null;
-                }
-
-                catch (Exception ex)
-                {
-                    InnerException.InnerException.LogInnerException(ex);
-                }
-            }
-
-            disposed = true;
-
-        }
-
-        public void Dispose()
-        {
-            // Do not change this code , Put your clean up code in the Dispose(bool disposing) function instead.
-            Dispose(disposing: true);
-            GC.SuppressFinalize(this);
-        }
-
-        ~Logger()
-        {
-            Dispose(disposing: false);
-        }
         #endregion
+
 
 
         #region LoggingMethod
@@ -127,6 +92,47 @@ namespace LogModule
             }
         }
 
+        #endregion
+
+
+
+        #region DisposeMethods
+
+        private bool disposed = false;
+
+        private void Dispose(bool disposing)
+        {
+            if (disposed) return;
+
+            if (disposing)
+            {
+                try
+                {
+                    ClearLoggingChannel();
+                    _loggingChannels = null;
+                }
+
+                catch (Exception ex)
+                {
+                    InnerException.InnerException.LogInnerException(ex);
+                }
+            }
+
+            disposed = true;
+
+        }
+
+        public void Dispose()
+        {
+            // Do not change this code , Put your clean up code in the Dispose(bool disposing) function instead.
+            Dispose(disposing: true);
+            GC.SuppressFinalize(this);
+        }
+
+        ~Logger()
+        {
+            Dispose(disposing: false);
+        }
         #endregion
 
 
