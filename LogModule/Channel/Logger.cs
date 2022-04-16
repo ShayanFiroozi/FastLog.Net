@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.IO;
 
 namespace LogModule
 {
@@ -27,7 +28,14 @@ namespace LogModule
                             string ExtraInfo = "",
                             string Source = "")
         {
-            _executeLogging(new LogMessage(LogMessage.LogTypeEnum.INFO, LogText, ExtraInfo, Source));
+            try
+            {
+                _executeLogging(new LogMessage(LogMessage.LogTypeEnum.INFO, LogText, ExtraInfo, Source));
+            }
+            catch (Exception ex)
+            {
+                InnerException.InnerException.LogInnerException(ex);
+            }
         }
 
 
@@ -35,7 +43,14 @@ namespace LogModule
                             string ExtraInfo = "",
                             string Source = "")
         {
-            _executeLogging(new LogMessage(LogMessage.LogTypeEnum.WARNING, LogText, ExtraInfo, Source));
+            try
+            {
+                _executeLogging(new LogMessage(LogMessage.LogTypeEnum.WARNING, LogText, ExtraInfo, Source));
+            }
+            catch (Exception ex)
+            {
+                InnerException.InnerException.LogInnerException(ex);
+            }
         }
 
 
@@ -43,7 +58,14 @@ namespace LogModule
                             string ExtraInfo = "",
                             string Source = "")
         {
-            _executeLogging(new LogMessage(LogMessage.LogTypeEnum.ERROR, LogText, ExtraInfo, Source));
+            try
+            {
+                _executeLogging(new LogMessage(LogMessage.LogTypeEnum.ERROR, LogText, ExtraInfo, Source));
+            }
+            catch (Exception ex)
+            {
+                InnerException.InnerException.LogInnerException(ex);
+            }
         }
 
 
@@ -53,13 +75,19 @@ namespace LogModule
 
             if (exception == null) return;
 
-            _executeLogging(new LogMessage(LogMessage.LogTypeEnum.EXCEPTION,
-                                           "Message : " + exception.Message ?? "-",
-                                           "InnerMessage : " + (exception.InnerException?.Message ?? "-") + 
-                                           " , " + 
-                                           "StackTrace : " + (exception.StackTrace ?? "-"),
-                                           "Source : " + (exception.Source ?? "-")));
-
+            try
+            {
+                _executeLogging(new LogMessage(LogMessage.LogTypeEnum.EXCEPTION,
+                                               "Message : " + exception.Message ?? "-",
+                                               "InnerMessage : " + (exception.InnerException?.Message ?? "-") +
+                                               " , " +
+                                               "StackTrace : " + (exception.StackTrace ?? "-"),
+                                               "Source : " + (exception.Source ?? "-")));
+            }
+            catch (Exception ex)
+            {
+                InnerException.InnerException.LogInnerException(ex);
+            }
         }
 
         #endregion
@@ -71,7 +99,14 @@ namespace LogModule
         {
             foreach (ILogger _logger in _loggingChannels)
             {
-                _logger.SaveLog(LogMessage);
+                try
+                {
+                    _logger.SaveLog(LogMessage);
+                }
+                catch(Exception ex)
+                {
+                    InnerException.InnerException.LogInnerException(ex);
+                }
             }
         } 
         #endregion

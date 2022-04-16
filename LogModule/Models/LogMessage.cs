@@ -71,11 +71,11 @@ namespace LogModule
             StringBuilder finalMessage = new();
 
             _ = finalMessage.Append(DateTime.ToString("yyyy/MM/dd HH:mm:ss"));
-            _ = finalMessage.Append(" ");
+            _ = finalMessage.Append(' ');
 
-            _ = finalMessage.Append("(");
+            _ = finalMessage.Append('(');
             _ = finalMessage.Append(LogType.ToString());
-            _ = finalMessage.Append(")");
+            _ = finalMessage.Append(')');
             _ = finalMessage.Append(" -> ");
 
             _ = finalMessage.Append(LogText);

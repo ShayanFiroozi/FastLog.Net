@@ -28,9 +28,10 @@ namespace LogModule.FileLogger
                 {
                     return Convert.ToInt32((new FileInfo(LogFileFullPath).Length / 1024) / 1024);
                 }
-                catch
+                catch (Exception ex)
                 {
-                    throw;
+                    InnerException.InnerException.LogInnerException(ex);
+                    return (int)0;
                 }
             }
         }
@@ -78,10 +79,9 @@ namespace LogModule.FileLogger
             {
                 DeleteLogFile();
             }
-            catch
+            catch (Exception ex)
             {
-
-                throw;
+                InnerException.InnerException.LogInnerException(ex);
             }
 
 
@@ -112,21 +112,21 @@ namespace LogModule.FileLogger
                     return;
                 }
             }
-            catch
+            catch (Exception ex)
             {
-                throw;
+                InnerException.InnerException.LogInnerException(ex);
             }
 
 
-       
+
 
             try
             {
                 File.Delete(LogFileFullPath);
             }
-            catch
+            catch (Exception ex)
             {
-                throw;
+                InnerException.InnerException.LogInnerException(ex);
             }
         }
 
@@ -153,10 +153,9 @@ namespace LogModule.FileLogger
                    
                 }
             }
-            catch
+            catch (Exception ex)
             {
-
-                throw;
+                InnerException.InnerException.LogInnerException(ex);
             }
         }
 
