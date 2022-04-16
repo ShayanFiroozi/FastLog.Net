@@ -129,10 +129,10 @@ namespace LogModule
             GC.SuppressFinalize(this);
         }
 
-        ~Logger()
-        {
-            Dispose(disposing: false);
-        }
+        //~Logger()
+        //{
+        //    Dispose(disposing: false);
+        //}
         #endregion
 
 
