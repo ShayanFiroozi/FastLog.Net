@@ -4,7 +4,7 @@ using System.IO;
 
 namespace LogModule
 {
-    public class Logger
+    public sealed class Logger
     {
 
         private List<ILogger> _loggingChannels = new List<ILogger>();

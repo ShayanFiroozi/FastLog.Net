@@ -3,7 +3,7 @@ using System.IO;
 
 namespace LogModule.InnerException
 {
-    public static class InnerException
+    public  static class InnerException
     {
 
 

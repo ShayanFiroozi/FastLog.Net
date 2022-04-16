@@ -4,7 +4,7 @@ using System.Threading.Tasks;
 
 namespace LogModule.FileLogger
 {
-    public class FileLogger : IFileLogger
+    public sealed class FileLogger : IFileLogger
     {
 
 
