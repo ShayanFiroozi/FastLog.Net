@@ -7,7 +7,7 @@ namespace LogModule
     public sealed class Logger : IDisposable
     {
 
-        private List<ILogger> _loggingChannels = new List<ILogger>();
+        private List<ILogger> _loggingChannels = new();
 
 
         #region RegistrationMethods
@@ -22,26 +22,40 @@ namespace LogModule
         }
 
 
+        private bool disposed = false;
+
+        private void Dispose(bool disposing)
+        {
+            if (disposed) return;
+
+            if (disposing)
+            {
+                try
+                {
+                    ClearLoggingChannel();
+                    _loggingChannels = null;
+                }
+
+                catch (Exception ex)
+                {
+                    InnerException.InnerException.LogInnerException(ex);
+                }
+            }
+
+            disposed = true;
+
+        }
+
         public void Dispose()
         {
-            try
-            {
-                ClearLoggingChannel();
-                _loggingChannels = null;
-
-                GC.SuppressFinalize(this);
-            }
-
-            catch (Exception ex)
-            {
-                InnerException.InnerException.LogInnerException(ex);
-
-            }
+            // Do not change this code , Put your clean up code in the Dispose(bool disposing) function instead.
+            Dispose(disposing: true);
+            GC.SuppressFinalize(this);
         }
 
         ~Logger()
         {
-            Dispose();
+            Dispose(disposing: false);
         }
         #endregion
 
