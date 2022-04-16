@@ -4,7 +4,7 @@ using System.IO;
 
 namespace LogModule
 {
-    public sealed class Logger
+    public sealed class Logger : IDisposable
     {
 
         private List<ILogger> _loggingChannels = new List<ILogger>();
@@ -24,8 +24,24 @@ namespace LogModule
 
         public void Dispose()
         {
-            _loggingChannels.Clear();
-            _loggingChannels = null;
+            try
+            {
+                ClearLoggingChannel();
+                _loggingChannels = null;
+
+                GC.SuppressFinalize(this);
+            }
+
+            catch (Exception ex)
+            {
+                InnerException.InnerException.LogInnerException(ex);
+
+            }
+        }
+
+        ~Logger()
+        {
+            Dispose();
         }
         #endregion
 

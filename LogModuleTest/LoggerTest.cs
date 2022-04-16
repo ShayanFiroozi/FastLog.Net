@@ -42,6 +42,10 @@ namespace LogModuleTest
             logger.LogException(new AccessViolationException());
             logger.LogException(new InsufficientMemoryException());
 
+
+            logger.Dispose();
+            logger = null;
+
         }
 
 
