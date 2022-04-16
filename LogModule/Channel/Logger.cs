@@ -20,6 +20,13 @@ namespace LogModule
         {
             _loggingChannels.Clear();
         }
+
+
+        public void Dispose()
+        {
+            _loggingChannels.Clear();
+            _loggingChannels = null;
+        }
         #endregion
 
 
