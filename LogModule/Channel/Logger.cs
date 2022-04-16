@@ -103,12 +103,12 @@ namespace LogModule
                 {
                     _logger.SaveLog(LogMessage);
                 }
-                catch(Exception ex)
+                catch (Exception ex)
                 {
                     InnerException.InnerException.LogInnerException(ex);
                 }
             }
-        } 
+        }
         #endregion
 
 

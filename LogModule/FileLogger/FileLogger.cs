@@ -50,41 +50,36 @@ namespace LogModule.FileLogger
                           int LOG_FILE_MAX_SIZE_IN_MB = 20)
         {
 
-            if (string.IsNullOrWhiteSpace(LogFilePath) ||
-               string.IsNullOrWhiteSpace(LogFileName))
-            {
-                throw new ArgumentNullException("Invalid logging path or file name");
-            }
-
-            this.LogFilePath = LogFilePath;
-            this.LogFileName = LogFileName;
-            this.LOG_FILE_MAX_SIZE_IN_MB = LOG_FILE_MAX_SIZE_IN_MB;
-
-
-            // Create the log file directory
-
             try
             {
+
+                if (string.IsNullOrWhiteSpace(LogFilePath) ||
+                   string.IsNullOrWhiteSpace(LogFileName))
+                {
+                    throw new ArgumentNullException("Invalid logging path or file name");
+                }
+
+                this.LogFilePath = LogFilePath;
+                this.LogFileName = LogFileName;
+                this.LOG_FILE_MAX_SIZE_IN_MB = LOG_FILE_MAX_SIZE_IN_MB;
+
+
+                // Create the log file directory
+
                 Directory.CreateDirectory(this.LogFilePath);
-            }
-            catch
-            {
-
-                throw;
-            }
 
 
-            // Delete the log file if it's bigger than LOG_FILE_MAX_SIZE_IN_MB
-            try
-            {
+
+                // Delete the log file if it's bigger than LOG_FILE_MAX_SIZE_IN_MB
+
                 DeleteLogFile();
+
+
             }
             catch (Exception ex)
             {
                 InnerException.InnerException.LogInnerException(ex);
             }
-
-
         }
 
 
@@ -140,17 +135,18 @@ namespace LogModule.FileLogger
         public void SaveLog(LogMessage logMessage)
         {
 
-            if (logMessage == null)
-            {
-                throw new ArgumentNullException("logMessage parameter can not be null.");
-            }
-
             try
             {
+
+                if (logMessage == null)
+                {
+                    throw new ArgumentNullException("logMessage parameter can not be null.");
+                }
+
                 using (StreamWriter streamWriter = new(LogFileFullPath, append: true))
                 {
                     streamWriter.WriteLine(logMessage.GetLogMessage());
-                   
+
                 }
             }
             catch (Exception ex)
@@ -162,7 +158,7 @@ namespace LogModule.FileLogger
 
         public async Task SaveLogTaskAsync(LogMessage logMessage)
         {
-            await Task.Run(()=>SaveLog(logMessage));
+            await Task.Run(() => SaveLog(logMessage));
         }
 
         #endregion

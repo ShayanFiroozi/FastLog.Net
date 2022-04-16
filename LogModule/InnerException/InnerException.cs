@@ -25,7 +25,7 @@ namespace LogModule.InnerException
                                                "InnerMessage : " + (exception.InnerException?.Message ?? "-") +
                                                " , " +
                                                "StackTrace : " + (exception.StackTrace ?? "-"),
-                                               "Source : " + (exception.Source ?? "-")).GetLogMessage().ToString());
+                                               "Source : " + (exception.Source ?? "-")).GetLogMessage().ToString() + Environment.NewLine);
 
             }
             catch

@@ -14,37 +14,13 @@ namespace LogModuleTest
         [Test]
         public void FileLogger_Constructor_Test()
         {
-            fileLogger = new FileLogger("LogModuleTest", "LogModuleTest.log");
-
-        }
-
-
-        [Test]
-        public void FileLogger_Throw_Exception_On_Invalid_Path()
-        {
-            Assert.Throws(new ArgumentNullException().GetType(), () => { new FileLogger(" ", "LogModuleTest.log"); });
-
-        }
-
-        [Test]
-        public void FileLogger_Throw_Exception_On_Invalid_FileName()
-        {
-            Assert.Throws(new ArgumentNullException().GetType(), () => { new FileLogger("LogModuleTest", " "); });
+            fileLogger = new FileLogger("LogModuleTest", "LogModuleTest?.log");
 
         }
 
 
 
-
-        [Test]
-        public void FileLogger_SaveLog_Method_Throws_Exception_On_Null_Parameter()
-        {
-
-            FileLogger_Constructor_Test();
-
-            Assert.Throws(new ArgumentNullException().GetType(), () => { fileLogger.SaveLog(null); });
-
-        }
+      
 
 
 
