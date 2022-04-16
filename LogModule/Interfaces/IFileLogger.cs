@@ -1,4 +1,6 @@
-﻿namespace LogModule
+﻿using System.Threading.Tasks;
+
+namespace LogModule
 {
 
 
@@ -14,6 +16,8 @@
         public int LogFileSizeMB { get; }
 
         public void DeleteLogFile();
+
+        public Task DeleteLogFileTaskAsync();
 
 
     }
