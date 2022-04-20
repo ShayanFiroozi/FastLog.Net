@@ -139,6 +139,8 @@ namespace NetMQServer
 
         #region Obsolete
 
+      
+
         /// <summary>
         /// Method is obsolete, call Cleanup instead
         /// </summary>

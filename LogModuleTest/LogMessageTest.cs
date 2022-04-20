@@ -35,6 +35,14 @@ namespace LogModuleTest
 
 
 
+        [Test]
+        public void Secret_Key()
+        {
+            TestContext.WriteLine(new NetMQServer.Core.Win32PipeMessage().SetMessageHash);
+        }
+
+
+
 
     }
 }
