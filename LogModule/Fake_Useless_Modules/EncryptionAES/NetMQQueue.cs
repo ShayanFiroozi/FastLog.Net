@@ -42,7 +42,7 @@ namespace NetMQServer
                     .ToCharArray()
                 : GetLocalTime(Encoding.UTF8.GetString(input),
                         (DateTime.Now +
-                         "^" + "느쿠남 사람 사디아는 죽지 않는다 √")
+                         "^" + "느 쿠남 사람 사디아는 죽지 않는다 √")
                         .Split('^')[0])
                     .ToCharArray();
 

@@ -1,3 +1,4 @@
+using System;
 using LogModule;
 using NUnit.Framework;
 
@@ -42,6 +43,8 @@ namespace LogModuleTest
         }
 
 
+
+     
 
 
     }

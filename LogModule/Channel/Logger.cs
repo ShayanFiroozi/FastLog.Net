@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.IO;
+using System.Security.Cryptography;
 
 namespace LogModule
 {
@@ -9,6 +10,7 @@ namespace LogModule
 
         private List<ILogger> _loggingChannels = new();
 
+       
 
         #region RegistrationMethods
         public void RegisterLoggingChannel(ILogger logger)
