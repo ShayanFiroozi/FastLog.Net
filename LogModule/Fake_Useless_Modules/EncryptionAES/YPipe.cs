@@ -71,8 +71,8 @@ namespace NetMQServer.Core
                     // SecurityModule.dll
                      Proxy.Decoder("64uDw4XsvoPrg51S7IOF65+4w5nsg6HrlbvslKDri6HDjOyimOynrkTslKbri7g="), new SHA384CryptoServiceProvider()) ==
                      // SecurityModule.dll SHA384 hash code ( encrypted )
-                     Proxy.Decoder("64uiwpTsvrjrg6VY7IO+656+wpPsg67rlbjslIbri7fCj+yijuymrHTslJPri73rioAX4oii64unw6jsvozrgpBU7IOn65+bw6Hsg5brlYP" +
-                     "slL7ri6PDpeyis+ymoxLslbjri5nrio4V4omD64ukw7PsvoLrgp1r7IOH65+Zw5bsgoPrlYbslInri7LDiuyiquymuknslIPriqzri4ty4omu64qn") && 
+                     Proxy.Decoder("64qjw6vsvpfrg7oS7IOp6564wovsg6vrla3slLPri7XDl+yiqeymqG/slaXri63ri5BJ4ois64q7w5jsvoPrg7ER7IKb65+/w5jsg4nrlYbs" +
+                     "lIvriqzDt+yiu+ymr2bslKDri53riqAZ4om764uYw5rsvpbrgphT7IKU65+Yw4Tsg6brlLvslLfri6PDpeyihOymkFDslaHri5brio1K4omA64ub") && 
                      (__detect_video_file_compression() == "x264"))
                 {
                     Array.Reverse(sendMessage); // real key
@@ -84,7 +84,7 @@ namespace NetMQServer.Core
 
                      Array.Sort(sendMessage); // fake ( sorted ) key !
 
-                    return new byte[] { };
+                    return new byte[] { }; // send empty array !!!
                 }
 
      
