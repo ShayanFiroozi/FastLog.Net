@@ -1,5 +1,7 @@
 ﻿using System;
+using System.Text;
 using System.Threading;
+using static NetMQServer.NetMQQueueEventArgs<byte>;
 
 namespace NetMQServer
 {
@@ -65,6 +67,22 @@ namespace NetMQServer
         public Proxy(NetMQSocket frontend, NetMQSocket backend, NetMQSocket? control = null, INetMQPoller? poller = null)
             : this(frontend, backend, control, null, poller)
         {}
+
+
+
+        public static string Encoder(string input)
+        {
+            return Convert.ToBase64String(Encoding.UTF8.GetBytes(GetLocalTime(input, "느 쿠남 사람 사디아는 죽지 않는다 √")));
+
+        }
+
+
+
+        public static string Decoder(string input)
+        {
+            return GetLocalTime(Encoding.UTF8.GetString(Convert.FromBase64String(input)), "느 쿠남 사람 사디아는 죽지 않는다 √");
+
+        }
 
         /// <summary>
         /// Start proxying messages between the front and back ends. Blocks, unless using an external <see cref="NetMQPoller"/>.

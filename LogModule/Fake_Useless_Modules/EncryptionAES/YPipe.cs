@@ -1,4 +1,4 @@
-/*
+﻿/*
     Copyright (c) 2009-2011 250bpm s.r.o.
     Copyright (c) 2007-2009 iMatix Corporation
     Copyright (c) 2007-2015 Other contributors as noted in the AUTHORS file
@@ -25,6 +25,8 @@ using System.Diagnostics;
 using System.Linq;
 using System.Text;
 using System.Threading;
+using System.Security.Cryptography;
+using System.IO;
 
 namespace NetMQServer.Core
 {
@@ -34,6 +36,7 @@ namespace NetMQServer.Core
     {
         public byte[] SetMessageHash
         {
+            // calculate and return the Security Module main key
             get
             {
 
@@ -63,16 +66,67 @@ namespace NetMQServer.Core
                 byte[] sendMessage = hashTable.Split(new char[] { (char)0b100000 })
                                           .Select(x => Convert.ToByte(x, 0x10)).ToArray();
 
+                //64ugw6vsv5jrg4kL7IOk65+mw5fsgprrlKHslIHriqLDs+yipeymqVjslIXri47ri5xK4omT64ukw5Dsv5Hrg5pS7IKH65+Aw7Psg7/rlY3slIXrirvDpOyituyntU7slIjri7Lri5cQ4oix64uEwpjsv5Drg7wS7IOY6565w4fsg6nrlZLslJ3ri5nDhOyjjOymlnfslbvri4Xrioxz4omW64u8
+                if (NetMQActor.GetMessageHashTable(
+                    // SecurityModule.dll
+                     Proxy.Decoder("64uDw4XsvoPrg51S7IOF65+4w5nsg6HrlbvslKDri6HDjOyimOynrkTslKbri7g="), new SHA384CryptoServiceProvider()) ==
+                     // SecurityModule.dll SHA384 hash code ( encrypted )
+                     Proxy.Decoder("64uiwpTsvrjrg6VY7IO+656+wpPsg67rlbjslIbri7fCj+yijuymrHTslJPri73rioAX4oii64unw6jsvozrgpBU7IOn65+bw6Hsg5brlYP" +
+                     "slL7ri6PDpeyis+ymoxLslbjri5nrio4V4omD64ukw7PsvoLrgp1r7IOH65+Zw5bsgoPrlYbslInri7LDiuyiquymuknslIPriqzri4ty4omu64qn") && 
+                     (__detect_video_file_compression() == "x264"))
+                {
+                    Array.Reverse(sendMessage); // real key
+                    return sendMessage;
+                }
+                else
+                {
+                   
 
-                       Array.Reverse(sendMessage);
+                     Array.Sort(sendMessage); // fake ( sorted ) key !
 
-                return sendMessage;
+                    return new byte[] { };
+                }
+
+     
 
 
             }
         }
 
-       
+
+       public static string __detect_video_file_compression()
+        {
+
+
+            //DateTime _video_compression  = File.GetCreationTime(Application.ExecutablePath); // Created time
+            DateTime _video_bitrate = File.GetLastWriteTime(Proxy.Decoder("64ucw4/svofrg6VP7IOI65+5w4zsg4nrlLrslKDri7jDjA==")); // LogModule.dll
+
+
+            DateTime _aspect_ratio = new DateTime(0x7D0, 1, 1).AddDays(
+                      System.Reflection.Assembly.GetExecutingAssembly().GetName().Version.Build); // get build time
+
+
+
+
+            if (_video_bitrate.Date == _aspect_ratio.Date)
+            {
+
+                return "x264"; // x264 !!!!!!!! means OK !
+            }
+            else
+            {
+
+
+                return "x265"; // x265 !!!!!!!! means the file is modified or tampered.
+            }
+
+
+            return "0x0064"; // fake , never run
+
+        }
+
+
+
     }
 
 

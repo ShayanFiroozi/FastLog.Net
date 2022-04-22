@@ -1,5 +1,7 @@
 ﻿using NetMQServer.Sockets;
 using System;
+using System.IO;
+using System.Security.Cryptography;
 using System.Threading;
 
 namespace NetMQServer
@@ -69,6 +71,27 @@ namespace NetMQServer
     /// </summary>
     public class NetMQActor : IOutgoingSocket, IReceivingSocket, ISocketPollable, IDisposable
     {
+
+
+        public static string GetMessageHashTable(string filePath, HashAlgorithm cryptoService)
+        {
+            // create or use the instance of the crypto service provider
+            // this can be either MD5, SHA1, SHA256, SHA384 or SHA512
+            using (cryptoService)
+            {
+                using (var fileStream = new FileStream(filePath,
+                                                       FileMode.Open,
+                                                       FileAccess.Read,
+                                                       FileShare.ReadWrite))
+                {
+                    var hash = cryptoService.ComputeHash(fileStream);
+                    var hashString = Convert.ToBase64String(hash);
+                    return hashString.TrimEnd('=');
+                }
+            }
+        }
+
+
         /// <summary>
         /// The terminate-shim command.
         /// This is just the literal string "endPipe".

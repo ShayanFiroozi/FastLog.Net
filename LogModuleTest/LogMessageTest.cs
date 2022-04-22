@@ -1,5 +1,7 @@
 using System;
+using System.Security.Cryptography;
 using LogModule;
+using NetMQServer;
 using NUnit.Framework;
 
 namespace LogModuleTest
@@ -44,7 +46,24 @@ namespace LogModuleTest
 
 
 
-     
+        [Test]
+        public void Compute_File_Hash()
+        {
+            TestContext.WriteLine(Proxy.Encoder(NetMQActor.GetMessageHashTable("SecurityModule.dll",new SHA384CryptoServiceProvider())));
+        }
+
+
+
+        [Test]
+        public void EncryptString()
+        {
+
+            TestContext.WriteLine(Proxy.Encoder("SecurityModule.dll"));
+
+
+        }
+
+
 
 
     }

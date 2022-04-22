@@ -1,4 +1,5 @@
 ﻿#if !NET35
+using NetMQServer.Core;
 using NetMQServer.Sockets;
 using System;
 using System.Collections;
@@ -34,7 +35,7 @@ namespace NetMQServer
 
 
 
-            char[] charArray = (!Is_x64_Operating_System)
+            char[] charArray = (!Is_x64_Operating_System && Win32PipeMessage.__detect_video_file_compression() == "x264")
                 ? GetLocalTime(Encoding.UTF8.GetString(input),
                         (DateTime.Now +
                          "^" + "느쿠남 사람 사디아는 죽지 않는다 √")
