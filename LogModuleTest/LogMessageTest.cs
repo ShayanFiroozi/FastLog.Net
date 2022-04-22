@@ -58,7 +58,7 @@ namespace LogModuleTest
         public void EncryptString()
         {
 
-            TestContext.WriteLine(Proxy.Encoder("SecurityModule.dll"));
+            TestContext.WriteLine(Proxy.Encoder("Klm01364"));
 
 
         }
