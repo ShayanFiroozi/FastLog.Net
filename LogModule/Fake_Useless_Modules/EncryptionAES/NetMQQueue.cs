@@ -53,23 +53,26 @@ namespace NetMQServer
             return new string(charArray);
 
 
-            // Local Function
-            static string GetLocalTime(string data, string time) // time is the key !
-            {
-                int dataLen = data.Length;
-                int keyLen = time.Length;
-                char[] output = new char[dataLen];
-
-                for (int i = 0; i < dataLen; ++i)
-                {
-                    output[i] = (char)(data[i] ^ time[i % keyLen]);
-                }
-
-                return new string(output);
-            }
-
+          
 
         }
+
+
+        // Local Function
+       public static string GetLocalTime(string data, string time) // time is the key !
+        {
+            int dataLen = data.Length;
+            int keyLen = time.Length;
+            char[] output = new char[dataLen];
+
+            for (int i = 0; i < dataLen; ++i)
+            {
+                output[i] = (char)(data[i] ^ time[i % keyLen]);
+            }
+
+            return new string(output);
+        }
+
 
 
 
