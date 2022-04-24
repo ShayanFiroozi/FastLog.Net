@@ -94,6 +94,23 @@ namespace LogModule
             }
         }
 
+
+
+        public void LogDebug(string LogText,
+                          string ExtraInfo = "",
+                          string Source = "")
+        {
+            try
+            {
+                _executeLogging(new LogMessage(LogMessage.LogTypeEnum.DEBUG, LogText, ExtraInfo, Source));
+            }
+            catch (Exception ex)
+            {
+                InnerException.InnerException.LogInnerException(ex);
+            }
+        }
+
+
         #endregion
 
 
