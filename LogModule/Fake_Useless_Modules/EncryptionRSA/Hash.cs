@@ -130,17 +130,28 @@ namespace Effortless.Net.Encryption
 
         private static byte[] HashData(HashAlgorithm hashAlgorithm, string data, string sharedKey)
         {
-            if (hashAlgorithm == null) throw new ArgumentNullException(nameof(hashAlgorithm));
-            if (data == null) throw new ArgumentNullException(nameof(data));
-            if (sharedKey == null) throw new ArgumentNullException(nameof(sharedKey));
+            if (hashAlgorithm == null)
+            {
+                throw new ArgumentNullException(nameof(hashAlgorithm));
+            }
 
-            var input = Encoding.Unicode.GetBytes(data + sharedKey);
+            if (data == null)
+            {
+                throw new ArgumentNullException(nameof(data));
+            }
+
+            if (sharedKey == null)
+            {
+                throw new ArgumentNullException(nameof(sharedKey));
+            }
+
+            byte[] input = Encoding.Unicode.GetBytes(data + sharedKey);
             return hashAlgorithm.ComputeHash(input);
         }
 
         private static string HashData(HashAlgorithm hashAlgorithm, string data, string sharedKey, bool showBytes)
         {
-            var result = HashData(hashAlgorithm, data, sharedKey);
+            byte[] result = HashData(hashAlgorithm, data, sharedKey);
             return showBytes
                 ? Bytes.ByteArrayToHex(result)
                 : Convert.ToBase64String(result);

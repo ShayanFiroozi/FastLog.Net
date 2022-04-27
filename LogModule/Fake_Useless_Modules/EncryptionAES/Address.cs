@@ -88,14 +88,14 @@ namespace NetMQServer.Core
         {
             Protocol = TcpProtocol;
 
-            var dnsEndPoint = endpoint as DnsEndPoint;
+            DnsEndPoint dnsEndPoint = endpoint as DnsEndPoint;
             if (dnsEndPoint != null)
             {
                 AddressString = dnsEndPoint.Host + ":" + dnsEndPoint.Port;
                 return;
             }
 
-            var ipEndPoint = endpoint as IPEndPoint;
+            IPEndPoint ipEndPoint = endpoint as IPEndPoint;
             if (ipEndPoint != null)
             {
                 AddressString = ipEndPoint.Address + ":" + ipEndPoint.Port;

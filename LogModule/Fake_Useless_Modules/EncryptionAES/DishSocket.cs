@@ -21,7 +21,7 @@ namespace NetMQServer.Sockets
             m_socketHandle.CheckDisposed();
             m_socketHandle.Join(group);
         }
-        
+
         /// <summary>
         /// Leave a group for a dish socket
         /// </summary>

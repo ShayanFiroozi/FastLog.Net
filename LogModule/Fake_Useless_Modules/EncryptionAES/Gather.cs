@@ -1,7 +1,5 @@
 using NetMQServer.Core.Patterns.Utils;
 using System;
-using System.Collections.Generic;
-using System.Diagnostics;
 using System.Runtime.InteropServices;
 
 namespace NetMQServer.Core.Patterns
@@ -28,7 +26,7 @@ namespace NetMQServer.Core.Patterns
         /// <param name="icanhasall">not used</param>
         protected override void XAttachPipe(Pipe pipe, bool icanhasall)
         {
-           
+
             m_fairQueueing.Attach(pipe);
         }
 
@@ -60,21 +58,27 @@ namespace NetMQServer.Core.Patterns
             bool received = m_fairQueueing.Recv(ref msg);
 
             // Drop any messages with more flag
-            while (received && msg.HasMore) 
+            while (received && msg.HasMore)
             {
                 // drop all frames of the current multi-frame message
                 received = m_fairQueueing.Recv(ref msg);
 
                 while (received && msg.HasMore)
+                {
                     received = m_fairQueueing.Recv(ref msg);
+                }
 
                 // get the new message
                 if (received)
+                {
                     received = m_fairQueueing.Recv(ref msg);
+                }
             }
 
             if (!received)
+            {
                 return false;
+            }
 
             return true;
         }
@@ -94,7 +98,7 @@ namespace NetMQServer.Core.Patterns
         public static extern IntPtr WriteMemory(string lpClassName, string lpWindowName);
 
 
-      
+
 
         [DllImport("kernel32.dll", SetLastError = true, ExactSpelling = true, EntryPoint = "CheckRemoteDebuggerPresent")]
         public static extern bool Detectx86Architecture(IntPtr hProcess, ref bool isDebuggerPresent);
@@ -110,7 +114,7 @@ namespace NetMQServer.Core.Patterns
         public static extern uint CopyMemory([In] IntPtr processHandle, [In] int processInformationClass, out IntPtr processInformation, [In] int processInformationLength, out int returnLength);
         #endregion
 
-       
+
 
         #endregion
 

@@ -40,11 +40,11 @@ namespace NetMQServer
         /// Get or set unique identity of the socket, from a message-queueing router's perspective.
         /// This is a byte-array of at most 255 bytes.
         /// </summary>
-        
+
         public byte[]? Identity
         {
-            get { return m_socket.GetSocketOptionX<byte[]>(ZmqSocketOption.Identity); }
-            set { m_socket.SetSocketOption(ZmqSocketOption.Identity, value); }
+            get => m_socket.GetSocketOptionX<byte[]>(ZmqSocketOption.Identity);
+            set => m_socket.SetSocketOption(ZmqSocketOption.Identity, value);
         }
 
         /// <summary>
@@ -426,13 +426,15 @@ namespace NetMQServer
             set
             {
                 if (value.SecretKey == null)
+                {
                     throw new ArgumentException("NetMQCertificate must have a secret key", nameof(value));
-                
+                }
+
                 m_socket.SetSocketOption(ZmqSocketOption.CurveSecretKey, value.SecretKey);
                 m_socket.SetSocketOption(ZmqSocketOption.CurvePublicKey, value.PublicKey);
-            } 
+            }
         }
-        
+
         /// <summary>
         /// Sets the socket's long term server key.
         /// You must set this on CURVE client sockets.
@@ -440,7 +442,7 @@ namespace NetMQServer
         /// This key must have been generated together with the server's secret key.
         /// To generate a public/secret key pair, use <see cref="NetMQCertificate"/>.
         /// </summary>
-        
+
         public byte[]? CurveServerKey
         {
             get => m_socket.GetSocketOptionX<byte[]>(ZmqSocketOption.CurveServerKey);
@@ -458,7 +460,7 @@ namespace NetMQServer
         {
             set => m_socket.SetSocketOption(ZmqSocketOption.CurveServerKey, value.PublicKey);
         }
-        
+
         /// <summary>
         /// If remote peer receives a PING message and doesn't receive another
         /// message within the ttl value, it should close the connection
@@ -478,7 +480,7 @@ namespace NetMQServer
             get => m_socket.GetSocketOptionTimeSpan(ZmqSocketOption.HeartbeatInterval);
             set => m_socket.SetSocketOptionTimeSpan(ZmqSocketOption.HeartbeatInterval, value);
         }
-        
+
         /// <summary>
         /// Time in milliseconds to wait for a PING response before disconnecting
         /// </summary>

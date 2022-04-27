@@ -5,7 +5,7 @@ using System.Text;
 
 namespace NetMQServer.Core.Mechanisms
 {
-    internal enum MechanismStatus 
+    internal enum MechanismStatus
     {
         Handshaking,
         Ready,
@@ -14,7 +14,7 @@ namespace NetMQServer.Core.Mechanisms
 
     internal abstract class Mechanism : IDisposable
     {
-        static class SocketNames
+        private static class SocketNames
         {
             public const string Pair = "PAIR";
             public const string Pub = "PUB";
@@ -27,7 +27,7 @@ namespace NetMQServer.Core.Mechanisms
             public const string Push = "PUSH";
             public const string Xpub = "XPUB";
             public const string Xsub = "XSUB";
-            public const string Stream = "STREAM";    
+            public const string Stream = "STREAM";
             public const string Peer = "PEER";
             public const string Server = "SERVER";
             public const string Client = "CLIENT";
@@ -36,9 +36,9 @@ namespace NetMQServer.Core.Mechanisms
             public const string Gather = "GATHER";
             public const string Scatter = "SCATTER";
         }
-        
-        const int NameLengthSize = sizeof(byte);
-        const int ValueLengthSize = sizeof(Int32);
+
+        private const int NameLengthSize = sizeof(byte);
+        private const int ValueLengthSize = sizeof(int);
 
         private const string ZmtpPropertySocketType = "Socket-Type";
         private const string ZmtpPropertyIdentity = "Identity";
@@ -48,20 +48,20 @@ namespace NetMQServer.Core.Mechanisms
             Session = session;
             Options = options;
         }
-        
+
         /// <summary>
         /// Prepare next handshake command that is to be sent to the peer.
         /// </summary>
         /// <param name="msg"></param>
         /// <returns></returns>
-        public abstract PullMsgResult NextHandshakeCommand (ref Msg msg);
+        public abstract PullMsgResult NextHandshakeCommand(ref Msg msg);
 
         /// <summary>
         /// Process the handshake command received from the peer.
         /// </summary>
         /// <param name="msg"></param>
         /// <returns></returns>
-        public abstract PushMsgResult ProcessHandshakeCommand (ref Msg msg);
+        public abstract PushMsgResult ProcessHandshakeCommand(ref Msg msg);
 
         /// <summary>
         /// Dispose the mechanism resources
@@ -82,12 +82,12 @@ namespace NetMQServer.Core.Mechanisms
         /// Returns the status of this mechanism.
         /// </summary>
         public abstract MechanismStatus Status { get; }
-        
+
         public byte[]? PeerIdentity { get; set; }
 
         public SessionBase Session { get; }
         protected Options Options { get; }
-        
+
         /// <summary>
         ///  Only used to identify the socket for the Socket-Type
         ///  property in the wire protocol. 
@@ -139,24 +139,28 @@ namespace NetMQServer.Core.Mechanisms
                     throw new ArgumentOutOfRangeException(nameof(socketType), socketType, null);
             }
         }
-        
+
         protected int AddProperty(Span<byte> output, string name, byte[] value)
         {
             if (name.Length > 255)
+            {
                 throw new ArgumentException("property name length exceed maximum size");
-            
-            int totalLength =  GetPropertyLength(name, value.Length);
-            if (totalLength > output.Length)
-                throw new Exception("totalLength of property exceed maximum size");
+            }
 
-            output[0] = (byte) name.Length;
+            int totalLength = GetPropertyLength(name, value.Length);
+            if (totalLength > output.Length)
+            {
+                throw new Exception("totalLength of property exceed maximum size");
+            }
+
+            output[0] = (byte)name.Length;
             output = output.Slice(NameLengthSize);
             System.Text.Encoding.ASCII.GetBytes(name, output);
             output = output.Slice(name.Length);
             NetworkOrderBitsConverter.PutInt32(value.Length, output);
             output = output.Slice(ValueLengthSize);
             value.CopyTo(output);
-            
+
             return totalLength;
         }
 
@@ -165,7 +169,7 @@ namespace NetMQServer.Core.Mechanisms
             return AddProperty(output, name, Encoding.ASCII.GetBytes(value));
         }
 
-        protected  int GetPropertyLength(string name, int valueLength)
+        protected int GetPropertyLength(string name, int valueLength)
         {
             return NameLengthSize + name.Length + ValueLengthSize + valueLength;
         }
@@ -176,10 +180,10 @@ namespace NetMQServer.Core.Mechanisms
             string socketName = GetSocketName(Options.SocketType);
             int written = AddProperty(output, ZmtpPropertySocketType, socketName);
             output = output.Slice(written);
-            
+
             //  Add identity property
-            if (Options.SocketType == ZmqSocketType.Req || 
-                Options.SocketType == ZmqSocketType.Dealer || 
+            if (Options.SocketType == ZmqSocketType.Req ||
+                Options.SocketType == ZmqSocketType.Dealer ||
                 Options.SocketType == ZmqSocketType.Router)
             {
                 if (Options.Identity != null)
@@ -206,9 +210,11 @@ namespace NetMQServer.Core.Mechanisms
                 if (Options.SocketType == ZmqSocketType.Req ||
                     Options.SocketType == ZmqSocketType.Dealer ||
                     Options.SocketType == ZmqSocketType.Router)
+                {
                     length += GetPropertyLength(ZmtpPropertyIdentity, Options.IdentitySize);
+                }
 
-                return length;    
+                return length;
             }
         }
 
@@ -218,7 +224,7 @@ namespace NetMQServer.Core.Mechanisms
             msg.InitPool(commandSize);
             msg.Put((byte)prefix.Length, 0);
             msg.Put(Encoding.ASCII, prefix, 1);
-            
+
             AddBasicProperties(msg.Slice(prefix.Length + 1));
         }
 
@@ -235,38 +241,52 @@ namespace NetMQServer.Core.Mechanisms
                 int nameLength = source[0];
                 source = source.Slice(NameLengthSize);
                 if (source.Length < nameLength)
+                {
                     break;
+                }
 
                 string name = SpanUtility.ToAscii(source.Slice(0, nameLength));
                 source = source.Slice(nameLength);
                 if (source.Length < ValueLengthSize)
+                {
                     break;
+                }
 
                 int valueLength = NetworkOrderBitsConverter.ToInt32(source);
                 source = source.Slice(ValueLengthSize);
                 if (source.Length < valueLength)
+                {
                     break;
-                
+                }
+
                 byte[] value = new byte[valueLength];
                 source.Slice(0, valueLength).CopyTo(value);
                 source = source.Slice(valueLength);
 
                 if (name == ZmtpPropertyIdentity && Options.RecvIdentity)
+                {
                     PeerIdentity = value;
-                else if (name == ZmtpPropertySocketType) 
+                }
+                else if (name == ZmtpPropertySocketType)
                 {
                     if (!CheckSocketType(Encoding.ASCII.GetString(value)))
+                    {
                         return false;
-                } 
+                    }
+                }
                 else
                 {
                     if (!GetProperty(name, value, valueLength))
+                    {
                         return false;
+                    }
                 }
             }
-            
+
             if (source.Length > 0)
+            {
                 return false;
+            }
 
             return true;
         }
@@ -337,15 +357,16 @@ namespace NetMQServer.Core.Mechanisms
 
         protected bool CheckBasicCommandStructure(ref Msg msg)
         {
-            if (msg.Size <= 1 || 
-                msg.Size <= msg[0]) {
+            if (msg.Size <= 1 ||
+                msg.Size <= msg[0])
+            {
                 // TODO: Session.Socket.EventHandshakeFailedProtocol 
 
                 return false;
             }
             return true;
         }
-        
+
         protected bool IsCommand(string command, ref Msg msg)
         {
             if (msg.Size >= command.Length + 1)

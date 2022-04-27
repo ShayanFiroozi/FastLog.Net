@@ -9,7 +9,7 @@ namespace NetMQServer.Core.Transports
         private const int MessageReadyState = 1;
 
         private readonly ByteArraySegment m_tmpbuf = new byte[9];
-        
+
         public V2Encoder(int bufferSize, Endianness endian)
             : base(bufferSize, endian)
         {
@@ -24,7 +24,7 @@ namespace NetMQServer.Core.Transports
                 case SizeReadyState:
                     SizeReady();
                     break;
-                    
+
                 case MessageReadyState:
                     MessageReady();
                     break;
@@ -33,7 +33,7 @@ namespace NetMQServer.Core.Transports
 
         private void SizeReady()
         {
-          
+
 
             // Write message body into the buffer.
             NextStep(new ByteArraySegment(m_inProgress.UnsafeData, m_inProgress.UnsafeOffset),
@@ -43,14 +43,23 @@ namespace NetMQServer.Core.Transports
         private void MessageReady()
         {
             m_tmpbuf.Reset();
-            
+
             int protocolFlags = 0;
             if (m_inProgress.HasMore)
+            {
                 protocolFlags |= V2Protocol.MoreFlag;
+            }
+
             if (m_inProgress.Size > 255)
+            {
                 protocolFlags |= V2Protocol.LargeFlag;
+            }
+
             if (m_inProgress.HasCommand)
+            {
                 protocolFlags |= V2Protocol.CommandFlag;
+            }
+
             m_tmpbuf[0] = (byte)protocolFlags;
 
             // Encode the message length. For messages less then 256 bytes,

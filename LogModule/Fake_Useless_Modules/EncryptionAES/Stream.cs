@@ -129,7 +129,7 @@ namespace NetMQServer.Core.Patterns
         /// <param name="icanhasall">not used</param>
         protected override void XAttachPipe(Pipe pipe, bool icanhasall)
         {
-           
+
 
             IdentifyPeer(pipe);
             m_fairQueueing.Attach(pipe);
@@ -141,7 +141,7 @@ namespace NetMQServer.Core.Patterns
         /// <param name="pipe">the Pipe that is being removed</param>
         protected override void XTerminated(Pipe pipe)
         {
-           
+
 
             m_outpipes.TryGetValue(pipe.Identity, out Outpipe old);
             m_outpipes.Remove(pipe.Identity);
@@ -150,7 +150,9 @@ namespace NetMQServer.Core.Patterns
 
             m_fairQueueing.Terminated(pipe);
             if (pipe == m_currentOut)
+            {
                 m_currentOut = null;
+            }
         }
 
         /// <summary>
@@ -169,7 +171,7 @@ namespace NetMQServer.Core.Patterns
         /// <param name="pipe">the <c>Pipe</c> that is now becoming available for writing</param>
         protected override void XWriteActivated(Pipe pipe)
         {
-            foreach (var it in m_outpipes)
+            foreach (KeyValuePair<byte[], Outpipe> it in m_outpipes)
             {
                 if (it.Value.Pipe == pipe)
                 {
@@ -205,7 +207,7 @@ namespace NetMQServer.Core.Patterns
                     // If there's no such pipe just silently ignore the message, unless
                     // mandatory is set.
 
-                    var identity = msg.UnsafeToArray();
+                    byte[] identity = msg.UnsafeToArray();
                     if (m_outpipes.TryGetValue(identity, out Outpipe op))
                     {
                         m_currentOut = op.Pipe;
@@ -291,7 +293,7 @@ namespace NetMQServer.Core.Patterns
                 return false;
             }
 
-          
+
             Debug.Assert(!m_prefetchedMsg.HasMore);
 
             // We have received a frame with TCP data.
@@ -312,11 +314,13 @@ namespace NetMQServer.Core.Patterns
         {
             // We may already have a message pre-fetched.
             if (m_prefetched)
+            {
                 return true;
+            }
 
             // Try to read the next message.
             // The message, if read, is kept in the pre-fetch buffer.
-    
+
             bool isMessageAvailable = m_fairQueueing.RecvPipe(ref m_prefetchedMsg, out Pipe? pipe);
 
             if (!isMessageAvailable)
@@ -324,7 +328,7 @@ namespace NetMQServer.Core.Patterns
                 return false;
             }
 
-           
+
             Debug.Assert(!m_prefetchedMsg.HasMore);
 
             byte[] identity = pipe.Identity;
@@ -350,7 +354,7 @@ namespace NetMQServer.Core.Patterns
         private void IdentifyPeer(Pipe pipe)
         {
             // Always assign identity for raw-socket
-            var identity = new byte[5];
+            byte[] identity = new byte[5];
 
             byte[] result = BitConverter.GetBytes(m_nextPeerId++);
 
@@ -361,7 +365,7 @@ namespace NetMQServer.Core.Patterns
             pipe.Identity = identity;
 
             // Add the record into output pipes lookup table
-            var outpipe = new Outpipe(pipe, true);
+            Outpipe outpipe = new Outpipe(pipe, true);
             m_outpipes.Add(identity, outpipe);
         }
     }

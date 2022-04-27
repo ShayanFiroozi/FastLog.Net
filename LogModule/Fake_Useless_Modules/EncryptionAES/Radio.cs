@@ -37,7 +37,7 @@ namespace NetMQServer.Core.Patterns
                 {
                     if (msg.IsJoin)
                     {
-                        if (!m_subscriptions.TryGetValue(msg.Group, out var pipes))
+                        if (!m_subscriptions.TryGetValue(msg.Group, out HashSet<Pipe> pipes))
                         {
                             pipes = new HashSet<Pipe>();
                             m_subscriptions.Add(msg.Group, pipes);
@@ -47,11 +47,13 @@ namespace NetMQServer.Core.Patterns
                     }
                     else
                     {
-                        if (m_subscriptions.TryGetValue(msg.Group, out var pipes))
+                        if (m_subscriptions.TryGetValue(msg.Group, out HashSet<Pipe> pipes))
                         {
                             pipes.Remove(pipe);
                             if (!pipes.Any())
+                            {
                                 m_subscriptions.Remove(msg.Group);
+                            }
                         }
                     }
                 }
@@ -67,11 +69,15 @@ namespace NetMQServer.Core.Patterns
 
         protected override void XTerminated(Pipe pipe)
         {
-            foreach (var pipes in m_subscriptions.Values)
+            foreach (HashSet<Pipe> pipes in m_subscriptions.Values)
+            {
                 pipes.Remove(pipe);
+            }
 
-            foreach (var p in m_subscriptions.Where(p => !p.Value.Any()).ToArray())
+            foreach (KeyValuePair<string, HashSet<Pipe>> p in m_subscriptions.Where(p => !p.Value.Any()).ToArray())
+            {
                 m_subscriptions.Remove(p.Key);
+            }
 
             m_distribution.Terminated(pipe);
         }
@@ -80,14 +86,18 @@ namespace NetMQServer.Core.Patterns
         {
             //  Radio sockets do not allow multipart data (ZMQ_SNDMORE)
             if (msg.HasMore)
+            {
                 throw new InvalidException();
+            }
 
             m_distribution.Unmatch();
 
-            if (m_subscriptions.TryGetValue(msg.Group, out var range))
+            if (m_subscriptions.TryGetValue(msg.Group, out HashSet<Pipe> range))
             {
-                foreach (var pipe in range)
+                foreach (Pipe pipe in range)
+                {
                     m_distribution.Match(pipe);
+                }
             }
 
             m_distribution.SendToMatching(ref msg);
@@ -95,7 +105,10 @@ namespace NetMQServer.Core.Patterns
             return true;
         }
 
-        protected override bool XHasOut() => m_distribution.HasOut();
+        protected override bool XHasOut()
+        {
+            return m_distribution.HasOut();
+        }
 
         protected override bool XRecv(ref Msg msg)
         {
@@ -103,11 +116,14 @@ namespace NetMQServer.Core.Patterns
             throw new NotSupportedException("Messages cannot be received from RADIO socket");
         }
 
-        protected override bool XHasIn() => false;
+        protected override bool XHasIn()
+        {
+            return false;
+        }
 
         internal class RadioSession : SessionBase
         {
-            enum State
+            private enum State
             {
                 Group,
                 Body
@@ -128,7 +144,9 @@ namespace NetMQServer.Core.Patterns
                     byte commandNameSize = msg[0];
 
                     if (msg.Size < commandNameSize + 1)
+                    {
                         return base.PushMsg(ref msg);
+                    }
 
                     string commandName = msg.GetString(Encoding.ASCII, 1, commandNameSize);
 
@@ -151,7 +169,9 @@ namespace NetMQServer.Core.Patterns
                     }
                     // If it is not a JOIN or LEAVE just push the message
                     else
+                    {
                         return base.PushMsg(ref msg);
+                    }
 
                     //  Set the group
                     joinLeaveMsg.Group = group;
@@ -172,9 +192,11 @@ namespace NetMQServer.Core.Patterns
                 switch (m_state)
                 {
                     case State.Group:
-                        var result = base.PullMsg(ref m_pending);
+                        PullMsgResult result = base.PullMsg(ref m_pending);
                         if (result != PullMsgResult.Ok)
+                        {
                             return result;
+                        }
 
                         //  First frame is the group
                         msg.InitPool(Encoding.ASCII.GetByteCount(m_pending.Group));

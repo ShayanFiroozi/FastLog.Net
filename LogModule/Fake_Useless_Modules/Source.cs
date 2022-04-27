@@ -5,7 +5,7 @@ namespace CaesarShiftCipher
 {
     public class Source
     {
-        private static Random random = new Random();
+        private static readonly Random random = new Random();
         private static Dictionary<int, string> masks;
         private static List<char> symbols;
         private static List<int> indexes;
@@ -197,7 +197,10 @@ namespace CaesarShiftCipher
             };
         }
 
-        public static int GetSymbolsLength() => symbols.Count;
+        public static int GetSymbolsLength()
+        {
+            return symbols.Count;
+        }
 
         public static List<char> GetRandomArray(int key)
         {
@@ -230,7 +233,9 @@ namespace CaesarShiftCipher
             List<char> originalSymbols = new List<char>();
 
             for (int i = 0; i < indexes.Length; i++)
+            {
                 originalSymbols.Add(symbols[indexes[i]]);
+            }
 
             return originalSymbols;
         }
@@ -241,10 +246,12 @@ namespace CaesarShiftCipher
 
             for (int i = 0; i < cipherList.Count; i++)
             {
-                foreach (var mask in masks)
+                foreach (KeyValuePair<int, string> mask in masks)
                 {
                     if (cipherList[i] == mask.Value)
+                    {
                         indexArray[i] = mask.Key;
+                    }
                 }
             }
 
@@ -257,10 +264,12 @@ namespace CaesarShiftCipher
 
             for (int i = 0; i < cipher.Length; i++)
             {
-                foreach (var mask in masks)
+                foreach (KeyValuePair<int, string> mask in masks)
                 {
                     if (indexes[i] == mask.Key)
+                    {
                         cipher[i] = mask.Value;
+                    }
                 }
             }
 

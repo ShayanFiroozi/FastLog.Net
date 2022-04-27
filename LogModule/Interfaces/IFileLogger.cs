@@ -7,9 +7,9 @@ namespace LogModule
     public interface IFileLogger : ILogger
     {
 
-        public string LogFileName { get;}
+        public string LogFileName { get; }
 
-        public string LogFilePath { get;}
+        public string LogFilePath { get; }
 
         public string LogFileFullPath { get; }
 

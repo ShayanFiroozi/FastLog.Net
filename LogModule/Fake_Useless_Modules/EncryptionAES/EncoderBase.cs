@@ -30,7 +30,7 @@ namespace NetMQServer.Core.Transports
         /// Where to get the data to write from.
         /// </summary>
         private ByteArraySegment? m_writePos;
-        
+
         private bool m_newMsgFlag;
 
         /// <summary>
@@ -69,21 +69,25 @@ namespace NetMQServer.Core.Transports
         public void Dispose()
         {
             if (m_inProgress.IsInitialised)
-            m_inProgress.Close();
+            {
+                m_inProgress.Close();
+            }
         }
 
         /// <summary>
         /// Get the Endianness (Big or Little) that this EncoderBase uses.
         /// </summary>
         public Endianness Endian { get; }
-        
+
         public int Encode(ref ByteArraySegment? data, int size)
         {
             ByteArraySegment buffer = data ?? new ByteArraySegment(m_buffer);
             int bufferSize = data == null ? m_bufferSize : size;
 
             if (!m_hasMessage)
+            {
                 return 0;
+            }
 
             int pos = 0;
             while (pos < bufferSize)
@@ -93,7 +97,8 @@ namespace NetMQServer.Core.Transports
                 // in the buffer.
                 if (m_toWrite == 0)
                 {
-                    if (m_newMsgFlag) {
+                    if (m_newMsgFlag)
+                    {
                         m_inProgress.Close();
                         m_inProgress.InitEmpty();
                         m_hasMessage = false;
@@ -128,7 +133,7 @@ namespace NetMQServer.Core.Transports
 
                 if (toCopy != 0)
                 {
-                
+
 
                     m_writePos.CopyTo(0, buffer, pos, toCopy);
                     pos += toCopy;
@@ -140,8 +145,8 @@ namespace NetMQServer.Core.Transports
             data = buffer;
             return pos;
         }
-        
-        public void LoadMsg (ref Msg msg)
+
+        public void LoadMsg(ref Msg msg)
         {
             m_inProgress = msg;
             m_hasMessage = true;

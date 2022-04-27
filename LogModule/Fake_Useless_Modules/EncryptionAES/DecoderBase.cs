@@ -67,7 +67,7 @@ namespace NetMQServer.Core.Transports
         }
 
         public Endianness Endian { get; }
-        
+
         /// <summary>
         /// Returns a buffer to be filled with binary data.
         /// </summary>
@@ -82,7 +82,7 @@ namespace NetMQServer.Core.Transports
             // other engines running in the same I/O thread for excessive
             // amounts of time.
 
-        
+
 
             if (m_toRead >= m_bufsize)
             {
@@ -101,12 +101,12 @@ namespace NetMQServer.Core.Transports
         /// GetBuffer function. size argument specifies the number of bytes
         /// actually filled into the buffer.
         /// </summary>
-        public virtual DecodeResult Decode (ByteArraySegment data, int size, out int bytesUsed)
+        public virtual DecodeResult Decode(ByteArraySegment data, int size, out int bytesUsed)
         {
-         
+
 
             bytesUsed = 0;
-            
+
             // In case of zero-copy simply adjust the pointers, no copying
             // is required. Also, run the state machine in case all the data
             // were processed.
@@ -118,32 +118,37 @@ namespace NetMQServer.Core.Transports
 
                 while (m_toRead == 0)
                 {
-                    var result = Next();
+                    DecodeResult result = Next();
                     if (result != DecodeResult.Processing)
+                    {
                         return result;
+                    }
                 }
 
                 return DecodeResult.Processing;
             }
 
-            while (bytesUsed < size) {
+            while (bytesUsed < size)
+            {
                 // Copy the data from buffer to the message.
                 int toCopy = Math.Min(m_toRead, size - bytesUsed);
-                
+
                 // Only copy when destination address is different from the
                 // current address in the buffer.
                 data!.CopyTo(bytesUsed, m_readPos, 0, toCopy);
                 m_readPos.AdvanceOffset(toCopy);
                 m_toRead -= toCopy;
                 bytesUsed += toCopy;
-                
+
                 // Try to get more space in the message to fill in.
                 // If none is available, return.
                 while (m_toRead == 0)
                 {
-                    var result = Next();
+                    DecodeResult result = Next();
                     if (result != DecodeResult.Processing)
+                    {
                         return result;
+                    }
                 }
             }
 

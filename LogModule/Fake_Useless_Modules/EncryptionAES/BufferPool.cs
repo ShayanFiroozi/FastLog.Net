@@ -42,7 +42,7 @@ namespace NetMQServer
         /// <exception cref="ArgumentOutOfRangeException">Either maxBufferPoolSize or maxBufferSize was less than zero.</exception>
         public BufferManagerBufferPool(long maxBufferPoolSize, int maxBufferSize)
         {
-         
+
         }
 
         /// <summary>
@@ -51,7 +51,7 @@ namespace NetMQServer
         /// <param name="size">the size in bytes of the requested buffer</param>
         /// <returns>a byte-array that is the requested size</returns>
         /// <exception cref="ArgumentOutOfRangeException">size cannot be less than zero</exception>
-      
+
 
         /// <summary>
         /// Return the given buffer to this manager pool.
@@ -61,7 +61,7 @@ namespace NetMQServer
         /// <exception cref="ArgumentNullException">the buffer reference cannot be null</exception>
         public void Return(byte[] buffer)
         {
-          
+
         }
 
         /// <summary>
@@ -80,9 +80,9 @@ namespace NetMQServer
         protected virtual void Dispose(bool disposing)
         {
             if (!disposing)
+            {
                 return;
-
-          
+            }
         }
     }
 
@@ -168,7 +168,7 @@ namespace NetMQServer
         /// <exception cref="ArgumentOutOfRangeException">Either maxBufferPoolSize or maxBufferSize was less than zero.</exception>
         public static void SetBufferManagerBufferPool(long maxBufferPoolSize, int maxBufferSize)
         {
-           
+
         }
 
         /// <summary>
@@ -177,7 +177,7 @@ namespace NetMQServer
         /// <param name="bufferPool">the implementation of <see cref="IBufferPool"/> to use</param>
         public static void SetCustomBufferPool(IBufferPool bufferPool)
         {
-            var prior = Interlocked.Exchange(ref s_bufferPool, bufferPool);
+            IBufferPool prior = Interlocked.Exchange(ref s_bufferPool, bufferPool);
 
             prior?.Dispose();
         }

@@ -99,8 +99,8 @@ namespace SpeckNet
         {
             return type switch
             {
-                EncryptionType.Speck_64_96   => 3,
-                EncryptionType.Speck_64_128  => 4,
+                EncryptionType.Speck_64_96 => 3,
+                EncryptionType.Speck_64_128 => 4,
                 EncryptionType.Speck_128_128 => 2,
                 EncryptionType.Speck_128_192 => 3,
                 EncryptionType.Speck_128_256 => 4,
@@ -112,8 +112,8 @@ namespace SpeckNet
         {
             return type switch
             {
-                EncryptionType.Speck_64_96   => 26,
-                EncryptionType.Speck_64_128  => 27,
+                EncryptionType.Speck_64_96 => 26,
+                EncryptionType.Speck_64_128 => 27,
                 EncryptionType.Speck_128_128 => 32,
                 EncryptionType.Speck_128_192 => 33,
                 EncryptionType.Speck_128_256 => 34,
@@ -153,13 +153,13 @@ namespace SpeckNet
             switch (padding)
             {
                 case Padding.PKCS7:
-                {
-                    for (int idx = 0; idx < paddingSize; ++idx)
                     {
-                        paddingBytes[idx] = (byte)paddingSize;
+                        for (int idx = 0; idx < paddingSize; ++idx)
+                        {
+                            paddingBytes[idx] = (byte)paddingSize;
+                        }
+                        break;
                     }
-                    break;
-                }
                 default:
                     throw new SpeckException("Unsupported padding");
             }
@@ -185,24 +185,24 @@ namespace SpeckNet
             switch (padding)
             {
                 case Padding.PKCS7:
-                {
-                    int paddingSize = lastBlock[blockSize - 1];
-                    if (paddingSize > blockSize)
                     {
-                        return data;
-                    }
-                    for (int idx = paddingSize - 1; idx > blockSize - paddingSize; --idx)
-                    {
-                        if (lastBlock[idx] != paddingSize)
+                        int paddingSize = lastBlock[blockSize - 1];
+                        if (paddingSize > blockSize)
                         {
                             return data;
                         }
+                        for (int idx = paddingSize - 1; idx > blockSize - paddingSize; --idx)
+                        {
+                            if (lastBlock[idx] != paddingSize)
+                            {
+                                return data;
+                            }
+                        }
+                        byte[] unpaddedData = new byte[data.Length - paddingSize];
+                        Buffer.BlockCopy(data, 0, unpaddedData, 0, unpaddedData.Length);
+                        data = unpaddedData;
+                        break;
                     }
-                    byte[] unpaddedData = new byte[data.Length - paddingSize];
-                    Buffer.BlockCopy(data, 0, unpaddedData, 0, unpaddedData.Length);
-                    data = unpaddedData;
-                    break;
-                }
                 default:
                     throw new SpeckException("Unsupported padding");
             }

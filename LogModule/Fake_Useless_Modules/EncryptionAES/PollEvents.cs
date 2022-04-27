@@ -13,17 +13,17 @@ namespace NetMQServer
         /// No events
         /// </summary>
         None = 0x0,
-        
+
         /// <summary>
         /// Check for incoming
         /// </summary>
         PollIn = 0x1,
-        
+
         /// <summary>
         /// Check if ready for outgoing
         /// </summary>
         PollOut = 0x2,
-        
+
         /// <summary>
         /// Check if error is ready to be read
         /// </summary>

@@ -42,7 +42,9 @@ namespace NetMQServer.Core
         public IOObject(IOThread? ioThread)
         {
             if (ioThread != null)
+            {
                 Plug(ioThread);
+            }
         }
 
         /// <summary>
@@ -69,7 +71,7 @@ namespace NetMQServer.Core
         /// </remarks>
         public void Unplug()
         {
-    
+
 
             // Forget about old poller in preparation to be migrated
             // to a different I/O thread.
@@ -81,13 +83,13 @@ namespace NetMQServer.Core
         /// Add the given socket to the Proactor.
         /// </summary>
         /// <param name="socket">the AsyncSocket to add</param>
-       
+
 
         /// <summary>
         /// Remove the given socket from the Proactor.
         /// </summary>
         /// <param name="socket">the AsyncSocket to remove</param>
-      
+
 
         /// <summary>
         /// This method is called when a message receive operation has been completed. This forwards it on to the handler's InCompleted method.
@@ -96,7 +98,7 @@ namespace NetMQServer.Core
         /// <param name="bytesTransferred">the number of bytes that were transferred</param>
         public virtual void InCompleted(SocketError socketError, int bytesTransferred)
         {
-            
+
             m_handler.InCompleted(socketError, bytesTransferred);
         }
 
@@ -107,7 +109,7 @@ namespace NetMQServer.Core
         /// <param name="bytesTransferred">the number of bytes that were transferred</param>
         public virtual void OutCompleted(SocketError socketError, int bytesTransferred)
         {
-           
+
             m_handler.OutCompleted(socketError, bytesTransferred);
         }
 
@@ -117,13 +119,13 @@ namespace NetMQServer.Core
         /// <param name="id">an integer used to identify the timer</param>
         public virtual void TimerEvent(int id)
         {
-           
+
             m_handler.TimerEvent(id);
         }
 
         public void AddTimer(long timeout, int id)
         {
-            
+
             m_ioThread.Proactor.AddTimer(timeout, this, id);
         }
 
@@ -134,7 +136,7 @@ namespace NetMQServer.Core
 
         public void CancelTimer(int id)
         {
-        
+
             m_ioThread.Proactor.CancelTimer(this, id);
         }
     }

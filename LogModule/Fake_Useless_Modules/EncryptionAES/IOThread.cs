@@ -50,7 +50,7 @@ namespace NetMQServer.Core
         public IOThread(Ctx ctx, int threadId)
             : base(ctx, threadId)
         {
-            var name = "iothread-" + threadId;
+            string name = "iothread-" + threadId;
             m_proactor = new Proactor(name);
             m_mailbox = new IOThreadMailbox(name, m_proactor, this);
 
@@ -91,7 +91,7 @@ namespace NetMQServer.Core
             // Process all available commands.
             while (m_mailbox.TryRecv(out Command command))
             {
-               
+
                 command.Destination.ProcessCommand(command);
             }
         }

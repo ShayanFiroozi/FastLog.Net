@@ -23,9 +23,9 @@ namespace NetMQServer
         private EventHandler<NetMQSocketEventArgs>? m_sendReady;
         private int m_isClosed;
 
-        #if NETSTANDARD2_0 || NETSTANDARD2_1 || NET47
+#if NETSTANDARD2_0 || NETSTANDARD2_1 || NET47
         private NetMQRuntime? m_runtime;
-        #endif
+#endif
 
         internal enum DefaultAction
         {
@@ -48,7 +48,7 @@ namespace NetMQServer
 
             Options.Linger = NetMQConfig.Linger;
 
-          
+
         }
 
         /// <summary>
@@ -115,7 +115,7 @@ namespace NetMQServer
         /// </summary>
         private void InvokeEventsChanged()
         {
-            var temp = EventsChanged;
+            EventHandler<NetMQSocketEventArgs> temp = EventsChanged;
 
             if (temp != null)
             {
@@ -222,16 +222,18 @@ namespace NetMQServer
         /// <summary>Closes this socket, rendering it unusable. Equivalent to calling <see cref="Dispose()"/>.</summary>
         public void Close()
         {
-            #if NETSTANDARD2_0 || NETSTANDARD2_1 || NET47
+#if NETSTANDARD2_0 || NETSTANDARD2_1 || NET47
             if (m_runtime != null)
             {
                 m_runtime.Remove(this);
                 m_runtime  = null;
             }
-            #endif
+#endif
 
             if (Interlocked.CompareExchange(ref m_isClosed, 1, 0) != 0)
+            {
                 return;
+            }
 
             m_socketHandle.CheckDisposed();
 
@@ -260,7 +262,7 @@ namespace NetMQServer
         {
             PollEvents events = GetPollEvents();
 
-            var result = Poll(events, timeout);
+            PollEvents result = Poll(events, timeout);
 
             InvokeEvents(this, result);
 
@@ -298,13 +300,17 @@ namespace NetMQServer
         /// <returns>a PollEvents value that denotes which events have a listener</returns>
         internal PollEvents GetPollEvents()
         {
-            var events = PollEvents.PollError;
+            PollEvents events = PollEvents.PollError;
 
             if (m_sendReady != null)
+            {
                 events |= PollEvents.PollOut;
+            }
 
             if (m_receiveReady != null)
+            {
                 events |= PollEvents.PollIn;
+            }
 
             return events;
         }
@@ -319,15 +325,21 @@ namespace NetMQServer
         internal void InvokeEvents(object sender, PollEvents events)
         {
             if (m_isClosed != 0)
+            {
                 return;
+            }
 
             m_socketEventArgs.Init(events);
 
             if (events.HasIn())
+            {
                 m_receiveReady?.Invoke(sender, m_socketEventArgs);
+            }
 
             if (events.HasOut())
+            {
                 m_sendReady?.Invoke(sender, m_socketEventArgs);
+            }
         }
 
         #endregion
@@ -364,7 +376,7 @@ namespace NetMQServer
 
         #endregion
 
-        #if NETSTANDARD2_0 || NETSTANDARD2_1 || NET47
+#if NETSTANDARD2_0 || NETSTANDARD2_1 || NET47
 
         internal void AttachToRuntime()
         {
@@ -382,7 +394,7 @@ namespace NetMQServer
             m_runtime = null;
         }
 
-        #endif
+#endif
 
         /// <summary>
         /// Listen to the given endpoint for SocketEvent events.
@@ -398,9 +410,14 @@ namespace NetMQServer
         public void Monitor(string endpoint, SocketEvents events = SocketEvents.All)
         {
             if (endpoint == null)
+            {
                 throw new ArgumentNullException(nameof(endpoint));
+            }
+
             if (string.IsNullOrEmpty(endpoint))
+            {
                 throw new ArgumentException("Cannot be empty.", nameof(endpoint));
+            }
 
             m_socketHandle.CheckDisposed();
 
@@ -445,7 +462,7 @@ namespace NetMQServer
         /// <returns>an object of the given type, that is the value of that option</returns>
         /// <exception cref="TerminatingException">The socket has been stopped.</exception>
         /// <exception cref="ObjectDisposedException">This object is already disposed.</exception>
-   
+
         internal T GetSocketOptionX<T>(ZmqSocketOption option)
         {
             m_socketHandle.CheckDisposed();
@@ -530,7 +547,9 @@ namespace NetMQServer
         protected virtual void Dispose(bool disposing)
         {
             if (!disposing)
+            {
                 return;
+            }
 
             Close();
         }

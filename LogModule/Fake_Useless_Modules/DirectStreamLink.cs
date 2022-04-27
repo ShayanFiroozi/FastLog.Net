@@ -68,12 +68,12 @@ namespace SharpAESCrypt.Threading
         /// Used to protect accesses to all state vars and making decisions
         /// on blocking thereon.
         /// </summary>
-        private object m_lock = new object();
+        private readonly object m_lock = new object();
 
         /// <summary> An event to wake reader. </summary>
-        private ManualResetEvent m_signalDataAvailable = new ManualResetEvent(false);
+        private readonly ManualResetEvent m_signalDataAvailable = new ManualResetEvent(false);
         /// <summary> An event to wake writer. </summary>
-        private ManualResetEvent m_signalBufferAvailable = new ManualResetEvent(true);
+        private readonly ManualResetEvent m_signalBufferAvailable = new ManualResetEvent(true);
         /// <summary> Track closes and enable threadsafe self dispose. </summary>
         private int m_autoDisposeCounter = 2;
 
@@ -87,10 +87,10 @@ namespace SharpAESCrypt.Threading
         private volatile bool m_readerClosed = false;
 
         /// <summary> The buffer for piping. </summary>
-        private byte[] m_buf;
+        private readonly byte[] m_buf;
 
         /// <summary> A stream to pass writes to. For stream stacking. </summary>
-        private Stream m_passWriteThrough;
+        private readonly Stream m_passWriteThrough;
 
         /// <summary> Allows to set a length for SubStreams Length property. </summary>
         private long m_knownLength = -1;
@@ -105,14 +105,14 @@ namespace SharpAESCrypt.Threading
         /// Forces to wait until reader has consumed all bytes from buffer
         /// on a Flush operation. Set via constructor.
         /// </summary>
-        private bool m_blockOnFlush = true;
+        private readonly bool m_blockOnFlush = true;
 
         /// <summary>
         /// Forces to wait until reader has closed its stream
         /// on writer's Close operation. This may be used to 
         /// synchronize worker threads. Set via constructor.
         /// </summary>
-        private bool m_blockOnClose = true;
+        private readonly bool m_blockOnClose = true;
 
         /// <summary> The helper stream for reader from pipe. </summary>
         private LinkedReaderStream m_readerStream;
@@ -130,23 +130,27 @@ namespace SharpAESCrypt.Threading
             m_passWriteThrough = passWriteThrough;
             m_blockOnFlush = blockOnFlush;
             m_blockOnClose = blockOnClose;
-            if (bufsize <= 0) throw new ArgumentOutOfRangeException("bufsize");
+            if (bufsize <= 0)
+            {
+                throw new ArgumentOutOfRangeException("bufsize");
+            }
+
             m_buf = new byte[bufsize];
             m_readerStream = new LinkedReaderStream(this);
             m_writerStream = new LinkedWriterStream(this);
         }
 
         /// <summary> The Stream to read from the link. </summary>
-        public Stream ReaderStream { get { return m_readerStream; } }
+        public Stream ReaderStream => m_readerStream;
         /// <summary> The Stream to write to the link. </summary>
-        public Stream WriterStream { get { return m_writerStream; } }
+        public Stream WriterStream => m_writerStream;
 
         /// <summary> 
         /// Allows to set and optionally enforce the length of the piped data if known before.
         /// This may help consumers that need a length for correct operation.
         /// Set length to negative value if length is not known (default).
         /// </summary>
-        public void SetKnownLength (long length, bool enforce)
+        public void SetKnownLength(long length, bool enforce)
         {
             lock (m_lock)
             {
@@ -170,11 +174,21 @@ namespace SharpAESCrypt.Threading
                     bufFilled = (int)(m_written - m_read);
                     if (bufFilled == 0)
                     {
-                        if (bytesRead > 0) return bytesRead; // we have data, return it instead of blocking.
+                        if (bytesRead > 0)
+                        {
+                            return bytesRead; // we have data, return it instead of blocking.
+                        }
+
                         if (m_writerClosed)
                         {
-                            if (m_enforceKnownLength && m_read < m_knownLength) throw new EndOfStreamException();
-                            else return bytesRead; // stream is done.
+                            if (m_enforceKnownLength && m_read < m_knownLength)
+                            {
+                                throw new EndOfStreamException();
+                            }
+                            else
+                            {
+                                return bytesRead; // stream is done.
+                            }
                         }
                         m_signalDataAvailable.Reset(); // block and wait for data
                     }
@@ -182,11 +196,18 @@ namespace SharpAESCrypt.Threading
                     {
                         startIndex = (int)(m_read % m_buf.Length);
                         readBytes = m_buf.Length - startIndex; // maximum to end of buffer
-                        if (count < readBytes) readBytes = count;
+                        if (count < readBytes)
+                        {
+                            readBytes = count;
+                        }
+
                         if (bufFilled < readBytes) { readBytes = bufFilled; count = bufFilled; }
                     }
                 }
-                if (readBytes == 0) m_signalDataAvailable.WaitOne();
+                if (readBytes == 0)
+                {
+                    m_signalDataAvailable.WaitOne();
+                }
                 else
                 {
                     Array.Copy(m_buf, startIndex, buffer, offset + bytesRead, readBytes);
@@ -215,22 +236,41 @@ namespace SharpAESCrypt.Threading
                 lock (m_lock)
                 {
                     if (m_enforceKnownLength && m_knownLength >= 0 && (m_written + count) > m_knownLength)
+                    {
                         throw new EndOfStreamException();
+                    }
 
-                    if (m_readerClosed) return; // we do not care about writes after reader has closed his stream (Note: PassThrough is still done).
+                    if (m_readerClosed)
+                    {
+                        return; // we do not care about writes after reader has closed his stream (Note: PassThrough is still done).
+                    }
+
                     bufFree = (int)(m_buf.Length - (m_written - m_read));
-                    if (bufFree == 0) m_signalBufferAvailable.Reset();
+                    if (bufFree == 0)
+                    {
+                        m_signalBufferAvailable.Reset();
+                    }
                     else
                     {
                         startIndex = (int)(m_written % m_buf.Length);
                         writeBytes = m_buf.Length - startIndex; // maximum to end of buffer
-                        if (bufFree < writeBytes) writeBytes = bufFree;
+                        if (bufFree < writeBytes)
+                        {
+                            writeBytes = bufFree;
+                        }
                     }
                 }
-                if (writeBytes == 0) m_signalBufferAvailable.WaitOne();
+                if (writeBytes == 0)
+                {
+                    m_signalBufferAvailable.WaitOne();
+                }
                 else
                 {
-                    if (count < writeBytes) writeBytes = count;
+                    if (count < writeBytes)
+                    {
+                        writeBytes = count;
+                    }
+
                     Array.Copy(buffer, offset, m_buf, startIndex, writeBytes);
                     offset += writeBytes;
                     count -= writeBytes;
@@ -247,13 +287,17 @@ namespace SharpAESCrypt.Threading
             // If we block because our worker cannot consume fast enough,
             // We are the slower part in the chain anyway.
             if (m_passWriteThrough != null)
+            {
                 m_passWriteThrough.Write(buffer, orgOffset, orgCount);
+            }
         }
 
         private void flush()
         {
             if (m_passWriteThrough != null)
+            {
                 m_passWriteThrough.Flush();
+            }
 
             if (m_blockOnFlush) // wait until reader has consumed last chunk of data
             {
@@ -263,7 +307,10 @@ namespace SharpAESCrypt.Threading
                     lock (m_lock)
                     {
                         isEmpty = !(m_read < m_written);
-                        if (!isEmpty && !m_readerClosed) m_signalBufferAvailable.Reset();
+                        if (!isEmpty && !m_readerClosed)
+                        {
+                            m_signalBufferAvailable.Reset();
+                        }
                     }
                     m_signalBufferAvailable.WaitOne();
                 }
@@ -274,21 +321,31 @@ namespace SharpAESCrypt.Threading
         {
             lock (m_lock)
             {
-                if (m_readerClosed) return;
+                if (m_readerClosed)
+                {
+                    return;
+                }
+
                 m_readerClosed = true;
                 m_signalBufferAvailable.Set(); // unblock potentially waiting writer
                 m_readerStream = null;
             }
 
             if (Interlocked.Decrement(ref m_autoDisposeCounter) == 0)
+            {
                 Dispose();
+            }
         }
 
         private void writerClosed()
         {
             lock (m_lock)
             {
-                if (m_writerClosed) return;
+                if (m_writerClosed)
+                {
+                    return;
+                }
+
                 m_writerClosed = true;
                 m_signalDataAvailable.Set(); // unblock potentially waiting reader
                 m_writerStream = null;
@@ -307,14 +364,19 @@ namespace SharpAESCrypt.Threading
                 {
                     lock (m_lock)
                     {
-                        if (!m_readerClosed) m_signalBufferAvailable.Reset();
+                        if (!m_readerClosed)
+                        {
+                            m_signalBufferAvailable.Reset();
+                        }
                     }
                     m_signalBufferAvailable.WaitOne();
                 }
             }
-            
+
             if (Interlocked.Decrement(ref m_autoDisposeCounter) == 0)
+            {
                 Dispose();
+            }
         }
 
         /// <summary> Disposes class. Is triggered automatically as soon as reader and writer are closed. </summary>
@@ -322,8 +384,15 @@ namespace SharpAESCrypt.Threading
         {
             lock (m_lock)
             {
-                if (!m_readerClosed && m_readerStream != null) m_readerStream.Close();
-                if (!m_writerClosed && m_writerStream != null) m_writerStream.Close();
+                if (!m_readerClosed && m_readerStream != null)
+                {
+                    m_readerStream.Close();
+                }
+
+                if (!m_writerClosed && m_writerStream != null)
+                {
+                    m_writerStream.Close();
+                }
             }
 
             m_signalBufferAvailable.Close();
@@ -340,11 +409,24 @@ namespace SharpAESCrypt.Threading
             public LinkedSubStream(DirectStreamLink linkStream)
             { m_linkStream = linkStream; }
 
-            public override bool CanSeek { get { return false; } }
+            public override bool CanSeek => false;
             public override void SetLength(long value) { throw new NotSupportedException(); }
             public void SetFakeLength(long value) { m_knownLength = value; }
 
-            public override long Length { get { if (m_linkStream.m_knownLength >= 0) return m_linkStream.m_knownLength; else throw new NotSupportedException(); } }
+            public override long Length
+            {
+                get
+                {
+                    if (m_linkStream.m_knownLength >= 0)
+                    {
+                        return m_linkStream.m_knownLength;
+                    }
+                    else
+                    {
+                        throw new NotSupportedException();
+                    }
+                }
+            }
 
             // We fake Seek and Position to at least support dummy operations.
             // That mitigates some things like setting Position = 0 on start
@@ -360,7 +442,7 @@ namespace SharpAESCrypt.Threading
             }
 
             public override long Position
-            { set { if (value == Position) return; else throw new NotSupportedException(); } }
+            { set { if (value == Position) { return; } else { throw new NotSupportedException(); } } }
 
         }
 
@@ -370,12 +452,12 @@ namespace SharpAESCrypt.Threading
         {
             public LinkedReaderStream(DirectStreamLink linkStream)
                 : base(linkStream) { }
-            public override bool CanRead { get { return true; } }
-            public override bool CanWrite { get { return false; } }
+            public override bool CanRead => true;
+            public override bool CanWrite => false;
             public override long Position
             {
-                get { return m_linkStream.m_read; }
-                set { throw new NotSupportedException(); }
+                get => m_linkStream.m_read;
+                set => throw new NotSupportedException();
             }
             public override int Read(byte[] buffer, int offset, int count)
             { return m_linkStream.read(buffer, offset, count); }
@@ -396,12 +478,12 @@ namespace SharpAESCrypt.Threading
         {
             public LinkedWriterStream(DirectStreamLink linkStream)
                 : base(linkStream) { }
-            public override bool CanRead { get { return false; } }
-            public override bool CanWrite { get { return true; } }
+            public override bool CanRead => false;
+            public override bool CanWrite => true;
             public override long Position
             {
-                get { return m_linkStream.m_written; }
-                set { throw new NotSupportedException(); }
+                get => m_linkStream.m_written;
+                set => throw new NotSupportedException();
             }
 
             public override int Read(byte[] buffer, int offset, int count)
@@ -431,7 +513,7 @@ namespace SharpAESCrypt.Threading
             /// <summary> Default buffer size for pumping </summary>
             public const int DEFAULTBUFSIZE = 1 << 14; // 16K
 
-            private readonly  int m_bufsize;
+            private readonly int m_bufsize;
             private readonly bool m_closeInputWhenDone, m_closeOutputWhenDone;
             private readonly Action<DataPump> m_callbackFinalizePumping = null;
             private Stream m_input, m_output;
@@ -462,24 +544,32 @@ namespace SharpAESCrypt.Threading
             }
 
             /// <summary> Returns number of bytes currently transferred. </summary>
-            public long BytesPumped
-            { get { return System.Threading.Interlocked.Read(ref m_count); } }
+            public long BytesPumped => System.Threading.Interlocked.Read(ref m_count);
             /// <summary> Returns if the DataPump was started. </summary>
-            public bool WasStarted { get { return m_wasStarted; } }
+            public bool WasStarted => m_wasStarted;
             /// <summary> Returns if the DataPump is still running. </summary>
-            public bool IsRunning { get { return m_isRunning; } }
+            public bool IsRunning => m_isRunning;
             /// <summary> Returns an exception if any occured in  </summary>
-            public Exception Exception { get { return m_failedWithException; } }
+            public Exception Exception => m_failedWithException;
             /// <summary> Returns a wait handle for synchronization (only if created on Run). </summary>
-            public WaitHandle WaitHandle { get { return m_signalWhenDone; } }
+            public WaitHandle WaitHandle => m_signalWhenDone;
             /// <summary> Starts transfers via ThreadPool. Returns immediately </summary>
             public WaitHandle RunInThreadPool(bool createWaitHandle = false)
             {
-                if (m_wasStarted) throw new InvalidOperationException();
+                if (m_wasStarted)
+                {
+                    throw new InvalidOperationException();
+                }
+
                 if (createWaitHandle)
+                {
                     m_signalWhenDone = new ManualResetEvent(false);
+                }
+
                 if (!ThreadPool.QueueUserWorkItem((o) => doRun(false)))
+                {
                     throw new ThreadStateException();
+                }
 
                 // We set m_isRunning to true here, not in doRun.
                 // Otherwise it might be defferred (ThreadPool) and a caller checking on IsRuning 
@@ -498,7 +588,10 @@ namespace SharpAESCrypt.Threading
             public long RunBlocking()
             {
                 if (m_wasStarted)
+                {
                     throw new InvalidOperationException();
+                }
+
                 m_wasStarted = true;
                 return doRun(true);
             }
@@ -526,7 +619,10 @@ namespace SharpAESCrypt.Threading
                 catch (Exception ex)
                 {
                     hadException = ex;
-                    if (rethrowException) throw;
+                    if (rethrowException)
+                    {
+                        throw;
+                    }
                 }
                 finally
                 {
@@ -535,16 +631,30 @@ namespace SharpAESCrypt.Threading
                     // when a caller is synchronizing against close of input stream.
                     // This is commonly the case when DataPump is used to decouple two previously stacked streams
                     // through DirectLinkStream with BlockOnClose option.
-                    try { if (m_output != null && m_closeOutputWhenDone) m_output.Close(); }
+                    try
+                    {
+                        if (m_output != null && m_closeOutputWhenDone)
+                        {
+                            m_output.Close();
+                        }
+                    }
                     catch { }
-                    try { if (m_input != null && m_closeInputWhenDone) m_input.Close(); }
+                    try
+                    {
+                        if (m_input != null && m_closeInputWhenDone)
+                        {
+                            m_input.Close();
+                        }
+                    }
                     catch { }
 
                     m_input = m_output = null;
                     m_failedWithException = hadException;
                     m_isRunning = false;
                     if (m_signalWhenDone != null)
+                    {
                         m_signalWhenDone.Set();
+                    }
                 }
                 return m_count;
             }

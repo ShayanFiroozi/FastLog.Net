@@ -50,7 +50,7 @@ namespace NetMQServer
 
         private void OnShimReady(object sender, NetMQSocketEventArgs e)
         {
-          
+
 
             string command = e.Socket.ReceiveFrameString();
             if (command == NetMQActor.EndShimMessage)

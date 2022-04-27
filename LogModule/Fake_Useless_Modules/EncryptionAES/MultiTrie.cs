@@ -57,12 +57,12 @@ namespace NetMQServer.Core.Patterns.Utils
         /// Add key to the trie. Returns true if it's a new subscription
         /// rather than a duplicate.
         /// </summary>
-        public bool Add(Span<byte> prefix,  Pipe pipe)
+        public bool Add(Span<byte> prefix, Pipe pipe)
         {
             return AddHelper(prefix, pipe);
         }
 
-        private bool AddHelper(Span<byte> prefix,  Pipe pipe)
+        private bool AddHelper(Span<byte> prefix, Pipe pipe)
         {
             // We are at the node corresponding to the prefix. We are done.
             if (prefix.Length == 0)
@@ -70,7 +70,9 @@ namespace NetMQServer.Core.Patterns.Utils
                 bool result = m_pipes == null;
 
                 if (m_pipes == null)
+                {
                     m_pipes = new HashSet<Pipe>();
+                }
 
                 m_pipes.Add(pipe);
                 return result;
@@ -148,12 +150,12 @@ namespace NetMQServer.Core.Patterns.Utils
         /// <param name="func"></param>
         /// <param name="arg"></param>
         /// <returns></returns>
-        public bool RemoveHelper( Pipe pipe,  MultiTrieDelegate func, [CanBeNull] object arg)
+        public bool RemoveHelper(Pipe pipe, MultiTrieDelegate func, [CanBeNull] object arg)
         {
             return RemoveHelper(pipe, EmptyArray<byte>.Instance, 0, 0, func, arg);
         }
 
-        private bool RemoveHelper( Pipe pipe,  byte[] buffer, int bufferSize, int maxBufferSize,  MultiTrieDelegate func, [CanBeNull] object arg)
+        private bool RemoveHelper(Pipe pipe, byte[] buffer, int bufferSize, int maxBufferSize, MultiTrieDelegate func, [CanBeNull] object arg)
         {
             // Remove the subscription from this node.
             if (m_pipes != null && m_pipes.Remove(pipe) && m_pipes.Count == 0)
@@ -171,7 +173,9 @@ namespace NetMQServer.Core.Patterns.Utils
 
             // If there are no subnodes in the trie, return.
             if (m_count == 0)
+            {
                 return true;
+            }
 
             // If there's one subnode (optimisation).
             if (m_count == 1)
@@ -225,10 +229,14 @@ namespace NetMQServer.Core.Patterns.Utils
                         // minimum index. Conversely, the last non-redundant, non-null
                         // node encountered is the new maximum index.
                         if (currentCharacter + m_minCharacter < newMin)
+                        {
                             newMin = currentCharacter + m_minCharacter;
+                        }
 
                         if (currentCharacter + m_minCharacter > newMax)
+                        {
                             newMax = currentCharacter + m_minCharacter;
+                        }
                     }
                 }
             }
@@ -285,12 +293,12 @@ namespace NetMQServer.Core.Patterns.Utils
         /// <param name="prefix"></param>
         /// <param name="pipe"></param>
         /// <returns></returns>
-        public bool Remove(Span<byte> prefix,  Pipe pipe)
+        public bool Remove(Span<byte> prefix, Pipe pipe)
         {
             return RemoveHelper(prefix, pipe);
         }
 
-        private bool RemoveHelper(Span<byte> prefix,  Pipe pipe)
+        private bool RemoveHelper(Span<byte> prefix, Pipe pipe)
         {
             if (prefix.Length == 0)
             {
@@ -308,12 +316,16 @@ namespace NetMQServer.Core.Patterns.Utils
 
             byte currentCharacter = prefix[0];
             if (m_count == 0 || currentCharacter < m_minCharacter || currentCharacter >= m_minCharacter + m_count)
+            {
                 return false;
+            }
 
             MultiTrie nextNode = m_count == 1 ? m_next[0] : m_next[currentCharacter - m_minCharacter];
 
             if (nextNode == null)
+            {
                 return false;
+            }
 
             bool ret = nextNode.RemoveHelper(prefix.Slice(1), pipe);
             if (nextNode.IsRedundant)
@@ -395,7 +407,7 @@ namespace NetMQServer.Core.Patterns.Utils
         /// <summary>
         /// Signal all the matching pipes.
         /// </summary>
-        public void Match(Span<byte> data,  MultiTrieDelegate func, [CanBeNull] object arg)
+        public void Match(Span<byte> data, MultiTrieDelegate func, [CanBeNull] object arg)
         {
             MultiTrie current = this;
 
@@ -408,23 +420,32 @@ namespace NetMQServer.Core.Patterns.Utils
                 if (current.m_pipes != null)
                 {
                     foreach (Pipe it in current.m_pipes)
+                    {
                         func(it, null, 0, arg);
+                    }
                 }
 
                 // If we are at the end of the message, there's nothing more to match.
                 if (size == 0)
+                {
                     break;
+                }
 
                 // If there are no subnodes in the trie, return.
                 if (current.m_count == 0)
+                {
                     break;
+                }
 
                 byte c = data[index];
                 // If there's one subnode (optimisation).
                 if (current.m_count == 1)
                 {
                     if (c != current.m_minCharacter)
+                    {
                         break;
+                    }
+
                     current = current.m_next[0];
                     index++;
                     size--;
@@ -434,9 +455,15 @@ namespace NetMQServer.Core.Patterns.Utils
                 // If there are multiple subnodes.
                 if (c < current.m_minCharacter || c >=
                     current.m_minCharacter + current.m_count)
+                {
                     break;
+                }
+
                 if (current.m_next[c - current.m_minCharacter] == null)
+                {
                     break;
+                }
+
                 current = current.m_next[c - current.m_minCharacter];
                 index++;
                 size--;

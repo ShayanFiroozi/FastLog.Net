@@ -24,12 +24,12 @@ namespace NetMQServer.Core.Patterns
         /// <param name="icanhasall">not used</param>
         protected override void XAttachPipe(Pipe pipe, bool icanhasall)
         {
-         
-            
+
+
             // Don't delay pipe termination as there is no one
             // to receive the delimiter.
             pipe.SetNoDelay();
-            
+
             m_loadBalancer.Attach(pipe);
         }
 
@@ -59,9 +59,11 @@ namespace NetMQServer.Core.Patterns
         /// <returns><c>true</c> if the message was sent successfully</returns>
         protected override bool XSend(ref Msg msg)
         {
-            if (msg.HasMore) 
+            if (msg.HasMore)
+            {
                 throw new InvalidException("SCATTER sockets do not allow multipart data (ZMQ_SNDMORE)");
-            
+            }
+
             return m_loadBalancer.Send(ref msg);
         }
 

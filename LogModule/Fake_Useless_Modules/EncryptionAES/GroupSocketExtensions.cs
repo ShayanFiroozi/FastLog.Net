@@ -35,10 +35,10 @@ namespace NetMQServer
         /// <param name="length">the number of bytes to send from <paramref name="data"/>.</param>
         public static void Send(this IGroupOutSocket socket, string group, byte[] data, int length)
         {
-            var msg = new Msg();
+            Msg msg = new Msg();
             msg.InitPool(length);
             msg.Group = group;
-          
+
             socket.Send(ref msg);
             msg.Close();
         }
@@ -59,7 +59,7 @@ namespace NetMQServer
         /// <returns><c>true</c> if a message was available, otherwise <c>false</c>.</returns>
         public static bool TrySend(this IGroupOutSocket socket, TimeSpan timeout, string group, byte[] data, int length)
         {
-            var msg = new Msg();
+            Msg msg = new Msg();
             msg.InitPool(length);
             msg.Group = group;
             data.CopyTo(msg);
@@ -131,7 +131,9 @@ namespace NetMQServer
         public static ValueTask SendAsync(this IGroupOutSocket socket, string group, byte[] data)
         {
             if (socket.TrySend(group, data))
+            {
                 return new ValueTask();
+            }
 
             return new ValueTask(Task.Factory.StartNew(() => Send(socket, group, data),
                 TaskCreationOptions.LongRunning));
@@ -147,7 +149,9 @@ namespace NetMQServer
         public static ValueTask SendAsync(this IGroupOutSocket socket, string group, byte[] data, int length)
         {
             if (socket.TrySend(group, data, length))
+            {
                 return new ValueTask();
+            }
 
             return new ValueTask(Task.Factory.StartNew(() => Send(socket, group, data, length),
                 TaskCreationOptions.LongRunning));
@@ -169,7 +173,7 @@ namespace NetMQServer
         /// <param name="message">the string to send</param>
         public static void Send(this IGroupOutSocket socket, string group, string message)
         {
-            var msg = new Msg();
+            Msg msg = new Msg();
 
             // Count the number of bytes required to encode the string.
             // Note that non-ASCII strings may not have an equal number of characters
@@ -200,7 +204,7 @@ namespace NetMQServer
         /// <returns><c>true</c> if a message was available, otherwise <c>false</c>.</returns>
         public static bool TrySend(this IGroupOutSocket socket, TimeSpan timeout, string group, string message)
         {
-            var msg = new Msg();
+            Msg msg = new Msg();
 
             // Count the number of bytes required to encode the string.
             // Note that non-ASCII strings may not have an equal number of characters
@@ -252,7 +256,9 @@ namespace NetMQServer
         public static ValueTask SendAsync(this IGroupOutSocket socket, string group, string message)
         {
             if (socket.TrySend(group, message))
+            {
                 return new ValueTask();
+            }
 
             return new ValueTask(Task.Factory.StartNew(() => Send(socket, group, message),
                 TaskCreationOptions.LongRunning));
@@ -276,14 +282,14 @@ namespace NetMQServer
         public static (string, byte[]) ReceiveBytes(this IGroupInSocket socket,
             CancellationToken cancellationToken = default)
         {
-            var msg = new Msg();
+            Msg msg = new Msg();
             msg.InitEmpty();
 
             try
             {
                 socket.Receive(ref msg, cancellationToken);
-                var data = msg.CloneData();
-                var group = msg.Group;
+                byte[] data = msg.CloneData();
+                string group = msg.Group;
                 return (group, data);
             }
             finally
@@ -305,7 +311,7 @@ namespace NetMQServer
         /// <param name="bytes">The content of the received message, or <c>null</c> if no message was available.</param>
         /// <returns><c>true</c> if a message was available, otherwise <c>false</c>.</returns>
         public static bool TryReceiveBytes(this IGroupInSocket socket,
-             out string? group,  out byte[]? bytes)
+             out string? group, out byte[]? bytes)
         {
             return socket.TryReceiveBytes(TimeSpan.Zero, out group, out bytes);
         }
@@ -329,7 +335,7 @@ namespace NetMQServer
              out string? group,
              out byte[]? bytes, CancellationToken cancellationToken = default)
         {
-            var msg = new Msg();
+            Msg msg = new Msg();
             msg.InitEmpty();
 
             if (!socket.TryReceive(ref msg, timeout, cancellationToken))
@@ -361,8 +367,10 @@ namespace NetMQServer
         public static ValueTask<(string, byte[])> ReceiveBytesAsync(this IGroupInSocket socket,
             CancellationToken cancellationToken = default)
         {
-            if (TryReceiveBytes(socket, out var group, out var bytes))
+            if (TryReceiveBytes(socket, out string group, out byte[] bytes))
+            {
                 return new ValueTask<(string, byte[])>((group, bytes));
+            }
 
             // TODO: this is a hack, eventually we need kind of IO ThreadPool for thread-safe socket to wait on asynchronously
             return new ValueTask<(string, byte[])>(Task.Factory.StartNew(() => socket.ReceiveBytes(cancellationToken),
@@ -425,14 +433,14 @@ namespace NetMQServer
         public static (string, string) ReceiveString(this IGroupInSocket socket, Encoding encoding,
             CancellationToken cancellationToken = default)
         {
-            var msg = new Msg();
+            Msg msg = new Msg();
             msg.InitEmpty();
 
             try
             {
                 socket.Receive(ref msg, cancellationToken);
-                var group = msg.Group;
-                var str = msg.Size > 0
+                string group = msg.Group;
+                string str = msg.Size > 0
                     ? msg.GetString(encoding)
                     : string.Empty;
                 return (group, str);
@@ -471,7 +479,7 @@ namespace NetMQServer
         /// <param name="group">The message group.</param>
         /// <param name="str">The content of the received message as a string, or <c>null</c> if no message was available.</param>
         /// <returns><c>true</c> if a message was available, otherwise <c>false</c>.</returns>
-        public static bool TryReceiveString(this IGroupInSocket socket, Encoding encoding, 
+        public static bool TryReceiveString(this IGroupInSocket socket, Encoding encoding,
              out string? group,
              out string? str)
         {
@@ -494,7 +502,7 @@ namespace NetMQServer
         /// <returns><c>true</c> if a message was available, otherwise <c>false</c>.</returns>
         /// <remarks>The method would return false if cancellation has had requested.</remarks>
         public static bool TryReceiveString(this IGroupInSocket socket, TimeSpan timeout,
-             out string? group, 
+             out string? group,
              out string? str,
             CancellationToken cancellationToken = default)
         {
@@ -515,12 +523,12 @@ namespace NetMQServer
         /// <returns><c>true</c> if a message was available, otherwise <c>false</c>.</returns>
         /// <remarks>The method would return false if cancellation has had requested.</remarks>
         public static bool TryReceiveString(this IGroupInSocket socket, TimeSpan timeout,
-            Encoding encoding, 
-             out string? group, 
+            Encoding encoding,
+             out string? group,
              out string? str,
             CancellationToken cancellationToken = default)
         {
-            var msg = new Msg();
+            Msg msg = new Msg();
             msg.InitEmpty();
 
             if (socket.TryReceive(ref msg, timeout, cancellationToken))
@@ -560,8 +568,10 @@ namespace NetMQServer
         public static ValueTask<(string, string)> ReceiveStringAsync(this IGroupInSocket socket,
             CancellationToken cancellationToken = default)
         {
-            if (TryReceiveString(socket, out var group, out var msg))
+            if (TryReceiveString(socket, out string group, out string msg))
+            {
                 return new ValueTask<(string, string)>((group, msg));
+            }
 
             // TODO: this is a hack, eventually we need kind of IO ThreadPool for thread-safe socket to wait on asynchronously
             return new ValueTask<(string, string)>(Task.Factory.StartNew(() => socket.ReceiveString(cancellationToken),

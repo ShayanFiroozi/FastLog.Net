@@ -25,7 +25,7 @@ namespace NetMQServer.Core.Transports
             m_inProgress = new Msg();
             m_inProgress.InitEmpty();
         }
-        
+
         protected override DecodeResult Next()
         {
             switch (State)
@@ -42,7 +42,7 @@ namespace NetMQServer.Core.Transports
                     return DecodeResult.Error;
             }
         }
-        
+
         private DecodeResult FlagsReady()
         {
             m_tmpbuf.Reset();
@@ -51,27 +51,38 @@ namespace NetMQServer.Core.Transports
             m_msgFlags = 0;
             int first = m_tmpbuf[0];
             if ((first & V2Protocol.MoreFlag) > 0)
+            {
                 m_msgFlags |= MsgFlags.More;
+            }
+
             if ((first & V2Protocol.CommandFlag) > 0)
+            {
                 m_msgFlags |= MsgFlags.Command;
+            }
 
             // The payload length is either one or eight bytes,
             // depending on whether the 'large' bit is set.
             if ((first & V2Protocol.LargeFlag) > 0)
+            {
                 NextStep(m_tmpbuf, 8, EightByteSizeReadyState);
+            }
             else
+            {
                 NextStep(m_tmpbuf, 1, OneByteSizeReadyState);
+            }
 
             return DecodeResult.Processing;
         }
-        
+
         private DecodeResult OneByteSizeReady()
         {
             m_tmpbuf.Reset();
 
             // Message size must not exceed the maximum allowed size.
             if (m_maxmsgsize >= 0 && m_tmpbuf[0] > m_maxmsgsize)
+            {
                 return DecodeResult.Error;
+            }
 
             // in_progress is initialised at this point so in theory we should
             // close it before calling zmq_msg_init_size, however, it's a 0-byte
@@ -80,7 +91,7 @@ namespace NetMQServer.Core.Transports
 
             m_inProgress.SetFlags(m_msgFlags);
 
-           
+
 
             NextStep(new ByteArraySegment(m_inProgress.UnsafeData, m_inProgress.UnsafeOffset),
                 m_inProgress.Size, MessageReadyState);
@@ -98,12 +109,16 @@ namespace NetMQServer.Core.Transports
 
             // Message size must not exceed the maximum allowed size.
             if (m_maxmsgsize >= 0 && msgSize > (ulong)m_maxmsgsize)
+            {
                 return DecodeResult.Error;
-            
+            }
+
             // TODO: move this constant to a good place (0x7FFFFFC7)
             // Message size must fit within range of size_t data type.
             if (msgSize > 0x7FFFFFC7)
+            {
                 return DecodeResult.Error;
+            }
 
             // in_progress is initialised at this point so in theory we should
             // close it before calling init_size, however, it's a 0-byte
@@ -112,14 +127,14 @@ namespace NetMQServer.Core.Transports
 
             m_inProgress.SetFlags(m_msgFlags);
 
-           
+
 
             NextStep(new ByteArraySegment(m_inProgress.UnsafeData, m_inProgress.UnsafeOffset),
                 m_inProgress.Size, MessageReadyState);
 
             return DecodeResult.Processing;
         }
-        
+
         private DecodeResult MessageReady()
         {
             m_tmpbuf.Reset();
@@ -130,6 +145,9 @@ namespace NetMQServer.Core.Transports
             return DecodeResult.MessageReady;
         }
 
-        public override PushMsgResult PushMsg(ProcessMsgDelegate sink) => sink(ref m_inProgress);
+        public override PushMsgResult PushMsg(ProcessMsgDelegate sink)
+        {
+            return sink(ref m_inProgress);
+        }
     }
 }

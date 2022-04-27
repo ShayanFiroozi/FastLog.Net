@@ -82,7 +82,9 @@ namespace NetMQServer.Core.Patterns.Utils
                 m_active--;
                 m_pipes.Swap(index, m_active);
                 if (m_current == m_active)
+                {
                     m_current = 0;
+                }
             }
             m_pipes.Remove(pipe);
         }
@@ -122,7 +124,10 @@ namespace NetMQServer.Core.Patterns.Utils
 
                     m_more = msg.HasMore;
                     if (!m_more)
+                    {
                         m_current = (m_current + 1) % m_active;
+                    }
+
                     return true;
                 }
 
@@ -134,7 +139,9 @@ namespace NetMQServer.Core.Patterns.Utils
                 m_active--;
                 m_pipes.Swap(m_current, m_active);
                 if (m_current == m_active)
+                {
                     m_current = 0;
+                }
             }
 
             // No message is available. Initialise the output parameter
@@ -147,7 +154,9 @@ namespace NetMQServer.Core.Patterns.Utils
         {
             // There are subsequent parts of the partly-read message available.
             if (m_more)
+            {
                 return true;
+            }
 
             // Note that messing with current doesn't break the fairness of fair
             // queueing algorithm. If there are no messages available current will
@@ -156,13 +165,17 @@ namespace NetMQServer.Core.Patterns.Utils
             while (m_active > 0)
             {
                 if (m_pipes[m_current].CheckRead())
+                {
                     return true;
+                }
 
                 // Deactivate the pipe.
                 m_active--;
                 m_pipes.Swap(m_current, m_active);
                 if (m_current == m_active)
+                {
                     m_current = 0;
+                }
             }
 
             return false;

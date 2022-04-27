@@ -45,7 +45,7 @@ namespace NetMQServer.Core
         Empty,
         Error
     }
-    
+
     internal class SessionBase : Own,
         Pipe.IPipeEvents, IProactorEvents
     {
@@ -144,13 +144,18 @@ namespace NetMQServer.Core
                 case ZmqSocketType.Stream:
                 case ZmqSocketType.Peer:
                 case ZmqSocketType.Server:
-                case ZmqSocketType.Client: 
+                case ZmqSocketType.Client:
                 case ZmqSocketType.Gather:
                 case ZmqSocketType.Scatter:
                     if (options.CanSendHelloMsg && options.HelloMsg != null)
+                    {
                         return new HelloMsgSession(ioThread, connect, socket, options, addr);
+                    }
                     else
+                    {
                         return new SessionBase(ioThread, connect, socket, options, addr);
+                    }
+
                 default:
                     throw new InvalidException("SessionBase.Create called with invalid SocketType of " + options.SocketType);
             }
@@ -205,7 +210,7 @@ namespace NetMQServer.Core
         {
             Debug.Assert(!IsTerminating);
             Debug.Assert(m_pipe == null);
-          
+
             m_pipe = pipe;
             m_pipe.SetEventSink(this);
         }
@@ -218,7 +223,10 @@ namespace NetMQServer.Core
         public virtual PullMsgResult PullMsg(ref Msg msg)
         {
             if (m_pipe == null || !m_pipe.Read(ref msg))
+            {
                 return PullMsgResult.Empty;
+            }
+
             m_incompleteIn = msg.HasMore;
 
             return PullMsgResult.Ok;
@@ -232,8 +240,10 @@ namespace NetMQServer.Core
         public virtual PushMsgResult PushMsg(ref Msg msg)
         {
             if (msg.HasCommand)
+            {
                 return PushMsgResult.Ok;
-            
+            }
+
             if (m_pipe != null && m_pipe.Write(ref msg))
             {
                 msg.InitEmpty();
@@ -274,7 +284,7 @@ namespace NetMQServer.Core
                 // Remove any half-read message from the in pipe.
                 while (m_incompleteIn)
                 {
-                    var msg = new Msg();
+                    Msg msg = new Msg();
                     msg.InitEmpty();
 
                     if (PullMsg(ref msg) != PullMsgResult.Ok)
@@ -297,11 +307,15 @@ namespace NetMQServer.Core
             Debug.Assert(m_pipe == pipe || m_terminatingPipes.Contains(pipe));
 
             if (m_pipe == pipe)
+            {
                 // If this is our current pipe, remove it
                 m_pipe = null;
+            }
             else
+            {
                 // Remove the pipe from the detached pipes set
                 m_terminatingPipes.Remove(pipe);
+            }
 
             if (!IsTerminating && m_options.RawSocket)
             {
@@ -317,7 +331,9 @@ namespace NetMQServer.Core
             // we are sure that there will be no more messages and we can proceed
             // with termination safely.
             if (m_pending && m_pipe == null && m_terminatingPipes.Count == 0)
+            {
                 ProceedWithTerm();
+            }
         }
 
         /// <summary>
@@ -335,9 +351,13 @@ namespace NetMQServer.Core
             }
 
             if (m_engine != null)
+            {
                 m_engine.ActivateOut();
+            }
             else
+            {
                 m_pipe.CheckRead();
+            }
         }
 
         public void WriteActivated(Pipe pipe)
@@ -372,7 +392,9 @@ namespace NetMQServer.Core
         {
             m_ioObject.SetHandler(this);
             if (m_connect)
+            {
                 StartConnecting(false);
+            }
         }
 
         /// <summary>
@@ -382,7 +404,7 @@ namespace NetMQServer.Core
         /// <param name="engine">the IEngine to plug in</param>
         protected override void ProcessAttach(IEngine engine)
         {
-           
+
 
             // Create the pipe if it does not exist yet.
             if (m_pipe == null && !IsTerminating)
@@ -490,7 +512,7 @@ namespace NetMQServer.Core
             m_hasLingerTimer = false;
 
             // Ask pipe to terminate even though there may be pending messages in it.
-            
+
             m_pipe.Terminate(false);
         }
 
@@ -509,7 +531,7 @@ namespace NetMQServer.Core
             // For delayed connect situations, terminate the pipe
             // and reestablish later on
             if (m_pipe != null && m_options.DelayAttachOnConnect
-                && m_addr.Protocol != Address.PgmProtocol && m_addr.Protocol != Address.EpgmProtocol && 
+                && m_addr.Protocol != Address.PgmProtocol && m_addr.Protocol != Address.EpgmProtocol &&
                 m_options.SocketType != ZmqSocketType.Peer)
             {
                 m_pipe.Hiccup();
@@ -522,12 +544,16 @@ namespace NetMQServer.Core
 
             // Reconnect.
             if (m_options.ReconnectIvl != -1)
+            {
                 StartConnecting(true);
+            }
 
             // For subscriber sockets we hiccup the inbound pipe, which will cause
             // the socket object to resend all the subscriptions.
             if (m_pipe != null && (m_options.SocketType == ZmqSocketType.Sub || m_options.SocketType == ZmqSocketType.Xsub))
+            {
                 m_pipe.Hiccup();
+            }
         }
 
         /// <summary>
@@ -541,31 +567,31 @@ namespace NetMQServer.Core
             // Choose I/O thread to run connector in. Given that we are already
             // running in an I/O thread, there must be at least one available.
             IOThread? ioThread = ChooseIOThread(m_options.Affinity);
-            
+
 
             // Create the connector object.
 
             switch (m_addr.Protocol)
             {
                 case Address.TcpProtocol:
-                {
-                    LaunchChild(new TcpConnector(ioThread, this, m_options, m_addr, wait));
-                    return;
-                }
+                    {
+                        LaunchChild(new TcpConnector(ioThread, this, m_options, m_addr, wait));
+                        return;
+                    }
                 case Address.IpcProtocol:
-                {
-                    LaunchChild(new IpcConnector(ioThread, this, m_options, m_addr, wait));
-                    return;
-                }
+                    {
+                        LaunchChild(new IpcConnector(ioThread, this, m_options, m_addr, wait));
+                        return;
+                    }
                 case Address.PgmProtocol:
                 case Address.EpgmProtocol:
-                {
-                    var pgmSender = new PgmSender(m_ioThread, m_options, m_addr, wait);
-                 
-                    pgmSender.Init((PgmAddress)m_addr.Resolved);
-                    SendAttach(this, pgmSender);
-                    return;
-                }
+                    {
+                        PgmSender pgmSender = new PgmSender(m_ioThread, m_options, m_addr, wait);
+
+                        pgmSender.Init((PgmAddress)m_addr.Resolved);
+                        SendAttach(this, pgmSender);
+                        return;
+                    }
             }
 
             Debug.Assert(false);

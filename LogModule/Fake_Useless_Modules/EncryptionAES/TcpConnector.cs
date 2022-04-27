@@ -104,7 +104,7 @@ namespace NetMQServer.Core.Transports.Tcp
             m_session = session;
             m_currentReconnectIvl = m_options.ReconnectIvl;
 
-         
+
             m_endpoint = m_addr.ToString();
             m_socket = session.Socket;
         }
@@ -126,7 +126,9 @@ namespace NetMQServer.Core.Transports.Tcp
         {
             m_ioObject.SetHandler(this);
             if (m_delayedStart)
+            {
                 AddReconnectTimer();
+            }
             else
             {
                 StartConnecting();
@@ -148,12 +150,14 @@ namespace NetMQServer.Core.Transports.Tcp
 
             if (m_handleValid)
             {
-          
+
                 m_handleValid = false;
             }
 
             if (m_s != null)
+            {
                 Close();
+            }
 
             base.ProcessTerm(linger);
         }
@@ -179,7 +183,7 @@ namespace NetMQServer.Core.Transports.Tcp
             // Create the socket.
             try
             {
-             
+
             }
             catch (SocketException)
             {
@@ -187,13 +191,13 @@ namespace NetMQServer.Core.Transports.Tcp
                 return;
             }
 
-          
+
             m_handleValid = true;
 
             // Connect to the remote peer.
             try
             {
-             
+
                 m_socket.EventConnectDelayed(m_endpoint, ErrorCode.InProgress);
             }
             catch (SocketException ex)
@@ -203,7 +207,7 @@ namespace NetMQServer.Core.Transports.Tcp
             // TerminatingException can occur in above call to EventConnectDelayed via
             // MonitorEvent.Write if corresponding PairSocket has been sent Term command
             catch (TerminatingException)
-            {}
+            { }
         }
 
         /// <summary>
@@ -215,27 +219,32 @@ namespace NetMQServer.Core.Transports.Tcp
         /// <exception cref="NetMQException">If the socketError is not Success then it must be a valid recoverable error.</exception>
         public void OutCompleted(SocketError socketError, int bytesTransferred)
         {
-          
+
 
             if (socketError != SocketError.Success)
             {
-               
+
                 m_handleValid = false;
 
                 Close();
 
                 // Try again to connect after a time,
                 if (m_options.ReconnectIvl >= 0)
+                {
                     AddReconnectTimer();
+                }
             }
             else
             {
-               
+
                 m_handleValid = false;
 
-                try {
-                  
-                } catch (ArgumentException) {
+                try
+                {
+
+                }
+                catch (ArgumentException)
+                {
                     // OSX sometime fail while the socket is still connecting
                 }
 
@@ -243,12 +252,12 @@ namespace NetMQServer.Core.Transports.Tcp
                 if (m_options.TcpKeepalive != -1)
                 {
                     // Set the TCP keep-alive option values to the underlying socket.
-                
+
 
                     if (m_options.TcpKeepaliveIdle != -1 && m_options.TcpKeepaliveIntvl != -1)
                     {
                         // Write the TCP keep-alive options to a byte-array, to feed to the IOControl method..
-                        var bytes = new ByteArraySegment(new byte[12]);
+                        ByteArraySegment bytes = new ByteArraySegment(new byte[12]);
 
                         Endianness endian = BitConverter.IsLittleEndian ? Endianness.Little : Endianness.Big;
 
@@ -256,14 +265,14 @@ namespace NetMQServer.Core.Transports.Tcp
                         bytes.PutInteger(endian, m_options.TcpKeepaliveIdle, 4);
                         bytes.PutInteger(endian, m_options.TcpKeepaliveIntvl, 8);
 
-                      
+
                     }
                 }
 
                 // Create the engine object for this connection.
-                var engine = new StreamEngine(m_s, m_options, m_endpoint);
+                StreamEngine engine = new StreamEngine(m_s, m_options, m_endpoint);
 
-               
+
 
                 m_s = null;
 
@@ -326,10 +335,10 @@ namespace NetMQServer.Core.Transports.Tcp
         /// </summary>
         private void Close()
         {
-           
+
             try
             {
-             
+
                 m_s = null;
             }
             catch (SocketException ex)

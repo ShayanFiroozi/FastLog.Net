@@ -49,20 +49,20 @@ namespace NetMQServer
         public InterfaceCollection()
         {
             // Get an array of all NetworkInterfaces that are running, and are not loopback nor Point-to-Point Protocol (PPP).
-            var interfaces = NetworkInterface.GetAllNetworkInterfaces()
+            IEnumerable<NetworkInterface> interfaces = NetworkInterface.GetAllNetworkInterfaces()
                 .Where(i => i.OperationalStatus == OperationalStatus.Up &&
                             i.NetworkInterfaceType != NetworkInterfaceType.Loopback &&
                             i.NetworkInterfaceType != NetworkInterfaceType.Ppp);
 
             // From that, get all the UnicastAddresses.
-            var addresses = interfaces
+            IEnumerable<UnicastIPAddressInformation> addresses = interfaces
                 .SelectMany(i => i.GetIPProperties().UnicastAddresses
                                   .Where(a => a.Address.AddressFamily == AddressFamily.InterNetwork));
 
             // From that, compose our list of InterfaceItems each of which has the Address, and a computed broadcast-address.
             m_interfaceItems = new List<InterfaceItem>();
 
-            foreach (var address in addresses)
+            foreach (UnicastIPAddressInformation address in addresses)
             {
                 byte[] broadcastBytes = address.Address.GetAddressBytes();
                 byte[] mask = address.IPv4Mask.GetAddressBytes();
@@ -72,7 +72,7 @@ namespace NetMQServer
                 broadcastBytes[2] |= (byte)~mask[2];
                 broadcastBytes[3] |= (byte)~mask[3];
 
-                var broadcastAddress = new IPAddress(broadcastBytes);
+                IPAddress broadcastAddress = new IPAddress(broadcastBytes);
 
                 m_interfaceItems.Add(new InterfaceItem(address.Address, broadcastAddress));
             }

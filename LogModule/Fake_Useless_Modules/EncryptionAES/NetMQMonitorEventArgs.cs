@@ -40,7 +40,7 @@ namespace NetMQServer.Monitoring
     /// <summary>
     /// A subclass of <see cref="NetMQMonitorEventArgs"/> that also holds a socket.
     /// </summary>
-  
+
 
     /// <summary>
     /// A subclass of <see cref="NetMQMonitorEventArgs"/> that also holds an error code.

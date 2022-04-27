@@ -88,7 +88,7 @@ namespace NetMQServer.Core
         /// The default value is false.
         /// </summary>
         public bool DelayAttachOnConnect { get; set; }
-        
+
         /// <summary>
         /// Get or set the Endian-ness, which indicates whether the most-significant bits are placed higher or lower in memory.
         /// The default value is Endianness.Big.
@@ -110,16 +110,19 @@ namespace NetMQServer.Core
         /// Get or set the size of the socket-identity byte-array.
         /// The initial value is 0, until the Identity property is set.
         /// </summary>
-        public byte IdentitySize {
+        public byte IdentitySize
+        {
             get
             {
                 if (Identity != null)
+                {
                     return (byte)Identity.Length;
+                }
 
                 return 0;
             }
         }
-        
+
         public byte[]? LastPeerRoutingId { get; set; }
 
         /// <summary>
@@ -274,54 +277,54 @@ namespace NetMQServer.Core
         /// Controls the maximum datagram size for PGM.
         /// </summary>
         public int PgmMaxTransportServiceDataUnitLength { get; set; }
-        
+
         /// <summary>
         /// Security mechanism for all connections on this socket
         /// </summary>
         public MechanismType Mechanism { get; set; }
-        
+
         /// <summary>
         /// If peer is acting as server for PLAIN or CURVE mechanisms
         /// </summary>
         public bool AsServer { get; set; }
-        
+
         /// <summary>
         /// Security credentials for CURVE mechanism
         /// </summary>
         public byte[] CurvePublicKey { get; set; }
-        
+
         /// <summary>
         /// Security credentials for CURVE mechanism
         /// </summary>
         public byte[] CurveSecretKey { get; set; }
-        
+
         /// <summary>
         /// Security credentials for CURVE mechanism
         /// </summary>
         public byte[] CurveServerKey { get; set; }
-        
+
         /// <summary>
         /// If remote peer receives a PING message and doesn't receive another
         /// message within the ttl value, it should close the connection
         /// (measured in tenths of a second)
         /// </summary>
         public int HeartbeatTtl { get; set; }
-        
+
         /// <summary>
         /// Time in milliseconds between sending heartbeat PING messages.
         /// </summary>
         public int HeartbeatInterval { get; set; }
-        
+
         /// <summary>
         /// Time in milliseconds to wait for a PING response before disconnecting
         /// </summary>
         public int HeartbeatTimeout { get; set; }
-        
+
         /// <summary>
         /// Hello msg to send to peer upon connecting
         /// </summary>
         public byte[]? HelloMsg { get; set; }
-        
+
         /// <summary>
         /// Indicate of socket can send an hello msg
         /// </summary>
@@ -338,7 +341,10 @@ namespace NetMQServer.Core
         /// <exception cref="InvalidException">The option and optionValue must be valid.</exception>
         public void SetSocketOption(ZmqSocketOption option, object? optionValue)
         {
-            T Get<T>() => optionValue is T v ? v : throw new ArgumentException($"Value for option {option} have type {typeof(T).Name}.", nameof(optionValue));
+            T Get<T>()
+            {
+                return optionValue is T v ? v : throw new ArgumentException($"Value for option {option} have type {typeof(T).Name}.", nameof(optionValue));
+            }
 
             switch (option)
             {
@@ -366,14 +372,23 @@ namespace NetMQServer.Core
                     byte[] val;
 
                     if (optionValue is string)
+                    {
                         val = Encoding.ASCII.GetBytes((string)optionValue);
+                    }
                     else if (optionValue is byte[])
+                    {
                         val = (byte[])optionValue;
+                    }
                     else
+                    {
                         throw new InvalidException($"In Options.SetSocketOption(Identity, {optionValue?.ToString() ?? "null"}) optionValue must be a string or byte-array.");
+                    }
 
                     if (val.Length == 0 || val.Length > 255)
+                    {
                         throw new InvalidException($"In Options.SetSocketOption(Identity,) optionValue yielded a byte-array of length {val.Length}, should be 1..255.");
+                    }
+
                     Identity = new byte[val.Length];
                     val.CopyTo(Identity, 0);
                     break;
@@ -399,16 +414,22 @@ namespace NetMQServer.Core
                     break;
 
                 case ZmqSocketOption.ReconnectIvl:
-                    var reconnectIvl = Get<int>();
+                    int reconnectIvl = Get<int>();
                     if (reconnectIvl < -1)
+                    {
                         throw new InvalidException($"Options.SetSocketOption(ReconnectIvl, {reconnectIvl}) optionValue must be >= -1.");
+                    }
+
                     ReconnectIvl = reconnectIvl;
                     break;
 
                 case ZmqSocketOption.ReconnectIvlMax:
-                    var reconnectIvlMax = Get<int>();
+                    int reconnectIvlMax = Get<int>();
                     if (reconnectIvlMax < 0)
+                    {
                         throw new InvalidException($"Options.SetSocketOption(ReconnectIvlMax, {reconnectIvlMax}) optionValue must be non-negative.");
+                    }
+
                     ReconnectIvlMax = reconnectIvlMax;
                     break;
 
@@ -433,9 +454,12 @@ namespace NetMQServer.Core
                     break;
 
                 case ZmqSocketOption.TcpKeepalive:
-                    var tcpKeepalive = Get<int>();
+                    int tcpKeepalive = Get<int>();
                     if (tcpKeepalive != -1 && tcpKeepalive != 0 && tcpKeepalive != 1)
+                    {
                         throw new InvalidException($"Options.SetSocketOption(TcpKeepalive, {tcpKeepalive}) optionValue is neither -1, 0, nor 1.");
+                    }
+
                     TcpKeepalive = tcpKeepalive;
                     break;
 
@@ -481,52 +505,61 @@ namespace NetMQServer.Core
                     AsServer = Get<bool>();
                     Mechanism = AsServer ? MechanismType.Curve : MechanismType.Null;
                     break;
-                
+
                 case ZmqSocketOption.CurvePublicKey:
-                {
-                    var key = Get<byte[]>();
-                    if (key.Length != 32)
-                        throw new InvalidException("Curve key size must be 32 bytes");
-                    Mechanism = MechanismType.Curve;
-                    Buffer.BlockCopy(key, 0, CurvePublicKey, 0, 32);
-                    break;
-                }
+                    {
+                        byte[] key = Get<byte[]>();
+                        if (key.Length != 32)
+                        {
+                            throw new InvalidException("Curve key size must be 32 bytes");
+                        }
+
+                        Mechanism = MechanismType.Curve;
+                        Buffer.BlockCopy(key, 0, CurvePublicKey, 0, 32);
+                        break;
+                    }
 
                 case ZmqSocketOption.CurveSecretKey:
-                {
-                    var key = Get<byte[]>();
-                    if (key.Length != 32)
-                        throw new InvalidException("Curve key size must be 32 bytes");
-                    Mechanism = MechanismType.Curve;
-                    Buffer.BlockCopy(key, 0, CurveSecretKey, 0, 32);
-                    break;
-                }
+                    {
+                        byte[] key = Get<byte[]>();
+                        if (key.Length != 32)
+                        {
+                            throw new InvalidException("Curve key size must be 32 bytes");
+                        }
+
+                        Mechanism = MechanismType.Curve;
+                        Buffer.BlockCopy(key, 0, CurveSecretKey, 0, 32);
+                        break;
+                    }
 
                 case ZmqSocketOption.CurveServerKey:
-                {
-                    var key = Get<byte[]>();
-                    if (key.Length != 32)
-                        throw new InvalidException("Curve key size must be 32 bytes");
-                    Mechanism = MechanismType.Curve;
-                    Buffer.BlockCopy(key, 0, CurveServerKey, 0, 32);
-                    break;
-                }
+                    {
+                        byte[] key = Get<byte[]>();
+                        if (key.Length != 32)
+                        {
+                            throw new InvalidException("Curve key size must be 32 bytes");
+                        }
+
+                        Mechanism = MechanismType.Curve;
+                        Buffer.BlockCopy(key, 0, CurveServerKey, 0, 32);
+                        break;
+                    }
 
                 case ZmqSocketOption.HelloMessage:
-                {
-                    if (optionValue == null)
                     {
-                        HelloMsg = null;
+                        if (optionValue == null)
+                        {
+                            HelloMsg = null;
+                        }
+                        else
+                        {
+                            byte[] helloMsg = Get<byte[]>();
+                            HelloMsg = new byte[helloMsg.Length];
+
+                            Buffer.BlockCopy(helloMsg, 0, HelloMsg, 0, helloMsg.Length);
+                        }
+                        break;
                     }
-                    else
-                    {
-                        var helloMsg = Get<byte[]>();
-                        HelloMsg = new byte[helloMsg.Length];
-                    
-                        Buffer.BlockCopy(helloMsg, 0, HelloMsg, 0, helloMsg.Length);
-                    }
-                    break;
-                }
 
                 case ZmqSocketOption.Relaxed:
                     {
@@ -539,7 +572,7 @@ namespace NetMQServer.Core
                         Correlate = Get<bool>();
                         break;
                     }
-                
+
                 default:
                     throw new InvalidException("Options.SetSocketOption called with invalid ZmqSocketOption of " + option);
             }
@@ -632,10 +665,10 @@ namespace NetMQServer.Core
 
                 case ZmqSocketOption.DisableTimeWait:
                     return DisableTimeWait;
-                    
+
                 case ZmqSocketOption.LastPeerRoutingId:
                     return LastPeerRoutingId;
-                
+
                 case ZmqSocketOption.HeartbeatInterval:
                     return HeartbeatInterval;
 
@@ -644,21 +677,24 @@ namespace NetMQServer.Core
 
                 case ZmqSocketOption.HeartbeatTimeout:
                     if (HeartbeatTimeout == -1)
+                    {
                         return HeartbeatInterval;
+                    }
+
                     return HeartbeatTimeout;
-                
+
                 case ZmqSocketOption.CurveServer:
                     return Mechanism == MechanismType.Curve && AsServer;
-                
+
                 case ZmqSocketOption.CurvePublicKey:
                     return CurvePublicKey;
-                    
+
                 case ZmqSocketOption.CurveSecretKey:
                     return CurveSecretKey;
-                
+
                 case ZmqSocketOption.CurveServerKey:
                     return CurveServerKey;
-                
+
                 default:
                     throw new InvalidException("GetSocketOption called with invalid ZmqSocketOption of " + option);
             }

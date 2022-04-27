@@ -36,14 +36,18 @@ namespace NetMQServer
                 m_event += value;
 
                 if (Interlocked.Increment(ref m_counter) == 1)
+                {
                     m_registerToEvent();
+                }
             }
             remove
             {
                 m_event -= value;
 
                 if (Interlocked.Decrement(ref m_counter) == 0)
+                {
                     m_unregisterFromEvent();
+                }
             }
         }
 

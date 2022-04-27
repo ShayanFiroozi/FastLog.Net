@@ -67,7 +67,7 @@ namespace Effortless.Net.Encryption
         /// </summary>
         public void AssignNewKey()
         {
-            using (var rsa = new RSACryptoServiceProvider(_keySize))
+            using (RSACryptoServiceProvider rsa = new RSACryptoServiceProvider(_keySize))
             {
                 rsa.PersistKeyInCsp = false;
                 _publicKey = rsa.ExportParameters(false);
@@ -101,26 +101,26 @@ namespace Effortless.Net.Encryption
             _privateKey = new RSAParameters
             {
                 Exponent = Bytes.HexToByteArray(exponent),
-                Modulus  = Bytes.HexToByteArray(modulus),
-                P        = Bytes.HexToByteArray(p),
-                Q        = Bytes.HexToByteArray(q),
-                DP       = Bytes.HexToByteArray(dp),
-                DQ       = Bytes.HexToByteArray(dq),
+                Modulus = Bytes.HexToByteArray(modulus),
+                P = Bytes.HexToByteArray(p),
+                Q = Bytes.HexToByteArray(q),
+                DP = Bytes.HexToByteArray(dp),
+                DQ = Bytes.HexToByteArray(dq),
                 InverseQ = Bytes.HexToByteArray(inverseQ),
-                D        = Bytes.HexToByteArray(d)
+                D = Bytes.HexToByteArray(d)
             };
         }
 
         public void SavePrivateKey(out string exponent, out string modulus, out string p, out string q, out string dp, out string dq, out string inverseQ, out string d)
         {
             exponent = _publicKey.Exponent == null ? string.Empty : Bytes.ByteArrayToHex(_publicKey.Exponent);
-            modulus  = _publicKey.Modulus == null ? string.Empty : Bytes.ByteArrayToHex(_publicKey.Modulus);
-            p        = _publicKey.P == null ? string.Empty : Bytes.ByteArrayToHex(_publicKey.P);
-            q        = _publicKey.Q == null ? string.Empty : Bytes.ByteArrayToHex(_publicKey.Q);
-            dp       = _publicKey.DP == null ? string.Empty : Bytes.ByteArrayToHex(_publicKey.DP);
-            dq       = _publicKey.DQ == null ? string.Empty : Bytes.ByteArrayToHex(_publicKey.DQ);
+            modulus = _publicKey.Modulus == null ? string.Empty : Bytes.ByteArrayToHex(_publicKey.Modulus);
+            p = _publicKey.P == null ? string.Empty : Bytes.ByteArrayToHex(_publicKey.P);
+            q = _publicKey.Q == null ? string.Empty : Bytes.ByteArrayToHex(_publicKey.Q);
+            dp = _publicKey.DP == null ? string.Empty : Bytes.ByteArrayToHex(_publicKey.DP);
+            dq = _publicKey.DQ == null ? string.Empty : Bytes.ByteArrayToHex(_publicKey.DQ);
             inverseQ = _publicKey.InverseQ == null ? string.Empty : Bytes.ByteArrayToHex(_publicKey.InverseQ);
-            d        = _publicKey.D == null ? string.Empty : Bytes.ByteArrayToHex(_publicKey.D);
+            d = _publicKey.D == null ? string.Empty : Bytes.ByteArrayToHex(_publicKey.D);
         }
 
         /// <summary>
@@ -130,12 +130,12 @@ namespace Effortless.Net.Encryption
         /// <returns>Signature</returns>
         public byte[] SignData(byte[] hashOfDataToSign)
         {
-            using (var rsa = new RSACryptoServiceProvider(_keySize))
+            using (RSACryptoServiceProvider rsa = new RSACryptoServiceProvider(_keySize))
             {
                 rsa.PersistKeyInCsp = false;
                 rsa.ImportParameters(_privateKey);
 
-                var rsaFormatter = new RSAPKCS1SignatureFormatter(rsa);
+                RSAPKCS1SignatureFormatter rsaFormatter = new RSAPKCS1SignatureFormatter(rsa);
                 rsaFormatter.SetHashAlgorithm(_hashAlgorithm);
                 return rsaFormatter.CreateSignature(hashOfDataToSign);
             }
@@ -149,10 +149,10 @@ namespace Effortless.Net.Encryption
         /// <returns>True if the signature matches</returns>
         public bool VerifySignature(byte[] hashOfDataToSign, byte[] signature)
         {
-            using (var rsa = new RSACryptoServiceProvider(_keySize))
+            using (RSACryptoServiceProvider rsa = new RSACryptoServiceProvider(_keySize))
             {
                 rsa.ImportParameters(_publicKey);
-                var rsaDeformatter = new RSAPKCS1SignatureDeformatter(rsa);
+                RSAPKCS1SignatureDeformatter rsaDeformatter = new RSAPKCS1SignatureDeformatter(rsa);
                 rsaDeformatter.SetHashAlgorithm(_hashAlgorithm);
                 return rsaDeformatter.VerifySignature(hashOfDataToSign, signature);
             }

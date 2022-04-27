@@ -24,13 +24,13 @@ namespace NetMQServer
         public static byte[] ReceiveBytes(this IThreadSafeInSocket socket,
             CancellationToken cancellationToken = default)
         {
-            var msg = new Msg();
+            Msg msg = new Msg();
             msg.InitEmpty();
 
             try
             {
                 socket.Receive(ref msg, cancellationToken);
-                var data = msg.CloneData();
+                byte[] data = msg.CloneData();
                 return data;
             }
             finally
@@ -50,7 +50,7 @@ namespace NetMQServer
         /// <param name="socket">The socket to receive from.</param>
         /// <param name="bytes">The content of the received message, or <c>null</c> if no message was available.</param>
         /// <returns><c>true</c> if a message was available, otherwise <c>false</c>.</returns>
-        public static bool TryReceiveBytes(this IThreadSafeInSocket socket,  out byte[]? bytes)
+        public static bool TryReceiveBytes(this IThreadSafeInSocket socket, out byte[]? bytes)
         {
             return socket.TryReceiveBytes(TimeSpan.Zero, out bytes);
         }
@@ -72,7 +72,7 @@ namespace NetMQServer
         public static bool TryReceiveBytes(this IThreadSafeInSocket socket, TimeSpan timeout,
             out byte[]? bytes, CancellationToken cancellationToken = default)
         {
-            var msg = new Msg();
+            Msg msg = new Msg();
             msg.InitEmpty();
 
             if (!socket.TryReceive(ref msg, timeout, cancellationToken))
@@ -102,8 +102,10 @@ namespace NetMQServer
         public static ValueTask<byte[]> ReceiveBytesAsync(this IThreadSafeInSocket socket,
             CancellationToken cancellationToken = default)
         {
-            if (TryReceiveBytes(socket, out var bytes))
+            if (TryReceiveBytes(socket, out byte[] bytes))
+            {
                 return new ValueTask<byte[]>(bytes);
+            }
 
             // TODO: this is a hack, eventually we need kind of IO ThreadPool for thread-safe socket to wait on asynchronously
             // and probably implement IValueTaskSource
@@ -169,7 +171,7 @@ namespace NetMQServer
         public static string ReceiveString(this IThreadSafeInSocket socket, Encoding encoding,
             CancellationToken cancellationToken = default)
         {
-            var msg = new Msg();
+            Msg msg = new Msg();
             msg.InitEmpty();
 
             try
@@ -247,9 +249,9 @@ namespace NetMQServer
         /// <returns><c>true</c> if a message was available, otherwise <c>false</c>.</returns>
         /// <remarks>The method would return false if cancellation has had requested.</remarks>
         public static bool TryReceiveString(this IThreadSafeInSocket socket, TimeSpan timeout,
-    Encoding encoding,  out string? str, CancellationToken cancellationToken = default)
+    Encoding encoding, out string? str, CancellationToken cancellationToken = default)
         {
-            var msg = new Msg();
+            Msg msg = new Msg();
             msg.InitEmpty();
 
             if (socket.TryReceive(ref msg, timeout, cancellationToken))
@@ -286,8 +288,10 @@ namespace NetMQServer
         public static ValueTask<string> ReceiveStringAsync(this IThreadSafeInSocket socket,
             CancellationToken cancellationToken = default)
         {
-            if (TryReceiveString(socket, out var msg))
+            if (TryReceiveString(socket, out string msg))
+            {
                 return new ValueTask<string>(msg);
+            }
 
             // TODO: this is a hack, eventually we need kind of IO ThreadPool for thread-safe socket to wait on asynchronously
             // and probably implement IValueTaskSource
@@ -296,7 +300,7 @@ namespace NetMQServer
         }
 
         #endregion
-        
+
         #region AsyncEnumerable
 
 #if NETSTANDARD2_1
@@ -318,7 +322,7 @@ namespace NetMQServer
             }
         }
         
-#endif        
+#endif
 
         #endregion
 

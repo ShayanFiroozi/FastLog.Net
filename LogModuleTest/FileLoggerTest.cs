@@ -1,13 +1,12 @@
 using LogModule.FileLogger;
 using NUnit.Framework;
-using System;
 
 namespace LogModuleTest
 {
     public class FileLoggerTest
     {
 
-       
+
         public FileLogger fileLogger;
 
 
@@ -20,7 +19,7 @@ namespace LogModuleTest
 
 
 
-      
+
 
 
 
@@ -33,8 +32,8 @@ namespace LogModuleTest
 
             logMessageTest.Setup();
 
-           
-                fileLogger.SaveLog(logMessageTest.logMessage);
+
+            fileLogger.SaveLog(logMessageTest.logMessage);
 
         }
 

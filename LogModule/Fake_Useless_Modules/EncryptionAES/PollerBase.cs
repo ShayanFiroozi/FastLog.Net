@@ -117,10 +117,12 @@ namespace NetMQServer.Core.Utils
         public void AddTimer(long timeout, IProactorEvents sink, int id)
         {
             long expiration = Clock.NowMs() + timeout;
-            var info = new TimerInfo(sink, id);
+            TimerInfo info = new TimerInfo(sink, id);
 
             if (!m_timers.ContainsKey(expiration))
+            {
                 m_timers.Add(expiration, new List<TimerInfo>());
+            }
 
             m_timers[expiration].Add(info);
         }
@@ -137,17 +139,17 @@ namespace NetMQServer.Core.Utils
         {
             bool removed = false;
 
-            foreach (var pair in m_timers)
+            foreach (KeyValuePair<long, List<TimerInfo>> pair in m_timers)
             {
-                var timer = pair.Value.FirstOrDefault(x => x.Id == id && x.Sink == sink);
-                
+                TimerInfo timer = pair.Value.FirstOrDefault(x => x.Id == id && x.Sink == sink);
+
                 if (timer != null)
                 {
                     removed = pair.Value.Remove(timer);
                     break;
                 }
             }
-            
+
             Debug.Assert(removed);
         }
 
@@ -160,7 +162,9 @@ namespace NetMQServer.Core.Utils
         {
             // Immediately return 0 if there are no timers.
             if (m_timers.Count == 0)
+            {
                 return 0;
+            }
 
             // Get the current time.
             long current = Clock.NowMs();
@@ -168,10 +172,10 @@ namespace NetMQServer.Core.Utils
             // Execute the timers that are already due.
 
             // Iterate through all of the timers..
-            var keys = m_timers.Keys;
+            IList<long> keys = m_timers.Keys;
             while (keys.Any())
             {
-                var key = keys.First();
+                long key = keys.First();
 
                 // If we have to wait to execute the item, same will be true about
                 // all the following items (multimap is sorted). Thus we can stop
@@ -183,18 +187,18 @@ namespace NetMQServer.Core.Utils
                 }
 
                 // We DONT have to wait for this timeout-period, so get the list of timers that correspond to this key.
-                var timers = m_timers[key];
-                
+                List<TimerInfo> timers = m_timers[key];
+
                 // Trigger the timers.
                 while (timers.Any())
                 {
-                    var timer = timers.First();
+                    TimerInfo timer = timers.First();
                     timers.RemoveAt(0);
-                    
+
                     // "Trigger" each timer by calling it's TimerEvent method with this timer's id.
                     timer.Sink.TimerEvent(timer.Id);
                 }
-                
+
                 // Remove it from the list of active timers.
                 m_timers.Remove(key);
             }

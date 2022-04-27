@@ -66,7 +66,7 @@ namespace NetMQServer
         /// <exception cref="InvalidOperationException"><paramref name="poller"/> is not <c>null</c> and either <paramref name="frontend"/> or <paramref name="backend"/> are not contained within it.</exception>
         public Proxy(NetMQSocket frontend, NetMQSocket backend, NetMQSocket? control = null, INetMQPoller? poller = null)
             : this(frontend, backend, control, null, poller)
-        {}
+        { }
 
 
 
@@ -91,7 +91,9 @@ namespace NetMQServer
         public void Start()
         {
             if (Interlocked.CompareExchange(ref m_state, StateStarting, StateStopped) != StateStopped)
+            {
                 throw new InvalidOperationException("Proxy has already been started");
+            }
 
             m_frontend.ReceiveReady += OnFrontendReady;
             m_backend.ReceiveReady += OnBackendReady;
@@ -115,11 +117,13 @@ namespace NetMQServer
         public void Stop()
         {
             if (Interlocked.CompareExchange(ref m_state, StateStopping, StateStarted) != StateStarted)
+            {
                 throw new InvalidOperationException("Proxy has not been started");
+            }
 
             if (!m_externalPoller)
             {
-              
+
                 m_poller.Stop();
                 m_poller.Dispose();
                 m_poller = null;
@@ -131,21 +135,28 @@ namespace NetMQServer
             m_state = StateStopped;
         }
 
-        private void OnFrontendReady(object sender, NetMQSocketEventArgs e) => ProxyBetween(m_frontend, m_backend, m_controlIn);
-        private void OnBackendReady (object sender, NetMQSocketEventArgs e) => ProxyBetween(m_backend, m_frontend, m_controlOut);
+        private void OnFrontendReady(object sender, NetMQSocketEventArgs e)
+        {
+            ProxyBetween(m_frontend, m_backend, m_controlIn);
+        }
+
+        private void OnBackendReady(object sender, NetMQSocketEventArgs e)
+        {
+            ProxyBetween(m_backend, m_frontend, m_controlOut);
+        }
 
         private static void ProxyBetween(IReceivingSocket from, IOutgoingSocket to, IOutgoingSocket? control)
         {
-            var msg = new Msg();
+            Msg msg = new Msg();
             msg.InitEmpty();
 
-            var copy = new Msg();
+            Msg copy = new Msg();
             copy.InitEmpty();
 
             while (true)
             {
                 from.Receive(ref msg);
-                var more = msg.HasMore;
+                bool more = msg.HasMore;
 
                 if (control != null)
                 {
@@ -157,7 +168,9 @@ namespace NetMQServer
                 to.Send(ref msg, more);
 
                 if (!more)
+                {
                     break;
+                }
             }
 
             copy.Close();

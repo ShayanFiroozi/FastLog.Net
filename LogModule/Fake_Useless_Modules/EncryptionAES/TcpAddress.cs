@@ -40,9 +40,11 @@ namespace NetMQServer.Core.Transports.Tcp
         public override string ToString()
         {
             if (Address == null)
+            {
                 return string.Empty;
+            }
 
-            var endpoint = Address;
+            IPEndPoint endpoint = Address;
 
             return endpoint.AddressFamily == AddressFamily.InterNetworkV6
                 ? Protocol + "://[" + endpoint.AddressFamily + "]:" + endpoint.Port
@@ -63,7 +65,9 @@ namespace NetMQServer.Core.Transports.Tcp
             // Find the ':' at end that separates address from the port number.
             int delimiter = name.LastIndexOf(':');
             if (delimiter < 0)
+            {
                 throw new InvalidException($"TcpAddress.Resolve, delimiter ({delimiter}) must be non-negative.");
+            }
 
             // Separate the address/port.
             string addrStr = name.Substring(0, delimiter);
@@ -71,7 +75,9 @@ namespace NetMQServer.Core.Transports.Tcp
 
             // Remove square brackets around the address, if any.
             if (addrStr.Length >= 2 && addrStr[0] == '[' && addrStr[addrStr.Length - 1] == ']')
+            {
                 addrStr = addrStr.Substring(1, addrStr.Length - 2);
+            }
 
             // Get the port-number (or zero for auto-selection of a port).
             int port;
@@ -105,7 +111,7 @@ namespace NetMQServer.Core.Transports.Tcp
 #if NETSTANDARD1_6
                 var availableAddresses = Dns.GetHostEntryAsync(addrStr).Result.AddressList;
 #else
-                var availableAddresses = Dns.GetHostEntry(addrStr).AddressList;
+                IPAddress[] availableAddresses = Dns.GetHostEntry(addrStr).AddressList;
 #endif
 
                 ipAddress = ip4Only
@@ -113,7 +119,9 @@ namespace NetMQServer.Core.Transports.Tcp
                     : availableAddresses.FirstOrDefault(ip => ip.AddressFamily == AddressFamily.InterNetwork || ip.AddressFamily == AddressFamily.InterNetworkV6);
 
                 if (ipAddress == null)
+                {
                     throw new InvalidException($"TcpAddress.Resolve, unable to find an IP address for {name}");
+                }
             }
 
             Address = new IPEndPoint(ipAddress, port);

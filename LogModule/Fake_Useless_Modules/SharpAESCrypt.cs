@@ -105,7 +105,7 @@ namespace SharpAESCrypt
             Environment.NewLine +
             Environment.NewLine + "If you ommit the fromPath or toPath, stdin/stdout are used insted, e.g.:" +
             Environment.NewLine + "  SharpAESCrypt e 1234 < file.jpg > file.jpg.aes" +
-            Environment.NewLine + 
+            Environment.NewLine +
             Environment.NewLine + "Abnormal exit will return an errorlevel above 0 (zero):" +
             Environment.NewLine + "  4 - Password invalid" +
             Environment.NewLine + "  3 - HMAC Mismatch / altered data (also invalid password for version 0 files)" +
@@ -295,7 +295,7 @@ namespace SharpAESCrypt
         /// <summary>
         /// The mode of operation
         /// </summary>
-        private OperationMode m_mode;
+        private readonly OperationMode m_mode;
         /// <summary>
         /// Helper payload stream for decryption, hiding bytes
         /// </summary>
@@ -311,7 +311,7 @@ namespace SharpAESCrypt
         /// Used for synchronization and exception detection.
         /// </summary>
         private DirectStreamLink.DataPump m_cryptoThreadPump;
-        
+
         /// <summary>
         /// The HMAC used for validating data
         /// </summary>
@@ -405,10 +405,11 @@ namespace SharpAESCrypt
                 {
                     // Make sure there are enough threads available in threadpool (we work blocking, so otherwise it takes time to trigger start of new pool threads).
                     // This is important because of the Close() operations in StreamStriper. This will stall for 0,5 secs per thread on first iteration.
-                    int cWorker, cIO;
-                    ThreadPool.GetMinThreads(out cWorker, out cIO);
+                    ThreadPool.GetMinThreads(out int cWorker, out int cIO);
                     if (cWorker < 4 + 3 * (useAesThreads + 1))
+                    {
                         ThreadPool.SetMinThreads(4 + 3 * (useAesThreads + 1), cIO);
+                    }
 
                     int useChunkSize = 1 << 14; // MUST be a multiple of BLOCK_SIZE for splitting to work!
                     //if modifiable, check: if (useChunkSize % BLOCK_SIZE != 0) throw new Exception();
@@ -418,10 +419,10 @@ namespace SharpAESCrypt
                     Stream[] cryptoOutputReaders = new Stream[useAesThreads];
                     for (int t = 0; t < useAesThreads; t++)
                     {
-                        var linkCryptInput = new DirectStreamLink(4 * (useChunkSize + BLOCK_SIZE), false, true, null);
-                        var linkCryptOutput = new DirectStreamLink(4 * (useChunkSize + BLOCK_SIZE), false, true, null);
+                        DirectStreamLink linkCryptInput = new DirectStreamLink(4 * (useChunkSize + BLOCK_SIZE), false, true, null);
+                        DirectStreamLink linkCryptOutput = new DirectStreamLink(4 * (useChunkSize + BLOCK_SIZE), false, true, null);
                         // we use ClosingCryptoStream to make sure base streams are also closed (for synchronization)
-                        var cryptoStream = new ClosingCryptoStream(linkCryptOutput.WriterStream, m_helper.CreateCryptoStream(m_mode), CryptoStreamMode.Write);
+                        ClosingCryptoStream cryptoStream = new ClosingCryptoStream(linkCryptOutput.WriterStream, m_helper.CreateCryptoStream(m_mode), CryptoStreamMode.Write);
                         cryptoInputWriters[t] = linkCryptInput.WriterStream;
                         cryptoOutputReaders[t] = linkCryptOutput.ReaderStream;
 
@@ -439,7 +440,7 @@ namespace SharpAESCrypt
                     CryptoStream hasher = new ClosingCryptoStream(cryptSplitter, m_hmac, CryptoStreamMode.Write);
                     m_cryptDataStream = decryptJoiner;
                     m_cryptoThreadPump = new DirectStreamLink.DataPump(m_payloadStream, hasher);
-                
+
                 }
                 else // only single AES thread: plug directly to LinkStream (will run in main thread)
                 {
@@ -452,7 +453,10 @@ namespace SharpAESCrypt
 
                 // Start pumping data through our threads
                 m_cryptoThreadPump.RunInThreadPool(true); // with WaitHandle for synchronization
-                foreach (var pump in dataPumps) pump.RunInThreadPool(false); //no WaitHandles, synched through DirectStreamLink
+                foreach (DirectStreamLink.DataPump pump in dataPumps)
+                {
+                    pump.RunInThreadPool(false); //no WaitHandles, synched through DirectStreamLink
+                }
             }
             else
             {
@@ -470,24 +474,36 @@ namespace SharpAESCrypt
             byte[] tmp = new byte[MAGIC_HEADER.Length + 2];
 
             if (ForceRead(m_stream, tmp, 0, tmp.Length) < tmp.Length)
+            {
                 throw new InvalidDataException(Strings.InvalidHeaderMarker);
+            }
 
             for (int i = 0; i < MAGIC_HEADER.Length; i++)
+            {
                 if (MAGIC_HEADER[i] != tmp[i])
+                {
                     throw new InvalidDataException(Strings.InvalidHeaderMarker);
+                }
+            }
 
             m_version = tmp[MAGIC_HEADER.Length];
             if (m_version > MAX_FILE_VERSION)
+            {
                 throw new InvalidDataException(string.Format(Strings.UnsupportedFileVersion, m_version));
+            }
 
             if (m_version == 0)
             {
                 m_paddingSize = tmp[MAGIC_HEADER.Length + 1];
                 if (m_paddingSize >= BLOCK_SIZE)
+                {
                     throw new InvalidDataException(Strings.InvalidHeaderMarker);
+                }
             }
             else if (tmp[MAGIC_HEADER.Length + 1] != 0)
+            {
                 throw new InvalidDataException(Strings.InvalidReservedFieldValue);
+            }
 
             //Extensions are only supported in v2+
             if (m_version >= 2)
@@ -503,7 +519,9 @@ namespace SharpAESCrypt
                         byte[] data = RepeatRead(m_stream, extensionLength);
                         int separatorIndex = Array.IndexOf<byte>(data, 0);
                         if (separatorIndex < 0)
+                        {
                             throw new InvalidDataException(Strings.InvalidExtensionData);
+                        }
 
                         string key = System.Text.Encoding.UTF8.GetString(data, 0, separatorIndex);
                         byte[] value = new byte[data.Length - separatorIndex - 1];
@@ -524,8 +542,12 @@ namespace SharpAESCrypt
                 byte[] hmac1 = m_helper.DecryptAESKey2(RepeatRead(m_stream, IV_SIZE + KEY_SIZE));
                 byte[] hmac2 = RepeatRead(m_stream, hmac1.Length);
                 for (int i = 0; i < hmac1.Length; i++)
+                {
                     if (hmac1[i] != hmac2[i])
+                    {
                         throw new WrongPasswordException(Strings.InvalidPassword);
+                    }
+                }
 
                 if (m_stream.CanSeek)
                 {
@@ -545,7 +567,9 @@ namespace SharpAESCrypt
             }
 
             if (!skipFileSizeCheck && payloadLength != -1 && (payloadLength % BLOCK_SIZE != 0))
+            {
                 throw new CryptographicException(Strings.InvalidFileLength);
+            }
         }
 
 
@@ -585,14 +609,19 @@ namespace SharpAESCrypt
             if (m_version >= 2)
             {
                 foreach (KeyValuePair<string, byte[]> ext in m_extensions)
+                {
                     WriteExtension(ext.Key, ext.Value);
+                }
+
                 m_stream.Write(new byte[] { 0, 0 }, 0, 2); //No more extensions
             }
 
             m_stream.Write(m_helper.IV1, 0, m_helper.IV1.Length);
 
             if (m_version == 0)
+            {
                 m_helper.SetBulkKeyToKey1();
+            }
             else
             {
                 //Generate and encrypt bulk key and its HMAC
@@ -613,7 +642,9 @@ namespace SharpAESCrypt
         {
             byte[] name = System.Text.Encoding.UTF8.GetBytes(identifier);
             if (value == null)
+            {
                 value = new byte[0];
+            }
 
             uint size = (uint)(name.Length + 1 + value.Length);
             m_stream.WriteByte((byte)((size >> 8) & 0xff));
@@ -647,11 +678,11 @@ namespace SharpAESCrypt
             /// Sadly, a workaround to load AesCryptoServiceProvider has to be employed to not break 2.0-compatibility
             /// as the .NET team seems to have forgotten to register the name "AES" in .Net 3.5...
             /// </summary>
-            private readonly string[] CRYPT_ALGORITHMS = new string[] 
+            private readonly string[] CRYPT_ALGORITHMS = new string[]
             {
                 "AES", // only works for .NET4+
                 // The TypeAQN works (in Win) when any .NET-Framework >= v3.5 is installed.
-                "TYPEAQN:System.Security.Cryptography.AesCryptoServiceProvider, System.Core, Version=3.5.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089", 
+                "TYPEAQN:System.Security.Cryptography.AesCryptoServiceProvider, System.Core, Version=3.5.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089",
                 "Rijndael" // fallback if .NET < v3.5 installed, or outdated MONO
             };
 
@@ -719,11 +750,11 @@ namespace SharpAESCrypt
             private Type resolveCryptoAlgorithm<T>(IList<string> cryptoAlgoNames, out T retAlgoInst) where T : class
             {
                 Type retAlgoType = null; retAlgoInst = null;
-                foreach (var algo in cryptoAlgoNames)
+                foreach (string algo in cryptoAlgoNames)
                 {
                     if (algo.StartsWith("TYPEAQN:"))
                     {
-                        var typeaqn = algo.Substring("TYPEAQN:".Length);
+                        string typeaqn = algo.Substring("TYPEAQN:".Length);
                         retAlgoType = Type.GetType(typeaqn);
                         if (retAlgoType != null)
                         {
@@ -754,9 +785,13 @@ namespace SharpAESCrypt
             {
                 // Check for AES-implementation to use and save that type for subsequent calls.
                 if (m_useSymmetricAlgorithmType == null)
+                {
                     m_useSymmetricAlgorithmType = resolveCryptoAlgorithm(CRYPT_ALGORITHMS, out m_crypt);
+                }
                 else
-                    m_crypt = (SymmetricAlgorithm) Activator.CreateInstance(m_useSymmetricAlgorithmType);
+                {
+                    m_crypt = (SymmetricAlgorithm)Activator.CreateInstance(m_useSymmetricAlgorithmType);
+                }
 
                 //Not sure how to insert this with the CRYPT_ALGORITHM string
                 m_crypt.Padding = PaddingMode.None;
@@ -764,13 +799,13 @@ namespace SharpAESCrypt
                 m_crypt.BlockSize = BLOCK_SIZE * 8;
                 m_crypt.KeySize = KEY_SIZE * 8;
 
-				// TODO: Change back once we upgrade beyond netcore 2.0
-				//m_hash = HashAlgorithm.Create(HASH_ALGORITHM);
-				//m_hmac = HMAC.Create(HMAC_ALGORITHM);
+                // TODO: Change back once we upgrade beyond netcore 2.0
+                //m_hash = HashAlgorithm.Create(HASH_ALGORITHM);
+                //m_hmac = HMAC.Create(HMAC_ALGORITHM);
 
-				m_hash = (HashAlgorithm)CryptoConfig.CreateFromName(HASH_ALGORITHM);
+                m_hash = (HashAlgorithm)CryptoConfig.CreateFromName(HASH_ALGORITHM);
                 m_rand = RandomNumberGenerator.Create(/*RAND_ALGORITHM*/);
-				m_hmac = (HMAC)CryptoConfig.CreateFromName(HMAC_ALGORITHM);
+                m_hmac = (HMAC)CryptoConfig.CreateFromName(HMAC_ALGORITHM);
 
                 if (mode == OperationMode.Encrypt)
                 {
@@ -799,16 +834,22 @@ namespace SharpAESCrypt
 
                 byte[] preamb = e == null ? null : e.GetPreamble();
                 if (preamb == null || preamb.Length != 2)
+                {
                     throw new SystemException(Strings.EncodingNotSupported);
+                }
 
                 if (preamb[0] == 0xff && preamb[1] == 0xfe)
+                {
                     return e.GetBytes(password);
+                }
                 else if (preamb[0] == 0xfe && preamb[1] == 0xff)
                 {
                     //We have a Big Endian, convert to Little endian
                     byte[] tmp = e.GetBytes(password);
                     if (tmp.Length % 2 != 0)
+                    {
                         throw new SystemException(Strings.EncodingNotSupported);
+                    }
 
                     for (int i = 0; i < tmp.Length; i += 2)
                     {
@@ -820,16 +861,15 @@ namespace SharpAESCrypt
                     return tmp;
                 }
                 else
+                {
                     throw new SystemException(Strings.EncodingNotSupported);
+                }
             }
 
             /// <summary>
             /// Gets the IV used to encrypt the bulk data key
             /// </summary>
-            public byte[] IV1
-            {
-                get { return m_iv1; }
-            }
+            public byte[] IV1 => m_iv1;
 
 
             /// <summary>
@@ -861,11 +901,13 @@ namespace SharpAESCrypt
                 {
                     System.Net.NetworkInformation.NetworkInterface[] interfaces = System.Net.NetworkInformation.NetworkInterface.GetAllNetworkInterfaces();
                     for (int i = 0; i < interfaces.Length; i++)
+                    {
                         if (i != System.Net.NetworkInformation.NetworkInterface.LoopbackInterfaceIndex)
                         {
                             mac = interfaces[i].GetPhysicalAddress().GetAddressBytes();
                             break;
                         }
+                    }
                 }
                 catch
                 {
@@ -873,10 +915,14 @@ namespace SharpAESCrypt
                 }
 
                 if (mac == null)
+                {
                     mac = DEFAULT_MAC;
+                }
 
                 for (int i = 0; i < 8; i++)
+                {
                     iv[i] = (byte)((time >> (i * 8)) & 0xff);
+                }
 
                 Array.Copy(mac, 0, iv, 8, Math.Min(mac.Length, iv.Length - 8));
                 return DigestRandomBytes(iv, 256);
@@ -891,12 +937,19 @@ namespace SharpAESCrypt
             private byte[] GenerateAESKey1(byte[] password)
             {
                 if (!m_hash.CanReuseTransform)
+                {
                     throw new CryptographicException(Strings.UnsupportedHashAlgorithmReuse);
+                }
+
                 if (!m_hash.CanTransformMultipleBlocks)
+                {
                     throw new CryptographicException(Strings.UnsupportedHashAlgorithmBlocks);
+                }
 
                 if (KEY_SIZE < m_hash.HashSize / 8)
+                {
                     throw new CryptographicException(string.Format(Strings.UnsupportedHashAlgorithmBlocksize, KEY_SIZE, m_hash.HashSize / 8));
+                }
 
                 byte[] key = new byte[KEY_SIZE];
                 Array.Copy(m_iv1, key, m_iv1.Length);
@@ -970,12 +1023,19 @@ namespace SharpAESCrypt
             private byte[] DigestRandomBytes(byte[] bytes, int repetitions)
             {
                 if (bytes.Length > (m_hash.HashSize / 8))
+                {
                     throw new CryptographicException(string.Format(Strings.UnsupportedHashAlgorithmBlocksize, bytes.Length, m_hash.HashSize / 8));
+                }
 
                 if (!m_hash.CanReuseTransform)
+                {
                     throw new CryptographicException(Strings.UnsupportedHashAlgorithmReuse);
+                }
+
                 if (!m_hash.CanTransformMultipleBlocks)
+                {
                     throw new CryptographicException(Strings.UnsupportedHashAlgorithmBlocks);
+                }
 
                 m_hash.Initialize();
                 m_hash.TransformBlock(bytes, 0, bytes.Length, bytes, 0);
@@ -998,9 +1058,13 @@ namespace SharpAESCrypt
             public ICryptoTransform CreateCryptoStream(OperationMode mode)
             {
                 if (mode == OperationMode.Encrypt)
+                {
                     return m_crypt.CreateEncryptor(m_aesKey2, m_iv2);
+                }
                 else
+                {
                     return m_crypt.CreateDecryptor(m_aesKey2, m_iv2);
+                }
             }
 
             /// <summary>
@@ -1009,9 +1073,9 @@ namespace SharpAESCrypt
             /// <returns>An HMAC algortihm using AES Key 2</returns>
             public HMAC GetHMAC()
             {
-				// TODO: Change back once we upgrade beyond netcore 2.0
-				//HMAC h = HMAC.Create (HMAC_ALGORITHM);
-				var h = (HMAC)CryptoConfig.CreateFromName(HMAC_ALGORITHM);
+                // TODO: Change back once we upgrade beyond netcore 2.0
+                //HMAC h = HMAC.Create (HMAC_ALGORITHM);
+                HMAC h = (HMAC)CryptoConfig.CreateFromName(HMAC_ALGORITHM);
                 h.Key = m_aesKey2;
                 return h;
             }
@@ -1056,13 +1120,24 @@ namespace SharpAESCrypt
                 if (m_crypt != null)
                 {
                     if (m_aesKey1 != null)
+                    {
                         Array.Clear(m_aesKey1, 0, m_aesKey1.Length);
+                    }
+
                     if (m_iv1 != null)
+                    {
                         Array.Clear(m_iv1, 0, m_iv1.Length);
+                    }
+
                     if (m_aesKey2 != null)
+                    {
                         Array.Clear(m_aesKey2, 0, m_aesKey2.Length);
+                    }
+
                     if (m_iv2 != null)
+                    {
                         Array.Clear(m_iv2, 0, m_iv2.Length);
+                    }
 
                     m_aesKey1 = null;
                     m_iv1 = null;
@@ -1095,7 +1170,7 @@ namespace SharpAESCrypt
             {   // Close underlying stream if exception was thrown in base, then rethrow.
                 try { base.Dispose(disposing); }
                 catch (Exception)
-                { if (disposing) try { baseStream.Close(); } catch { } throw; }
+                { if (disposing) { try { baseStream.Close(); } catch { } } throw; }
             }
         }
 
@@ -1105,21 +1180,21 @@ namespace SharpAESCrypt
         private class LeaveOpenStream : Stream
         {
             /// <summary> The wrapped stream </summary>
-            private Stream m_stream;
+            private readonly Stream m_stream;
 
             public LeaveOpenStream(Stream stream)
             { m_stream = stream; }
 
             #region Basic Stream implementation stuff
-            public override bool CanRead { get { return m_stream.CanRead; } }
-            public override bool CanSeek { get { return m_stream.CanSeek; } }
-            public override bool CanWrite { get { return m_stream.CanWrite; } }
+            public override bool CanRead => m_stream.CanRead;
+            public override bool CanSeek => m_stream.CanSeek;
+            public override bool CanWrite => m_stream.CanWrite;
             public override void Flush() { m_stream.Flush(); }
-            public override long Length { get { return m_stream.Length; } }
+            public override long Length => m_stream.Length;
             public override long Seek(long offset, SeekOrigin origin) { return m_stream.Seek(offset, origin); }
             public override void SetLength(long value) { m_stream.SetLength(value); }
-            public override long Position { get { return m_stream.Position; } set { m_stream.Position = value; } }
-            public override int Read(byte[] buffer, int offset, int count){ return m_stream.Read(buffer, offset, count); }
+            public override long Position { get => m_stream.Position; set => m_stream.Position = value; }
+            public override int Read(byte[] buffer, int offset, int count) { return m_stream.Read(buffer, offset, count); }
             public override void Write(byte[] buffer, int offset, int count) { m_stream.Write(buffer, offset, count); }
             #endregion
         }
@@ -1140,7 +1215,7 @@ namespace SharpAESCrypt
             /// <summary>
             /// The number of bytes to hide
             /// </summary>
-            private int m_hiddenByteCount;
+            private readonly int m_hiddenByteCount;
 
             /// <summary>
             /// Buffers data and remains hidden bytes after read
@@ -1154,7 +1229,7 @@ namespace SharpAESCrypt
             private byte[] m_finalHiddenBytes;
 
             /// <summary> size of intbuf </summary>
-            private int m_bufsize;
+            private readonly int m_bufsize;
             /// <summary> Total bytes read from intbuf </summary>
             private long m_read = 0;
             /// <summary> Total bytes written to intbuf </summary>
@@ -1179,7 +1254,15 @@ namespace SharpAESCrypt
             {
                 m_stream = stream;
                 m_hiddenByteCount = count;
-                if (bufsize < (count * 2)) bufsize = (count * 2); else bufsize = bufsize + count;
+                if (bufsize < (count * 2))
+                {
+                    bufsize = (count * 2);
+                }
+                else
+                {
+                    bufsize = bufsize + count;
+                }
+
                 m_bufsize = bufsize;
                 m_intbuf = null;
                 m_read = m_written = 0;
@@ -1192,7 +1275,12 @@ namespace SharpAESCrypt
                 int bytesRead = 0;
                 int c = 0;
                 while ((c = m_stream.Read(m_intbuf, bytesRead, m_bufsize - bytesRead)) != 0)
-                { bytesRead += c; if (bytesRead >= m_hiddenByteCount) break; }
+                {
+                    bytesRead += c; if (bytesRead >= m_hiddenByteCount)
+                    {
+                        break;
+                    }
+                }
                 m_written += bytesRead;
                 if (c == 0) // premature end. Store in m_finalHiddenBytes anyway, throw on access there.
                 {
@@ -1202,17 +1290,17 @@ namespace SharpAESCrypt
             }
 
             /// <summary> The currently known length of the payload. Negative if base stream shorter than hidden bytes in base stream.  </summary>
-            public long PayloadLength { get { return m_written - m_hiddenByteCount; } }
+            public long PayloadLength => m_written - m_hiddenByteCount;
 
             #region Basic Stream implementation stuff
-            public override bool CanRead { get { return m_stream.CanRead; } }
-            public override bool CanSeek { get { return m_stream.CanSeek; } }
-            public override bool CanWrite { get { return m_stream.CanWrite; } }
+            public override bool CanRead => m_stream.CanRead;
+            public override bool CanSeek => m_stream.CanSeek;
+            public override bool CanWrite => m_stream.CanWrite;
             public override void Flush() { m_stream.Flush(); }
-            public override long Length { get { return m_stream.Length - m_hiddenByteCount; } }
+            public override long Length => m_stream.Length - m_hiddenByteCount;
             public override long Seek(long offset, SeekOrigin origin) { return m_stream.Seek(offset, origin); }
             public override void SetLength(long value) { m_stream.SetLength(value + m_hiddenByteCount); }
-            public override long Position { get { return m_stream.Position; } set { m_stream.Position = value; } }
+            public override long Position { get => m_stream.Position; set => m_stream.Position = value; }
             public override void Write(byte[] buffer, int offset, int count) { m_stream.Write(buffer, offset, count); }
             #endregion
 
@@ -1223,36 +1311,55 @@ namespace SharpAESCrypt
             {
                 // optimistic read if caller knew the end before, but we don't
                 if (!m_eof && m_written == m_read + m_hiddenByteCount)
+                {
                     readToIntBuf(m_stream);
+                }
 
                 if (m_eof)
                 {
                     // this class is designed to actually store hidden bytes even if the stream is too short.
                     // if ever needed, remove this check to access bytes if base stream was to short.
                     if (m_finalHiddenBytes == null || m_finalHiddenBytes.Length < m_hiddenByteCount)
+                    {
                         throw new IOException(Strings.UnexpectedEndOfStream);
+                    }
 
                     if (count < 0 || offset < 0 || count + offset > m_hiddenByteCount)
+                    {
                         throw new ArgumentException();
+                    }
 
                     byte[] retBytes = new byte[count];
                     Array.Copy(m_finalHiddenBytes, offset, retBytes, 0, count);
                     return retBytes;
                 }
-                else throw new InvalidOperationException(Strings.HiddenBytesNotAvailable);
+                else
+                {
+                    throw new InvalidOperationException(Strings.HiddenBytesNotAvailable);
+                }
             }
 
             /// <summary> Writes to internal buffer. Guarantees to write all, throws otherwise. </summary>
             private void writeToIntBuf(byte[] buffer, int offset, int count)
             {
-                if (count == 0) return;
+                if (count == 0)
+                {
+                    return;
+                }
+
                 if (count > (m_intbuf.Length - m_written + m_read))
+                {
                     throw new InvalidOperationException(Strings.BufferTooSmall);
+                }
+
                 int startIndex = (int)(m_written % m_intbuf.Length);
                 int round1 = Math.Min(count, m_intbuf.Length - startIndex);
                 Array.Copy(buffer, offset, m_intbuf, startIndex, round1);
                 if (count > round1)
+                {
                     Array.Copy(buffer, offset + round1, m_intbuf, 0, count - round1);
+                }
+
                 m_written += count;
             }
 
@@ -1260,14 +1367,20 @@ namespace SharpAESCrypt
             private int readToIntBuf(Stream stream)
             {
                 int bufFree = (int)(m_intbuf.Length - m_written + m_read);
-                if (bufFree<= 0)
+                if (bufFree <= 0)
+                {
                     throw new InvalidOperationException(Strings.BufferTooSmall);
+                }
+
                 int offset = (int)(m_written % m_intbuf.Length);
                 int round1 = Math.Min(bufFree, m_intbuf.Length - offset);
                 int bytesRead = stream.Read(m_intbuf, offset, round1);
                 bufFree -= bytesRead;
                 if (bytesRead == round1 && bufFree > 0)
+                {
                     bytesRead += stream.Read(m_intbuf, 0, bufFree);
+                }
+
                 m_written += bytesRead;
                 return bytesRead;
             }
@@ -1276,12 +1389,19 @@ namespace SharpAESCrypt
             private int readFromIntBuf(byte[] buffer, int offset, int count)
             {
                 count = Math.Min(count, (int)(m_written - m_read));
-                if (count == 0) return 0;
+                if (count == 0)
+                {
+                    return 0;
+                }
+
                 int startIndex = (int)(m_read % m_intbuf.Length);
                 int round1 = Math.Min(count, m_intbuf.Length - startIndex);
                 Array.Copy(m_intbuf, startIndex, buffer, offset, round1);
                 if (count > round1)
+                {
                     Array.Copy(m_intbuf, 0, buffer, offset + round1, count - round1);
+                }
+
                 m_read += count;
                 return count;
             }
@@ -1308,12 +1428,18 @@ namespace SharpAESCrypt
             /// <returns>The number of bytes read</returns>
             public override int Read(byte[] buffer, int offset, int count)
             {
-                if (m_intbuf == null) initIntBuf();
+                if (m_intbuf == null)
+                {
+                    initIntBuf();
+                }
 
                 int bufFilled = (int)(m_written - m_read);
                 int bytesRead = 0;
 
-                if (count <= 0 || (m_eof && bufFilled <= m_hiddenByteCount)) return 0;
+                if (count <= 0 || (m_eof && bufFilled <= m_hiddenByteCount))
+                {
+                    return 0;
+                }
 
                 if (bufFilled > m_hiddenByteCount) // enough data available to return something
                 {
@@ -1332,15 +1458,26 @@ namespace SharpAESCrypt
                         count = 0; m_eof = true;
                         m_finalHiddenBytes = peekLastBytesFromIntBuf(m_hiddenByteCount);
                     }
-                    else bytesRead += readFromIntBuf(buffer, offset, Math.Min(count, cnt));
+                    else
+                    {
+                        bytesRead += readFromIntBuf(buffer, offset, Math.Min(count, cnt));
+                    }
                 }
                 return bytesRead;
             }
 
             protected override void Dispose(bool disposing)
             {
-                if (m_intbuf != null) m_intbuf = null;
-                if (m_stream != null) m_stream = null; // no dispose of base stream, main class does this.
+                if (m_intbuf != null)
+                {
+                    m_intbuf = null;
+                }
+
+                if (m_stream != null)
+                {
+                    m_stream = null; // no dispose of base stream, main class does this.
+                }
+
                 base.Dispose(disposing);
             }
         }
@@ -1370,7 +1507,10 @@ namespace SharpAESCrypt
         {
             byte[] tmp = new byte[count];
             if (ForceRead(stream, tmp, 0, count) < count)
+            {
                 throw new InvalidDataException(Strings.UnexpectedEndOfStream);
+            }
+
             return tmp;
         }
 
@@ -1380,12 +1520,12 @@ namespace SharpAESCrypt
 
         /// <summary> An exception raised to signal a hash mismatch on decryption </summary>
         [Serializable]
-        public class HashMismatchException :  CryptographicException
+        public class HashMismatchException : CryptographicException
         {
-			/// <summary>
-			/// Initializes a new instance of the HashMismatchException class.
-			/// </summary>
-			/// <param name="message">The error message to report.</param>
+            /// <summary>
+            /// Initializes a new instance of the HashMismatchException class.
+            /// </summary>
+            /// <param name="message">The error message to report.</param>
             public HashMismatchException(string message) : base(message) { }
         }
 
@@ -1393,10 +1533,10 @@ namespace SharpAESCrypt
         [Serializable]
         public class WrongPasswordException : CryptographicException
         {
-			/// <summary>
-			/// Initializes a new instance of the WrongPasswordException class.
-			/// </summary>
-			/// <param name="message">The error message to report.</param>
+            /// <summary>
+            /// Initializes a new instance of the WrongPasswordException class.
+            /// </summary>
+            /// <param name="message">The error message to report.</param>
             public WrongPasswordException(string message) : base(message) { }
         }
 
@@ -1443,9 +1583,16 @@ namespace SharpAESCrypt
             int a;
             byte[] buffer = new byte[1024 * 4];
             SharpAESCrypt c = new SharpAESCrypt(password, output, OperationMode.Encrypt);
-            if (maxThreads > 0) c.MaxCryptoThreads = maxThreads;
+            if (maxThreads > 0)
+            {
+                c.MaxCryptoThreads = maxThreads;
+            }
+
             while ((a = input.Read(buffer, 0, buffer.Length)) != 0)
+            {
                 c.Write(buffer, 0, a);
+            }
+
             c.FlushFinalBlock();
         }
 
@@ -1463,9 +1610,15 @@ namespace SharpAESCrypt
             byte[] buffer = new byte[1024 * 4];
 
             SharpAESCrypt c = new SharpAESCrypt(password, input, OperationMode.Decrypt, skipFileSizeCheck);
-            if (maxThreads > 0) c.MaxCryptoThreads = maxThreads;
+            if (maxThreads > 0)
+            {
+                c.MaxCryptoThreads = maxThreads;
+            }
+
             while ((a = c.Read(buffer, 0, buffer.Length)) != 0)
+            {
                 output.Write(buffer, 0, a);
+            }
         }
 
         /// <summary>
@@ -1479,7 +1632,9 @@ namespace SharpAESCrypt
         {
             using (FileStream infs = File.OpenRead(inputfile))
             using (FileStream outfs = File.Create(outputfile))
+            {
                 Encrypt(password, infs, outfs, maxThreads);
+            }
         }
 
         /// <summary>
@@ -1494,7 +1649,9 @@ namespace SharpAESCrypt
         {
             using (FileStream infs = File.OpenRead(inputfile))
             using (FileStream outfs = File.Create(outputfile))
+            {
                 Decrypt(password, infs, outfs, skipFileSizeCheck, maxThreads);
+            }
         }
         #endregion
 
@@ -1511,15 +1668,29 @@ namespace SharpAESCrypt
         {
             //Basic input checks
             if (stream == null)
+            {
                 throw new ArgumentNullException("stream");
+            }
+
             if (password == null)
+            {
                 throw new ArgumentNullException("password");
+            }
+
             if (mode != OperationMode.Encrypt && mode != OperationMode.Decrypt)
+            {
                 throw new ArgumentException(Strings.InvalidOperationMode, "mode");
+            }
+
             if (mode == OperationMode.Encrypt && !stream.CanWrite)
+            {
                 throw new ArgumentException(Strings.StreamMustBeWriteAble, "stream");
+            }
+
             if (mode == OperationMode.Decrypt && !stream.CanRead)
+            {
                 throw new ArgumentException(Strings.StreamMustBeReadAble, "stream");
+            }
 
             m_mode = mode;
             m_stream = stream;
@@ -1533,7 +1704,9 @@ namespace SharpAESCrypt
 
                 //Setup default extensions
                 if (Extension_InsertCreateByIdentifier)
+                {
                     m_extensions.Add(new KeyValuePair<string, byte[]>("CREATED_BY", System.Text.Encoding.UTF8.GetBytes(Extension_CreatedByIdentifier)));
+                }
 
                 if (Extension_InsertTimeStamp)
                 {
@@ -1542,7 +1715,9 @@ namespace SharpAESCrypt
                 }
 
                 if (Extension_InsertPlaceholder)
-                    m_extensions.Add(new KeyValuePair<string, byte[]>(String.Empty, new byte[127])); //Suggested extension space
+                {
+                    m_extensions.Add(new KeyValuePair<string, byte[]>(string.Empty, new byte[127])); //Suggested extension space
+                }
 
                 //We defer creation of the cryptostream until it is needed, 
                 // so the caller can change version, extensions, etc. 
@@ -1571,17 +1746,28 @@ namespace SharpAESCrypt
         /// </summary>
         public byte Version
         {
-            get { return m_version; }
+            get => m_version;
             set
             {
                 if (m_mode == OperationMode.Decrypt)
+                {
                     throw new InvalidOperationException(Strings.VersionReadonlyForDecryption);
+                }
+
                 if (m_mode == OperationMode.Encrypt && m_cryptDataStream != null)
+                {
                     throw new InvalidOperationException(Strings.VersionReadonly);
+                }
+
                 if (value > MAX_FILE_VERSION)
+                {
                     throw new ArgumentOutOfRangeException(string.Format(Strings.VersionUnsupported, MAX_FILE_VERSION));
+                }
+
                 if (value == 0 && !m_stream.CanSeek)
+                {
                     throw new InvalidOperationException(Strings.StreamMustSupportSeeking);
+                }
 
                 m_version = value;
             }
@@ -1595,11 +1781,14 @@ namespace SharpAESCrypt
         /// </summary>
         public int MaxCryptoThreads
         {
-            get { return m_maxCryptoThreads; }
+            get => m_maxCryptoThreads;
             set
             {
                 if (m_cryptDataStream != null)
+                {
                     throw new InvalidOperationException(Strings.ThreadingReadonly);
+                }
+
                 m_maxCryptoThreads = value;
             }
         }
@@ -1615,9 +1804,13 @@ namespace SharpAESCrypt
             get
             {
                 if (m_mode == OperationMode.Decrypt || (m_mode == OperationMode.Encrypt && m_cryptDataStream != null))
+                {
                     return m_extensions.AsReadOnly();
+                }
                 else
+                {
                     return m_extensions;
+                }
             }
         }
 
@@ -1626,17 +1819,17 @@ namespace SharpAESCrypt
         /// Gets a value indicating whether this instance can read.
         /// </summary>
         /// <value><c>true</c> if this instance can read; otherwise, <c>false</c>.</value>
-        public override bool CanRead { get { return Crypto.CanRead; } }
+        public override bool CanRead => Crypto.CanRead;
         /// <summary>
         /// Gets a value indicating whether this instance can seek.
         /// </summary>
         /// <value><c>true</c> if this instance can seek; otherwise, <c>false</c>.</value>
-        public override bool CanSeek { get { return Crypto.CanSeek; } }
+        public override bool CanSeek => Crypto.CanSeek;
         /// <summary>
         /// Gets a value indicating whether this instance can write.
         /// </summary>
         /// <value><c>true</c> if this instance can write; otherwise, <c>false</c>.</value>
-        public override bool CanWrite { get { return Crypto.CanWrite; } }
+        public override bool CanWrite => Crypto.CanWrite;
         /// <Docs>An I/O error occurs.</Docs>
         /// <summary>
         /// Flush this instance.
@@ -1646,15 +1839,15 @@ namespace SharpAESCrypt
         /// Gets the length.
         /// </summary>
         /// <value>The length.</value>
-        public override long Length { get { return Crypto.Length; } }
+        public override long Length => Crypto.Length;
         /// <summary>
         /// Gets or sets the position.
         /// </summary>
         /// <value>The position.</value>
         public override long Position
         {
-            get { return Crypto.Position; }
-            set { Crypto.Position = value; }
+            get => Crypto.Position;
+            set => Crypto.Position = value;
         }
         /// <Docs>The stream does not support seeking, such as if the stream is constructed from a pipe or console output.</Docs>
         /// <exception cref="T:System.IO.IOException">An I/O error has occurred.</exception>
@@ -1690,10 +1883,14 @@ namespace SharpAESCrypt
         public override int Read(byte[] buffer, int offset, int count)
         {
             if (m_mode != OperationMode.Decrypt)
+            {
                 throw new InvalidOperationException(Strings.CannotReadWhileEncrypting);
+            }
 
             if ((m_hasReadFooter && m_curBlockBytes == 0) || count == 0)
+            {
                 return 0;
+            }
 
             bool isInit = false;
             bool isEOF = false;
@@ -1729,7 +1926,10 @@ namespace SharpAESCrypt
                         int read = ForceRead(Crypto, buffer, offset + prependBlock, count - prependBlock);
                         m_readcount += read;
 
-                        if (read % BLOCK_SIZE != 0) throw new InvalidDataException(Strings.UnexpectedEndOfStream);
+                        if (read % BLOCK_SIZE != 0)
+                        {
+                            throw new InvalidDataException(Strings.UnexpectedEndOfStream);
+                        }
 
                         if (read > 0)
                         {
@@ -1741,7 +1941,10 @@ namespace SharpAESCrypt
                             offset += read - BLOCK_SIZE;
                             count -= read - BLOCK_SIZE;
                         }
-                        else if (isInit) m_nextBlock = null; // empty stream, no next block
+                        else if (isInit)
+                        {
+                            m_nextBlock = null; // empty stream, no next block
+                        }
 
                         isEOF = (read < count);
                     }
@@ -1750,7 +1953,10 @@ namespace SharpAESCrypt
                         // read single next block and switch buffers
                         int read = ForceRead(Crypto, m_curBlock, 0, BLOCK_SIZE);
                         m_readcount += read;
-                        if (read % BLOCK_SIZE != 0) throw new InvalidDataException(Strings.UnexpectedEndOfStream);
+                        if (read % BLOCK_SIZE != 0)
+                        {
+                            throw new InvalidDataException(Strings.UnexpectedEndOfStream);
+                        }
 
                         if (isInit) // read first next block
                         {
@@ -1760,7 +1966,10 @@ namespace SharpAESCrypt
                                 byte[] t = m_curBlock; m_curBlock = m_nextBlock; m_nextBlock = t;
                                 read = ForceRead(Crypto, m_curBlock, 0, BLOCK_SIZE);
                                 m_readcount += read;
-                                if (read % BLOCK_SIZE != 0) throw new InvalidDataException(Strings.UnexpectedEndOfStream);
+                                if (read % BLOCK_SIZE != 0)
+                                {
+                                    throw new InvalidDataException(Strings.UnexpectedEndOfStream);
+                                }
                             }
                         }
 
@@ -1776,7 +1985,10 @@ namespace SharpAESCrypt
                             offset += c;
                             count -= c;
                         }
-                        else isEOF = true;
+                        else
+                        {
+                            isEOF = true;
+                        }
                     }
                 }
             }
@@ -1799,17 +2011,25 @@ namespace SharpAESCrypt
                     m_cryptoThreadPump.WaitHandle.WaitOne();
                     // If there was an exception (e.g. EOF in base stream) we rethrow
                     if (m_cryptoThreadPump.Exception != null)
+                    {
                         throw m_cryptoThreadPump.Exception;
+                    }
                 }
 
                 m_hasReadFooter = true;
 
                 if (m_payloadStream.PayloadLength < 0)
+                {
                     throw new InvalidDataException(Strings.UnexpectedEndOfStream);
+                }
                 else if (m_payloadStream.PayloadLength % BLOCK_SIZE != 0)
+                {
                     throw new InvalidDataException(Strings.InvalidFileLength);
+                }
                 else if (m_payloadStream.PayloadLength != m_readcount)
-                    throw new InvalidDataException(Strings.StreamSizeMismatch );
+                {
+                    throw new InvalidDataException(Strings.StreamSizeMismatch);
+                }
 
                 int hMacOffset = 0;
 
@@ -1819,14 +2039,21 @@ namespace SharpAESCrypt
                     int l = m_payloadStream.GetHiddenBytes(0, 1)[0];
                     hMacOffset++;
                     if (l < 0)
+                    {
                         throw new InvalidDataException(Strings.UnexpectedEndOfStream);
+                    }
+
                     m_paddingSize = (byte)l;
                     if (m_paddingSize > BLOCK_SIZE)
+                    {
                         throw new InvalidDataException(Strings.InvalidFileLength);
+                    }
                 }
 
                 if (m_readcount % BLOCK_SIZE != 0)
+                {
                     throw new InvalidDataException(Strings.InvalidFileLength);
+                }
 
                 //Required because we want to read the hash, 
                 // so FlushFinalBlock need to be called.
@@ -1837,8 +2064,12 @@ namespace SharpAESCrypt
 
                 byte[] hmac1 = m_hmac.Hash;
                 for (int i = 0; i < hmac1.Length; i++)
+                {
                     if (hmac1[i] != hmac2[i])
+                    {
                         throw new HashMismatchException(m_version == 0 ? Strings.DataHMACMismatch_v0 : Strings.DataHMACMismatch);
+                    }
+                }
             }
 
             // Flush final un-padded block to caller
@@ -1869,7 +2100,9 @@ namespace SharpAESCrypt
             try
             {
                 if (m_mode != OperationMode.Encrypt)
+                {
                     throw new InvalidOperationException(Strings.CannotWriteWhileDecrypting);
+                }
 
                 m_length = (m_length + count) % BLOCK_SIZE;
                 Crypto.Write(buffer, offset, count);
@@ -1904,14 +2137,19 @@ namespace SharpAESCrypt
                         {
                             byte[] padding = new byte[BLOCK_SIZE - lastLen];
                             for (int i = 0; i < padding.Length; i++)
+                            {
                                 padding[i] = (byte)padding.Length;
+                            }
+
                             Write(padding, 0, padding.Length);
                         }
 
                         // Not required without padding, but might throw exception if the stream is used incorrectly
                         Stream crypto = Crypto;
                         if (crypto is CryptoStream)
+                        {
                             ((CryptoStream)crypto).FlushFinalBlock();
+                        }
 
                         // The LeaveOpenStrem makes sure the underlying m_stream is not closed.
                         // All other streams are automatically closed.
@@ -1920,7 +2158,10 @@ namespace SharpAESCrypt
                         if (m_cryptoThreadPump != null) // Synchronize and check for exceptions
                         {
                             m_cryptoThreadPump.WaitHandle.WaitOne();
-                            if (m_cryptoThreadPump.Exception != null) throw m_cryptoThreadPump.Exception;
+                            if (m_cryptoThreadPump.Exception != null)
+                            {
+                                throw m_cryptoThreadPump.Exception;
+                            }
                         }
 
                         byte[] hmac = m_hmac.Hash;
@@ -1961,18 +2202,29 @@ namespace SharpAESCrypt
             if (disposing)
             {
                 if (m_mode == OperationMode.Encrypt && !m_hasFlushedFinalBlock)
+                {
                     FlushFinalBlock();
+                }
 
                 if (m_cryptDataStream != null)
+                {
                     m_cryptDataStream.Dispose();
+                }
+
                 m_cryptDataStream = null;
 
                 if (m_stream != null)
+                {
                     m_stream.Dispose();
+                }
+
                 m_stream = null;
                 m_extensions = null;
                 if (m_helper != null)
+                {
                     m_helper.Dispose();
+                }
+
                 m_helper = null;
                 m_hmac = null;
             }
@@ -1999,7 +2251,12 @@ namespace SharpAESCrypt
 
             int maxThreads = 1;
             for (int testFor = 1; testFor <= 4; testFor++)
-                if (args[0].IndexOf((char)('0' + testFor)) >= 0) maxThreads = testFor;
+            {
+                if (args[0].IndexOf((char)('0' + testFor)) >= 0)
+                {
+                    maxThreads = testFor;
+                }
+            }
 
             if (!(encrypt || decrypt))
             {
@@ -2027,10 +2284,17 @@ namespace SharpAESCrypt
 
                 using (Stream inputstream = (inputname != null) ? File.OpenRead(inputname) : Console.OpenStandardInput())
                 using (Stream outputstream = (outputname != null) ? File.Create(outputname) : Console.OpenStandardOutput())
+                {
                     if (encrypt)
+                    {
                         Encrypt(args[1], inputstream, outputstream, maxThreads);
+                    }
                     else
+                    {
                         Decrypt(args[1], inputstream, outputstream, optimisticMode, maxThreads);
+                    }
+                }
+
                 Environment.ExitCode = 0;
 
 #if DEBUG
@@ -2042,11 +2306,18 @@ namespace SharpAESCrypt
             catch (Exception ex)
             {
                 if (ex is WrongPasswordException)
+                {
                     Environment.ExitCode = 4;
+                }
+
                 if (ex is HashMismatchException)
+                {
                     Environment.ExitCode = 3;
+                }
                 else
+                {
                     Environment.ExitCode = 1;
+                }
 
                 Console.Error.WriteLine(string.Format(Strings.CommandlineError, ex.Message));
                 // Delete output file if something went wrong

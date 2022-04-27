@@ -31,33 +31,34 @@ using System.Text;
 
 namespace NetMQServer.Core.Transports
 {
-    delegate PullMsgResult NextMsgDelegate (ref Msg msg);
-    delegate PushMsgResult ProcessMsgDelegate(ref Msg msg);
-    
+    internal delegate PullMsgResult NextMsgDelegate(ref Msg msg);
+
+    internal delegate PushMsgResult ProcessMsgDelegate(ref Msg msg);
+
     internal sealed class StreamEngine : IEngine, IProactorEvents
     {
-        const int HeartbeatIntervalTimerId = 1;
-        const int HeartbeatTimeoutTimerId = 2;
-        const int HeartbeatTtlTimerId = 3;
-        
+        private const int HeartbeatIntervalTimerId = 1;
+        private const int HeartbeatTimeoutTimerId = 2;
+        private const int HeartbeatTtlTimerId = 3;
+
         private readonly byte[] NullMechanismBytes = new byte[20]
         {
             (byte) 'N', (byte) 'U', (byte) 'L', (byte) 'L', 0, 0, 0, 0, 0, 0,
             0, 0, 0, 0, 0, 0, 0, 0, 0, 0
         };
-        
+
         private readonly byte[] PlainMechanismBytes = new byte[20]
         {
             (byte) 'P', (byte) 'L', (byte) 'A', (byte) 'I', (byte) 'N', 0, 0, 0, 0, 0,
             0, 0, 0, 0, 0, 0, 0, 0, 0, 0
         };
-        
+
         private readonly byte[] CurveMechanismBytes = new byte[20]
         {
             (byte) 'C', (byte) 'U', (byte) 'R', (byte) 'V', (byte) 'E', 0, 0, 0, 0, 0,
             0, 0, 0, 0, 0, 0, 0, 0, 0, 0
         };
-        
+
         private class StateMachineAction
         {
             public StateMachineAction(Action action, SocketError socketError, int bytesTransferred)
@@ -178,20 +179,20 @@ namespace NetMQServer.Core.Transports
 
         private State m_state;
         private HandshakeState m_handshakeState;
-        
+
         private NextMsgDelegate m_nextMsg;
         private ProcessMsgDelegate m_processMsg;
-        
+
         private Mechanism m_mechanism;
         private Msg m_pongMsg;
-        
+
         // queue for actions that happen during the state machine
         private readonly Queue<StateMachineAction> m_actionsQueue;
 
         private bool m_hasHeartbeatTimer;
         private bool m_hasTtlTimer;
         private bool m_hasTimeoutTimer;
-        private int m_heartbeatTimeout;
+        private readonly int m_heartbeatTimeout;
 
         public StreamEngine(AsyncSocket handle, Options options, string endpoint)
         {
@@ -210,22 +211,25 @@ namespace NetMQServer.Core.Transports
             m_mechanism = null;
             m_actionsQueue = new Queue<StateMachineAction>();
             m_subscriptionRequired = false;
-            
+
             m_nextMsg = RoutingIdMsg;
             m_processMsg = ProcessRoutingIdMsg;
             m_pongMsg = new Msg();
-            
+
             m_hasHeartbeatTimer = false;
             m_hasTtlTimer = false;
             m_hasTimeoutTimer = false;
-            
-            if (m_options.HeartbeatInterval > 0) {
+
+            if (m_options.HeartbeatInterval > 0)
+            {
                 m_heartbeatTimeout = m_options.HeartbeatTimeout;
                 if (m_heartbeatTimeout == -1)
+                {
                     m_heartbeatTimeout = m_options.HeartbeatInterval;
+                }
             }
-            
-           
+
+
         }
 
         public void Destroy()
@@ -237,7 +241,7 @@ namespace NetMQServer.Core.Transports
 
             if (m_handle != null)
             {
-                
+
                 m_handle = null;
             }
         }
@@ -258,7 +262,7 @@ namespace NetMQServer.Core.Transports
 
             // Connect to I/O threads poller object.
             m_ioObject.Plug(ioThread);
-         
+
 
             FeedAction(Action.Start, SocketError.Success, 0);
         }
@@ -273,25 +277,28 @@ namespace NetMQServer.Core.Transports
         {
             Debug.Assert(m_plugged);
             m_plugged = false;
-            
-            if (m_hasTtlTimer) {
+
+            if (m_hasTtlTimer)
+            {
                 m_ioObject.CancelTimer(HeartbeatTtlTimerId);
                 m_hasTtlTimer = false;
             }
 
-            if (m_hasTimeoutTimer) {
+            if (m_hasTimeoutTimer)
+            {
                 m_ioObject.CancelTimer(HeartbeatTimeoutTimerId);
                 m_hasTimeoutTimer = false;
             }
 
-            if (m_hasHeartbeatTimer) {
+            if (m_hasHeartbeatTimer)
+            {
                 m_ioObject.CancelTimer(HeartbeatIntervalTimerId);
                 m_hasHeartbeatTimer = false;
             }
 
             // remove handle from proactor.
-         
-            
+
+
             // Disconnect from I/O threads poller object.
             m_ioObject.Unplug();
 
@@ -305,7 +312,7 @@ namespace NetMQServer.Core.Transports
         {
             Debug.Assert(m_session != null);
             m_state = State.Error;
-         
+
             m_session.Flush();
             m_session.Detach();
             Unplug();
@@ -318,7 +325,7 @@ namespace NetMQServer.Core.Transports
 
             while (m_actionsQueue.Count > 0)
             {
-                var stateMachineAction = m_actionsQueue.Dequeue();
+                StateMachineAction stateMachineAction = m_actionsQueue.Dequeue();
                 Handle(stateMachineAction.Action, stateMachineAction.SocketError, stateMachineAction.BytesTransferred);
             }
         }
@@ -344,7 +351,7 @@ namespace NetMQServer.Core.Transports
                                 m_decoder = new RawDecoder(Config.InBatchSize, m_options.MaxMessageSize, m_options.Endian);
                                 m_nextMsg = m_session.PullMsg;
                                 m_processMsg = m_session.PushMsg;
-                                    
+
                                 Activate();
                             }
                             else
@@ -373,12 +380,12 @@ namespace NetMQServer.Core.Transports
                             // if we stuck let's continue, other than that nothing to do
                             if (m_receivingState == ReceiveState.Stuck)
                             {
-                                var pushResult = m_decoder.PushMsg(m_processMsg);
+                                PushMsgResult pushResult = m_decoder.PushMsg(m_processMsg);
                                 if (pushResult == PushMsgResult.Ok)
                                 {
                                     m_receivingState = ReceiveState.Active;
                                     m_session.Flush();
-                                    ProcessInput();    
+                                    ProcessInput();
                                 }
                             }
                             break;
@@ -422,22 +429,31 @@ namespace NetMQServer.Core.Transports
             {
                 m_outpos = null;
                 m_outsize = m_encoder.Encode(ref m_outpos, 0);
-                
+
                 while (m_outsize < Config.OutBatchSize)
                 {
                     Msg msg = new Msg();
                     if (m_nextMsg(ref msg) != PullMsgResult.Ok)
+                    {
                         break;
+                    }
+
                     m_encoder.LoadMsg(ref msg);
                     ByteArraySegment buffer = null;
                     if (m_outpos != null)
+                    {
                         buffer = m_outpos + m_outsize;
-                    var n = m_encoder.Encode(ref buffer, Config.OutBatchSize - m_outsize);
+                    }
+
+                    int n = m_encoder.Encode(ref buffer, Config.OutBatchSize - m_outsize);
                     if (m_outpos == null)
+                    {
                         m_outpos = buffer;
+                    }
+
                     m_outsize += n;
                 }
-                
+
                 if (m_outsize == 0)
                 {
                     m_sendingState = SendState.Idle;
@@ -506,7 +522,7 @@ namespace NetMQServer.Core.Transports
                                 {
                                     m_greetingBytesRead = 0;
 
-                                    var greetingSegment = new ByteArraySegment(m_greeting, m_greetingBytesRead);
+                                    ByteArraySegment greetingSegment = new ByteArraySegment(m_greeting, m_greetingBytesRead);
 
                                     m_handshakeState = HandshakeState.ReceivingGreeting;
 
@@ -548,12 +564,12 @@ namespace NetMQServer.Core.Transports
                                     // skip the message header, we simply throw that
                                     // header data away.
                                     int headerSize = m_options.IdentitySize + 1 >= 255 ? 10 : 2;
-                                    var tmp = new byte[10];
-                                    var bufferp = new ByteArraySegment(tmp);
+                                    byte[] tmp = new byte[10];
+                                    ByteArraySegment bufferp = new ByteArraySegment(tmp);
 
                                     int bufferSize = m_encoder.Encode(ref bufferp, headerSize);
                                     Debug.Assert(bufferSize == headerSize);
-                                    
+
                                     // Make sure the decoder sees the data we have already received.
                                     m_inpos = new ByteArraySegment(m_greeting);
                                     m_insize = m_greetingBytesRead;
@@ -565,14 +581,16 @@ namespace NetMQServer.Core.Transports
                                     // divert the message stream from session to ourselves.
                                     if (m_options.SocketType == ZmqSocketType.Pub ||
                                         m_options.SocketType == ZmqSocketType.Xpub)
+                                    {
                                         m_subscriptionRequired = true;
+                                    }
 
                                     // handshake is done
                                     Activate();
                                 }
                                 else if (m_greetingBytesRead < PreambleSize)
                                 {
-                                    var greetingSegment = new ByteArraySegment(m_greeting, m_greetingBytesRead);
+                                    ByteArraySegment greetingSegment = new ByteArraySegment(m_greeting, m_greetingBytesRead);
                                     BeginRead(greetingSegment, PreambleSize - m_greetingBytesRead);
                                 }
                                 else
@@ -581,7 +599,7 @@ namespace NetMQServer.Core.Transports
                                     // Send the rest of the greeting.
                                     m_outpos[m_outsize++] = 3; // Protocol version
                                     m_handshakeState = HandshakeState.SendingMajorVersion;
-                                    
+
                                     BeginWrite(m_outpos, m_outsize);
                                 }
                             }
@@ -616,7 +634,7 @@ namespace NetMQServer.Core.Transports
                                 }
                                 else
                                 {
-                                    var greetingSegment = new ByteArraySegment(m_greeting, m_greetingBytesRead);
+                                    ByteArraySegment greetingSegment = new ByteArraySegment(m_greeting, m_greetingBytesRead);
 
                                     m_handshakeState = HandshakeState.ReceivingMajorVersion;
                                     BeginRead(greetingSegment, GreetingSize - m_greetingBytesRead);
@@ -648,20 +666,20 @@ namespace NetMQServer.Core.Transports
 
                                 if (m_greetingBytesRead <= VersionPos)
                                 {
-                                    var greetingSegment = new ByteArraySegment(m_greeting, m_greetingBytesRead);
+                                    ByteArraySegment greetingSegment = new ByteArraySegment(m_greeting, m_greetingBytesRead);
                                     BeginRead(greetingSegment, GreetingSize - m_greetingBytesRead);
                                 }
                                 else if (m_greeting[VersionPos] == 0 || m_greeting[VersionPos] == 1)
                                 {
                                     m_outpos[m_outsize++] = (byte)m_options.SocketType;
                                     m_handshakeState = HandshakeState.SendingSocketType;
-                                    
+
                                     BeginWrite(m_outpos, m_outsize);
                                 }
                                 else
                                 {
                                     m_outpos[m_outsize++] = 0; // Minor version
-                                            
+
                                     switch (m_options.Mechanism)
                                     {
                                         case MechanismType.Null:
@@ -679,10 +697,10 @@ namespace NetMQServer.Core.Transports
                                         default:
                                             throw new ArgumentOutOfRangeException();
                                     }
-                                    
+
                                     m_outpos.Fill(0, m_outsize, 32);
                                     m_outsize += 32;
-                                            
+
                                     m_handshakeState = HandshakeState.SendingV3Greeting;
                                     BeginWrite(m_outpos, m_outsize);
                                 }
@@ -720,7 +738,7 @@ namespace NetMQServer.Core.Transports
                                 {
                                     if (m_greetingBytesRead < GreetingSize)
                                     {
-                                        var greetingSegment = new ByteArraySegment(m_greeting, m_greetingBytesRead);
+                                        ByteArraySegment greetingSegment = new ByteArraySegment(m_greeting, m_greetingBytesRead);
                                         BeginRead(greetingSegment, GreetingSize - m_greetingBytesRead);
                                         m_handshakeState = HandshakeState.ReceivingResfOfV2Greeting;
                                     }
@@ -731,15 +749,15 @@ namespace NetMQServer.Core.Transports
                                             m_encoder = new V1Encoder(Config.OutBatchSize, m_options.Endian);
                                             m_decoder = new V1Decoder(Config.InBatchSize, m_options.MaxMessageSize,
                                                 m_options.Endian);
-                                            
-                                            Activate ();
+
+                                            Activate();
                                         }
                                         else if (m_greeting[VersionPos] == 1)
                                         {
                                             m_encoder = new V2Encoder(Config.OutBatchSize, m_options.Endian);
                                             m_decoder = new V2Decoder(Config.InBatchSize, m_options.MaxMessageSize, m_options.Endian);
 
-                                            Activate ();
+                                            Activate();
                                         }
                                         else
                                         {
@@ -774,7 +792,7 @@ namespace NetMQServer.Core.Transports
 
                                 if (m_greetingBytesRead < GreetingSize)
                                 {
-                                    var greetingSegment = new ByteArraySegment(m_greeting, m_greetingBytesRead);
+                                    ByteArraySegment greetingSegment = new ByteArraySegment(m_greeting, m_greetingBytesRead);
                                     BeginRead(greetingSegment, GreetingSize - m_greetingBytesRead);
                                 }
                                 else
@@ -784,18 +802,18 @@ namespace NetMQServer.Core.Transports
                                         m_encoder = new V1Encoder(Config.OutBatchSize, m_options.Endian);
                                         m_decoder = new V1Decoder(Config.InBatchSize, m_options.MaxMessageSize,
                                             m_options.Endian);
-                                            
-                                        Activate ();
+
+                                        Activate();
                                     }
                                     else if (m_greeting[VersionPos] == 1)
                                     {
                                         m_encoder = new V2Encoder(Config.OutBatchSize, m_options.Endian);
                                         m_decoder = new V2Decoder(Config.InBatchSize, m_options.MaxMessageSize, m_options.Endian);
 
-                                        Activate ();
+                                        Activate();
                                     }
                                     else
-                                    {    
+                                    {
                                         throw new Exception("No V2Greeting for ZMTP 3");
                                     }
                                 }
@@ -831,7 +849,7 @@ namespace NetMQServer.Core.Transports
                                 }
                                 else
                                 {
-                                    var greetingSegment = new ByteArraySegment(m_greeting, m_greetingBytesRead);
+                                    ByteArraySegment greetingSegment = new ByteArraySegment(m_greeting, m_greetingBytesRead);
                                     BeginRead(greetingSegment, GreetingSizeV3 - m_greetingBytesRead);
                                     m_handshakeState = HandshakeState.ReceiveV3Greeting;
                                 }
@@ -862,17 +880,19 @@ namespace NetMQServer.Core.Transports
 
                                 if (m_greetingBytesRead < GreetingSizeV3)
                                 {
-                                    var greetingSegment = new ByteArraySegment(m_greeting, m_greetingBytesRead);
+                                    ByteArraySegment greetingSegment = new ByteArraySegment(m_greeting, m_greetingBytesRead);
                                     BeginRead(greetingSegment, GreetingSizeV3 - m_greetingBytesRead);
                                 }
                                 else
                                 {
                                     m_encoder = new V2Encoder(Config.OutBatchSize, m_options.Endian);
                                     m_decoder = new V2Decoder(Config.InBatchSize, m_options.MaxMessageSize, m_options.Endian);
-                                    
+
                                     if (m_options.Mechanism == MechanismType.Null
                                         && ByteArrayUtility.AreEqual(m_greeting, 12, NullMechanismBytes, 0, 20))
+                                    {
                                         m_mechanism = new NullMechanism(m_session, m_options);
+                                    }
                                     else if (m_options.Mechanism == MechanismType.Plain
                                              && ByteArrayUtility.AreEqual(m_greeting, 12, PlainMechanismBytes, 0, 20))
                                     {
@@ -883,20 +903,21 @@ namespace NetMQServer.Core.Transports
                                              && ByteArrayUtility.AreEqual(m_greeting, 12, CurveMechanismBytes, 0, 20))
                                     {
                                         if (m_options.AsServer)
+                                        {
                                             m_mechanism = new CurveServerMechanism(m_session, m_options);
-                                      
-                                           
+                                        }
                                     }
-                                    else {
+                                    else
+                                    {
                                         // Unsupported mechanism
                                         Error();
                                         return;
                                     }
-                                    
+
                                     m_nextMsg = NextHandshakeCommand;
                                     m_processMsg = ProcessHandshakeCommand;
-                                    
-                                    Activate ();
+
+                                    Activate();
                                 }
                             }
                             break;
@@ -945,12 +966,12 @@ namespace NetMQServer.Core.Transports
             {
                 m_insize = 0;
                 Error();
-                return; 
+                return;
             }
-            
+
             while (m_insize > 0)
             {
-                var result = m_decoder.Decode(m_inpos, m_insize, out var processed);
+                DecodeResult result = m_decoder.Decode(m_inpos, m_insize, out int processed);
                 m_inpos.AdvanceOffset(processed);
                 m_insize -= processed;
 
@@ -959,11 +980,13 @@ namespace NetMQServer.Core.Transports
                     Error();
                     return;
                 }
-                
-                if (result == DecodeResult.Processing)
-                    break;
 
-                var pushResult = m_decoder.PushMsg(m_processMsg);
+                if (result == DecodeResult.Processing)
+                {
+                    break;
+                }
+
+                PushMsgResult pushResult = m_decoder.PushMsg(m_processMsg);
                 if (pushResult == PushMsgResult.Full)
                 {
                     m_receivingState = ReceiveState.Stuck;
@@ -1024,7 +1047,9 @@ namespace NetMQServer.Core.Transports
         private static int EndWrite(SocketError socketError, int bytesTransferred)
         {
             if (socketError == SocketError.Success && bytesTransferred > 0)
+            {
                 return bytesTransferred;
+            }
 
             if (bytesTransferred == 0 ||
                 socketError == SocketError.NetworkDown ||
@@ -1033,18 +1058,20 @@ namespace NetMQServer.Core.Transports
                 socketError == SocketError.ConnectionAborted ||
                 socketError == SocketError.TimedOut ||
                 socketError == SocketError.ConnectionReset ||
-                socketError == SocketError.AccessDenied || 
+                socketError == SocketError.AccessDenied ||
                 socketError == SocketError.Shutdown)
+            {
                 return -1;
+            }
 
             throw NetMQException.Create(socketError);
         }
 
-        private void BeginWrite( ByteArraySegment data, int size)
+        private void BeginWrite(ByteArraySegment data, int size)
         {
             try
             {
-               
+
             }
             catch (SocketException ex)
             {
@@ -1064,7 +1091,9 @@ namespace NetMQServer.Core.Transports
         private static int EndRead(SocketError socketError, int bytesTransferred)
         {
             if (socketError == SocketError.Success && bytesTransferred > 0)
+            {
                 return bytesTransferred;
+            }
 
             if (bytesTransferred == 0 ||
                 socketError == SocketError.NetworkDown ||
@@ -1075,16 +1104,18 @@ namespace NetMQServer.Core.Transports
                 socketError == SocketError.ConnectionReset ||
                 socketError == SocketError.AccessDenied ||
                 socketError == SocketError.Shutdown)
+            {
                 return -1;
+            }
 
             throw NetMQException.Create(socketError);
         }
 
-        private void BeginRead( ByteArraySegment data, int size)
+        private void BeginRead(ByteArraySegment data, int size)
         {
             try
             {
-                
+
             }
             catch (SocketException ex)
             {
@@ -1092,28 +1123,30 @@ namespace NetMQServer.Core.Transports
             }
         }
 
-        PullMsgResult RoutingIdMsg (ref Msg msg)
+        private PullMsgResult RoutingIdMsg(ref Msg msg)
         {
             if (m_options.IdentitySize == 0)
+            {
                 msg.InitEmpty();
+            }
             else
             {
                 msg.InitPool(m_options.IdentitySize);
                 msg.Put(m_options.Identity, 0, m_options.IdentitySize);
             }
-            
+
             m_nextMsg = m_session.PullMsg;
             return PullMsgResult.Ok;
         }
 
-        PushMsgResult ProcessRoutingIdMsg (ref Msg msg)
+        private PushMsgResult ProcessRoutingIdMsg(ref Msg msg)
         {
-            if (m_options.RecvIdentity) 
+            if (m_options.RecvIdentity)
             {
                 msg.SetFlags(MsgFlags.Identity);
                 m_session.PushMsg(ref msg);
-            } 
-            else 
+            }
+            else
             {
                 msg.Close();
                 msg.InitEmpty();
@@ -1124,46 +1157,52 @@ namespace NetMQServer.Core.Transports
                 Msg subscription = new Msg();
                 subscription.InitPool(1);
                 subscription.Put(1);
-                
+
                 m_session.PushMsg(ref subscription);
             }
-            
+
             m_processMsg = m_session.PushMsg;
             return PushMsgResult.Ok;
         }
 
-        PullMsgResult NextHandshakeCommand (ref Msg msg)
+        private PullMsgResult NextHandshakeCommand(ref Msg msg)
         {
-            if (m_mechanism.Status == MechanismStatus.Ready) 
+            if (m_mechanism.Status == MechanismStatus.Ready)
             {
                 MechanismReady();
-                return PullAndEncode (ref msg);
+                return PullAndEncode(ref msg);
             }
-            else if (m_mechanism.Status == MechanismStatus.Error) 
+            else if (m_mechanism.Status == MechanismStatus.Error)
             {
                 return PullMsgResult.Error;
-            } 
-            else 
+            }
+            else
             {
-                var result = m_mechanism.NextHandshakeCommand(ref msg);
+                PullMsgResult result = m_mechanism.NextHandshakeCommand(ref msg);
 
                 if (result == PullMsgResult.Ok)
+                {
                     msg.SetFlags(MsgFlags.Command);
+                }
 
                 return result;
             }
         }
 
-        PushMsgResult ProcessHandshakeCommand (ref Msg msg)
+        private PushMsgResult ProcessHandshakeCommand(ref Msg msg)
         {
-            var result = m_mechanism.ProcessHandshakeCommand(ref msg);
-            if (result == PushMsgResult.Ok) 
+            PushMsgResult result = m_mechanism.ProcessHandshakeCommand(ref msg);
+            if (result == PushMsgResult.Ok)
             {
                 if (m_mechanism.Status == MechanismStatus.Ready)
+                {
                     MechanismReady();
+                }
                 else if (m_mechanism.Status == MechanismStatus.Error)
+                {
                     return PushMsgResult.Error;
-                
+                }
+
                 if (m_sendingState == SendState.Idle)
                 {
                     m_sendingState = SendState.Active;
@@ -1173,121 +1212,140 @@ namespace NetMQServer.Core.Transports
 
             return result;
         }
-        
-        void MechanismReady ()
+
+        private void MechanismReady()
         {
             if (m_options.HeartbeatInterval > 0)
             {
                 m_ioObject.AddTimer(m_options.HeartbeatInterval, HeartbeatIntervalTimerId);
                 m_hasHeartbeatTimer = true;
             }
-            
-            if (m_options.RecvIdentity) {
+
+            if (m_options.RecvIdentity)
+            {
                 Msg identity = new Msg();
                 identity.InitPool(m_mechanism.PeerIdentity.Length);
                 identity.Put(m_mechanism.PeerIdentity, 0, m_mechanism.PeerIdentity.Length);
-                var pushResult = m_session.PushMsg(ref identity);
-                if (pushResult == PushMsgResult.Full) {
+                PushMsgResult pushResult = m_session.PushMsg(ref identity);
+                if (pushResult == PushMsgResult.Full)
+                {
                     // If the write is failing at this stage with
                     // an EAGAIN the pipe must be being shut down,
                     // so we can just bail out of the routing id set.
                     return;
                 }
-                
+
                 m_session.Flush();
             }
 
             m_nextMsg = PullAndEncode;
             m_processMsg = DecodeAndPush;
         }
-        
-        PullMsgResult PullAndEncode (ref Msg msg)
+
+        private PullMsgResult PullAndEncode(ref Msg msg)
         {
-            var result = m_session.PullMsg(ref msg); 
+            PullMsgResult result = m_session.PullMsg(ref msg);
             if (result != PullMsgResult.Ok)
+            {
                 return result;
+            }
 
             return m_mechanism.Encode(ref msg);
         }
 
-        PushMsgResult DecodeAndPush (ref Msg msg)
+        private PushMsgResult DecodeAndPush(ref Msg msg)
         {
-            var result = m_mechanism.Decode(ref msg);
+            PushMsgResult result = m_mechanism.Decode(ref msg);
             if (result != PushMsgResult.Ok)
+            {
                 return result;
-            
-            if (m_hasTimeoutTimer) {
+            }
+
+            if (m_hasTimeoutTimer)
+            {
                 m_hasTimeoutTimer = false;
                 m_ioObject.CancelTimer(HeartbeatTimeoutTimerId);
             }
-            
-            if (m_hasTtlTimer) {
+
+            if (m_hasTtlTimer)
+            {
                 m_hasTtlTimer = false;
                 m_ioObject.CancelTimer(HeartbeatTtlTimerId);
             }
-            
+
             if (msg.HasCommand)
+            {
                 ProcessCommandMessage(ref msg);
+            }
 
             result = m_session.PushMsg(ref msg);
-            if (result == PushMsgResult.Full) 
+            if (result == PushMsgResult.Full)
+            {
                 m_processMsg = PushOneThenDecodeAndPush;
-                
+            }
+
             return result;
         }
-        
-        PushMsgResult PushOneThenDecodeAndPush (ref Msg msg)
+
+        private PushMsgResult PushOneThenDecodeAndPush(ref Msg msg)
         {
-            var result = m_session.PushMsg(ref msg);
+            PushMsgResult result = m_session.PushMsg(ref msg);
             if (result == PushMsgResult.Ok)
+            {
                 m_processMsg = DecodeAndPush;
+            }
+
             return result;
         }
-        
-        PullMsgResult ProducePingMessage (ref Msg msg)
+
+        private PullMsgResult ProducePingMessage(ref Msg msg)
         {
             // 16-bit TTL + \4PING == 7
             int pingTtlLength = V3Protocol.PingCommand.Length + 1 + 2;
 
             msg.InitPool(pingTtlLength);
             msg.SetFlags(MsgFlags.Command);
-            
+
             // Copy in the command message
-            msg[0] = (byte) V3Protocol.PingCommand.Length;
+            msg[0] = (byte)V3Protocol.PingCommand.Length;
             msg.Put(Encoding.ASCII.GetBytes(V3Protocol.PingCommand), 1, V3Protocol.PingCommand.Length);
-            
+
             NetworkOrderBitsConverter.PutUInt16((ushort)m_options.HeartbeatTtl, msg, 1 + V3Protocol.PingCommand.Length);
 
-            var result = m_mechanism.Encode(ref msg);
+            PullMsgResult result = m_mechanism.Encode(ref msg);
             m_nextMsg = PullAndEncode;
-            
-            if (!m_hasTimeoutTimer && m_heartbeatTimeout > 0) 
+
+            if (!m_hasTimeoutTimer && m_heartbeatTimeout > 0)
             {
                 m_ioObject.AddTimer(m_heartbeatTimeout, HeartbeatTimeoutTimerId);
                 m_hasTimeoutTimer = true;
             }
-            
+
             return result;
         }
-        
-        PullMsgResult ProducePongMessage (ref Msg msg)
+
+        private PullMsgResult ProducePongMessage(ref Msg msg)
         {
             msg.Move(ref m_pongMsg);
             m_nextMsg = PullAndEncode;
             return m_mechanism.Encode(ref msg);
         }
-        
-        void ProcessCommandMessage (ref Msg msg)
+
+        private void ProcessCommandMessage(ref Msg msg)
         {
             byte commandNameSize = msg[0];
 
             // Malformed command
             if (msg.Size < commandNameSize + 1)
+            {
                 return;
+            }
 
             string commandName = msg.GetString(Encoding.ASCII, 1, commandNameSize);
             if (commandName == V3Protocol.PingCommand)
+            {
                 ProcessPingMessage(ref msg);
+            }
         }
 
         private void ProcessPingMessage(ref Msg msg)
@@ -1298,18 +1356,21 @@ namespace NetMQServer.Core.Transports
 
             // Malformed ping command
             if (msg.Size < pingTtlLength)
+            {
                 return;
+            }
 
             ushort remoteHeartbeatTtl = NetworkOrderBitsConverter.ToUInt16(msg, V3Protocol.PingCommand.Length + 1);
             // The remote heartbeat is in 10ths of a second
             // so we multiply it by 100 to get the timer interval in ms.
             remoteHeartbeatTtl *= 100;
 
-            if (!m_hasTtlTimer && remoteHeartbeatTtl > 0) {
+            if (!m_hasTtlTimer && remoteHeartbeatTtl > 0)
+            {
                 m_ioObject.AddTimer(remoteHeartbeatTtl, HeartbeatTtlTimerId);
                 m_hasTtlTimer = true;
             }
-            
+
             //  As per ZMTP 3.1 the PING command might contain an up to 16 bytes
             //  context which needs to be PONGed back, so build the pong message
             //  here and store it. Truncate it if it's too long.
@@ -1318,10 +1379,12 @@ namespace NetMQServer.Core.Transports
             int contextLength = Math.Min(msg.Size - pingTtlLength, pingMaxCtxLength);
             m_pongMsg.InitPool(1 + V3Protocol.PongCommand.Length + contextLength);
             m_pongMsg.SetFlags(MsgFlags.Command);
-            m_pongMsg[0] = (byte) V3Protocol.PongCommand.Length;
+            m_pongMsg[0] = (byte)V3Protocol.PongCommand.Length;
             m_pongMsg.Put(Encoding.ASCII.GetBytes(V3Protocol.PongCommand), 1, V3Protocol.PongCommand.Length);
             if (contextLength > 0)
+            {
                 m_pongMsg.Put(msg.Slice(pingTtlLength, contextLength), 1 + V3Protocol.PongCommand.Length);
+            }
 
             m_nextMsg = ProducePongMessage;
 
@@ -1331,7 +1394,7 @@ namespace NetMQServer.Core.Transports
                 BeginSending();
             }
         }
-        
+
         /// <summary>
         /// This would be called when a timer expires, although here it only throws NotSupportedException.
         /// </summary>
@@ -1342,31 +1405,31 @@ namespace NetMQServer.Core.Transports
             if (id == HeartbeatIntervalTimerId)
             {
                 m_nextMsg = ProducePingMessage;
-                
+
                 if (m_sendingState == SendState.Idle)
                 {
                     m_sendingState = SendState.Active;
                     BeginSending();
                 }
-                
+
                 m_ioObject.AddTimer(m_options.HeartbeatInterval, HeartbeatIntervalTimerId);
-            } 
-            else if (id == HeartbeatTtlTimerId) 
+            }
+            else if (id == HeartbeatTtlTimerId)
             {
                 m_hasTtlTimer = false;
                 Error();
-            } 
-            else if (id == HeartbeatTimeoutTimerId) 
+            }
+            else if (id == HeartbeatTimeoutTimerId)
             {
                 m_hasTimeoutTimer = false;
                 Error();
             }
             else
             {
-                throw new ArgumentOutOfRangeException();    
+                throw new ArgumentOutOfRangeException();
             }
 
-            
+
         }
     }
 }

@@ -36,7 +36,7 @@ namespace NetMQServer.Core.Patterns.Utils
         private short m_count;
         private short m_liveNodes;
 
-        public delegate void TrieDelegate( byte[] data, int size, [CanBeNull] object arg);
+        public delegate void TrieDelegate(byte[] data, int size, [CanBeNull] object arg);
 
         private Trie[] m_next;
 
@@ -121,24 +121,31 @@ namespace NetMQServer.Core.Patterns.Utils
         /// </summary>
         /// <param name="prefix"></param>
         /// <returns></returns>
-        public bool Remove(Span<byte>prefix)
+        public bool Remove(Span<byte> prefix)
         {
             if (prefix.Length == 0)
             {
                 if (m_referenceCount == 0)
+                {
                     return false;
+                }
+
                 m_referenceCount--;
                 return m_referenceCount == 0;
             }
 
             byte currentCharacter = prefix[0];
             if (m_count == 0 || currentCharacter < m_minCharacter || currentCharacter >= m_minCharacter + m_count)
+            {
                 return false;
+            }
 
             Trie nextNode = m_count == 1 ? m_next[0] : m_next[currentCharacter - m_minCharacter];
 
             if (nextNode == null)
+            {
                 return false;
+            }
 
             bool wasRemoved = nextNode.Remove(prefix.Slice(1));
 
@@ -244,27 +251,37 @@ namespace NetMQServer.Core.Patterns.Utils
             {
                 // We've found a corresponding subscription!
                 if (current.m_referenceCount > 0)
+                {
                     return true;
+                }
 
                 // We've checked all the data and haven't found matching subscription.
                 if (size == 0)
+                {
                     return false;
+                }
 
                 // If there's no corresponding slot for the first character
                 // of the prefix, the message does not match.
                 byte character = data[start];
                 if (character < current.m_minCharacter || character >= current.m_minCharacter + current.m_count)
+                {
                     return false;
+                }
 
                 // Move to the next character.
                 if (current.m_count == 1)
+                {
                     current = current.m_next[0];
+                }
                 else
                 {
                     current = current.m_next[character - current.m_minCharacter];
 
                     if (current == null)
+                    {
                         return false;
+                    }
                 }
                 start++;
                 size--;
@@ -272,16 +289,18 @@ namespace NetMQServer.Core.Patterns.Utils
         }
 
         // Apply the function supplied to each subscription in the trie.
-        public void Apply( TrieDelegate func, [CanBeNull] object arg)
+        public void Apply(TrieDelegate func, [CanBeNull] object arg)
         {
             ApplyHelper(null, 0, 0, func, arg);
         }
 
-        private void ApplyHelper( byte[] buffer, int bufferSize, int maxBufferSize,  TrieDelegate func, [CanBeNull] object arg)
+        private void ApplyHelper(byte[] buffer, int bufferSize, int maxBufferSize, TrieDelegate func, [CanBeNull] object arg)
         {
             // If this node is a subscription, apply the function.
             if (m_referenceCount > 0)
+            {
                 func(buffer, bufferSize, arg);
+            }
 
             // Adjust the buffer.
             if (bufferSize >= maxBufferSize)
@@ -293,7 +312,9 @@ namespace NetMQServer.Core.Patterns.Utils
 
             // If there are no subnodes in the trie, return.
             if (m_count == 0)
+            {
                 return;
+            }
 
             // If there's one subnode (optimisation).
             if (m_count == 1)
@@ -309,7 +330,9 @@ namespace NetMQServer.Core.Patterns.Utils
             {
                 buffer[bufferSize] = (byte)(m_minCharacter + c);
                 if (m_next[c] != null)
+                {
                     m_next[c].ApplyHelper(buffer, bufferSize + 1, maxBufferSize, func, arg);
+                }
             }
         }
 

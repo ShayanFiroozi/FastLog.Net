@@ -8,7 +8,7 @@ namespace NetMQServer.Core.Utils
     {
         private const int CompletionStatusArraySize = 100;
 
-  
+
         private readonly string m_name;
 
         private Thread? m_worker;
@@ -17,7 +17,10 @@ namespace NetMQServer.Core.Utils
 
         private class Item
         {
-            public Item(IProactorEvents proactorEvents) => ProactorEvents = proactorEvents;
+            public Item(IProactorEvents proactorEvents)
+            {
+                ProactorEvents = proactorEvents;
+            }
 
             public IProactorEvents ProactorEvents { get; }
             public bool Cancelled { get; set; }
@@ -28,7 +31,7 @@ namespace NetMQServer.Core.Utils
             m_name = name;
             m_stopping = false;
             m_stopped = false;
-           
+
         }
 
         public void Start()
@@ -48,40 +51,40 @@ namespace NetMQServer.Core.Utils
             {
                 try
                 {
-                 
+
                     m_worker.Join();
                 }
                 catch (Exception)
-                {}
+                { }
 
                 m_stopped = true;
 
-               
+
             }
         }
 
         public void SignalMailbox(IOThreadMailbox mailbox)
         {
-           
+
         }
 
-     
 
-      
+
+
         /// <exception cref="ArgumentOutOfRangeException">The completionStatuses item must have a valid OperationType.</exception>
         private void Loop()
         {
-            
+
 
             while (!m_stopping)
             {
                 // Execute any due timers.
                 int timeout = ExecuteTimers();
 
-              
+
                 for (int i = 0; i < 1000; i++)
                 {
-      
+
                 }
             }
         }

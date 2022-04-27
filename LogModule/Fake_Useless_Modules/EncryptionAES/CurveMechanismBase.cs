@@ -21,9 +21,9 @@ namespace NetMQServer.Core.Mechanisms
         private readonly byte[] m_encodeNoncePrefix;
         private readonly byte[] m_decodeNoncePrefix;
 
-        protected UInt64 m_nonce;
-        protected UInt64 m_peerNonce;
-      
+        protected ulong m_nonce;
+        protected ulong m_peerNonce;
+
 
         protected CurveMechanismBase(SessionBase session, Options options,
             string encodeNoncePrefix, string decodeNoncePrefix) : base(session, options)
@@ -32,10 +32,14 @@ namespace NetMQServer.Core.Mechanisms
             m_decodeNoncePrefix = Encoding.ASCII.GetBytes(decodeNoncePrefix);
 
             if (m_encodeNoncePrefix.Length != 16)
+            {
                 throw new ArgumentException();
+            }
 
             if (m_decodeNoncePrefix.Length != 16)
+            {
                 throw new ArgumentException();
+            }
 
             m_nonce = 1;
             m_peerNonce = 1;
@@ -43,19 +47,24 @@ namespace NetMQServer.Core.Mechanisms
 
         public override void Dispose()
         {
-          ;
+            ;
         }
 
         public override PullMsgResult Encode(ref Msg msg)
         {
-          
-           
+
+
 
             byte flags = 0;
             if (msg.HasMore)
+            {
                 flags |= 0x01;
+            }
+
             if (msg.HasCommand)
+            {
                 flags |= 0x02;
+            }
 
             Msg plaintext = new Msg();
             plaintext.InitPool(msg.Size + 1);
@@ -63,9 +72,9 @@ namespace NetMQServer.Core.Mechanisms
             msg.CopyTo(plaintext.Slice(1));
 
             msg.Close();
-        
 
-        
+
+
             plaintext.Close();
 
             MessageLiteral.CopyTo(msg);
@@ -78,34 +87,45 @@ namespace NetMQServer.Core.Mechanisms
         public override PushMsgResult Decode(ref Msg msg)
         {
             if (!CheckBasicCommandStructure(ref msg))
+            {
                 return PushMsgResult.Error;
+            }
 
             int size = msg.Size;
 
             if (!IsCommand("MESSAGE", ref msg))
+            {
                 return PushMsgResult.Error;
+            }
 
             if (size < 33) // Size of 16 bytes of command + 16 bytes of MAC + 1 byte for flag
+            {
                 return PushMsgResult.Error;
+            }
 
-           
-         
-            UInt64 nonce = NetworkOrderBitsConverter.ToUInt64(msg, 8);
+            ulong nonce = NetworkOrderBitsConverter.ToUInt64(msg, 8);
             if (nonce <= m_peerNonce)
+            {
                 return PushMsgResult.Error;
+            }
 
             m_peerNonce = nonce;
 
             Msg plain = new Msg();
-        
+
 
             msg.Move(ref plain);
 
             byte flags = msg[0];
             if ((flags & 0x01) != 0)
+            {
                 msg.SetFlags(MsgFlags.More);
+            }
+
             if ((flags & 0x02) != 0)
+            {
                 msg.SetFlags(MsgFlags.Command);
+            }
 
             msg.TrimPrefix(1);
 

@@ -16,7 +16,7 @@ namespace NetMQServer
         /// <returns></returns>
         public static short ToInt16(byte[] buffer)
         {
-            var i = buffer[0] << 8 |
+            int i = buffer[0] << 8 |
                     buffer[1];
 
             return (short)i;
@@ -31,7 +31,7 @@ namespace NetMQServer
         /// <returns></returns>
         public static ushort ToUInt16(byte[] buffer, int offset)
         {
-            var i = buffer[offset] << 8 |
+            int i = buffer[offset] << 8 |
                     buffer[offset + 1];
 
             return (ushort)i;
@@ -46,11 +46,11 @@ namespace NetMQServer
         /// <returns></returns>
         public static ushort ToUInt16(Span<byte> buffer, int offset)
         {
-            var i = buffer[offset] << 8 |
+            int i = buffer[offset] << 8 |
                     buffer[offset + 1];
 
             return (ushort)i;
-        }        
+        }
 
         /// <summary>
         /// Given a 16-bit integer, return it as a byte-array in Big-endian order.
@@ -59,7 +59,7 @@ namespace NetMQServer
         /// <returns>a 2-byte array containing that short's bits</returns>
         public static byte[] GetBytes(short value)
         {
-            var buffer = new byte[2];
+            byte[] buffer = new byte[2];
             PutInt16(value, buffer);
 
             return buffer;
@@ -74,7 +74,7 @@ namespace NetMQServer
         public static void PutInt16(short value, byte[] buffer)
         {
             buffer[0] = (byte)(value >> 8);
-            buffer[1] = (byte) value;
+            buffer[1] = (byte)value;
         }
 
         /// <summary>
@@ -87,9 +87,9 @@ namespace NetMQServer
         public static void PutUInt16(ushort value, byte[] buffer, int offset = 0)
         {
             buffer[offset] = (byte)(value >> 8);
-            buffer[offset + 1] = (byte) value;
+            buffer[offset + 1] = (byte)value;
         }
-        
+
         /// <summary>
         /// Given a 16-bit integer, and a byte-array buffer and offset,
         /// - write the 2 bytes of that integer into the buffer starting at that offset, in Big-endian order.
@@ -100,7 +100,7 @@ namespace NetMQServer
         public static void PutUInt16(ushort value, Span<byte> buffer, int offset = 0)
         {
             buffer[offset] = (byte)(value >> 8);
-            buffer[offset + 1] = (byte) value;
+            buffer[offset + 1] = (byte)value;
         }
 
         /// <summary>
@@ -112,13 +112,13 @@ namespace NetMQServer
         /// <returns></returns>
         public static int ToInt32(byte[] buffer, int offset = 0)
         {
-            return 
+            return
                 buffer[offset] << 24 |
-                buffer[offset + 1] << 16 | 
-                buffer[offset + 2] <<  8 | 
+                buffer[offset + 1] << 16 |
+                buffer[offset + 2] << 8 |
                 buffer[offset + 3];
         }
-        
+
         /// <summary>
         /// Given a byte-array assumed to be in Big-endian order, and an offset into it
         /// - return a 32-bit integer derived from the 4 bytes starting at that offset.
@@ -127,10 +127,10 @@ namespace NetMQServer
         /// <returns></returns>
         public static int ToInt32(Span<byte> buffer)
         {
-            return 
+            return
                 buffer[0] << 24 |
-                buffer[1] << 16 | 
-                buffer[2] <<  8 | 
+                buffer[1] << 16 |
+                buffer[2] << 8 |
                 buffer[3];
         }
 
@@ -141,7 +141,7 @@ namespace NetMQServer
         /// <returns>a 4-byte array containing that integer's bits</returns>
         public static byte[] GetBytes(int value)
         {
-            var buffer = new byte[4];
+            byte[] buffer = new byte[4];
             PutInt32(value, buffer);
 
             return buffer;
@@ -158,10 +158,10 @@ namespace NetMQServer
         {
             buffer[offset] = (byte)(value >> 24);
             buffer[offset + 1] = (byte)(value >> 16);
-            buffer[offset + 2] = (byte)(value >>  8);
-            buffer[offset + 3] = (byte) value;
+            buffer[offset + 2] = (byte)(value >> 8);
+            buffer[offset + 3] = (byte)value;
         }
-        
+
         /// <summary>
         /// Given a 32-bit integer, and a byte-array buffer and offset,
         /// - write the 4 bytes of that integer into the buffer starting at that offset, in Big-endian order.
@@ -172,8 +172,8 @@ namespace NetMQServer
         {
             buffer[0] = (byte)(value >> 24);
             buffer[1] = (byte)(value >> 16);
-            buffer[2] = (byte)(value >>  8);
-            buffer[3] = (byte) value;
+            buffer[2] = (byte)(value >> 8);
+            buffer[3] = (byte)value;
         }
 
         /// <summary>
@@ -191,7 +191,7 @@ namespace NetMQServer
                 (long)buffer[3] << 32 |
                 (long)buffer[4] << 24 |
                 (long)buffer[5] << 16 |
-                (long)buffer[6] <<  8 |
+                (long)buffer[6] << 8 |
                 buffer[7];
         }
 
@@ -210,10 +210,10 @@ namespace NetMQServer
                 (long)buffer[3] << 32 |
                 (long)buffer[4] << 24 |
                 (long)buffer[5] << 16 |
-                (long)buffer[6] <<  8 |
+                (long)buffer[6] << 8 |
                 buffer[7];
         }
-        
+
         /// <summary>
         /// Given a 64-bit integer, return it as a byte-array in Big-endian order.
         /// </summary>
@@ -221,7 +221,7 @@ namespace NetMQServer
         /// <returns>The network order presentation of <paramref name="value"/> as an 8-byte array.</returns>
         public static byte[] GetBytes(long value)
         {
-            var buffer = new byte[8];
+            byte[] buffer = new byte[8];
             PutInt64(value, buffer);
 
             return buffer;
@@ -242,7 +242,7 @@ namespace NetMQServer
             buffer[4] = (byte)(value >> 24);
             buffer[5] = (byte)(value >> 16);
             buffer[6] = (byte)(value >> 8);
-            buffer[7] = (byte) value;
+            buffer[7] = (byte)value;
         }
 
         /// <summary>
@@ -260,9 +260,9 @@ namespace NetMQServer
             buffer[4] = (byte)(value >> 24);
             buffer[5] = (byte)(value >> 16);
             buffer[6] = (byte)(value >> 8);
-            buffer[7] = (byte) value;
+            buffer[7] = (byte)value;
         }
-        
+
         /// <summary>
         /// Given a 64-bit integer, and a byte-array buffer and offset,
         /// - write the 8 bytes of that integer into the buffer starting at that offset, in Big-endian order.
@@ -278,7 +278,7 @@ namespace NetMQServer
             buffer[4] = (byte)(value >> 24);
             buffer[5] = (byte)(value >> 16);
             buffer[6] = (byte)(value >> 8);
-            buffer[7] = (byte) value;
+            buffer[7] = (byte)value;
         }
 
         /// <summary>
@@ -297,7 +297,7 @@ namespace NetMQServer
             buffer[offset + 4] = (byte)(value >> 24);
             buffer[offset + 5] = (byte)(value >> 16);
             buffer[offset + 6] = (byte)(value >> 8);
-            buffer[offset + 7] = (byte) value;
+            buffer[offset + 7] = (byte)value;
         }
 
         /// <summary>
@@ -316,7 +316,7 @@ namespace NetMQServer
                 (ulong)buffer[offset + 3] << 32 |
                 (ulong)buffer[offset + 4] << 24 |
                 (ulong)buffer[offset + 5] << 16 |
-                (ulong)buffer[offset + 6] <<  8 |
+                (ulong)buffer[offset + 6] << 8 |
                 buffer[offset + 7];
         }
 
@@ -336,7 +336,7 @@ namespace NetMQServer
                 (ulong)buffer[offset + 3] << 32 |
                 (ulong)buffer[offset + 4] << 24 |
                 (ulong)buffer[offset + 5] << 16 |
-                (ulong)buffer[offset + 6] <<  8 |
+                (ulong)buffer[offset + 6] << 8 |
                 buffer[offset + 7];
         }
     }

@@ -84,7 +84,7 @@ namespace LogModule
 
             if (!string.IsNullOrWhiteSpace(ExtraInfo))
             {
-                _ = finalMessage.Append(" , Details : ");
+               if (this.LogType != LogTypeEnum.EXCEPTION) _= finalMessage.Append(" , Details : ");
                 _ = finalMessage.Append(ExtraInfo);
             }
 

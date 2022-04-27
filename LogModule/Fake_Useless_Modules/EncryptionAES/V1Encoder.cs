@@ -28,7 +28,7 @@ namespace NetMQServer.Core.Transports
         private const int MessageReadyState = 1;
 
         private readonly ByteArraySegment m_tmpbuf = new byte[10];
-        
+
         public V1Encoder(int bufferSize, Endianness endian)
             : base(bufferSize, endian)
         {
@@ -51,7 +51,7 @@ namespace NetMQServer.Core.Transports
 
         private void SizeReady()
         {
-          
+
 
             // Write message body into the buffer.
             NextStep(new ByteArraySegment(m_inProgress.UnsafeData, m_inProgress.UnsafeOffset),

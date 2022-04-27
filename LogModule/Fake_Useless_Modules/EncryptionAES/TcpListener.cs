@@ -45,12 +45,12 @@ namespace NetMQServer.Core.Transports.Tcp
         /// </summary>
         private AsyncSocket? m_handle;
 
-/*
-        /// <summary>
-        /// socket being accepted
-        /// </summary>
-        private AsyncSocket m_acceptedSocket;
-*/
+        /*
+                /// <summary>
+                /// socket being accepted
+                /// </summary>
+                private AsyncSocket m_acceptedSocket;
+        */
 
         /// <summary>
         /// Socket the listener belongs to.
@@ -65,7 +65,7 @@ namespace NetMQServer.Core.Transports.Tcp
         /// <summary>
         /// The port that was bound on
         /// </summary>
-        private int m_port;
+        private readonly int m_port;
 
         /// <summary>
         /// Create a new TcpListener on the given IOThread and socket.
@@ -92,7 +92,7 @@ namespace NetMQServer.Core.Transports.Tcp
 
         protected override void ProcessPlug()
         {
-           
+
 
             Accept();
         }
@@ -103,7 +103,7 @@ namespace NetMQServer.Core.Transports.Tcp
         /// <param name="linger">a time (in milliseconds) for this to linger before actually going away. -1 means infinite.</param>
         protected override void ProcessTerm(int linger)
         {
-         
+
             Close();
             base.ProcessTerm(linger);
         }
@@ -116,17 +116,17 @@ namespace NetMQServer.Core.Transports.Tcp
         {
             m_address.Resolve(addr, m_options.IPv4Only);
 
-          
+
             try
             {
-             
+
 
                 if (!m_options.IPv4Only && m_address.Address.AddressFamily == AddressFamily.InterNetworkV6)
                 {
                     try
                     {
                         // This is not supported on old windows operating systems and might throw exception
-                   
+
                     }
                     catch
                     {
@@ -138,17 +138,17 @@ namespace NetMQServer.Core.Transports.Tcp
                 if (RuntimeInformation.IsOSPlatform(OSPlatform.Windows))
                     m_handle.ExclusiveAddressUse = false;
 #else
-              
+
 #endif
-            
+
 
                 // Copy the port number after binding in case we requested a system-allocated port number (TCP port zero)
-              
+
                 m_endpoint = m_address.ToString();
 
-            
 
-           
+
+
             }
             catch (SocketException ex)
             {
@@ -161,10 +161,10 @@ namespace NetMQServer.Core.Transports.Tcp
         {
             //m_acceptedSocket = AsyncSocket.Create(m_address.Address.AddressFamily, SocketType.Stream, ProtocolType.Tcp);
 
-       
+
 
             // start accepting socket async
-         
+
         }
 
         /// <summary>
@@ -175,66 +175,66 @@ namespace NetMQServer.Core.Transports.Tcp
         /// <exception cref="NetMQException">A non-recoverable socket-error occurred.</exception>
         public void InCompleted(SocketError socketError, int bytesTransferred)
         {
-           
+
 
             switch (socketError)
             {
                 case SocketError.Success:
-                {
-                    // TODO: check TcpFilters
-                   
-
-                    if (m_options.TcpKeepalive != -1)
                     {
-                      
+                        // TODO: check TcpFilters
 
-                        if (m_options.TcpKeepaliveIdle != -1 && m_options.TcpKeepaliveIntvl != -1)
+
+                        if (m_options.TcpKeepalive != -1)
                         {
-                            var bytes = new ByteArraySegment(new byte[12]);
 
-                            Endianness endian = BitConverter.IsLittleEndian ? Endianness.Little : Endianness.Big;
 
-                            bytes.PutInteger(endian, m_options.TcpKeepalive, 0);
-                            bytes.PutInteger(endian, m_options.TcpKeepaliveIdle, 4);
-                            bytes.PutInteger(endian, m_options.TcpKeepaliveIntvl, 8);
+                            if (m_options.TcpKeepaliveIdle != -1 && m_options.TcpKeepaliveIntvl != -1)
+                            {
+                                ByteArraySegment bytes = new ByteArraySegment(new byte[12]);
 
-                           
+                                Endianness endian = BitConverter.IsLittleEndian ? Endianness.Little : Endianness.Big;
+
+                                bytes.PutInteger(endian, m_options.TcpKeepalive, 0);
+                                bytes.PutInteger(endian, m_options.TcpKeepaliveIdle, 4);
+                                bytes.PutInteger(endian, m_options.TcpKeepaliveIntvl, 8);
+
+
+                            }
                         }
+
+                        // Create the engine object for this connection.
+
+                        // Choose I/O thread to run connector in. Given that we are already
+                        // running in an I/O thread, there must be at least one available.
+                        IOThread? ioThread = ChooseIOThread(m_options.Affinity);
+
+
+
+                        // Create and launch a session object.
+                        // TODO: send null in address parameter, is unneeded in this case
+
+
+
+
+                        Accept();
+                        break;
                     }
-
-                    // Create the engine object for this connection.
-                  
-                    // Choose I/O thread to run connector in. Given that we are already
-                    // running in an I/O thread, there must be at least one available.
-                    IOThread? ioThread = ChooseIOThread(m_options.Affinity);
-
-                  
-
-                    // Create and launch a session object.
-                    // TODO: send null in address parameter, is unneeded in this case
-                   
-                
-
-                    
-                    Accept();
-                    break;
-                }
                 case SocketError.ConnectionReset:
                 case SocketError.NoBufferSpaceAvailable:
                 case SocketError.TooManyOpenSockets:
-                {
-                    m_socket.EventAcceptFailed(m_endpoint, socketError.ToErrorCode());
+                    {
+                        m_socket.EventAcceptFailed(m_endpoint, socketError.ToErrorCode());
 
-                    Accept();
-                    break;
-                }
+                        Accept();
+                        break;
+                    }
                 default:
-                {
-                    NetMQException exception = NetMQException.Create(socketError);
+                    {
+                        NetMQException exception = NetMQException.Create(socketError);
 
-                    m_socket.EventAcceptFailed(m_endpoint, exception.ErrorCode);
-                    throw exception;
-                }
+                        m_socket.EventAcceptFailed(m_endpoint, exception.ErrorCode);
+                        throw exception;
+                    }
             }
         }
 
@@ -244,13 +244,13 @@ namespace NetMQServer.Core.Transports.Tcp
         private void Close()
         {
             if (m_handle == null)
+            {
                 return;
-
-         
+            }
 
             try
             {
-            
+
             }
             catch (SocketException ex)
             {

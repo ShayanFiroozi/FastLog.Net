@@ -53,7 +53,7 @@ namespace NetMQServer.Core.Utils
                 // Walk through data four bytes at a time
                 for (int i = 0; i < alignedLength; i += 4)
                 {
-                    var k = (uint)(data[i] | data[i + 1] << 8 | data[i + 2] << 16 | data[i + 3] << 24);
+                    uint k = (uint)(data[i] | data[i + 1] << 8 | data[i + 2] << 16 | data[i + 3] << 24);
                     k *= C1;
                     k = (k << 15) | (k >> (32 - 15));
                     k *= C2;

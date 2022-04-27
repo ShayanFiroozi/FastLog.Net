@@ -45,12 +45,12 @@ namespace NetMQServer.Core.Patterns
         /// <param name="icanhasall">not used</param>
         protected override void XAttachPipe(Pipe pipe, bool icanhasall)
         {
-         
+
 
             // Don't delay pipe termination as there is no one
             // to receive the delimiter.
             pipe.SetNoDelay();
-            
+
             m_loadBalancer.Attach(pipe);
         }
 

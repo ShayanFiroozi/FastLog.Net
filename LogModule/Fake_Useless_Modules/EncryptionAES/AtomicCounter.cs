@@ -43,7 +43,7 @@ namespace NetMQServer.Core.Utils
         /// <returns>the new value of the counter</returns>
         public int Decrement(int amount = 1)
         {
-            return Interlocked.Add(ref m_value, amount*-1);
+            return Interlocked.Add(ref m_value, amount * -1);
         }
     }
 }

@@ -51,17 +51,17 @@ namespace NetMQServer
             /// Item File Descriptor, regular .net Socket
             /// </summary>
             public Socket? FileDescriptor { get; }
-            
+
             /// <summary>
             /// Item NetMQSocket 
             /// </summary>
             public NetMQSocket? Socket { get; }
-            
+
             /// <summary>
             /// Events registered for
             /// </summary>
             public PollEvents Event { get; }
-            
+
             /// <summary>
             /// Resulted events
             /// </summary>
@@ -81,10 +81,14 @@ namespace NetMQServer
         public bool Select(Item[] items, int itemsCount, long timeout)
         {
             if (items == null)
+            {
                 throw new ArgumentNullException(nameof(items));
+            }
 
             if (itemsCount == 0)
+            {
                 return false;
+            }
 
             bool firstPass = true;
             int numberOfEvents = 0;
@@ -124,20 +128,26 @@ namespace NetMQServer
 
                 for (int i = 0; i < itemsCount; i++)
                 {
-                    var pollItem = items[i];
+                    Item pollItem = items[i];
 
                     if (pollItem.Socket != null)
                     {
                         if (pollItem.Event != PollEvents.None && pollItem.Socket.SocketHandle.Handle.Connected)
+                        {
                             m_checkRead.Add(pollItem.Socket.SocketHandle.Handle);
+                        }
                     }
                     else
                     {
                         if (pollItem.Event.HasIn())
+                        {
                             m_checkRead.Add(pollItem.FileDescriptor!);
+                        }
 
                         if (pollItem.Event.HasOut())
+                        {
                             m_checkWrite.Add(pollItem.FileDescriptor!);
+                        }
                     }
                 }
 
@@ -161,43 +171,59 @@ namespace NetMQServer
 
                 for (int i = 0; i < itemsCount; i++)
                 {
-                    var selectItem = items[i];
+                    Item selectItem = items[i];
 
                     selectItem.ResultEvent = PollEvents.None;
 
                     if (selectItem.Socket != null)
                     {
-                        var events = (PollEvents)selectItem.Socket.GetSocketOption(ZmqSocketOption.Events);
+                        PollEvents events = (PollEvents)selectItem.Socket.GetSocketOption(ZmqSocketOption.Events);
 
                         if (selectItem.Event.HasIn() && events.HasIn())
+                        {
                             selectItem.ResultEvent |= PollEvents.PollIn;
+                        }
 
                         if (selectItem.Event.HasOut() && events.HasOut())
+                        {
                             selectItem.ResultEvent |= PollEvents.PollOut;
+                        }
                     }
                     else
                     {
                         if (m_checkRead.Contains(selectItem.FileDescriptor!))
+                        {
                             selectItem.ResultEvent |= PollEvents.PollIn;
+                        }
 
                         if (m_checkWrite.Contains(selectItem.FileDescriptor!))
+                        {
                             selectItem.ResultEvent |= PollEvents.PollOut;
+                        }
                     }
 
                     if (selectItem.ResultEvent != PollEvents.None)
+                    {
                         numberOfEvents++;
+                    }
                 }
 
                 if (timeout == 0)
+                {
                     break;
+                }
 
                 if (numberOfEvents > 0)
+                {
                     break;
+                }
 
                 if (timeout < 0)
                 {
                     if (firstPass)
+                    {
                         firstPass = false;
+                    }
 
                     continue;
                 }
@@ -211,7 +237,9 @@ namespace NetMQServer
 
                 // Check also equality as it might frequently occur on 1000Hz clock
                 if (stopwatch!.ElapsedMilliseconds >= timeout)
+                {
                     break;
+                }
             }
 
             return numberOfEvents > 0;

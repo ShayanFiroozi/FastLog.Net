@@ -1,5 +1,5 @@
-﻿using System;
-using NetMQServer.Core;
+﻿using NetMQServer.Core;
+using System;
 using System.Runtime.InteropServices;
 
 namespace NetMQServer.Sockets

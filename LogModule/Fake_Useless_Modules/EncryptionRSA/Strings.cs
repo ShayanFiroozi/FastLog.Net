@@ -43,13 +43,22 @@ namespace Effortless.Net.Encryption
         /// <exception cref="ArgumentNullException">This exception will be thrown when the original string is null.</exception>
         public static string Encrypt(string clearString, byte[] key, byte[] iv)
         {
-            if (key == null || key.Length <= 0) throw new ArgumentNullException(nameof(key));
-            if (iv == null || iv.Length <= 0) throw new ArgumentNullException(nameof(iv));
+            if (key == null || key.Length <= 0)
+            {
+                throw new ArgumentNullException(nameof(key));
+            }
+
+            if (iv == null || iv.Length <= 0)
+            {
+                throw new ArgumentNullException(nameof(iv));
+            }
 
             if (string.IsNullOrEmpty(clearString))
+            {
                 throw new ArgumentNullException(nameof(clearString));
+            }
 
-            var cipherData = Bytes.Encrypt(new UnicodeEncoding().GetBytes(clearString), key, iv);
+            byte[] cipherData = Bytes.Encrypt(new UnicodeEncoding().GetBytes(clearString), key, iv);
             return Convert.ToBase64String(cipherData, 0, cipherData.Length);
         }
 
@@ -68,13 +77,28 @@ namespace Effortless.Net.Encryption
         public static string Encrypt(string clearString, string password, string salt, string iv, Bytes.KeySize keySize,
             int iterationCount)
         {
-            if (string.IsNullOrEmpty(clearString)) throw new ArgumentNullException(nameof(clearString));
-            if (string.IsNullOrEmpty(password)) throw new ArgumentNullException(nameof(password));
-            if (string.IsNullOrEmpty(salt)) throw new ArgumentNullException(nameof(salt));
-            if (string.IsNullOrEmpty(iv)) throw new ArgumentNullException(nameof(iv));
+            if (string.IsNullOrEmpty(clearString))
+            {
+                throw new ArgumentNullException(nameof(clearString));
+            }
 
-            var keyBytes = Bytes.GenerateKey(password, salt, keySize, iterationCount);
-            var ivBytes = Encoding.UTF8.GetBytes(iv);
+            if (string.IsNullOrEmpty(password))
+            {
+                throw new ArgumentNullException(nameof(password));
+            }
+
+            if (string.IsNullOrEmpty(salt))
+            {
+                throw new ArgumentNullException(nameof(salt));
+            }
+
+            if (string.IsNullOrEmpty(iv))
+            {
+                throw new ArgumentNullException(nameof(iv));
+            }
+
+            byte[] keyBytes = Bytes.GenerateKey(password, salt, keySize, iterationCount);
+            byte[] ivBytes = Encoding.UTF8.GetBytes(iv);
             return Encrypt(clearString, keyBytes, ivBytes);
         }
 
@@ -88,12 +112,22 @@ namespace Effortless.Net.Encryption
         /// <exception cref="ArgumentNullException">This exception will be thrown when the crypted string is null.</exception>
         public static string Decrypt(string cipherString, byte[] key, byte[] iv)
         {
-            if (key == null || key.Length <= 0) throw new ArgumentNullException(nameof(key));
-            if (iv == null || iv.Length <= 0) throw new ArgumentNullException(nameof(iv));
-            if (string.IsNullOrEmpty(cipherString))
-                throw new ArgumentNullException(nameof(cipherString));
+            if (key == null || key.Length <= 0)
+            {
+                throw new ArgumentNullException(nameof(key));
+            }
 
-            var clearData = Bytes.Decrypt(Convert.FromBase64String(cipherString), key, iv);
+            if (iv == null || iv.Length <= 0)
+            {
+                throw new ArgumentNullException(nameof(iv));
+            }
+
+            if (string.IsNullOrEmpty(cipherString))
+            {
+                throw new ArgumentNullException(nameof(cipherString));
+            }
+
+            byte[] clearData = Bytes.Decrypt(Convert.FromBase64String(cipherString), key, iv);
             return new UnicodeEncoding().GetString(clearData);
         }
 
@@ -110,13 +144,28 @@ namespace Effortless.Net.Encryption
         public static string Decrypt(string cipherString, string password, string salt, string iv,
             Bytes.KeySize keySize, int iterationCount)
         {
-            if (string.IsNullOrEmpty(cipherString)) throw new ArgumentNullException(nameof(cipherString));
-            if (string.IsNullOrEmpty(password)) throw new ArgumentNullException(nameof(password));
-            if (string.IsNullOrEmpty(salt)) throw new ArgumentNullException(nameof(salt));
-            if (string.IsNullOrEmpty(iv)) throw new ArgumentNullException(nameof(iv));
+            if (string.IsNullOrEmpty(cipherString))
+            {
+                throw new ArgumentNullException(nameof(cipherString));
+            }
 
-            var keyBytes = Bytes.GenerateKey(password, salt, keySize, iterationCount);
-            var ivBytes = Encoding.UTF8.GetBytes(iv);
+            if (string.IsNullOrEmpty(password))
+            {
+                throw new ArgumentNullException(nameof(password));
+            }
+
+            if (string.IsNullOrEmpty(salt))
+            {
+                throw new ArgumentNullException(nameof(salt));
+            }
+
+            if (string.IsNullOrEmpty(iv))
+            {
+                throw new ArgumentNullException(nameof(iv));
+            }
+
+            byte[] keyBytes = Bytes.GenerateKey(password, salt, keySize, iterationCount);
+            byte[] ivBytes = Encoding.UTF8.GetBytes(iv);
             return Decrypt(cipherString, keyBytes, ivBytes);
         }
 
@@ -131,9 +180,11 @@ namespace Effortless.Net.Encryption
         public static string CreateSaltFull(int numBytes)
         {
             if (numBytes < 1)
+            {
                 throw new ArgumentException(nameof(numBytes));
+            }
 
-            var buff = new byte[numBytes];
+            byte[] buff = new byte[numBytes];
             new RNGCryptoServiceProvider().GetNonZeroBytes(buff);
             return Convert.ToBase64String(buff);
         }
@@ -147,7 +198,9 @@ namespace Effortless.Net.Encryption
         public static string CreateSalt(int numChars)
         {
             if (numChars < 1)
+            {
                 throw new ArgumentException(nameof(numChars));
+            }
 
             return CreateSaltFull(numChars).Substring(0, numChars);
         }
@@ -163,28 +216,36 @@ namespace Effortless.Net.Encryption
         public static string CreatePassword(int size, bool allowPunctuation)
         {
             if (size < 1)
+            {
                 throw new ArgumentException(nameof(size));
+            }
 
-            var s = new StringBuilder();
+            StringBuilder s = new StringBuilder();
             const int saltLen = 100;
 
-            var pass = 0;
+            int pass = 0;
             while (pass < size)
             {
-                var salt = CreateSaltFull(saltLen);
-                for (var n = 0; n < saltLen; n++)
+                string salt = CreateSaltFull(saltLen);
+                for (int n = 0; n < saltLen; n++)
                 {
-                    var ch = salt[n];
-                    var punctuation = char.IsPunctuation(ch);
+                    char ch = salt[n];
+                    bool punctuation = char.IsPunctuation(ch);
                     if (!allowPunctuation && punctuation)
+                    {
                         continue;
+                    }
 
                     if (!char.IsLetterOrDigit(ch) && !punctuation)
+                    {
                         continue;
+                    }
 
                     s.Append(ch);
                     if (++pass == size)
+                    {
                         break;
+                    }
                 }
             }
             return s.ToString();

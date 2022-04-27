@@ -100,11 +100,15 @@ namespace NetMQServer.Core.Patterns.Utils
 
             // If pipe is already matching do nothing.
             if (index < m_matching)
+            {
                 return;
+            }
 
             // If the pipe isn't eligible, ignore it.
             if (index >= m_eligible)
+            {
                 return;
+            }
 
             // Mark the pipe as matching.
             m_pipes.Swap(index, m_matching);
@@ -128,11 +132,20 @@ namespace NetMQServer.Core.Patterns.Utils
             // Remove the pipe from the list; adjust number of matching, active and/or
             // eligible pipes accordingly.
             if (m_pipes.IndexOf(pipe) < m_matching)
+            {
                 m_matching--;
+            }
+
             if (m_pipes.IndexOf(pipe) < m_active)
+            {
                 m_active--;
+            }
+
             if (m_pipes.IndexOf(pipe) < m_eligible)
+            {
                 m_eligible--;
+            }
+
             m_pipes.Remove(pipe);
         }
 
@@ -179,7 +192,9 @@ namespace NetMQServer.Core.Patterns.Utils
 
             // If multipart message is fully sent, activate all the eligible pipes.
             if (!hasMore)
+            {
                 m_active = m_eligible;
+            }
 
             m_more = hasMore;
         }
@@ -229,7 +244,9 @@ namespace NetMQServer.Core.Patterns.Utils
                 }
             }
             if (failed != 0)
+            {
                 msg.RemoveReferences(failed);
+            }
 
             // Detach the original message from the data buffer. Note that we don't
             // close the message. That's because we've already used all the references.
@@ -258,7 +275,10 @@ namespace NetMQServer.Core.Patterns.Utils
                 return false;
             }
             if (!msg.HasMore)
+            {
                 pipe.Flush();
+            }
+
             return true;
         }
     }

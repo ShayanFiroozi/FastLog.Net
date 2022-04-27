@@ -14,7 +14,7 @@ namespace NetMQServer.Core.Transports
         /// </summary>
         /// <returns>Returns data size or 0 when a new message is required</returns>
         int Encode(ref ByteArraySegment? data, int size);
-        
+
         /// <summary>
         /// Load a new message into encoder.
         /// </summary>

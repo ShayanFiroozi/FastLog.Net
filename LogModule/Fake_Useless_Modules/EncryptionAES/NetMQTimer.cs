@@ -104,7 +104,9 @@ namespace NetMQServer
             set
             {
                 if (m_enable == value)
+                {
                     return;
+                }
 
                 m_enable = value;
                 When = m_enable ? Clock.NowMs() + Interval : -1;
@@ -123,9 +125,13 @@ namespace NetMQServer
         public void EnableAndReset()
         {
             if (!Enable)
+            {
                 Enable = true;
+            }
             else
+            {
                 When = Clock.NowMs() + Interval;
+            }
         }
 
         /// <summary>

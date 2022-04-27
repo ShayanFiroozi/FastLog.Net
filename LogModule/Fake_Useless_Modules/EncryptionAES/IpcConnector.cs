@@ -29,6 +29,6 @@ namespace NetMQServer.Core.Transports.Ipc
     {
         public IpcConnector(IOThread ioThread, SessionBase session, Options options, Address addr, bool wait)
             : base(ioThread, session, options, addr, wait)
-        {}
+        { }
     }
 }

@@ -42,7 +42,7 @@ namespace NetMQServer.Monitoring
 
             m_monitoringSocket = new PairSocket();
             m_monitoringSocket.Options.Linger = TimeSpan.Zero;
-           
+
 
             m_ownsMonitoringSocket = true;
         }
@@ -64,7 +64,7 @@ namespace NetMQServer.Monitoring
             Endpoint = endpoint;
             Timeout = TimeSpan.FromSeconds(0.5);
             m_monitoringSocket = socket;
-          
+
 
             m_ownsMonitoringSocket = ownsSocket;
         }
@@ -102,7 +102,7 @@ namespace NetMQServer.Monitoring
         /// <summary>
         /// Occurs when a connection is made to a socket.
         /// </summary>
-      
+
 
         /// <summary>
         /// Occurs when a synchronous connection attempt failed, and its completion is being polled for.
@@ -117,7 +117,7 @@ namespace NetMQServer.Monitoring
         /// <summary>
         /// Occurs when a socket is bound to an address and is ready to accept connections.
         /// </summary>
-      
+
 
         /// <summary>
         /// Occurs when a socket could not bind to an address.
@@ -127,11 +127,11 @@ namespace NetMQServer.Monitoring
         /// <summary>
         /// Occurs when a connection from a remote peer has been established with a socket's listen address.
         /// </summary>
-       
+
 
         #endregion
 
- 
+
 
         private void InvokeEvent<T>(EventHandler<T>? handler, T args) where T : NetMQMonitorEventArgs
         {
@@ -153,7 +153,7 @@ namespace NetMQServer.Monitoring
                 m_monitoringSocket.Disconnect(Endpoint);
             }
             catch (Exception)
-            {}
+            { }
             finally
             {
                 IsRunning = false;
@@ -171,11 +171,19 @@ namespace NetMQServer.Monitoring
         public void AttachToPoller<T>(T poller) where T : INetMQPoller
         {
             if (poller == null)
+            {
                 throw new ArgumentNullException(nameof(poller));
+            }
+
             if (IsRunning)
+            {
                 throw new InvalidOperationException("Monitor already started");
+            }
+
             if (Interlocked.CompareExchange(ref m_attachedPoller, poller, null) != null)
+            {
                 throw new InvalidOperationException("Already attached to a poller");
+            }
 
             InternalStart();
             poller.Add(m_monitoringSocket);
@@ -188,16 +196,23 @@ namespace NetMQServer.Monitoring
         {
             DetachFromPoller(false);
         }
-        
+
         private void DetachFromPoller(bool dispose)
         {
             if (m_attachedPoller == null)
+            {
                 throw new InvalidOperationException("Not attached to a poller");
-            
+            }
+
             if (dispose)
+            {
                 m_attachedPoller.RemoveAndDispose(m_monitoringSocket);
+            }
             else
+            {
                 m_attachedPoller.Remove(m_monitoringSocket);
+            }
+
             m_attachedPoller = null;
             InternalClose();
         }
@@ -209,10 +224,14 @@ namespace NetMQServer.Monitoring
         public void Start()
         {
             if (IsRunning)
+            {
                 throw new InvalidOperationException("Monitor already started");
+            }
 
             if (m_attachedPoller != null)
+            {
                 throw new InvalidOperationException("Monitor attached to a poller");
+            }
 
             try
             {
@@ -237,10 +256,14 @@ namespace NetMQServer.Monitoring
         public Task StartAsync()
         {
             if (IsRunning)
+            {
                 throw new InvalidOperationException("Monitor already started");
+            }
 
             if (m_attachedPoller != null)
+            {
                 throw new InvalidOperationException("Monitor attached to a poller");
+            }
 
             return Task.Factory.StartNew(Start);
         }
@@ -253,7 +276,9 @@ namespace NetMQServer.Monitoring
         public void Stop()
         {
             if (m_attachedPoller != null)
+            {
                 throw new InvalidOperationException("Monitor attached to a poller, please detach from poller and don't use the stop method");
+            }
 
             Interlocked.Exchange(ref m_cancel, 1);
             m_isStoppedEvent.WaitOne();
@@ -277,9 +302,11 @@ namespace NetMQServer.Monitoring
         protected virtual void Dispose(bool disposing)
         {
             if (!disposing)
+            {
                 return;
+            }
 
-            bool attachedToPoller = m_attachedPoller != null; 
+            bool attachedToPoller = m_attachedPoller != null;
 
             if (attachedToPoller)
             {
@@ -290,7 +317,7 @@ namespace NetMQServer.Monitoring
                 Stop();
             }
 
-           
+
 #if NET35
             m_isStoppedEvent.Close();
 #else

@@ -165,7 +165,7 @@ namespace NetMQServer.Core.Transports
         {
             Buffer.BlockCopy(bytes, 0, m_innerBuffer, Offset + i, bytes.Length);
         }
-        
+
         /// <summary>
         /// Encode the given String into a byte-array using the ASCII encoding
         /// and write that into the buffer.
@@ -415,20 +415,24 @@ namespace NetMQServer.Core.Transports
         /// </remarks>
         public override bool Equals(object otherObject)
         {
-            var byteArraySegment = otherObject as ByteArraySegment;
+            ByteArraySegment byteArraySegment = otherObject as ByteArraySegment;
             if (byteArraySegment != null)
+            {
                 return m_innerBuffer == byteArraySegment.m_innerBuffer && Offset == byteArraySegment.Offset;
+            }
 
-            var bytes = otherObject as byte[];
+            byte[] bytes = otherObject as byte[];
             if (bytes != null)
+            {
                 return bytes == m_innerBuffer && Offset == 0;
+            }
 
             return false;
         }
 
         public override int GetHashCode()
         {
-            int value = m_innerBuffer.GetHashCode()*27;
+            int value = m_innerBuffer.GetHashCode() * 27;
             value += Offset;
 
             return value;

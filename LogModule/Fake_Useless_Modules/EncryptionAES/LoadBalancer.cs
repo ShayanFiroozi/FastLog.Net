@@ -71,7 +71,9 @@ namespace NetMQServer.Core.Patterns.Utils
             // If we are in the middle of multipart message and current pipe
             // have disconnected, we have to drop the remainder of the message.
             if (index == m_current && m_more)
+            {
                 m_dropping = true;
+            }
 
             // Remove the pipe from the list; adjust number of active pipes
             // accordingly.
@@ -80,7 +82,9 @@ namespace NetMQServer.Core.Patterns.Utils
                 m_active--;
                 m_pipes.Swap(index, m_active);
                 if (m_current == m_active)
+                {
                     m_current = 0;
+                }
             }
             m_pipes.Remove(pipe);
         }
@@ -135,9 +139,13 @@ namespace NetMQServer.Core.Patterns.Utils
 
                 m_active--;
                 if (m_current < m_active)
+                {
                     m_pipes.Swap(m_current, m_active);
+                }
                 else
+                {
                     m_current = 0;
+                }
             }
 
             // If there are no pipes we cannot send the message.
@@ -154,7 +162,9 @@ namespace NetMQServer.Core.Patterns.Utils
                 m_pipes[m_current].Flush();
                 // warning: the logic here is slightly different than what is done in lb.cpp; zmq reference implementation.
                 if (m_active > 1)
+                {
                     m_current = (m_current + 1) % m_active;
+                }
             }
 
             // Detach the message from the data buffer.
@@ -168,20 +178,26 @@ namespace NetMQServer.Core.Patterns.Utils
             // If one part of the message was already written we can definitely
             // write the rest of the message.
             if (m_more)
+            {
                 return true;
+            }
 
             while (m_active > 0)
             {
 
                 // Check whether a pipe has room for another message.
                 if (m_pipes[m_current].CheckWrite())
+                {
                     return true;
+                }
 
                 // Deactivate the pipe.
                 m_active--;
                 m_pipes.Swap(m_current, m_active);
                 if (m_current == m_active)
+                {
                     m_current = 0;
+                }
             }
 
             return false;

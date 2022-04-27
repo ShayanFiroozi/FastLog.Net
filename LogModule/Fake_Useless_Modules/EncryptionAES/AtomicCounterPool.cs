@@ -99,7 +99,7 @@ namespace NetMQServer
         /// <param name="counterPool">the implementation of <see cref="IAtomicCounterPool"/> to use</param>
         public static void SetCustomCounterPool(IAtomicCounterPool counterPool)
         {
-            var prior = Interlocked.Exchange(ref s_counterPool, counterPool);
+            IAtomicCounterPool prior = Interlocked.Exchange(ref s_counterPool, counterPool);
 
             prior?.Dispose();
         }

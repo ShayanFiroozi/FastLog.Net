@@ -3,7 +3,7 @@ using System.Threading.Tasks;
 
 namespace LogModule
 {
-    public interface IDBLogger : ILogger , IDisposable
+    public interface IDBLogger : ILogger, IDisposable
     {
         public int MAX_LOGS_COUNT { get; set; }
 

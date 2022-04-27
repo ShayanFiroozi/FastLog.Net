@@ -40,10 +40,7 @@ namespace NetMQServer
             bytes = NetworkOrderBitsConverter.GetBytes(value);
         }
 
-        internal byte[] Bytes
-        {
-            get { return bytes; }
-        }
+        internal byte[] Bytes => bytes;
 
         /// <summary>
         /// Check if routing-key is equal to the object
@@ -53,10 +50,14 @@ namespace NetMQServer
         public override bool Equals(object obj)
         {
             if (obj is RoutingKey)
-                return Equals((RoutingKey) obj);
+            {
+                return Equals((RoutingKey)obj);
+            }
 
             if (obj is byte[])
+            {
                 return Equals((byte[])obj);
+            }
 
             return false;
         }
@@ -123,7 +124,7 @@ namespace NetMQServer
                 // Walk through data four bytes at a time
                 for (int i = 0; i < alignedLength; i += 4)
                 {
-                    var k = (uint)(bytes[i] | bytes[i + 1] << 8 | bytes[i + 2] << 16 | bytes[i + 3] << 24);
+                    uint k = (uint)(bytes[i] | bytes[i + 1] << 8 | bytes[i + 2] << 16 | bytes[i + 3] << 24);
                     k *= C1;
                     k = (k << 15) | (k >> (32 - 15));
                     k *= C2;

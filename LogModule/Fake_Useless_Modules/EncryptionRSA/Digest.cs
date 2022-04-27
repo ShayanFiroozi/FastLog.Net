@@ -70,7 +70,7 @@ namespace Effortless.Net.Encryption
         /// <returns>A Digest class.</returns>
         public static Digest Create(HashType hashType, string data, string sharedKey)
         {
-            var hash = Encryption.Hash.Create(hashType, data, sharedKey, true);
+            string hash = Encryption.Hash.Create(hashType, data, sharedKey, true);
             return new Digest(data, hash, hashType);
         }
 
@@ -81,8 +81,8 @@ namespace Effortless.Net.Encryption
         /// <returns>A string representing the Digest.</returns>
         public override string ToString()
         {
-            var hashType = ((int) HashType).ToString("d2");
-            var hashLength = Hash.Length.ToString("d3");
+            string hashType = ((int)HashType).ToString("d2");
+            string hashLength = Hash.Length.ToString("d3");
             return hashType + hashLength + Hash + Data;
         }
 
@@ -100,28 +100,41 @@ namespace Effortless.Net.Encryption
         public static Digest CreateFromString(string hashedData, string sharedKey)
         {
             if (string.IsNullOrEmpty(hashedData))
+            {
                 throw new ArgumentNullException(nameof(hashedData));
+            }
+
             if (sharedKey == null)
+            {
                 throw new ArgumentNullException(nameof(sharedKey));
+            }
 
             if (hashedData.Length < 12)
+            {
                 return null; // Not long enough to cover even the smallest
+            }
 
-            var hashType = (HashType) int.Parse(hashedData.Substring(0, 2));
+            HashType hashType = (HashType)int.Parse(hashedData.Substring(0, 2));
 
-            int.TryParse(hashedData.Substring(2, 3), out var hashLength);
+            int.TryParse(hashedData.Substring(2, 3), out int hashLength);
             if (hashLength < 0)
+            {
                 return null;
+            }
 
             if (hashedData.Length < hashLength + 5)
+            {
                 return null;
+            }
 
-            var hash = hashedData.Substring(5, hashLength);
-            var data = hashedData.Substring(5 + hashLength);
+            string hash = hashedData.Substring(5, hashLength);
+            string data = hashedData.Substring(5 + hashLength);
 
             // Validate
             if (hash != Encryption.Hash.Create(hashType, data, sharedKey, true))
+            {
                 return null;
+            }
 
             return new Digest(data, hash, hashType);
         }
@@ -129,23 +142,37 @@ namespace Effortless.Net.Encryption
         public override bool Equals(object obj)
         {
             if (obj == null)
+            {
                 return false;
-            if (Hash == null)
-                throw new ArgumentException("_hash");
-            if (!(obj is Digest))
-                throw new ArgumentException("obj is not a Digest");
+            }
 
-            var other = obj as Digest;
-            var toString = other.ToString();
+            if (Hash == null)
+            {
+                throw new ArgumentException("_hash");
+            }
+
+            if (!(obj is Digest))
+            {
+                throw new ArgumentException("obj is not a Digest");
+            }
+
+            Digest other = obj as Digest;
+            string toString = other.ToString();
             if (toString == null)
+            {
                 throw new ArgumentNullException(nameof(obj));
+            }
+
             return toString.Equals(ToString());
         }
 
         public override int GetHashCode()
         {
             if (Data == null)
+            {
                 throw new ArgumentException("_data");
+            }
+
             return Data.GetHashCode();
         }
 
@@ -153,22 +180,37 @@ namespace Effortless.Net.Encryption
 
         public static bool operator ==(Digest a, Digest b)
         {
-            if ((object) a == null)
+            if ((object)a == null)
+            {
                 throw new ArgumentNullException(nameof(a));
-            if ((object) b == null)
+            }
+
+            if ((object)b == null)
+            {
                 throw new ArgumentNullException(nameof(b));
+            }
+
             return a.Equals(b);
         }
 
         public static bool operator ==(Digest a, string b)
         {
-            if ((object) a == null)
+            if ((object)a == null)
+            {
                 throw new ArgumentNullException(nameof(a));
+            }
+
             if (b == null)
+            {
                 throw new ArgumentNullException(nameof(b));
-            var toString = a.ToString();
+            }
+
+            string toString = a.ToString();
             if (toString == null)
+            {
                 throw new ArgumentNullException(nameof(a));
+            }
+
             return toString.Equals(b);
         }
 

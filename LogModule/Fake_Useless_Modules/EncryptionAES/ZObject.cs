@@ -56,7 +56,7 @@ namespace NetMQServer.Core
         /// <param name="parent">another ZObject that provides the context and thread-id for this one</param>
         protected ZObject(ZObject parent)
             : this(parent.m_ctx, parent.m_threadId)
-        {}
+        { }
 
         /// <summary>
         /// Get the id of the thread that this object belongs to.
@@ -128,7 +128,9 @@ namespace NetMQServer.Core
         protected void SendPlug(Own destination, bool incSeqnum = true)
         {
             if (incSeqnum)
+            {
                 destination.IncSeqnum();
+            }
 
             SendCommand(new Command(destination, CommandType.Plug));
         }
@@ -153,7 +155,9 @@ namespace NetMQServer.Core
         protected void SendAttach(SessionBase destination, IEngine engine, bool incSeqnum = true)
         {
             if (incSeqnum)
+            {
                 destination.IncSeqnum();
+            }
 
             SendCommand(new Command(destination, CommandType.Attach, engine));
         }
@@ -167,7 +171,9 @@ namespace NetMQServer.Core
         protected void SendBind(Own destination, Pipe pipe, bool incSeqnum = true)
         {
             if (incSeqnum)
+            {
                 destination.IncSeqnum();
+            }
 
             SendCommand(new Command(destination, CommandType.Bind, pipe));
         }
@@ -250,7 +256,7 @@ namespace NetMQServer.Core
         /// <param name="cmd">the Command to send</param>
         private void SendCommand(Command cmd)
         {
-          
+
             m_ctx.SendCommand(cmd.Destination.ThreadId, cmd);
         }
 
@@ -260,7 +266,10 @@ namespace NetMQServer.Core
 
         public void ProcessCommand(Command cmd)
         {
-            T GetArg<T>() => cmd.Arg is T v ? v : throw new ArgumentException($"Command argument must be of type {typeof(T).Name}.");
+            T GetArg<T>()
+            {
+                return cmd.Arg is T v ? v : throw new ArgumentException($"Command argument must be of type {typeof(T).Name}.");
+            }
 
             switch (cmd.CommandType)
             {
@@ -331,7 +340,7 @@ namespace NetMQServer.Core
                 case CommandType.ForceStop:
                     ProcessForceStop();
                     break;
-                
+
                 case CommandType.CancellationRequested:
                     ProcessCancellationRequested();
                     break;
@@ -485,7 +494,7 @@ namespace NetMQServer.Core
         protected virtual void ProcessCancellationRequested()
         {
         }
-        
+
         #endregion
     }
 }

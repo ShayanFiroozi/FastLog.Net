@@ -48,7 +48,9 @@ namespace NetMQServer
         public NetMQMessage(IEnumerable<NetMQFrame> frames)
         {
             if (frames == null)
+            {
                 throw new ArgumentNullException(nameof(frames));
+            }
 
             m_frames = new List<NetMQFrame>(frames);
         }
@@ -61,7 +63,9 @@ namespace NetMQServer
         public NetMQMessage(IEnumerable<byte[]> buffers)
         {
             if (buffers == null)
+            {
                 throw new ArgumentNullException(nameof(buffers));
+            }
 
             m_frames = buffers.Select(buf => new NetMQFrame(buf)).ToList();
         }
@@ -335,13 +339,19 @@ namespace NetMQServer
         public override string ToString()
         {
             if (m_frames.Count == 0)
+            {
                 return "NetMQMessage[<no frames>]";
-            var sb = new StringBuilder("NetMQMessage[");
+            }
+
+            StringBuilder sb = new StringBuilder("NetMQMessage[");
             bool first = true;
-            foreach (var f in m_frames)
+            foreach (NetMQFrame f in m_frames)
             {
                 if (!first)
+                {
                     sb.Append(",");
+                }
+
                 sb.Append(f.ConvertToString());
                 first = false;
             }

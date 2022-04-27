@@ -34,14 +34,14 @@ namespace NetMQServer
 
         /// <summary>Indicates that more frames of the same message follow.</summary>
         More = 1,
-        
+
         /// <summary>
         /// Command frame (see ZMTP spec)
         /// Command types, use only bits 2-5 and compare with ==, not bitwise,
         /// a command can never be of more that one type at the same time 
         /// </summary>
         Command = 2,
-        
+
         /// <summary>Indicates that this frame conveys the identity of a connected peer.</summary>
         Identity = 64,
 
@@ -60,12 +60,12 @@ namespace NetMQServer
 
         /// <summary>The <see cref="Msg"/> data will be garbage collected when no longer needed.</summary>
         GC = 102,
-        
+
         /// <summary>
         /// Join message for radio-dish
         /// </summary>
         Join = 106,
-        
+
         /// <summary>
         /// Leave message for radio_dish
         /// </summary>
@@ -98,7 +98,7 @@ namespace NetMQServer
         /// The maximum length of a group (Radio/Dish)
         /// </summary>
         public const int MaxGroupLength = 255;
-        
+
         /// <summary>An atomic reference count for knowing when to release a pooled data buffer back to the <see cref="BufferPool"/>.</summary>
         /// <remarks>Will be <c>null</c> unless <see cref="MsgType"/> equals <see cref="NetMQServer.MsgType.Pool"/>.</remarks>
         private AtomicCounter? m_refCount;
@@ -122,7 +122,7 @@ namespace NetMQServer
         /// Returns true if the msg is join message
         /// </summary>
         public bool IsJoin => MsgType == MsgType.Join;
-        
+
         /// <summary>
         /// Returns true if the msg is leave message
         /// </summary>    
@@ -168,9 +168,9 @@ namespace NetMQServer
         /// Get the "Has-More" flag, which when set on a message-queue frame indicates that there are more frames to follow.
         /// </summary>
         public bool HasMore => (Flags & MsgFlags.More) == MsgFlags.More;
-        
+
         internal bool HasCommand => (Flags & MsgFlags.Command) == MsgFlags.Command;
-        
+
         /// <summary>
         /// Get whether the <see cref="Data"/> buffer of this <see cref="Msg"/> is shared with another instance.
         /// Only applies to pooled message types.
@@ -211,7 +211,10 @@ namespace NetMQServer
             set
             {
                 if (value == 0)
+                {
                     throw new ArgumentOutOfRangeException("RoutingId cannot be zero.");
+                }
+
                 m_routingId = value;
             }
         }
@@ -234,7 +237,9 @@ namespace NetMQServer
             set
             {
                 if (value.Length > MaxGroupLength)
+                {
                     throw new ArgumentOutOfRangeException("Group maximum length is 255");
+                }
 
                 m_group = value;
             }
@@ -250,7 +255,7 @@ namespace NetMQServer
         /// </remarks>
         [Obsolete("Use implicit casting to Span or Slice instead")]
         public byte[]? Data => m_data;
-        
+
         /// <summary>
         /// Return the internal buffer as Span
         /// </summary>
@@ -258,11 +263,13 @@ namespace NetMQServer
         public Span<byte> Slice()
         {
             if (m_data == null)
+            {
                 return Span<byte>.Empty;
-            
-            return new Span<byte>(m_data, m_offset, Size);  
+            }
+
+            return new Span<byte>(m_data, m_offset, Size);
         }
-        
+
         /// <summary>
         /// Return the internal buffer as Memory
         /// </summary>
@@ -270,9 +277,11 @@ namespace NetMQServer
         public Memory<byte> SliceAsMemory()
         {
             if (m_data == null)
+            {
                 return Memory<byte>.Empty;
-            
-            return new Memory<byte>(m_data, m_offset, Size);  
+            }
+
+            return new Memory<byte>(m_data, m_offset, Size);
         }
 
         /// <summary>
@@ -282,12 +291,16 @@ namespace NetMQServer
         public Span<byte> Slice(int offset)
         {
             if (m_data == null && offset > 0)
+            {
                 throw new ArgumentOutOfRangeException(nameof(offset));
-            
+            }
+
             if (m_offset + offset > Size)
+            {
                 throw new ArgumentOutOfRangeException(nameof(offset));
-            
-            return new Span<byte>(m_data, m_offset + offset, Size - offset);  
+            }
+
+            return new Span<byte>(m_data, m_offset + offset, Size - offset);
         }
 
         /// <summary>
@@ -298,13 +311,19 @@ namespace NetMQServer
         public Span<byte> Slice(int offset, int count)
         {
             if (m_data == null && offset > 0)
+            {
                 throw new ArgumentOutOfRangeException(nameof(offset));
-            
+            }
+
             if (m_offset + offset > Size)
+            {
                 throw new ArgumentOutOfRangeException(nameof(offset));
-            
+            }
+
             if (m_offset + offset + count > Size)
+            {
                 throw new ArgumentOutOfRangeException(nameof(offset));
+            }
 
             return new Span<byte>(m_data, m_offset + offset, count);
         }
@@ -315,23 +334,25 @@ namespace NetMQServer
         /// <param name="span">The span to copy content to</param>
         public void CopyTo(Span<byte> span)
         {
-            ((Span<byte>) this).CopyTo(span);
+            ((Span<byte>)this).CopyTo(span);
         }
-        
+
         /// <summary>
         /// Return a copy of the internal buffer as byte array
         /// </summary>
         /// <returns>Byte array</returns>
         public byte[] ToArray()
         {
-            var data = new byte[Size];
+            byte[] data = new byte[Size];
 
             if (Size > 0)
+            {
                 Buffer.BlockCopy(m_data, m_offset, data, 0, Size);
+            }
 
             return data;
         }
-        
+
         /// <summary>
         /// Implicit case of of Msg to Span
         /// </summary>
@@ -340,7 +361,7 @@ namespace NetMQServer
         {
             return new Span<byte>(msg.m_data, msg.m_offset, msg.Size);
         }
-        
+
         /// <summary>
         /// Implicit case of of Msg to ReadOnlySpan
         /// </summary>
@@ -349,16 +370,16 @@ namespace NetMQServer
         {
             return new Span<byte>(msg.m_data, msg.m_offset, msg.Size);
         }
-        
+
         /// <summary>
         /// Returns span enumerator, to iterate of the Msg
         /// </summary>
         /// <returns>Span Enumerator</returns>
         public Span<byte>.Enumerator GetEnumerator()
         {
-            return ((Span<byte>) this).GetEnumerator();
+            return ((Span<byte>)this).GetEnumerator();
         }
-        
+
         #region Initialisation
 
         /// <summary>
@@ -447,15 +468,19 @@ namespace NetMQServer
         public void Close()
         {
             if (!IsInitialised)
+            {
                 throw new FaultException("Cannot close an uninitialised Msg.");
+            }
 
             if (MsgType == MsgType.Pool)
             {
-               
+
 
                 // if not shared or reference counter drop to zero
                 if (!IsShared || m_refCount.Decrement() == 0)
+                {
                     BufferPool.Return(m_data);
+                }
 
                 EnsureAtomicCounterNull();
             }
@@ -480,7 +505,7 @@ namespace NetMQServer
 
             if (MsgType == MsgType.Pool)
             {
-            
+
 
                 if (IsShared)
                 {
@@ -506,7 +531,9 @@ namespace NetMQServer
         public void RemoveReferences(int amount)
         {
             if (amount == 0)
+            {
                 return;
+            }
 
             if (MsgType != MsgType.Pool || !IsShared)
             {
@@ -514,11 +541,11 @@ namespace NetMQServer
                 return;
             }
 
-         
+
 
             if (m_refCount.Decrement(amount) == 0)
             {
-             
+
 
                 EnsureAtomicCounterNull();
 
@@ -527,7 +554,7 @@ namespace NetMQServer
                 // TODO shouldn't we set the type to uninitialised, or call clear, here? the object has a null refCount, but other methods may try to use it
             }
         }
-        
+
         /// <summary>
         /// Override the Object ToString method to show the object-type, and values of the MsgType, Size, and Flags properties.
         /// </summary>
@@ -568,7 +595,9 @@ namespace NetMQServer
         public void Put(byte[]? src, int dstOffset, int len)
         {
             if (len == 0 || src == null)
+            {
                 return;
+            }
 
             Buffer.BlockCopy(src, 0, m_data, dstOffset, len);
         }
@@ -580,9 +609,13 @@ namespace NetMQServer
         /// <param name="srcOffset">first byte in the source byte-array</param>
         /// <param name="dstOffset">index within the internal Data array to copy that byte to</param>
         /// <param name="len">the number of bytes to copy</param>
-        public void Put(byte[]? src, int srcOffset, int dstOffset, int len) {
+        public void Put(byte[]? src, int srcOffset, int dstOffset, int len)
+        {
             if (len == 0 || src == null)
+            {
                 return;
+            }
+
             Buffer.BlockCopy(src, srcOffset, m_data, dstOffset, len);
         }
 
@@ -592,7 +625,7 @@ namespace NetMQServer
         /// <param name="b">the source byte to copy from</param>
         public void Put(byte b)
         {
-          
+
             m_data[m_offset] = b;
         }
 
@@ -603,7 +636,7 @@ namespace NetMQServer
         /// <param name="i">index within the internal Data array to copy that byte to</param>
         public void Put(byte b, int i)
         {
-         
+
             m_data[m_offset + i] = b;
         }
 
@@ -622,11 +655,11 @@ namespace NetMQServer
         /// </summary>
         /// <param name="src">the source byte-array to copy from</param>
         /// <param name="offset">index within the internal Data array to copy that byte to</param>
-        public void Put(Span<byte> src, int offset) 
+        public void Put(Span<byte> src, int offset)
         {
             src.CopyTo(Slice(offset));
         }
-        
+
         /// <summary>
         /// Get and set the byte value in the <see cref="Data"/> buffer at a specific index.
         /// </summary>
@@ -634,16 +667,8 @@ namespace NetMQServer
         /// <returns></returns>
         public byte this[int index]
         {
-            get
-            {
-             
-                return m_data[m_offset + index];
-            }
-            set
-            {
-              
-                m_data[m_offset + index] = value;
-            }
+            get => m_data[m_offset + index];
+            set => m_data[m_offset + index] = value;
         }
 
         /// <summary>
@@ -657,15 +682,19 @@ namespace NetMQServer
         {
             // Check the validity of the source.
             if (!src.IsInitialised)
+            {
                 throw new FaultException("Cannot copy an uninitialised Msg.");
+            }
 
             if (IsInitialised)
+            {
                 Close();
+            }
 
             if (src.MsgType == MsgType.Pool)
             {
-              
-                
+
+
                 // One reference is added to shared messages. Non-shared messages
                 // are turned into shared messages and reference count is set to 2.
                 if (IsShared)
@@ -690,7 +719,9 @@ namespace NetMQServer
         public void TrimPrefix(int count)
         {
             if (count > Size || count < 0)
+            {
                 throw new ArgumentOutOfRangeException(nameof(count), "Count should be between 0 and size");
+            }
 
             m_offset = m_offset + count;
             Size = Size - count;
@@ -705,10 +736,14 @@ namespace NetMQServer
         {
             // Check the validity of the source.
             if (!src.IsInitialised)
+            {
                 throw new FaultException("Cannot move an uninitialised Msg.");
+            }
 
             if (IsInitialised)
+            {
                 Close();
+            }
 
             this = src;
 
@@ -721,17 +756,19 @@ namespace NetMQServer
         /// </summary>
         public byte[] CloneData()
         {
-            var data = new byte[Size];
+            byte[] data = new byte[Size];
 
             if (Size > 0)
+            {
                 Buffer.BlockCopy(m_data, m_offset, data, 0, Size);
+            }
 
             return data;
         }
 
         private void EnsureAtomicCounterNull()
         {
-            if(m_refCount != null)
+            if (m_refCount != null)
             {
                 AtomicCounterPool.Return(m_refCount);
                 m_refCount = null;
@@ -739,13 +776,16 @@ namespace NetMQServer
         }
 
         #region Internal unsafe methods
-        
+
         internal byte[] UnsafeToArray()
         {
-       
+
 
             if (m_offset == 0 && m_data.Length == Size)
+            {
                 return m_data;
+            }
+
             return CloneData();
         }
 

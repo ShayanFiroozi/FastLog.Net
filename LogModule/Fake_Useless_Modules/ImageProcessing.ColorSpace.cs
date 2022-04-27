@@ -19,7 +19,7 @@ namespace ImageManipulation
             public byte G { get; set; }
             public byte B { get; set; }
 
-            public RgbColorSpace():this(0,0,0) { }
+            public RgbColorSpace() : this(0, 0, 0) { }
 
             public RgbColorSpace(byte r, byte g, byte b)
             {
@@ -32,11 +32,17 @@ namespace ImageManipulation
             {
                 int _result = (int)Math.Round(value);
                 if (_result < 0)
+                {
                     return 0;
+                }
                 else if (_result > 255)
+                {
                     return 255;
+                }
                 else
+                {
                     return (byte)_result;
+                }
             }
 
             private double ColorBound(double p, double q, double c)
@@ -50,10 +56,23 @@ namespace ImageManipulation
                 {
                     _result -= 1.0;
                 }
-                if (_result > 0.0 && _result < 0.1666666667) _result = p + ((q - p) * 6 * c);
-                else if (_result >= 0.1666666667 && _result < 0.5) _result = q;
-                else if (_result >= 0.5 && _result < 0.666666667) _result = p + ((q - p) * 6.0 * (2.0 / 3.0 - c));
-                else _result = p;
+                if (_result > 0.0 && _result < 0.1666666667)
+                {
+                    _result = p + ((q - p) * 6 * c);
+                }
+                else if (_result >= 0.1666666667 && _result < 0.5)
+                {
+                    _result = q;
+                }
+                else if (_result >= 0.5 && _result < 0.666666667)
+                {
+                    _result = p + ((q - p) * 6.0 * (2.0 / 3.0 - c));
+                }
+                else
+                {
+                    _result = p;
+                }
+
                 return _result;
             }
 

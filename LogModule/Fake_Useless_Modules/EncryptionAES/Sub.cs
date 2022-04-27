@@ -46,18 +46,26 @@ namespace NetMQServer.Core.Patterns
         {
             // Only subscribe/unsubscribe options are supported
             if (option != ZmqSocketOption.Subscribe && option != ZmqSocketOption.Unsubscribe)
+            {
                 return false;
+            }
 
             byte[] topic;
             if (optionValue is string)
+            {
                 topic = Encoding.ASCII.GetBytes((string)optionValue);
+            }
             else if (optionValue is byte[])
+            {
                 topic = (byte[])optionValue;
+            }
             else
+            {
                 throw new InvalidException($"In Sub.XSetSocketOption({option},{optionValue?.ToString() ?? "null"}), optionValue must be either a string or a byte-array.");
+            }
 
             // Create the subscription message.
-            var msg = new Msg();
+            Msg msg = new Msg();
             msg.InitPool(topic.Length + 1);
             msg.Put(option == ZmqSocketOption.Subscribe ? (byte)1 : (byte)0);
             msg.Put(topic, 1, topic.Length);
@@ -65,10 +73,12 @@ namespace NetMQServer.Core.Patterns
             try
             {
                 // Pass it further on in the stack.
-                var isMessageSent = base.XSend(ref msg);
+                bool isMessageSent = base.XSend(ref msg);
 
                 if (!isMessageSent)
+                {
                     throw new Exception($"in Sub.XSetSocketOption({option}, {optionValue}), XSend returned false.");
+                }
             }
             finally
             {

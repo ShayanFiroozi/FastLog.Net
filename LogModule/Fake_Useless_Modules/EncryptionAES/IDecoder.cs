@@ -6,7 +6,7 @@ namespace NetMQServer.Core.Transports
         Processing,
         MessageReady
     }
-    
+
     internal interface IDecoder
     {
         void GetBuffer(out ByteArraySegment data, out int size);

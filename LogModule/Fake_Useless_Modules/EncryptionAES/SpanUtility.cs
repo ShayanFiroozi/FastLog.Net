@@ -13,16 +13,20 @@ namespace NetMQServer.Core.Utils
             return Encoding.ASCII.GetString(bytes.ToArray());
 #endif
         }
-        
+
         public static bool Equals(Span<byte> a, Span<byte> b)
         {
             if (a.Length != b.Length)
+            {
                 return false;
+            }
 
             for (int i = 0; i < a.Length; i++)
             {
                 if (a[i] != b[i])
+                {
                     return false;
+                }
             }
 
             return true;

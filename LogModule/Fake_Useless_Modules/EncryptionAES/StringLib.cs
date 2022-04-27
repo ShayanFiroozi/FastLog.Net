@@ -23,7 +23,7 @@ namespace NetMQServer.Core.Utils
         /// </remarks>
         public static string AsString(List<Socket> list)
         {
-            var sb = new StringBuilder();
+            StringBuilder sb = new StringBuilder();
             if (list == null)
             {
                 sb.Append("(null)");
@@ -75,7 +75,7 @@ namespace NetMQServer.Core.Utils
         /// </remarks>
         public static string AsString(this Socket socket)
         {
-            var sb = new StringBuilder();
+            StringBuilder sb = new StringBuilder();
             if (socket == null)
             {
                 sb.Append("(null Socket)");

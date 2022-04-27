@@ -1,7 +1,5 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.IO;
-using System.Security.Cryptography;
 
 namespace LogModule
 {
@@ -10,7 +8,7 @@ namespace LogModule
 
         private List<ILogger> _loggingChannels = new();
 
-       
+
 
         #region RegistrationMethods
         public void RegisterLoggingChannel(ILogger logger)
@@ -77,7 +75,10 @@ namespace LogModule
         public void LogException(Exception exception)
         {
 
-            if (exception == null) return;
+            if (exception == null)
+            {
+                return;
+            }
 
             try
             {
@@ -86,7 +87,7 @@ namespace LogModule
                                                "InnerMessage : " + (exception.InnerException?.Message ?? "-") +
                                                " , " +
                                                "StackTrace : " + (exception.StackTrace ?? "-"),
-                                               "Source : " + (exception.Source ?? "-")));
+                                                 (exception.Source ?? "-")));
             }
             catch (Exception ex)
             {
@@ -121,7 +122,10 @@ namespace LogModule
 
         private void Dispose(bool disposing)
         {
-            if (disposed) return;
+            if (disposed)
+            {
+                return;
+            }
 
             if (disposing)
             {

@@ -7,7 +7,7 @@ namespace NetMQServer.Core.Transports
         private Msg m_inProgress;
 
         private const int RawMessageReadyState = 1;
-        private byte[] m_buffer;
+        private readonly byte[] m_buffer;
 
         public RawDecoder(int bufferSize, long maxMsgSize, Endianness endianness)
             : base(bufferSize, endianness)
@@ -34,6 +34,9 @@ namespace NetMQServer.Core.Transports
             throw new NotImplementedException();
         }
 
-        public override PushMsgResult PushMsg(ProcessMsgDelegate sink) => sink(ref m_inProgress);
+        public override PushMsgResult PushMsg(ProcessMsgDelegate sink)
+        {
+            return sink(ref m_inProgress);
+        }
     }
 }

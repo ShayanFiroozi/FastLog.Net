@@ -38,14 +38,18 @@ namespace NetMQServer.Core.Patterns
         /// <param name="icanhasall">not used</param>
         protected override void XAttachPipe(Pipe pipe, bool icanhasall)
         {
-          
+
 
             // ZMQ_PAIR socket can only be connected to a single peer.
             // The socket rejects any further connection requests.
             if (m_pipe == null)
+            {
                 m_pipe = pipe;
+            }
             else
+            {
                 pipe.Terminate(false);
+            }
         }
 
         /// <summary>
@@ -55,7 +59,9 @@ namespace NetMQServer.Core.Patterns
         protected override void XTerminated(Pipe pipe)
         {
             if (pipe == m_pipe)
+            {
                 m_pipe = null;
+            }
         }
 
         /// <summary>
@@ -90,10 +96,14 @@ namespace NetMQServer.Core.Patterns
         protected override bool XSend(ref Msg msg)
         {
             if (m_pipe == null || !m_pipe.Write(ref msg))
+            {
                 return false;
+            }
 
             if (!msg.HasMore)
+            {
                 m_pipe.Flush();
+            }
 
             // Detach the original message from the data buffer.
             msg.InitEmpty();

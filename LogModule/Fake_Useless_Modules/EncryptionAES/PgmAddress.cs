@@ -44,7 +44,9 @@ namespace NetMQServer.Core.Transports.Pgm
 
             // Remove square brackets around the address, if any.
             if (addrStr.Length >= 2 && addrStr[0] == '[' && addrStr[addrStr.Length - 1] == ']')
+            {
                 addrStr = addrStr.Substring(1, addrStr.Length - 2);
+            }
 
             int port;
             // Allow 0 specifically, to detect invalid port error in atoi if not
@@ -59,14 +61,20 @@ namespace NetMQServer.Core.Transports.Pgm
                 port = Convert.ToInt32(portStr);
 
                 if (port == 0)
+                {
                     throw new InvalidException($"In PgmAddress.Resolve({name},{ip4Only}), portStr ({portStr}) must denote a valid nonzero integer.");
+                }
             }
 
             if (addrStr == "*")
+            {
                 addrStr = "0.0.0.0";
+            }
 
             if (!IPAddress.TryParse(addrStr, out IPAddress ipAddress))
+            {
                 throw new InvalidException($"In PgmAddress.Resolve({name},{ip4Only}), addrStr ({addrStr}) must be a valid IPAddress.");
+            }
 
             Address = new IPEndPoint(ipAddress, port);
         }
@@ -78,7 +86,9 @@ namespace NetMQServer.Core.Transports.Pgm
         public override string ToString()
         {
             if (Address == null)
+            {
                 return string.Empty;
+            }
 
             IPEndPoint endpoint = Address;
 

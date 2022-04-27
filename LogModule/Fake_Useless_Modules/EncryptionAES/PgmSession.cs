@@ -43,17 +43,17 @@ namespace NetMQServer.Core.Transports.Pgm
 
         void IEngine.Plug(IOThread ioThread, SessionBase session)
         {
-          
+
 
             m_session = session;
             m_ioObject = new IOObject(null);
             m_ioObject.SetHandler(this);
             m_ioObject.Plug(ioThread);
-        
+
 
             DropSubscriptions();
 
-            var msg = new Msg();
+            Msg msg = new Msg();
             msg.InitEmpty();
 
             // push message to the session because there is no identity message with pgm
@@ -64,21 +64,23 @@ namespace NetMQServer.Core.Transports.Pgm
         }
 
         public void Terminate()
-        {}
+        { }
 
         public void BeginReceive()
         {
             m_data.Reset();
-            try 
-            { 
-               
-            } 
-            catch (SocketException ex) 
-            { 
+            try
+            {
+
+            }
+            catch (SocketException ex)
+            {
                 // For a UDP datagram socket, this error would indicate that a previous  
                 // send operation resulted in an ICMP "Port Unreachable" message. 
-                if (ex.SocketErrorCode == SocketError.ConnectionReset) 
+                if (ex.SocketErrorCode == SocketError.ConnectionReset)
+                {
                     Error();
+                }
                 // ** Berkeley Description: A connection abort was caused internal to your host machine. 
                 // The software caused a connection abort because there is no space on the socket's queue 
                 // and the socket cannot receive further connections.
@@ -91,18 +93,22 @@ namespace NetMQServer.Core.Transports.Pgm
                 // ** WSARecv Error Code Description: The virtual circuit was terminated due to a 
                 // time -out or other failure.
                 else if (ex.SocketErrorCode == SocketError.ConnectionAborted)
-                    Error();   
-                else 
-                    throw NetMQException.Create(ex.SocketErrorCode, ex); 
-            } 
+                {
+                    Error();
+                }
+                else
+                {
+                    throw NetMQException.Create(ex.SocketErrorCode, ex);
+                }
+            }
         }
 
         public void ActivateIn()
         {
-       
+
             if (m_state == State.Stuck)
             {
-                var pushResult = m_decoder.PushMsg(m_session.PushMsg);
+                PushMsgResult pushResult = m_decoder.PushMsg(m_session.PushMsg);
                 if (pushResult == PushMsgResult.Ok)
                 {
                     m_state = State.Receiving;
@@ -163,13 +169,14 @@ namespace NetMQServer.Core.Transports.Pgm
                 ProcessInput();
             }
         }
-        
-        void ProcessInput ()
-        {
-           
 
-            while (m_pendingBytes > 0) {
-                var result = m_decoder.Decode(m_pendingData, m_pendingBytes, out var processed);
+        private void ProcessInput()
+        {
+
+
+            while (m_pendingBytes > 0)
+            {
+                DecodeResult result = m_decoder.Decode(m_pendingData, m_pendingBytes, out int processed);
                 m_pendingData.AdvanceOffset(processed);
                 m_pendingBytes -= processed;
                 if (result == DecodeResult.Error)
@@ -178,11 +185,13 @@ namespace NetMQServer.Core.Transports.Pgm
                     Error();
                     return;
                 }
-                
+
                 if (result == DecodeResult.Processing)
+                {
                     break;
-                
-                var pushResult = m_decoder.PushMsg(m_session.PushMsg);
+                }
+
+                PushMsgResult pushResult = m_decoder.PushMsg(m_session.PushMsg);
                 if (pushResult == PushMsgResult.Full)
                 {
                     m_state = State.Stuck;
@@ -196,19 +205,19 @@ namespace NetMQServer.Core.Transports.Pgm
                     return;
                 }
             }
-            
+
             m_session.Flush();
-            
+
             BeginReceive();
         }
 
         private void Error()
         {
-         
+
 
             m_session.Detach();
 
-          
+
 
             // Disconnect from I/O threads poller object.
             m_ioObject.Unplug();
@@ -226,10 +235,10 @@ namespace NetMQServer.Core.Transports.Pgm
             {
                 try
                 {
-                   
+
                 }
                 catch (SocketException)
-                {}
+                { }
                 m_handle = null;
             }
         }
@@ -240,21 +249,21 @@ namespace NetMQServer.Core.Transports.Pgm
         /// <param name="socketError">a SocketError value that indicates whether Success or an error occurred</param>
         /// <param name="bytesTransferred">the number of bytes that were transferred</param>
         public void OutCompleted(SocketError socketError, int bytesTransferred)
-        {}
+        { }
 
         /// <summary>
         /// This would be called when a timer expires, although here it does nothing.
         /// </summary>
         /// <param name="id">an integer used to identify the timer (not used here)</param>
         public void TimerEvent(int id)
-        {}
+        { }
 
         private void DropSubscriptions()
         {
-            var msg = new Msg();
+            Msg msg = new Msg();
             msg.InitEmpty();
 
-           
+
 
             while (m_session.PullMsg(ref msg) == PullMsgResult.Ok)
             {

@@ -93,7 +93,7 @@ namespace NetMQServer.Core
         {
             return m_commandPipe.TryRead(out command);
         }
-        
+
         public void RaiseEvent()
         {
             if (!m_disposed)
@@ -205,7 +205,9 @@ namespace NetMQServer.Core
             if (m_active)
             {
                 if (m_commandPipe.TryRead(out command))
+                {
                     return true;
+                }
 
                 // If there are no more commands available, switch into passive state.
                 m_active = false;
@@ -223,7 +225,7 @@ namespace NetMQServer.Core
             m_active = true;
 
             // Get a command.
-            var ok = m_commandPipe.TryRead(out command);
+            bool ok = m_commandPipe.TryRead(out command);
             Debug.Assert(ok);
             return ok;
         }

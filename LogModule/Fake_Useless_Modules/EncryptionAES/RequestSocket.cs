@@ -48,11 +48,11 @@ namespace NetMQServer.Sockets
         public static NetMQMessage? RequestResponseMultipartMessageWithRetry(string address, NetMQMessage requestMessage,
             int numTries, TimeSpan requestTimeout, PublisherSocket? progressPublisher = null)
         {
-            var responseMessage = new NetMQMessage();
+            NetMQMessage responseMessage = new NetMQMessage();
 
             while (numTries-- > 0)
             {
-                using (var requestSocket = new RequestSocket(address))
+                using (RequestSocket requestSocket = new RequestSocket(address))
                 {
                     progressPublisher?.SendFrame(ProgressTopic.Send.ToString());
 
@@ -88,7 +88,7 @@ namespace NetMQServer.Sockets
         {
             while (numTries-- > 0)
             {
-                using (var requestSocket = new RequestSocket(address))
+                using (RequestSocket requestSocket = new RequestSocket(address))
                 {
                     progressPublisher?.SendFrame(ProgressTopic.Send.ToString());
 

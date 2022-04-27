@@ -27,7 +27,7 @@ namespace SpeckNet
 {
     public sealed class Speck128 : Speck
     {
-        private ulong[] _scheduledKey;
+        private readonly ulong[] _scheduledKey;
 
         internal Speck128(EncryptionType type, ulong[] key) : base(type)
         {
@@ -182,7 +182,7 @@ namespace SpeckNet
             return (x << r) | (x >> (64 - r));
         }
 
-        private static void SpeckEncryptRound(ref ulong x, ref ulong y, ulong k) 
+        private static void SpeckEncryptRound(ref ulong x, ref ulong y, ulong k)
         {
             x = RotateRight(x, 8);
             x += y;
@@ -207,56 +207,56 @@ namespace SpeckNet
             switch (type)
             {
                 case EncryptionType.Speck_128_128:
-                {
-                    ulong i;
-                    ulong a = key[0];
-                    ulong b = key[1];
-                    for (i = 0; i < rounds - 1;)
                     {
+                        ulong i;
+                        ulong a = key[0];
+                        ulong b = key[1];
+                        for (i = 0; i < rounds - 1;)
+                        {
+                            scheduledKey[i] = a;
+                            SpeckEncryptRound(ref b, ref a, i++);
+                        }
                         scheduledKey[i] = a;
-                        SpeckEncryptRound(ref b, ref a, i++);
-                    }
-                    scheduledKey[i] = a;
 
-                    return scheduledKey;
-                }
+                        return scheduledKey;
+                    }
                 case EncryptionType.Speck_128_192:
-                {
-                    ulong i;
-                    ulong a = key[0];
-                    ulong b = key[1];
-                    ulong c = key[2];
-                    for (i = 0; i < rounds - 1;)
                     {
+                        ulong i;
+                        ulong a = key[0];
+                        ulong b = key[1];
+                        ulong c = key[2];
+                        for (i = 0; i < rounds - 1;)
+                        {
+                            scheduledKey[i] = a;
+                            SpeckEncryptRound(ref b, ref a, i++);
+                            scheduledKey[i] = a;
+                            SpeckEncryptRound(ref c, ref a, i++);
+                        }
                         scheduledKey[i] = a;
-                        SpeckEncryptRound(ref b, ref a, i++);
-                        scheduledKey[i] = a;
-                        SpeckEncryptRound(ref c, ref a, i++);
-                    }
-                    scheduledKey[i] = a;
 
-                    return scheduledKey;
-                }
+                        return scheduledKey;
+                    }
                 case EncryptionType.Speck_128_256:
-                {
-                    ulong i;
-                    ulong a = key[0];
-                    ulong b = key[1];
-                    ulong c = key[2];
-                    ulong d = key[3];
-                    for (i = 0; i < rounds - 1;)
                     {
+                        ulong i;
+                        ulong a = key[0];
+                        ulong b = key[1];
+                        ulong c = key[2];
+                        ulong d = key[3];
+                        for (i = 0; i < rounds - 1;)
+                        {
+                            scheduledKey[i] = a;
+                            SpeckEncryptRound(ref b, ref a, i++);
+                            scheduledKey[i] = a;
+                            SpeckEncryptRound(ref c, ref a, i++);
+                            scheduledKey[i] = a;
+                            SpeckEncryptRound(ref d, ref a, i++);
+                        }
                         scheduledKey[i] = a;
-                        SpeckEncryptRound(ref b, ref a, i++);
-                        scheduledKey[i] = a;
-                        SpeckEncryptRound(ref c, ref a, i++);
-                        scheduledKey[i] = a;
-                        SpeckEncryptRound(ref d, ref a, i++);
-                    }
-                    scheduledKey[i] = a;
 
-                    return scheduledKey;
-                }
+                        return scheduledKey;
+                    }
                 default:
                     throw new SpeckException("Unimplemented mode");
             }

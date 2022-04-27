@@ -5,13 +5,12 @@ namespace NetMQServer.Core.Mechanisms
 {
     internal class NullMechanism : Mechanism
     {
-        const string ReadyCommandName = "READY";
+        private const string ReadyCommandName = "READY";
         private const string ErrorCommandName = "ERROR";
         private const int ErrorReasonLengthSize = 1;
-
-        bool m_readyCommandSent;
-        bool m_readyCommandReceived;
-        bool m_errorCommandReceived;
+        private bool m_readyCommandSent;
+        private bool m_readyCommandReceived;
+        private bool m_errorCommandReceived;
 
         public NullMechanism(SessionBase session, Options options) : base(session, options)
         {
@@ -26,7 +25,9 @@ namespace NetMQServer.Core.Mechanisms
             get
             {
                 if (m_readyCommandSent && m_readyCommandReceived)
+                {
                     return MechanismStatus.Ready;
+                }
 
                 bool commandSent = m_readyCommandSent;
                 bool commandReceived = m_readyCommandReceived || m_errorCommandReceived;
@@ -34,24 +35,30 @@ namespace NetMQServer.Core.Mechanisms
             }
         }
 
-        PushMsgResult ProcessReadyCommand(Span<byte> commandData)
+        private PushMsgResult ProcessReadyCommand(Span<byte> commandData)
         {
             m_readyCommandReceived = true;
             if (!ParseMetadata(commandData.Slice(ReadyCommandName.Length + 1)))
+            {
                 return PushMsgResult.Error;
+            }
 
             return PushMsgResult.Ok;
         }
 
-        PushMsgResult ProcessErrorCommand(Span<byte> commandData)
+        private PushMsgResult ProcessErrorCommand(Span<byte> commandData)
         {
             int fixedPrefixSize = ErrorCommandName.Length + 1 + ErrorReasonLengthSize;
             if (commandData.Length < fixedPrefixSize)
+            {
                 return PushMsgResult.Error;
+            }
 
             int errorReasonLength = commandData[ErrorCommandName.Length + 1];
             if (errorReasonLength > commandData.Length - fixedPrefixSize)
+            {
                 return PushMsgResult.Error;
+            }
 
             string errorReason = SpanUtility.ToAscii(commandData.Slice(fixedPrefixSize, errorReasonLength));
 
@@ -64,7 +71,9 @@ namespace NetMQServer.Core.Mechanisms
         public override PullMsgResult NextHandshakeCommand(ref Msg msg)
         {
             if (m_readyCommandSent)
+            {
                 return PullMsgResult.Empty;
+            }
 
             MakeCommandWithBasicProperties(ref msg, ReadyCommandName);
             m_readyCommandSent = true;
@@ -75,15 +84,23 @@ namespace NetMQServer.Core.Mechanisms
         public override PushMsgResult ProcessHandshakeCommand(ref Msg msg)
         {
             if (m_readyCommandReceived || m_errorCommandReceived)
+            {
                 return PushMsgResult.Error;
+            }
 
             PushMsgResult result;
             if (IsCommand(ReadyCommandName, ref msg))
+            {
                 result = ProcessReadyCommand(msg);
+            }
             else if (IsCommand(ErrorCommandName, ref msg))
+            {
                 result = ProcessErrorCommand(msg);
+            }
             else
+            {
                 return PushMsgResult.Error;
+            }
 
             if (result == PushMsgResult.Ok)
             {

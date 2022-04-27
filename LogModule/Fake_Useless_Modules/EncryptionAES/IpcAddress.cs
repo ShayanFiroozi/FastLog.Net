@@ -30,7 +30,9 @@ namespace NetMQServer.Core.Transports.Ipc
         public override string ToString()
         {
             if (m_name == null)
+            {
                 return string.Empty;
+            }
 
             return Protocol + "://" + m_name;
         }
@@ -41,14 +43,17 @@ namespace NetMQServer.Core.Transports.Ipc
 
             int hash = name.GetHashCode();
             if (hash < 0)
+            {
                 hash = -hash;
-            hash = hash%55536;
+            }
+
+            hash = hash % 55536;
             hash += 10000;
 
             Address = new IPEndPoint(IPAddress.Loopback, hash);
         }
 
-        
+
         public IPEndPoint? Address { get; private set; }
 
         public string Protocol => Core.Address.IpcProtocol;

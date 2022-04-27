@@ -10,7 +10,7 @@ namespace Lokad.ILPack.IL
     public readonly struct ExceptionRegionEncoder
     {
         private const int TableHeaderSize = 4;
- 
+
         private const int SmallRegionSize =
             sizeof(short) +  // Flags
             sizeof(short) +  // TryOffset
@@ -18,7 +18,7 @@ namespace Lokad.ILPack.IL
             sizeof(short) +  // HandlerOffset
             sizeof(byte) +   // HandleLength
             sizeof(int);     // ClassToken | FilterOffset
- 
+
         private const int FatRegionSize =
             sizeof(int) +    // Flags
             sizeof(int) +    // TryOffset
@@ -26,51 +26,61 @@ namespace Lokad.ILPack.IL
             sizeof(int) +    // HandlerOffset
             sizeof(int) +    // HandleLength
             sizeof(int);     // ClassToken | FilterOffset
- 
+
         private const int ThreeBytesMaxValue = 0xffffff;
         internal const int MaxSmallExceptionRegions = (byte.MaxValue - TableHeaderSize) / SmallRegionSize;
         internal const int MaxExceptionRegions = (ThreeBytesMaxValue - TableHeaderSize) / FatRegionSize;
- 
+
         /// <summary>
         /// The underlying builder.
         /// </summary>
         public BlobBuilder Builder { get; }
- 
+
         /// <summary>
         /// True if the encoder uses small format.
         /// </summary>
         public bool HasSmallFormat { get; }
- 
+
         internal ExceptionRegionEncoder(BlobBuilder builder, bool hasSmallFormat)
         {
             Builder = builder;
             HasSmallFormat = hasSmallFormat;
         }
- 
+
         /// <summary>
         /// Returns true if the number of exception regions first small format.
         /// </summary>
         /// <param name="exceptionRegionCount">Number of exception regions.</param>
-        public static bool IsSmallRegionCount(int exceptionRegionCount) =>
-            unchecked((uint)exceptionRegionCount) <= MaxSmallExceptionRegions;
- 
+        public static bool IsSmallRegionCount(int exceptionRegionCount)
+        {
+            return unchecked((uint)exceptionRegionCount) <= MaxSmallExceptionRegions;
+        }
+
         /// <summary>
         /// Returns true if the region fits small format.
         /// </summary>
         /// <param name="startOffset">Start offset of the region.</param>
         /// <param name="length">Length of the region.</param>
-        public static bool IsSmallExceptionRegion(int startOffset, int length) => 
-            unchecked((uint)startOffset) <= ushort.MaxValue && unchecked((uint)length) <= byte.MaxValue;
- 
-        internal static bool IsSmallExceptionRegionFromBounds(int startOffset, int endOffset) => 
-            IsSmallExceptionRegion(startOffset, endOffset - startOffset);
- 
-        internal static int GetExceptionTableSize(int exceptionRegionCount, bool isSmallFormat) => 
-            TableHeaderSize + exceptionRegionCount * (isSmallFormat ? SmallRegionSize : FatRegionSize);
- 
-        internal static bool IsExceptionRegionCountInBounds(int exceptionRegionCount) => 
-            unchecked((uint)exceptionRegionCount) <= MaxExceptionRegions;
- 
+        public static bool IsSmallExceptionRegion(int startOffset, int length)
+        {
+            return unchecked((uint)startOffset) <= ushort.MaxValue && unchecked((uint)length) <= byte.MaxValue;
+        }
+
+        internal static bool IsSmallExceptionRegionFromBounds(int startOffset, int endOffset)
+        {
+            return IsSmallExceptionRegion(startOffset, endOffset - startOffset);
+        }
+
+        internal static int GetExceptionTableSize(int exceptionRegionCount, bool isSmallFormat)
+        {
+            return TableHeaderSize + exceptionRegionCount * (isSmallFormat ? SmallRegionSize : FatRegionSize);
+        }
+
+        internal static bool IsExceptionRegionCountInBounds(int exceptionRegionCount)
+        {
+            return unchecked((uint)exceptionRegionCount) <= MaxExceptionRegions;
+        }
+
         internal static bool IsValidCatchTypeHandle(EntityHandle catchType)
         {
             return !catchType.IsNil &&
@@ -78,17 +88,17 @@ namespace Lokad.ILPack.IL
                     catchType.Kind == HandleKind.TypeSpecification ||
                     catchType.Kind == HandleKind.TypeReference);
         }
- 
+
         internal static ExceptionRegionEncoder SerializeTableHeader(BlobBuilder builder, int exceptionRegionCount, bool hasSmallRegions)
         {
             Debug.Assert(exceptionRegionCount > 0);
- 
+
             const byte EHTableFlag = 0x01;
             const byte FatFormatFlag = 0x40;
- 
+
             bool hasSmallFormat = hasSmallRegions && IsSmallRegionCount(exceptionRegionCount);
             int dataSize = GetExceptionTableSize(exceptionRegionCount, hasSmallFormat);
- 
+
             builder.Align(4);
             if (hasSmallFormat)
             {
@@ -103,10 +113,10 @@ namespace Lokad.ILPack.IL
                 builder.WriteByte(unchecked((byte)dataSize));
                 builder.WriteUInt16(unchecked((ushort)(dataSize >> 8)));
             }
- 
+
             return new ExceptionRegionEncoder(builder, hasSmallFormat);
         }
- 
+
         /// <summary>
         /// Adds a finally clause.
         /// </summary>
@@ -123,7 +133,7 @@ namespace Lokad.ILPack.IL
         {
             return Add(ExceptionRegionKind.Finally, tryOffset, tryLength, handlerOffset, handlerLength, default(EntityHandle), 0);
         }
- 
+
         /// <summary>
         /// Adds a fault clause.
         /// </summary>
@@ -140,7 +150,7 @@ namespace Lokad.ILPack.IL
         {
             return Add(ExceptionRegionKind.Fault, tryOffset, tryLength, handlerOffset, handlerLength, default(EntityHandle), 0);
         }
- 
+
         /// <summary>
         /// Adds a fault clause.
         /// </summary>
@@ -161,7 +171,7 @@ namespace Lokad.ILPack.IL
         {
             return Add(ExceptionRegionKind.Catch, tryOffset, tryLength, handlerOffset, handlerLength, catchType, 0);
         }
- 
+
         /// <summary>
         /// Adds a fault clause.
         /// </summary>
@@ -179,7 +189,7 @@ namespace Lokad.ILPack.IL
         {
             return Add(ExceptionRegionKind.Filter, tryOffset, tryLength, handlerOffset, handlerLength, default(EntityHandle), filterOffset);
         }
- 
+
         /// <summary>
         /// Adds an exception clause.
         /// </summary>
@@ -215,22 +225,52 @@ namespace Lokad.ILPack.IL
             {
                 throw new InvalidOperationException("Method has no exception regions");
             }
- 
+
             if (HasSmallFormat)
             {
-                if (unchecked((ushort)tryOffset) != tryOffset) throw new ArgumentOutOfRangeException(nameof(tryOffset));
-                if (unchecked((byte)tryLength) != tryLength) throw new ArgumentOutOfRangeException(nameof(tryLength));
-                if (unchecked((ushort)handlerOffset) != handlerOffset) throw new ArgumentOutOfRangeException(nameof(handlerOffset));
-                if (unchecked((byte)handlerLength) != handlerLength) throw new ArgumentOutOfRangeException(nameof(handlerLength));
+                if (unchecked((ushort)tryOffset) != tryOffset)
+                {
+                    throw new ArgumentOutOfRangeException(nameof(tryOffset));
+                }
+
+                if (unchecked((byte)tryLength) != tryLength)
+                {
+                    throw new ArgumentOutOfRangeException(nameof(tryLength));
+                }
+
+                if (unchecked((ushort)handlerOffset) != handlerOffset)
+                {
+                    throw new ArgumentOutOfRangeException(nameof(handlerOffset));
+                }
+
+                if (unchecked((byte)handlerLength) != handlerLength)
+                {
+                    throw new ArgumentOutOfRangeException(nameof(handlerLength));
+                }
             }
             else
             {
-                if (tryOffset < 0) throw new ArgumentOutOfRangeException(nameof(tryOffset));
-                if (tryLength < 0) throw new ArgumentOutOfRangeException(nameof(tryLength));
-                if (handlerOffset < 0) throw new ArgumentOutOfRangeException(nameof(handlerOffset));
-                if (handlerLength < 0) throw new ArgumentOutOfRangeException(nameof(handlerLength));
+                if (tryOffset < 0)
+                {
+                    throw new ArgumentOutOfRangeException(nameof(tryOffset));
+                }
+
+                if (tryLength < 0)
+                {
+                    throw new ArgumentOutOfRangeException(nameof(tryLength));
+                }
+
+                if (handlerOffset < 0)
+                {
+                    throw new ArgumentOutOfRangeException(nameof(handlerOffset));
+                }
+
+                if (handlerLength < 0)
+                {
+                    throw new ArgumentOutOfRangeException(nameof(handlerLength));
+                }
             }
- 
+
             int catchTokenOrOffset;
             switch (kind)
             {
@@ -239,32 +279,32 @@ namespace Lokad.ILPack.IL
                     {
                         throw new ArgumentException(nameof(catchType));
                     }
- 
+
                     catchTokenOrOffset = MetadataTokens.GetToken(catchType);
                     break;
- 
+
                 case ExceptionRegionKind.Filter:
                     if (filterOffset < 0)
                     {
                         throw new ArgumentOutOfRangeException(nameof(filterOffset));
                     }
- 
+
                     catchTokenOrOffset = filterOffset;
                     break;
- 
+
                 case ExceptionRegionKind.Finally:
                 case ExceptionRegionKind.Fault:
                     catchTokenOrOffset = 0;
                     break;
- 
+
                 default:
                     throw new ArgumentOutOfRangeException(nameof(kind));
             }
- 
+
             AddUnchecked(kind, tryOffset, tryLength, handlerOffset, handlerLength, catchTokenOrOffset);
             return this;
         }
- 
+
         internal void AddUnchecked(
             ExceptionRegionKind kind,
             int tryOffset,
@@ -289,7 +329,7 @@ namespace Lokad.ILPack.IL
                 Builder.WriteInt32(handlerOffset);
                 Builder.WriteInt32(handlerLength);
             }
- 
+
             Builder.WriteInt32(catchTokenOrOffset);
         }
     }

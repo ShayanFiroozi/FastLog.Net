@@ -12,12 +12,12 @@ namespace NetMQServer
         //  Z85 codec, taken from 0MQ RFC project, implements RFC32 Z85 encoding
 
         //  Maps base 256 to base 85
-        private static string Encoder = "0123456789abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ.-:+=^!/*?&<>()[]{}@%$#";
+        private static readonly string Encoder = "0123456789abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ.-:+=^!/*?&<>()[]{}@%$#";
 
         //  Maps base 85 to base 256
         //  We chop off lower 32 and higher 128 ranges
         //  0xFF denotes invalid characters within this range
-        private static byte[] Decoder = {
+        private static readonly byte[] Decoder = {
           0xFF, 0x44, 0xFF, 0x54, 0x53, 0x52, 0x48, 0xFF, 0x4B, 0x4C, 0x46, 0x41,
           0xFF, 0x3F, 0x3E, 0x45, 0x00, 0x01, 0x02, 0x03, 0x04, 0x05, 0x06, 0x07,
           0x08, 0x09, 0x40, 0xFF, 0x49, 0x42, 0x4A, 0x47, 0x51, 0x24, 0x25, 0x26,
@@ -34,17 +34,17 @@ namespace NetMQServer
         private string Z85Encode(byte[] data)
         {
             byte byte_nbr = 0;
-            UInt32 value = 0;
+            uint value = 0;
             string? dest = null;
-            while (byte_nbr<data.Length) 
+            while (byte_nbr < data.Length)
             {
                 //  Accumulate value in base 256 (binary)
-                value = value* 256 + data[byte_nbr++];
-                if (byte_nbr % 4 == 0) 
+                value = value * 256 + data[byte_nbr++];
+                if (byte_nbr % 4 == 0)
                 {
                     //  Output value in base 85
-                    UInt32 divisor = 85 * 85 * 85 * 85;
-                    while (divisor != 0) 
+                    uint divisor = 85 * 85 * 85 * 85;
+                    while (divisor != 0)
                     {
                         dest += Encoder[(int)(value / divisor % 85)];
                         divisor /= 85;
@@ -62,27 +62,27 @@ namespace NetMQServer
         /// <exception cref="ArgumentException">If key in invalid</exception>
         private byte[] Z85Decode(string key)
         {
-            UInt32 char_nbr = 0;
-            UInt32 value = 0;
-            var dest_ = new List<byte>();
-            foreach (var cha in key)
+            uint char_nbr = 0;
+            uint value = 0;
+            List<byte> dest_ = new List<byte>();
+            foreach (char cha in key)
             {
                 //  Accumulate value in base 85
-                if (UInt32.MaxValue / 85 < value)
+                if (uint.MaxValue / 85 < value)
                 {
                     //  Invalid z85 encoding, represented value exceeds 0xffffffff
                     throw new ArgumentException("Invalid key bad encoding");
                 }
                 value *= 85;
                 char_nbr++;
-                var index = cha - 32;
+                int index = cha - 32;
                 if (index >= Decoder.Length)
                 {
                     //  Invalid z85 encoding, character outside range
                     throw new ArgumentException("Invalid key character");
                 }
-                UInt32 summand = Decoder[index];
-                if (summand == 0xFF || summand > (UInt32.MaxValue - value))
+                uint summand = Decoder[index];
+                if (summand == 0xFF || summand > (uint.MaxValue - value))
                 {
                     //  Invalid z85 encoding, invalid character or represented value exceeds 0xffffffff
                     throw new ArgumentException("Invalid key character");
@@ -91,7 +91,7 @@ namespace NetMQServer
                 if (char_nbr % 5 == 0)
                 {
                     //  Output value in base 256
-                    UInt32 divisor = 256 * 256 * 256;
+                    uint divisor = 256 * 256 * 256;
                     while (divisor != 0)
                     {
                         dest_.Add((byte)(value / divisor % 256));
@@ -110,7 +110,7 @@ namespace NetMQServer
         {
             SecretKey = new byte[32];
             PublicKey = new byte[32];
-           
+
         }
 
         /// <summary>
@@ -122,11 +122,15 @@ namespace NetMQServer
         public NetMQCertificate(byte[] secretKey, byte[] publicKey)
         {
             if (secretKey.Length != 32)
+            {
                 throw new ArgumentException("secretKey must be 32 bytes length");
-            
+            }
+
             if (publicKey.Length != 32)
+            {
                 throw new ArgumentException("publicKey must be 32 bytes length");
-            
+            }
+
             SecretKey = secretKey;
             PublicKey = publicKey;
         }
@@ -140,10 +144,14 @@ namespace NetMQServer
         public NetMQCertificate(string secretKey, string publicKey)
         {
             if (secretKey.Length != 40)
+            {
                 throw new ArgumentException("secretKey must be 40 char long");
+            }
 
             if (publicKey.Length != 40)
+            {
                 throw new ArgumentException("publicKey must be 40 char long");
+            }
 
             SecretKey = Z85Decode(secretKey);
             PublicKey = Z85Decode(publicKey);
@@ -152,30 +160,38 @@ namespace NetMQServer
         private NetMQCertificate(byte[] key, bool isSecret)
         {
             if (key.Length != 32)
+            {
                 throw new ArgumentException("key must be 32 bytes length");
+            }
 
             if (isSecret)
             {
                 SecretKey = key;
-               
+
             }
             else
+            {
                 PublicKey = key;
+            }
         }
 
         private NetMQCertificate(string keystr, bool isSecret)
         {
             if (keystr.Length != 40)
+            {
                 throw new ArgumentException("key must be 40 bytes length");
+            }
 
-            var key = Z85Decode(keystr);
+            byte[] key = Z85Decode(keystr);
             if (isSecret)
             {
                 SecretKey = key;
-               
+
             }
             else
+            {
                 PublicKey = key;
+            }
         }
 
         /// <summary>
@@ -260,7 +276,7 @@ namespace NetMQServer
         /// Returns true if the certificate also includes a secret key
         /// </summary>
         public bool HasSecretKey => SecretKey != null;
-        
+
         /// <summary>
         /// Curve Public key.
         /// </summary>

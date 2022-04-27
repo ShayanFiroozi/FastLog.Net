@@ -107,10 +107,10 @@ namespace NetMQServer.Core.Utils
         /// </summary>
         private readonly HashSet<Socket> m_checkRead = new HashSet<Socket>();
 
-//        /// <summary>
-//        /// The set of Sockets to check for write-readiness.
-//        /// </summary>
-//        private readonly HashSet<Socket> m_checkWrite = new HashSet<Socket>();
+        //        /// <summary>
+        //        /// The set of Sockets to check for write-readiness.
+        //        /// </summary>
+        //        private readonly HashSet<Socket> m_checkWrite = new HashSet<Socket>();
 
         /// <summary>
         /// The set of Sockets to check for any errors.
@@ -134,7 +134,7 @@ namespace NetMQServer.Core.Utils
         {
             if (!m_stopped)
             {
-               
+
 
                 try
                 {
@@ -189,7 +189,7 @@ namespace NetMQServer.Core.Utils
 
             m_checkError.Remove(handle);
             m_checkRead.Remove(handle);
-//            m_checkWrite.Remove(handle);
+            //            m_checkWrite.Remove(handle);
 
             // Decrease the load metric of the thread.
             AdjustLoad(-1);
@@ -261,9 +261,9 @@ namespace NetMQServer.Core.Utils
         /// </summary>
         private void Loop()
         {
-            var readList = new List<Socket>();
-//            var writeList = new List<Socket>();
-            var errorList = new List<Socket>();
+            List<Socket> readList = new List<Socket>();
+            //            var writeList = new List<Socket>();
+            List<Socket> errorList = new List<Socket>();
 
             while (!m_stopping)
             {
@@ -275,7 +275,7 @@ namespace NetMQServer.Core.Utils
                 int timeout = ExecuteTimers();
 
                 readList.AddRange(m_checkRead.ToArray());
-//                writeList.AddRange(m_checkWrite.ToArray());
+                //                writeList.AddRange(m_checkWrite.ToArray());
                 errorList.AddRange(m_checkError.ToArray());
 
                 try
@@ -304,10 +304,12 @@ namespace NetMQServer.Core.Utils
                 }
 
                 // For every PollSet in our list.
-                foreach (var pollSet in m_handles)
+                foreach (PollSet pollSet in m_handles)
                 {
                     if (pollSet.Cancelled)
+                    {
                         continue;
+                    }
 
                     // Invoke its handler's InEvent if it's in our error-list.
                     if (errorList.Contains(pollSet.Socket))
@@ -322,22 +324,24 @@ namespace NetMQServer.Core.Utils
                     }
 
                     if (pollSet.Cancelled)
+                    {
                         continue;
+                    }
 
-//                    // Invoke its handler's OutEvent if it's in our write-list.
-//                    if (writeList.Contains(pollSet.Socket))
-//                    {
-//                        try
-//                        {
-//                            pollSet.Handler.OutEvent();
-//                        }
-//                        catch (TerminatingException)
-//                        {
-//                        }
-//                    }
-//
-//                    if (pollSet.Cancelled)
-//                        continue;
+                    //                    // Invoke its handler's OutEvent if it's in our write-list.
+                    //                    if (writeList.Contains(pollSet.Socket))
+                    //                    {
+                    //                        try
+                    //                        {
+                    //                            pollSet.Handler.OutEvent();
+                    //                        }
+                    //                        catch (TerminatingException)
+                    //                        {
+                    //                        }
+                    //                    }
+                    //
+                    //                    if (pollSet.Cancelled)
+                    //                        continue;
 
                     // Invoke its handler's InEvent if it's in our read-list.
                     if (readList.Contains(pollSet.Socket))
@@ -353,14 +357,16 @@ namespace NetMQServer.Core.Utils
                 }
 
                 errorList.Clear();
-//                writeList.Clear();
+                //                writeList.Clear();
                 readList.Clear();
 
                 if (m_retired)
                 {
                     // Take any sockets that have been cancelled out of the list.
-                    foreach (var item in m_handles.Where(k => k.Cancelled).ToList())
+                    foreach (PollSet item in m_handles.Where(k => k.Cancelled).ToList())
+                    {
                         m_handles.Remove(item);
+                    }
 
                     m_retired = false;
                 }

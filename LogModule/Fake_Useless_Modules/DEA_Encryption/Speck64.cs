@@ -27,7 +27,7 @@ namespace SpeckNet
 {
     public sealed class Speck64 : Speck
     {
-        private uint[] _scheduledKey;
+        private readonly uint[] _scheduledKey;
 
         internal Speck64(EncryptionType type, uint[] key) : base(type)
         {
@@ -207,38 +207,38 @@ namespace SpeckNet
             switch (type)
             {
                 case EncryptionType.Speck_64_96:
-                {
-                    uint a = key[0];
-                    uint b = key[1];
-                    uint c = key[2];
-                    for (uint i = 0; i < rounds;)
                     {
-                        scheduledKey[i] = a;
-                        SpeckEncryptRound(ref b, ref a, i++);
-                        scheduledKey[i] = a;
-                        SpeckEncryptRound(ref c, ref a, i++);
-                    }
+                        uint a = key[0];
+                        uint b = key[1];
+                        uint c = key[2];
+                        for (uint i = 0; i < rounds;)
+                        {
+                            scheduledKey[i] = a;
+                            SpeckEncryptRound(ref b, ref a, i++);
+                            scheduledKey[i] = a;
+                            SpeckEncryptRound(ref c, ref a, i++);
+                        }
 
-                    return scheduledKey;
-                }
+                        return scheduledKey;
+                    }
                 case EncryptionType.Speck_64_128:
-                {
-                    uint a = key[0];
-                    uint b = key[1];
-                    uint c = key[2];
-                    uint d = key[3];
-                    for (uint i = 0; i < rounds;)
                     {
-                        scheduledKey[i] = a;
-                        SpeckEncryptRound(ref b, ref a, i++);
-                        scheduledKey[i] = a;
-                        SpeckEncryptRound(ref c, ref a, i++);
-                        scheduledKey[i] = a;
-                        SpeckEncryptRound(ref d, ref a, i++);
-                    }
+                        uint a = key[0];
+                        uint b = key[1];
+                        uint c = key[2];
+                        uint d = key[3];
+                        for (uint i = 0; i < rounds;)
+                        {
+                            scheduledKey[i] = a;
+                            SpeckEncryptRound(ref b, ref a, i++);
+                            scheduledKey[i] = a;
+                            SpeckEncryptRound(ref c, ref a, i++);
+                            scheduledKey[i] = a;
+                            SpeckEncryptRound(ref d, ref a, i++);
+                        }
 
-                    return scheduledKey;
-                }
+                        return scheduledKey;
+                    }
                 default:
                     throw new SpeckException("Unimplemented mode");
             }

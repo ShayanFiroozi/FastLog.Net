@@ -19,7 +19,7 @@ namespace NetMQServer
         /// <param name="msg">An object with message's data to send.</param>
         public static void Send(this IThreadSafeSocket socket, ref Msg msg)
         {
-            var result = socket.TrySend(ref msg, SendReceiveConstants.InfiniteTimeout);
+            bool result = socket.TrySend(ref msg, SendReceiveConstants.InfiniteTimeout);
             Debug.Assert(result);
         }
 
@@ -36,11 +36,13 @@ namespace NetMQServer
         /// <exception cref="System.OperationCanceledException">The token has had cancellation requested.</exception>
         public static void Receive(this IThreadSafeSocket socket, ref Msg msg, CancellationToken cancellationToken = default)
         {
-            var result = socket.TryReceive(ref msg, SendReceiveConstants.InfiniteTimeout, cancellationToken);
-            
+            bool result = socket.TryReceive(ref msg, SendReceiveConstants.InfiniteTimeout, cancellationToken);
+
             if (!result)
+            {
                 cancellationToken.ThrowIfCancellationRequested();
-            
+            }
+
             Debug.Assert(result);
         }
     }

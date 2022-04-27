@@ -31,13 +31,13 @@ namespace NetMQServer
         /// <param name="length">the number of bytes to send from <paramref name="data"/>.</param>
         public static void Send(this IThreadSafeOutSocket socket, byte[] data, int length)
         {
-            var msg = new Msg();
+            Msg msg = new Msg();
             msg.InitPool(length);
-         
+
             socket.Send(ref msg);
             msg.Close();
         }
-        
+
         #endregion
 
         #region Timeout
@@ -53,7 +53,7 @@ namespace NetMQServer
         /// <returns><c>true</c> if a message was available, otherwise <c>false</c>.</returns>
         public static bool TrySend(this IThreadSafeOutSocket socket, TimeSpan timeout, byte[] data, int length)
         {
-            var msg = new Msg();
+            Msg msg = new Msg();
             msg.InitPool(length);
             data.CopyTo(msg);
             if (!socket.TrySend(ref msg, timeout))
@@ -109,9 +109,9 @@ namespace NetMQServer
         }
 
         #endregion
-        
+
         #region Async
-        
+
         /// <summary>
         /// Transmit a byte-array of data over this socket asynchronously.
         /// </summary>
@@ -120,8 +120,10 @@ namespace NetMQServer
         public static ValueTask SendAsync(this IThreadSafeOutSocket socket, byte[] data)
         {
             if (socket.TrySend(data))
+            {
                 return new ValueTask();
-            
+            }
+
             return new ValueTask(Task.Factory.StartNew(() => Send(socket, data), TaskCreationOptions.LongRunning));
         }
 
@@ -134,15 +136,17 @@ namespace NetMQServer
         public static ValueTask SendAsync(this IThreadSafeOutSocket socket, byte[] data, int length)
         {
             if (socket.TrySend(data, length))
+            {
                 return new ValueTask();
-            
+            }
+
             return new ValueTask(Task.Factory.StartNew(() => Send(socket, data, length), TaskCreationOptions.LongRunning));
         }
-        
+
         #endregion
 
         #endregion
-        
+
         #region Sending Strings
 
         #region Blocking
@@ -152,9 +156,9 @@ namespace NetMQServer
         /// </summary>
         /// <param name="socket">the socket to transmit on</param>
         /// <param name="message">the string to send</param>
-        public static void Send(this IThreadSafeOutSocket socket,  string message)
+        public static void Send(this IThreadSafeOutSocket socket, string message)
         {
-            var msg = new Msg();
+            Msg msg = new Msg();
 
             // Count the number of bytes required to encode the string.
             // Note that non-ASCII strings may not have an equal number of characters
@@ -183,7 +187,7 @@ namespace NetMQServer
         /// <returns><c>true</c> if a message was available, otherwise <c>false</c>.</returns>
         public static bool TrySend(this IThreadSafeOutSocket socket, TimeSpan timeout, string message)
         {
-            var msg = new Msg();
+            Msg msg = new Msg();
 
             // Count the number of bytes required to encode the string.
             // Note that non-ASCII strings may not have an equal number of characters
@@ -221,9 +225,9 @@ namespace NetMQServer
         }
 
         #endregion
-        
+
         #region Async
-        
+
         /// <summary>
         /// Transmit a string over this socket asynchronously.
         /// </summary>
@@ -232,11 +236,13 @@ namespace NetMQServer
         public static ValueTask SendAsync(this IThreadSafeOutSocket socket, string message)
         {
             if (socket.TrySend(message))
+            {
                 return new ValueTask();
-            
+            }
+
             return new ValueTask(Task.Factory.StartNew(() => Send(socket, message), TaskCreationOptions.LongRunning));
         }
-        
+
         #endregion
 
         #endregion

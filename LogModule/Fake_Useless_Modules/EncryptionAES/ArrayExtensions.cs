@@ -21,17 +21,25 @@ namespace NetMQServer.Core.Patterns.Utils
             {
                 dest = new T[size];
                 if (ended)
+                {
                     Array.Copy(src, 0, dest, 0, src.Length);
+                }
                 else
+                {
                     Array.Copy(src, 0, dest, size - src.Length, src.Length);
+                }
             }
             else if (size < src.Length)
             {
                 dest = new T[size];
                 if (ended)
+                {
                     Array.Copy(src, 0, dest, 0, size);
+                }
                 else
+                {
                     Array.Copy(src, src.Length - size, dest, 0, size);
+                }
             }
             else
             {
@@ -43,15 +51,22 @@ namespace NetMQServer.Core.Patterns.Utils
 
         public static void Swap<T>(this List<T> items, int index1, int index2) where T : class
         {
-            if (index1 == index2) 
+            if (index1 == index2)
+            {
                 return;
+            }
 
             T item1 = items[index1];
             T item2 = items[index2];
             if (item1 != null)
+            {
                 items[index2] = item1;
+            }
+
             if (item2 != null)
+            {
                 items[index1] = item2;
+            }
         }
     }
 }

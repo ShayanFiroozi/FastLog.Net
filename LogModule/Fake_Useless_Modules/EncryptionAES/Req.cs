@@ -57,7 +57,7 @@ namespace NetMQServer.Core.Patterns
         /// A request identifier used in conjunction with m_request_id_frames_enabled; used
         /// to match (correlate) the reply to the corresponding request.
         /// </summary>
-        private UInt32 m_request_id;
+        private uint m_request_id;
 
         /// <summary>
         /// specific pipe that we are expecting the reply to occur on, once we make a request.
@@ -79,7 +79,7 @@ namespace NetMQServer.Core.Patterns
             m_options.CanSendHelloMsg = false;
             m_strict = true;
             m_request_id_frames_enabled = false;
-            m_request_id = (UInt32)(new Random()).Next(1, 10433); // just an arbitrary pick.  Don't want to make it likely that m_request_id overflows.
+            m_request_id = (uint)(new Random()).Next(1, 10433); // just an arbitrary pick.  Don't want to make it likely that m_request_id overflows.
             m_replyPipe = null;
         }
 
@@ -94,7 +94,9 @@ namespace NetMQServer.Core.Patterns
             // If we've sent a request and we still haven't got the reply,
             // we can't send another request.
             if (m_receivingReply && m_strict)
+            {
                 throw new FiniteStateMachineException("Req.XSend - cannot send another request");
+            }
 
             bool isMessageSent;
 
@@ -107,24 +109,29 @@ namespace NetMQServer.Core.Patterns
                 if (m_request_id_frames_enabled)
                 {
                     m_request_id++;
-                    var requestid = new Msg();
+                    Msg requestid = new Msg();
                     requestid.InitEmpty();
-                    requestid.InitPool(sizeof(UInt32));
-                    requestid.Put(BitConverter.GetBytes(m_request_id), 0, sizeof(UInt32));
+                    requestid.InitPool(sizeof(uint));
+                    requestid.Put(BitConverter.GetBytes(m_request_id), 0, sizeof(uint));
                     requestid.SetFlags(MsgFlags.More);
-    
+
                     m_replyPipe = null;
                     if (!base.XSendPipe(ref requestid, out m_replyPipe))
+                    {
                         return false;
+                    }
                 }
 
-                var bottom = new Msg();
+                Msg bottom = new Msg();
                 bottom.InitEmpty();
                 bottom.SetFlags(MsgFlags.More);
                 isMessageSent = base.XSendPipe(ref bottom, out m_replyPipe);
 
                 if (!isMessageSent)
+                {
                     return false;
+                }
+
                 Debug.Assert(m_replyPipe != null);
 
                 m_messageBegins = false;
@@ -138,7 +145,11 @@ namespace NetMQServer.Core.Patterns
                 while (true)
                 {
                     drop.InitEmpty();
-                    if (!base.XRecv(ref drop)) break;
+                    if (!base.XRecv(ref drop))
+                    {
+                        break;
+                    }
+
                     drop.Close();
                 }
             }
@@ -148,7 +159,9 @@ namespace NetMQServer.Core.Patterns
             isMessageSent = base.XSend(ref msg);
 
             if (!isMessageSent)
+            {
                 return false;
+            }
 
             // If the request was fully sent, flip the FSM into reply-receiving state.
             if (!more)
@@ -172,7 +185,9 @@ namespace NetMQServer.Core.Patterns
 
             // If request wasn't send, we can't wait for reply.
             if (!m_receivingReply)
+            {
                 throw new FiniteStateMachineException("Req.XRecv - cannot receive another reply");
+            }
 
             // First part of the reply should be the original request ID.
 
@@ -181,9 +196,12 @@ namespace NetMQServer.Core.Patterns
                 // if enabled, the first frame must have the correct request_id.
                 if (m_request_id_frames_enabled)
                 {
-                    if (!RecvFromReplyPipe(ref msg)) return false;
+                    if (!RecvFromReplyPipe(ref msg))
+                    {
+                        return false;
+                    }
 
-                    if (!msg.HasMore || (msg.Size != sizeof(UInt32)) || (BitConverter.ToUInt32(msg.Slice(0, sizeof(UInt32)).ToArray(), 0) != m_request_id))
+                    if (!msg.HasMore || (msg.Size != sizeof(uint)) || (BitConverter.ToUInt32(msg.Slice(0, sizeof(uint)).ToArray(), 0) != m_request_id))
                     {
                         // skip the remaining frames and try the next message
                         msg = SkipRemainingFrames(msg);
@@ -194,7 +212,9 @@ namespace NetMQServer.Core.Patterns
                 isMessageAvailable = RecvFromReplyPipe(ref msg);
 
                 if (!isMessageAvailable)
+                {
                     return false;
+                }
 
                 if (!msg.HasMore || msg.Size != 0)
                 {
@@ -205,7 +225,9 @@ namespace NetMQServer.Core.Patterns
                         isMessageAvailable = RecvFromReplyPipe(ref msg);
                         Debug.Assert(isMessageAvailable);
                         if (!msg.HasMore)
+                        {
                             break;
+                        }
                     }
 
                     msg.Close();
@@ -219,7 +241,9 @@ namespace NetMQServer.Core.Patterns
 
             isMessageAvailable = RecvFromReplyPipe(ref msg);
             if (!isMessageAvailable)
+            {
                 return false;
+            }
 
             // If the reply is fully received, flip the FSM into request-sending state.
             if (!msg.HasMore)
@@ -235,32 +259,45 @@ namespace NetMQServer.Core.Patterns
         {
             while (msg.HasMore)
             {
-                var wasReceived = RecvFromReplyPipe(ref msg);
+                bool wasReceived = RecvFromReplyPipe(ref msg);
                 Debug.Assert(wasReceived);
             }
 
             return msg;
         }
 
-        bool RecvFromReplyPipe(ref Msg msg)
+        private bool RecvFromReplyPipe(ref Msg msg)
         {
             while (true)
             {
-                if (!base.XRecvPipe(ref msg, out Pipe? pipe)) return false; 
-                if ((m_replyPipe==null) || (pipe == m_replyPipe)) return true;
+                if (!base.XRecvPipe(ref msg, out Pipe? pipe))
+                {
+                    return false;
+                }
+
+                if ((m_replyPipe == null) || (pipe == m_replyPipe))
+                {
+                    return true;
+                }
             }
         }
 
         protected override void XTerminated(Pipe pipe)
         {
-            if (m_replyPipe == pipe) m_replyPipe = null;
+            if (m_replyPipe == pipe)
+            {
+                m_replyPipe = null;
+            }
+
             base.XTerminated(pipe);
         }
 
         protected override bool XHasIn()
         {
             if (!m_receivingReply)
+            {
                 return false;
+            }
 
             return base.XHasIn();
         }
@@ -268,7 +305,9 @@ namespace NetMQServer.Core.Patterns
         protected override bool XHasOut()
         {
             if (m_receivingReply && m_strict)
+            {
                 return false;
+            }
 
             return base.XHasOut();
         }
@@ -281,19 +320,19 @@ namespace NetMQServer.Core.Patterns
                 return false;
             }
 
-            var value = (bool)optionValue;
-          
+            bool value = (bool)optionValue;
+
             switch (option)
             {
                 case ZmqSocketOption.Correlate:
                     m_request_id_frames_enabled = value;
-                    return true; 
-          
+                    return true;
+
                 case ZmqSocketOption.Relaxed:
                     m_strict = !value;
-                    return true; 
+                    return true;
             }
-  
+
             return base.XSetSocketOption(option, optionValue);
         }
 
@@ -313,7 +352,7 @@ namespace NetMQServer.Core.Patterns
             {
                 m_state = State.Bottom;
             }
-            
+
             public override PushMsgResult PushMsg(ref Msg msg)
             {
                 // TODO the flags checks here don't check specific bits -- should they use HasMore instead? does this work with shared Msg objects?
@@ -326,7 +365,7 @@ namespace NetMQServer.Core.Patterns
                             //  In case option ZMQ_CORRELATE is on, allow RequestId to be
                             //  transfered as first frame (would be too cumbersome to check
                             //  whether the option is actually on or not).
-                            if (msg.Size == sizeof(UInt32))
+                            if (msg.Size == sizeof(uint))
                             {
                                 m_state = State.RequestId;
                                 return base.PushMsg(ref msg);
@@ -349,7 +388,10 @@ namespace NetMQServer.Core.Patterns
 
                     case State.Body:
                         if (msg.Flags == MsgFlags.More)
+                        {
                             return base.PushMsg(ref msg);
+                        }
+
                         if (msg.Flags == MsgFlags.None)
                         {
                             m_state = State.Bottom;

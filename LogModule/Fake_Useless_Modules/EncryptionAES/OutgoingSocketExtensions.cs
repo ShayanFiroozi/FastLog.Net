@@ -22,7 +22,7 @@ namespace NetMQServer
         /// <param name="more">Indicate if another frame is expected after this frame</param>
         public static void Send(this IOutgoingSocket socket, ref Msg msg, bool more)
         {
-            var result = socket.TrySend(ref msg, SendReceiveConstants.InfiniteTimeout, more);
+            bool result = socket.TrySend(ref msg, SendReceiveConstants.InfiniteTimeout, more);
             Debug.Assert(result);
         }
 
@@ -50,9 +50,9 @@ namespace NetMQServer
         /// <param name="more">set this flag to true to signal that you will be immediately sending another frame (optional: default is false)</param>
         public static void SendFrame(this IOutgoingSocket socket, byte[] data, int length, bool more = false)
         {
-            var msg = new Msg();
+            Msg msg = new Msg();
             msg.InitPool(length);
-           
+
             socket.Send(ref msg, more);
             msg.Close();
         }
@@ -102,9 +102,9 @@ namespace NetMQServer
         /// <returns><c>true</c> if a message was available, otherwise <c>false</c>.</returns>
         public static bool TrySendFrame(this IOutgoingSocket socket, TimeSpan timeout, byte[] data, int length, bool more = false)
         {
-            var msg = new Msg();
+            Msg msg = new Msg();
             msg.InitPool(length);
-           
+
             if (!socket.TrySend(ref msg, timeout, more))
             {
                 msg.Close();
@@ -187,7 +187,7 @@ namespace NetMQServer
         /// <param name="frames">frames to transmit</param>
         public static void SendMultipartBytes(this IOutgoingSocket socket, IEnumerable<byte[]> frames)
         {
-            var enumerator = frames.GetEnumerator();
+            IEnumerator<byte[]> enumerator = frames.GetEnumerator();
 
             try
             {
@@ -197,7 +197,7 @@ namespace NetMQServer
                     throw new ArgumentException("frames is empty", nameof(frames));
                 }
 
-                var current = enumerator.Current;
+                byte[] current = enumerator.Current;
 
                 // we always one item back to make sure we send the last frame without the more flag
                 while (enumerator.MoveNext())
@@ -243,7 +243,7 @@ namespace NetMQServer
         public static bool TrySendMultipartBytes(this IOutgoingSocket socket, TimeSpan timeout,
             IEnumerable<byte[]> frames)
         {
-            var enumerator = frames.GetEnumerator();
+            IEnumerator<byte[]> enumerator = frames.GetEnumerator();
 
             try
             {
@@ -253,7 +253,7 @@ namespace NetMQServer
                     throw new ArgumentException("frames is empty", nameof(frames));
                 }
 
-                var current = enumerator.Current;
+                byte[] current = enumerator.Current;
 
                 // only the first frame need to be sent with a timeout
                 if (!enumerator.MoveNext())
@@ -265,7 +265,9 @@ namespace NetMQServer
                     bool sentSuccessfully = socket.TrySendFrame(timeout, current, true);
 
                     if (!sentSuccessfully)
+                    {
                         return false;
+                    }
                 }
 
                 // fetching the second frame
@@ -333,7 +335,7 @@ namespace NetMQServer
         /// <param name="more">set this flag to true to signal that you will be immediately sending another frame (optional: default is false)</param>
         public static void SendFrame(this IOutgoingSocket socket, string message, bool more = false)
         {
-            var msg = new Msg();
+            Msg msg = new Msg();
 
             // Count the number of bytes required to encode the string.
             // Note that non-ASCII strings may not have an equal number of characters
@@ -377,7 +379,7 @@ namespace NetMQServer
         /// <returns><c>true</c> if a message was available, otherwise <c>false</c>.</returns>
         public static bool TrySendFrame(this IOutgoingSocket socket, TimeSpan timeout, string message, bool more = false)
         {
-            var msg = new Msg();
+            Msg msg = new Msg();
 
             // Count the number of bytes required to encode the string.
             // Note that non-ASCII strings may not have an equal number of characters
@@ -431,7 +433,9 @@ namespace NetMQServer
         public static void SendMultipartMessage(this IOutgoingSocket socket, NetMQMessage message)
         {
             if (message.FrameCount == 0)
+            {
                 throw new ArgumentException("message is empty", nameof(message));
+            }
 
             for (int i = 0; i < message.FrameCount - 1; i++)
             {
@@ -455,7 +459,9 @@ namespace NetMQServer
         public static bool TrySendMultipartMessage(this IOutgoingSocket socket, TimeSpan timeout, NetMQMessage message)
         {
             if (message.FrameCount == 0)
+            {
                 throw new ArgumentException("message is empty", nameof(message));
+            }
             else if (message.FrameCount == 1)
             {
                 return TrySendFrame(socket, timeout, message[0].Buffer, message[0].MessageSize);
@@ -464,7 +470,9 @@ namespace NetMQServer
             {
                 bool sentSuccessfully = TrySendFrame(socket, timeout, message[0].Buffer, message[0].MessageSize, true);
                 if (!sentSuccessfully)
+                {
                     return false;
+                }
             }
 
             for (int i = 1; i < message.FrameCount - 1; i++)
@@ -692,7 +700,7 @@ namespace NetMQServer
         /// Send empty list of routing keys over <paramref name="socket"/>, append an empty message at the end of the keys.
         /// </summary>
         /// <param name="socket">the IOutgoingSocket to transmit on</param>
-        public static IOutgoingSocket SendEmptyRoutingKeys(this IOutgoingSocket socket) 
+        public static IOutgoingSocket SendEmptyRoutingKeys(this IOutgoingSocket socket)
         {
             return socket.SendMoreFrameEmpty();
         }
@@ -704,10 +712,12 @@ namespace NetMQServer
         /// <param name="routingKeys">the routing keys to send</param>
         public static IOutgoingSocket SendRoutingKeys(this IOutgoingSocket socket, params RoutingKey[] routingKeys)
         {
-            foreach(var routingKey in routingKeys)            
+            foreach (RoutingKey routingKey in routingKeys)
+            {
                 socket.SendMoreFrame(routingKey);
+            }
 
-            socket.SendMoreFrameEmpty();            
+            socket.SendMoreFrameEmpty();
 
             return socket;
         }
@@ -719,10 +729,12 @@ namespace NetMQServer
         /// <param name="routingKeys">the routing keys to send</param>
         public static IOutgoingSocket SendRoutingKeys(this IOutgoingSocket socket, IEnumerable<RoutingKey> routingKeys)
         {
-            foreach(var routingKey in routingKeys)            
+            foreach (RoutingKey routingKey in routingKeys)
+            {
                 socket.SendMoreFrame(routingKey);
+            }
 
-            socket.SendMoreFrameEmpty();            
+            socket.SendMoreFrameEmpty();
 
             return socket;
         }
@@ -737,7 +749,7 @@ namespace NetMQServer
         /// <returns><c>true</c> if a message was available, otherwise <c>false</c>.</returns>
         public static bool TrySendRoutingKeys(this IOutgoingSocket socket, IEnumerable<RoutingKey> routingKeys)
         {
-           return socket.TrySendRoutingKeys(TimeSpan.Zero, routingKeys);
+            return socket.TrySendRoutingKeys(TimeSpan.Zero, routingKeys);
         }
 
         /// <summary>
@@ -751,19 +763,25 @@ namespace NetMQServer
         /// <returns><c>true</c> if a message was available, otherwise <c>false</c>.</returns>
         public static bool TrySendRoutingKeys(this IOutgoingSocket socket, TimeSpan timeout, IEnumerable<RoutingKey> routingKeys)
         {
-            var enumerator = routingKeys.GetEnumerator();
-            
+            IEnumerator<RoutingKey> enumerator = routingKeys.GetEnumerator();
+
             // Empty collection, just trying to send the empty message
-            if (!enumerator.MoveNext())            
-                return socket.TrySendFrameEmpty(timeout, true);            
+            if (!enumerator.MoveNext())
+            {
+                return socket.TrySendFrameEmpty(timeout, true);
+            }
 
             if (!socket.TrySendFrame(enumerator.Current))
+            {
                 return false;
+            }
 
-            while (enumerator.MoveNext())             
+            while (enumerator.MoveNext())
+            {
                 socket.SendMoreFrame(enumerator.Current);
+            }
 
-            socket.SendMoreFrameEmpty();                                                 
+            socket.SendMoreFrameEmpty();
 
             return true;
         }

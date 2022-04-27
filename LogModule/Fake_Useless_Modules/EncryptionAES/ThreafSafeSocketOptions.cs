@@ -23,7 +23,7 @@ namespace NetMQServer
         {
             m_socket = socket;
         }
-        
+
         /// <summary>
         /// Assign the given integer value to the specified <see cref="ZmqSocketOption"/>.
         /// </summary>
@@ -36,7 +36,7 @@ namespace NetMQServer
             m_socket.CheckDisposed();
             m_socket.SetSocketOption(option, value);
         }
-        
+
         /// <summary>
         /// Assign the given TimeSpan to the specified <see cref="ZmqSocketOption"/>.
         /// </summary>
@@ -47,7 +47,7 @@ namespace NetMQServer
         {
             SetSocketOption(option, (int)value.TotalMilliseconds);
         }
-        
+
         /// <summary>
         /// Get the integer-value of the specified <see cref="ZmqSocketOption"/>.
         /// </summary>
@@ -68,7 +68,7 @@ namespace NetMQServer
         /// <returns>an object of the given type, that is the value of that option</returns>
         /// <exception cref="TerminatingException">The socket has been stopped.</exception>
         /// <exception cref="ObjectDisposedException">This object is already disposed.</exception>
-      
+
         internal T GetSocketOptionX<T>(ZmqSocketOption option)
         {
             m_socket.CheckDisposed();
@@ -288,7 +288,7 @@ namespace NetMQServer
         /// will be 0.0.0.0 (for IPv4).
         /// </remarks>
         public string? LastEndpoint => GetSocketOptionX<string>(ZmqSocketOption.LastEndpoint);
-        
+
         /// <summary>
         /// Get or set the attach-on-connect value.
         /// If set to true, this will delay the attachment of a pipe on connect until
@@ -302,7 +302,7 @@ namespace NetMQServer
             get => GetSocketOptionX<bool>(ZmqSocketOption.DelayAttachOnConnect);
             set => SetSocketOption(ZmqSocketOption.DelayAttachOnConnect, value);
         }
-        
+
         /// <summary>
         /// Disable socket time-wait
         /// </summary>
@@ -311,7 +311,7 @@ namespace NetMQServer
             get => GetSocketOptionX<bool>(ZmqSocketOption.DisableTimeWait);
             set => SetSocketOption(ZmqSocketOption.DisableTimeWait, value);
         }
-        
+
         /// <summary>
         /// Defines whether the socket will act as server for CURVE security.
         /// A value of true means the socket will act as CURVE server.
@@ -336,13 +336,15 @@ namespace NetMQServer
             set
             {
                 if (value.SecretKey == null)
+                {
                     throw new ArgumentException("NetMQCertificate must have a secret key", nameof(value));
-                
+                }
+
                 SetSocketOption(ZmqSocketOption.CurveSecretKey, value.SecretKey);
                 SetSocketOption(ZmqSocketOption.CurvePublicKey, value.PublicKey);
-            } 
+            }
         }
-        
+
         /// <summary>
         /// Sets the socket's long term server key.
         /// You must set this on CURVE client sockets.
@@ -350,7 +352,7 @@ namespace NetMQServer
         /// This key must have been generated together with the server's secret key.
         /// To generate a public/secret key pair, use <see cref="NetMQCertificate"/>.
         /// </summary>
-        
+
         public byte[]? CurveServerKey
         {
             get => GetSocketOptionX<byte[]>(ZmqSocketOption.CurveServerKey);
@@ -368,7 +370,7 @@ namespace NetMQServer
         {
             set => SetSocketOption(ZmqSocketOption.CurveServerKey, value.PublicKey);
         }
-        
+
         /// <summary>
         /// If remote peer receives a PING message and doesn't receive another
         /// message within the ttl value, it should close the connection
@@ -388,7 +390,7 @@ namespace NetMQServer
             get => GetSocketOptionTimeSpan(ZmqSocketOption.HeartbeatInterval);
             set => SetSocketOptionTimeSpan(ZmqSocketOption.HeartbeatInterval, value);
         }
-        
+
         /// <summary>
         /// Time in milliseconds to wait for a PING response before disconnecting
         /// </summary>

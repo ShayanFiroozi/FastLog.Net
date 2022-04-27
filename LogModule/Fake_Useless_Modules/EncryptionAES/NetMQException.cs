@@ -31,7 +31,7 @@ namespace NetMQServer
         /// Create NetMQ Exception
         /// </summary>
         public NetMQException()
-        {}
+        { }
 
         /// <summary>
         /// Create a new NetMQ exception
@@ -39,7 +39,7 @@ namespace NetMQServer
         /// <param name="message"></param>
         public NetMQException(string message)
             : base(message)
-        {}
+        { }
 
         /// <summary>
         /// Create a new NetMQ exception
@@ -48,7 +48,7 @@ namespace NetMQServer
         /// <param name="innerException"></param>
         public NetMQException(string message, Exception innerException)
             : base(message, innerException)
-        {}
+        { }
 
 #if !NETSTANDARD1_6
 
@@ -101,7 +101,7 @@ namespace NetMQServer
         /// <returns>a new NetMQException</returns>
         public static NetMQException Create(SocketError error, Exception? innerException = null)
         {
-            var errorCode = error.ToErrorCode();
+            ErrorCode errorCode = error.ToErrorCode();
 
 #if DEBUG
             if (errorCode == 0)

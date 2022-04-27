@@ -40,9 +40,14 @@ namespace NetMQServer
         public NetMQFrame(byte[] buffer, int length)
         {
             if (buffer == null)
+            {
                 throw new ArgumentNullException(nameof(buffer));
+            }
+
             if (length > buffer.Length)
+            {
                 throw new ArgumentOutOfRangeException(nameof(length), length, "Must be less than or equal to the provided buffer's length.");
+            }
 
             Buffer = buffer;
             MessageSize = length;
@@ -55,7 +60,7 @@ namespace NetMQServer
         /// <param name="message">a string containing the message-data of the frame</param>
         public NetMQFrame(string message)
             : this(Encoding.ASCII.GetBytes(message))
-        {}
+        { }
 
         /// <summary>
         /// Create a new NetMQFrame containing the given string-message,
@@ -65,7 +70,7 @@ namespace NetMQServer
         /// <param name="encoding">the Encoding to use to convert the given string-message into the internal byte-array</param>
         public NetMQFrame(string message, Encoding encoding)
             : this(encoding.GetBytes(message))
-        {}
+        { }
 
         /// <summary>
         /// Create a new NetMQFrame with a data-buffer pre-sized to the given length.
@@ -134,7 +139,7 @@ namespace NetMQServer
                 throw new ArgumentNullException(nameof(buffer));
             }
 
-            var copy = new NetMQFrame(buffer.Length);
+            NetMQFrame copy = new NetMQFrame(buffer.Length);
 
             System.Buffer.BlockCopy(buffer, 0, copy.Buffer, 0, buffer.Length);
 
@@ -191,7 +196,7 @@ namespace NetMQServer
                 throw new ArgumentNullException(nameof(frame));
             }
 
-            var copy = new NetMQFrame(new byte[frame.BufferSize]) { MessageSize = frame.MessageSize };
+            NetMQFrame copy = new NetMQFrame(new byte[frame.BufferSize]) { MessageSize = frame.MessageSize };
 
             System.Buffer.BlockCopy(frame.Buffer, 0, copy.Buffer, 0, frame.BufferSize);
 
@@ -215,15 +220,21 @@ namespace NetMQServer
         public bool Equals(byte[]? other)
         {
             if (other?.Length != MessageSize)
+            {
                 return false;
+            }
 
             if (ReferenceEquals(Buffer, other))
+            {
                 return true;
+            }
 
             for (int i = 0; i < MessageSize; i++)
             {
                 if (Buffer[i] != other[i])
+                {
                     return false;
+                }
             }
 
             return true;
@@ -237,10 +248,14 @@ namespace NetMQServer
         public bool Equals(NetMQFrame? other)
         {
             if (other == null)
+            {
                 return false;
+            }
 
             if (ReferenceEquals(this, other))
+            {
                 return true;
+            }
 
             if (MessageSize > other.BufferSize || MessageSize != other.MessageSize)
             {
@@ -284,7 +299,9 @@ namespace NetMQServer
             // NOTE use of ReferenceEquals here to avoid recurrence and stack overflow exception
 
             if (one is null && other is null)
+            {
                 return true;
+            }
 
             return one is object && one.Equals(other!);
         }
@@ -297,7 +314,7 @@ namespace NetMQServer
         /// <returns>false if both frames are equal</returns>
         public static bool operator !=(NetMQFrame? one, NetMQFrame? other)
         {
-           return !(one == other);
+            return !(one == other);
         }
 
         /// <summary>
@@ -310,9 +327,9 @@ namespace NetMQServer
         {
             if (m_hash == 0)
             {
-                foreach (var b in Buffer)
+                foreach (byte b in Buffer)
                 {
-                    m_hash = (31*m_hash) ^ b;
+                    m_hash = (31 * m_hash) ^ b;
                 }
             }
 
@@ -331,7 +348,7 @@ namespace NetMQServer
                 return Buffer;
             }
 
-            var byteArray = new byte[MessageSize];
+            byte[] byteArray = new byte[MessageSize];
 
             System.Buffer.BlockCopy(Buffer, 0, byteArray, 0, MessageSize);
 

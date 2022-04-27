@@ -25,7 +25,9 @@ namespace NetMQServer.Core
 #endif
 
             if (s_sizeOfIntPtr > 4)
+            {
                 s_sizeOfIntPtr = 8;
+            }
         }
 
         public MonitorEvent(SocketEvents monitorEvent, string addr, ErrorCode arg)
@@ -50,11 +52,17 @@ namespace NetMQServer.Core
             m_arg = arg;
 
             if (arg is int)
+            {
                 m_flag = ValueInteger;
+            }
             else if (arg is AsyncSocket)
+            {
                 m_flag = ValueChannel;
+            }
             else
+            {
                 m_flag = 0;
+            }
         }
 
         public string Addr => m_addr;
@@ -68,9 +76,13 @@ namespace NetMQServer.Core
             int size = 4 + 1 + (m_addr?.Length ?? 0) + 1; // event + len(addr) + addr + flag
 
             if (m_flag == ValueInteger)
+            {
                 size += 4;
+            }
             else if (m_flag == ValueChannel)
+            {
                 size += s_sizeOfIntPtr;
+            }
 
             int pos = 0;
 
@@ -88,7 +100,9 @@ namespace NetMQServer.Core
                 pos += m_addr.Length;
             }
             else
+            {
                 buffer[pos++] = 0;
+            }
 
             buffer[pos++] = ((byte)m_flag);
             if (m_flag == ValueInteger)
@@ -100,12 +114,16 @@ namespace NetMQServer.Core
                 GCHandle handle = GCHandle.Alloc(m_arg, GCHandleType.Weak);
 
                 if (s_sizeOfIntPtr == 4)
+                {
                     buffer.PutInteger(Endianness.Little, GCHandle.ToIntPtr(handle).ToInt32(), pos);
+                }
                 else
+                {
                     buffer.PutLong(Endianness.Little, GCHandle.ToIntPtr(handle).ToInt64(), pos);
+                }
             }
 
-            var msg = new Msg();
+            Msg msg = new Msg();
             msg.InitGC((byte[])buffer, buffer.Size);
             // An infinite timeout here can cause the IO thread to hang
             // see https://github.com/zeromq/netmq/issues/539
@@ -114,22 +132,22 @@ namespace NetMQServer.Core
 
         public static MonitorEvent Read(SocketBase s)
         {
-            var msg = new Msg();
+            Msg msg = new Msg();
             msg.InitEmpty();
 
             s.TryRecv(ref msg, SendReceiveConstants.InfiniteTimeout);
 
             int pos = msg.UnsafeOffset;
 
-          
+
             ByteArraySegment data = msg.UnsafeData;
 
-            var @event = (SocketEvents)data.GetInteger(Endianness.Little, pos);
+            SocketEvents @event = (SocketEvents)data.GetInteger(Endianness.Little, pos);
             pos += 4;
-            var len = (int)data[pos++];
+            int len = data[pos++];
             string addr = data.GetString(len, pos);
             pos += len;
-            var flag = (int)data[pos++];
+            int flag = data[pos++];
             object? arg = null;
 
             if (flag == ValueInteger)

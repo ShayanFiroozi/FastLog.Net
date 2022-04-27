@@ -26,9 +26,11 @@ namespace NetMQServer
             get
             {
                 // Optimise for the case where the value is non-null, and we don't need to acquire the lock
-                var c = s_ctx;
+                Ctx c = s_ctx;
                 if (c != null)
+                {
                     return c;
+                }
 
                 lock (s_sync)
                 {
@@ -101,7 +103,9 @@ namespace NetMQServer
             get
             {
                 lock (s_sync)
+                {
                     return s_threadPoolSize;
+                }
             }
             set
             {
@@ -110,7 +114,9 @@ namespace NetMQServer
                     s_threadPoolSize = value;
 
                     if (s_ctx != null)
+                    {
                         s_ctx.IOThreadCount = value;
+                    }
                 }
             }
         }
@@ -123,7 +129,9 @@ namespace NetMQServer
             get
             {
                 lock (s_sync)
+                {
                     return s_maxSockets;
+                }
             }
             set
             {
@@ -132,14 +140,16 @@ namespace NetMQServer
                     s_maxSockets = value;
 
                     if (s_ctx != null)
+                    {
                         s_ctx.MaxSockets = value;
+                    }
                 }
             }
         }
 
         #region Obsolete
 
-      
+
 
         /// <summary>
         /// Method is obsolete, call Cleanup instead

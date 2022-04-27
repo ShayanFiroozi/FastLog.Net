@@ -17,13 +17,13 @@ namespace NetMQServer
         /// </summary>
         /// <param name="socket"></param>
         void Add(ISocketPollable socket);
-        
+
         /// <summary>
         /// Remove a socket from poller
         /// </summary>
         /// <param name="socket"></param>
         void Remove(ISocketPollable socket);
-        
+
         /// <summary>
         /// Remove a socket and dispose it
         /// </summary>

@@ -11,12 +11,12 @@ namespace NetMQServer
         /// Runs the poller on the caller's thread. Only returns when <see cref="Stop"/> or <see cref="StopAsync"/> are called from another thread.
         /// </summary>
         void Run();
-        
+
         /// <summary>
         /// Runs the poller in a background thread, returning once the poller has started.
         /// </summary>
         void RunAsync();
-        
+
         /// <summary>
         /// Stops the poller.
         /// </summary>
@@ -25,7 +25,7 @@ namespace NetMQServer
         /// If called from the poller thread it is not possible to block.
         /// </remarks>
         void Stop();
-        
+
         /// <summary>
         /// Stops the poller, returning immediately and most likely before the poller has actually stopped.
         /// </summary>

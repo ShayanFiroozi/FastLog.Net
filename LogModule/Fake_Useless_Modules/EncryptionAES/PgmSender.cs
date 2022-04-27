@@ -63,18 +63,18 @@ namespace NetMQServer.Core.Transports.Pgm
         {
             m_pgmAddress = pgmAddress;
 
-            
+
 
             m_pgmSocket = new PgmSocket(m_options, PgmSocketType.Publisher, (PgmAddress)m_addr.Resolved);
             m_pgmSocket.Init();
 
             m_socket = m_pgmSocket.Handle;
 
-          
 
-            var localEndpoint = new IPEndPoint(IPAddress.Any, 0);
 
-         
+            IPEndPoint localEndpoint = new IPEndPoint(IPAddress.Any, 0);
+
+
 
             m_pgmSocket.InitOptions();
 
@@ -87,14 +87,14 @@ namespace NetMQServer.Core.Transports.Pgm
             m_session = session;
 
             // get the first message from the session because we don't want to send identities
-            var msg = new Msg();
+            Msg msg = new Msg();
             msg.InitEmpty();
 
-            var pullResult = session.PullMsg(ref msg);
+            PullMsgResult pullResult = session.PullMsg(ref msg);
             if (pullResult == PullMsgResult.Ok)
+            {
                 msg.Close();
-
-          
+            }
 
             if (!m_delayedStart)
             {
@@ -111,12 +111,12 @@ namespace NetMQServer.Core.Transports.Pgm
         {
             m_state = State.Connecting;
 
-       
-         
+
+
 
             try
             {
-               
+
             }
             catch (SocketException ex) when (ex.SocketErrorCode == SocketError.InvalidArgument)
             {
@@ -196,9 +196,13 @@ namespace NetMQServer.Core.Transports.Pgm
                 else
                 {
                     if (socketError == SocketError.ConnectionReset)
+                    {
                         Error();
+                    }
                     else
+                    {
                         throw NetMQException.Create(socketError.ToErrorCode());
+                    }
                 }
             }
             else
@@ -209,18 +213,18 @@ namespace NetMQServer.Core.Transports.Pgm
 
         private void BeginSending()
         {
-           
+
 
             // If write buffer is empty,  try to read new data from the encoder.
             if (m_writeSize == 0)
             {
-            
+
 
                 // First two bytes (sizeof uint16_t) are used to store message
                 // offset in following steps. Note that by passing our buffer to
                 // the get data function we prevent it from returning its own buffer.
                 ushort offset = 0xffff;
-                var buffer = new ByteArraySegment(m_outBuffer, sizeof(ushort));
+                ByteArraySegment buffer = new ByteArraySegment(m_outBuffer, sizeof(ushort));
                 int bufferSize = m_outBufferSize - sizeof(ushort);
 
                 int bytes = m_encoder.Encode(ref buffer, bufferSize);
@@ -228,10 +232,16 @@ namespace NetMQServer.Core.Transports.Pgm
                 while (bytes < bufferSize)
                 {
                     if (!m_moreFlag && offset == 0xffff)
+                    {
                         offset = (ushort)bytes;
+                    }
+
                     Msg msg = new Msg();
                     if (m_session.PullMsg(ref msg) != PullMsgResult.Ok)
+                    {
                         break;
+                    }
+
                     m_moreFlag = msg.HasMore;
                     m_encoder.LoadMsg(ref msg);
                     buffer = buffer! + lastBytes;
@@ -252,24 +262,28 @@ namespace NetMQServer.Core.Transports.Pgm
                 m_outBuffer.PutUnsignedShort(m_options.Endian, offset, 0);
             }
 
-       
+
 
             try
             {
-             
+
             }
             catch (SocketException ex)
             {
                 if (ex.SocketErrorCode == SocketError.ConnectionReset)
+                {
                     Error();
+                }
                 else
+                {
                     throw NetMQException.Create(ex.SocketErrorCode, ex);
+                }
             }
         }
 
         private void Error()
         {
-            
+
             m_session.Detach();
             Destroy();
         }
@@ -283,7 +297,7 @@ namespace NetMQServer.Core.Transports.Pgm
 
 
             m_pgmSocket.Dispose();
-          
+
         }
 
         /// <summary>

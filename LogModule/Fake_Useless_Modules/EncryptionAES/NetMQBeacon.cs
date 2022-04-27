@@ -67,7 +67,7 @@ namespace NetMQServer
 
             private void Configure(string interfaceName, int port)
             {
-             
+
 
                 // In case the beacon was configured twice
                 if (m_udpSocket != null)
@@ -108,34 +108,34 @@ namespace NetMQServer
                 }
                 else
                 {
-                    var interfaceCollection = new InterfaceCollection();
+                    InterfaceCollection interfaceCollection = new InterfaceCollection();
 
-                    var interfaceAddress = !string.IsNullOrEmpty(interfaceName)
+                    IPAddress interfaceAddress = !string.IsNullOrEmpty(interfaceName)
                         ? IPAddress.Parse(interfaceName)
                         : null;
 
-                    foreach (var @interface in interfaceCollection)
+                    foreach (InterfaceItem @interface in interfaceCollection)
                     {
                         if (interfaceAddress == null || @interface.Address.Equals(interfaceAddress))
                         {
-							// because windows and unix differ in how they handle broadcast addressing this needs to be platform specific
-							// on windows any interface can receive broadcast by requesting to enable broadcast on the socket
-							// on linux to receive broadcast you must bind to the broadcast address specifically
-							//bindTo = @interface.Address;
-							sendTo = @interface.BroadcastAddress;
+                            // because windows and unix differ in how they handle broadcast addressing this needs to be platform specific
+                            // on windows any interface can receive broadcast by requesting to enable broadcast on the socket
+                            // on linux to receive broadcast you must bind to the broadcast address specifically
+                            //bindTo = @interface.Address;
+                            sendTo = @interface.BroadcastAddress;
 #if NET45 || NET47
 							if (Environment.OSVersion.Platform==PlatformID.Unix)
 #else
-							if (RuntimeInformation.IsOSPlatform(OSPlatform.Linux))
+                            if (RuntimeInformation.IsOSPlatform(OSPlatform.Linux))
 #endif
-							{
-								bindTo = @interface.BroadcastAddress;
-							}
-							else
-							{
-								bindTo = @interface.Address;
-							}
-							sendTo = @interface.BroadcastAddress;
+                            {
+                                bindTo = @interface.BroadcastAddress;
+                            }
+                            else
+                            {
+                                bindTo = @interface.Address;
+                            }
+                            sendTo = @interface.BroadcastAddress;
 
                             break;
                         }
@@ -156,7 +156,9 @@ namespace NetMQServer
                 for (int i = 0; i < size; i++)
                 {
                     if (a.Buffer[i] != b.Buffer[i])
+                    {
                         return false;
+                    }
                 }
 
                 return true;
@@ -189,20 +191,22 @@ namespace NetMQServer
 
             private void PingElapsed(object sender, NetMQTimerEventArgs e)
             {
-             
+
 
                 SendUdpFrame(m_transmit);
             }
 
             private void OnUdpReady(Socket socket)
             {
-              
+
 
                 if (!TryReceiveUdpFrame(out NetMQFrame? frame, out string? peerName))
-		    return;
+                {
+                    return;
+                }
 
                 // If filter is set, check that beacon matches it
-                var isValid = frame.MessageSize >= m_filter?.MessageSize && Compare(frame, m_filter, m_filter.MessageSize);
+                bool isValid = frame.MessageSize >= m_filter?.MessageSize && Compare(frame, m_filter, m_filter.MessageSize);
 
                 // If valid, discard our own broadcasts, which UDP echoes to us
                 if (isValid && m_transmit != null)
@@ -222,7 +226,7 @@ namespace NetMQServer
 
             private void OnPipeReady(object sender, NetMQSocketEventArgs e)
             {
-            
+
 
                 NetMQMessage message = m_pipe.ReceiveMultipartMessage();
 
@@ -261,7 +265,7 @@ namespace NetMQServer
 
             private void SendUdpFrame(NetMQFrame frame)
             {
-              
+
 
                 try
                 {
@@ -276,11 +280,11 @@ namespace NetMQServer
                 }
             }
 
-            private bool TryReceiveUdpFrame( out NetMQFrame? frame,  out string? peerName)
+            private bool TryReceiveUdpFrame(out NetMQFrame? frame, out string? peerName)
             {
-             
 
-                var buffer = new byte[UdpFrameMax];
+
+                byte[] buffer = new byte[UdpFrameMax];
                 EndPoint peer = new IPEndPoint(IPAddress.Any, 0);
 
                 int bytesRead = 0;
@@ -301,7 +305,7 @@ namespace NetMQServer
             }
         }
 
-#endregion
+        #endregion
 
         private readonly NetMQActor m_actor;
 
@@ -318,7 +322,10 @@ namespace NetMQServer
         {
             m_actor = NetMQActor.Create(new Shim());
 
-            void OnReceive(object sender, NetMQActorEventArgs e) => m_receiveEvent!.Fire(this, new NetMQBeaconEventArgs(this));
+            void OnReceive(object sender, NetMQActorEventArgs e)
+            {
+                m_receiveEvent!.Fire(this, new NetMQBeaconEventArgs(this));
+            }
 
             m_receiveEvent = new EventDelegator<NetMQBeaconEventArgs>(
                 () => m_actor.ReceiveReady += OnReceive,
@@ -343,16 +350,22 @@ namespace NetMQServer
             get
             {
                 if (m_hostName != null)
+                {
                     return m_hostName;
+                }
 
                 // create a copy for thread safety
-                var boundTo = m_boundTo;
+                string boundTo = m_boundTo;
 
                 if (boundTo == null)
+                {
                     return null;
+                }
 
                 if (IPAddress.Any.ToString() == boundTo || IPAddress.IPv6Any.ToString() == boundTo)
+                {
                     return m_hostName = string.Empty;
+                }
 
                 try
                 {
@@ -406,7 +419,7 @@ namespace NetMQServer
         /// <param name="interfaceName">IP address of the interface to bind to. Pass empty string (the default value) to use the default interface.</param>
         public void Configure(int port, string interfaceName = "")
         {
-            var message = new NetMQMessage();
+            NetMQMessage message = new NetMQMessage();
             message.Append(ConfigureCommand);
             message.Append(interfaceName);
             message.Append(port);
@@ -435,7 +448,7 @@ namespace NetMQServer
         /// <param name="interval">Interval to transmit beacon</param>
         public void Publish(byte[] transmit, TimeSpan interval)
         {
-            var message = new NetMQMessage();
+            NetMQMessage message = new NetMQMessage();
             message.Append(PublishCommand);
             message.Append(transmit);
             message.Append((int)interval.TotalMilliseconds);
@@ -496,8 +509,8 @@ namespace NetMQServer
         /// </summary>
         public BeaconMessage Receive()
         {
-            var peerName = m_actor.ReceiveFrameString();
-            var bytes = m_actor.ReceiveFrameBytes();
+            string peerName = m_actor.ReceiveFrameString();
+            byte[] bytes = m_actor.ReceiveFrameBytes();
 
             return new BeaconMessage(bytes, peerName);
         }
@@ -516,7 +529,7 @@ namespace NetMQServer
                 return false;
             }
 
-            var bytes = m_actor.ReceiveFrameBytes();
+            byte[] bytes = m_actor.ReceiveFrameBytes();
 
             message = new BeaconMessage(bytes, peerName);
             return true;
@@ -526,7 +539,10 @@ namespace NetMQServer
         public void Dispose()
         {
             if (Interlocked.CompareExchange(ref m_isDisposed, 1, 0) != 0)
+            {
                 return;
+            }
+
             m_actor.Dispose();
             m_receiveEvent.Dispose();
         }
@@ -570,7 +586,7 @@ namespace NetMQServer
         {
             get
             {
-                var i = PeerAddress.IndexOf(':');
+                int i = PeerAddress.IndexOf(':');
                 return i == -1 ? PeerAddress : PeerAddress.Substring(0, i);
             }
         }

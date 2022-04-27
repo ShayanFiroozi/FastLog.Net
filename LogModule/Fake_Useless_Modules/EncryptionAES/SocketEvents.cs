@@ -12,12 +12,12 @@ namespace NetMQServer
         /// Socket got connected
         /// </summary>
         Connected = 1,
-        
+
         /// <summary>
         /// Connect delayed
         /// </summary>
         ConnectDelayed = 2,
-        
+
         /// <summary>
         /// Connect Retried
         /// </summary>
@@ -27,7 +27,7 @@ namespace NetMQServer
         /// Socket is listening
         /// </summary>
         Listening = 8,
-        
+
         /// <summary>
         /// Socket bind failed
         /// </summary>
@@ -37,7 +37,7 @@ namespace NetMQServer
         /// Peer is accepted
         /// </summary>
         Accepted = 32,
-        
+
         /// <summary>
         /// Accept failed
         /// </summary>
@@ -47,12 +47,12 @@ namespace NetMQServer
         /// Socket is closed
         /// </summary>
         Closed = 128,
-        
+
         /// <summary>
         /// Failed to close socket
         /// </summary>
         CloseFailed = 256,
-        
+
         /// <summary>
         /// Socket disconnected
         /// </summary>

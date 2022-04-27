@@ -106,7 +106,9 @@ namespace NetMQServer.Core
         public void Stop()
         {
             if (!m_terminating)
+            {
                 SendStop();
+            }
         }
 
         public void ForceStop()
@@ -124,9 +126,11 @@ namespace NetMQServer.Core
             {
                 // Get the next command. If there is none, exit.
                 if (!m_mailbox.TryRecv(0, out Command command))
+                {
                     break;
+                }
 
-              
+
 
                 // Process the command.
                 command.Destination.ProcessCommand(command);

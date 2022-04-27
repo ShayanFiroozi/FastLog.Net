@@ -32,43 +32,43 @@ namespace SpeckNet
             {
                 case EncryptionType.Speck_64_96:
                 case EncryptionType.Speck_64_128:
-                {
-                    int keyPartSize = sizeof(uint);
-                    if (keyBytes.Length % keyPartSize != 0)
                     {
-                        throw new SpeckException("Invalid amount of bytes in the key");
-                    }
+                        int keyPartSize = sizeof(uint);
+                        if (keyBytes.Length % keyPartSize != 0)
+                        {
+                            throw new SpeckException("Invalid amount of bytes in the key");
+                        }
 
-                    int numberOfKeyParts = keyBytes.Length / keyPartSize;
-                    uint[] key = new uint[numberOfKeyParts];
-                    int keyIdx = 0;
-                    for (int offset = 0; offset < keyPartSize * numberOfKeyParts; offset += keyPartSize)
-                    {
-                        key[keyIdx++] = BitConverter.ToUInt32(keyBytes, offset);
-                    }
+                        int numberOfKeyParts = keyBytes.Length / keyPartSize;
+                        uint[] key = new uint[numberOfKeyParts];
+                        int keyIdx = 0;
+                        for (int offset = 0; offset < keyPartSize * numberOfKeyParts; offset += keyPartSize)
+                        {
+                            key[keyIdx++] = BitConverter.ToUInt32(keyBytes, offset);
+                        }
 
-                    return new Speck64(type, key);
-                }
+                        return new Speck64(type, key);
+                    }
                 case EncryptionType.Speck_128_128:
                 case EncryptionType.Speck_128_192:
                 case EncryptionType.Speck_128_256:
-                {
-                    int keyPartSize = sizeof(ulong);
-                    if (keyBytes.Length % keyPartSize != 0)
                     {
-                        throw new SpeckException("Invalid amount of bytes in the key");
-                    }
+                        int keyPartSize = sizeof(ulong);
+                        if (keyBytes.Length % keyPartSize != 0)
+                        {
+                            throw new SpeckException("Invalid amount of bytes in the key");
+                        }
 
-                    int numberOfKeyParts = keyBytes.Length / keyPartSize;
-                    ulong[] key = new ulong[numberOfKeyParts];
-                    int keyIdx = 0;
-                    for (int offset = 0; offset < keyPartSize * numberOfKeyParts; offset += keyPartSize)
-                    {
-                        key[keyIdx++] = BitConverter.ToUInt64(keyBytes, offset);
-                    }
+                        int numberOfKeyParts = keyBytes.Length / keyPartSize;
+                        ulong[] key = new ulong[numberOfKeyParts];
+                        int keyIdx = 0;
+                        for (int offset = 0; offset < keyPartSize * numberOfKeyParts; offset += keyPartSize)
+                        {
+                            key[keyIdx++] = BitConverter.ToUInt64(keyBytes, offset);
+                        }
 
-                    return new Speck128(type, key);
-                }
+                        return new Speck128(type, key);
+                    }
                 default:
                     break;
             }

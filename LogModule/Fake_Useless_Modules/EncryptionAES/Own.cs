@@ -177,14 +177,18 @@ namespace NetMQServer.Core
             // When shutting down we can ignore termination requests from owned
             // objects. The termination request was already sent to the object.
             if (m_terminating)
+            {
                 return;
+            }
 
             // If I/O object is well and alive let's ask it to terminate.
 
             // If not found, we assume that termination request was already sent to
             // the object so we can safely ignore the request.
             if (!m_owned.Contains(obj))
+            {
                 return;
+            }
 
             m_owned.Remove(obj);
             RegisterTermAcks(1);
@@ -228,7 +232,9 @@ namespace NetMQServer.Core
             // If termination is already underway, there's no point
             // in starting it anew.
             if (m_terminating)
+            {
                 return;
+            }
 
             if (m_owner == null)
             {
@@ -332,7 +338,9 @@ namespace NetMQServer.Core
                 // The root object has nobody to confirm the termination to.
                 // Other nodes will confirm the termination to the owner.
                 if (m_owner != null)
+                {
                     SendTermAck(m_owner);
+                }
 
                 // Deallocate the resources.
                 ProcessDestroy();

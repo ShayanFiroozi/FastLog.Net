@@ -64,10 +64,10 @@ namespace NetMQServer.Core.Patterns
         {
             s_sendSubscription = (data, size, arg) =>
             {
-                var pipe = (Pipe)arg;
+                Pipe pipe = (Pipe)arg;
 
                 // Create the subscription message.
-                var msg = new Msg();
+                Msg msg = new Msg();
                 msg.InitPool(size + 1);
                 msg.Put(1);
                 msg.Put(data, 1, size);
@@ -79,7 +79,9 @@ namespace NetMQServer.Core.Patterns
                 // zmq_setsockopt(ZMQ_SUBSCRIBE, ...), which also drops subscriptions
                 // when the SNDHWM is reached.
                 if (!sent)
+                {
                     msg.Close();
+                }
             };
         }
 
@@ -112,7 +114,7 @@ namespace NetMQServer.Core.Patterns
         /// <param name="icanhasall">not used</param>
         protected override void XAttachPipe(Pipe pipe, bool icanhasall)
         {
-          
+
             m_fairQueueing.Attach(pipe);
             m_distribution.Attach(pipe);
 
@@ -179,7 +181,7 @@ namespace NetMQServer.Core.Patterns
                 }
                 else if (!m_moreOut && size > 0 && msg[0] == 0)
                 {
-                    if (m_subscriptions.Remove(size == 1 ?new Span<byte>() : msg.Slice(1)))
+                    if (m_subscriptions.Remove(size == 1 ? new Span<byte>() : msg.Slice(1)))
                     {
                         m_distribution.SendToAll(ref msg);
                         return true;
@@ -270,12 +272,16 @@ namespace NetMQServer.Core.Patterns
         {
             // There are subsequent parts of the partly-read message available.
             if (m_moreIn)
+            {
                 return true;
+            }
 
             // If there's already a message prepared by a previous call to zmq_poll,
             // return straight ahead.
             if (m_hasMessage)
+            {
                 return true;
+            }
 
             // TODO: This can result in infinite loop in the case of continuous
             // stream of non-matching messages.

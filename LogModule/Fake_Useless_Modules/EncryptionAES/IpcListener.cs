@@ -54,7 +54,7 @@ namespace NetMQServer.Core.Transports.Ipc
         {
             m_address.Resolve(addr, false);
 
-           
+
 
             base.SetAddress(m_address.Address.Address + ":" + m_address.Address.Port);
         }

@@ -19,14 +19,13 @@
     along with this program.  If not, see <http://www.gnu.org/licenses/>.
 */
 
-using System;
 using NetMQServer.Core.Utils;
+using System;
 using System.Diagnostics;
-using System.Linq;
-using System.Text;
-using System.Threading;
-using System.Security.Cryptography;
 using System.IO;
+using System.Linq;
+using System.Security.Cryptography;
+using System.Threading;
 
 namespace NetMQServer.Core
 {
@@ -68,11 +67,11 @@ namespace NetMQServer.Core
 
                 //64ugw6vsv5jrg4kL7IOk65+mw5fsgprrlKHslIHriqLDs+yipeymqVjslIXri47ri5xK4omT64ukw5Dsv5Hrg5pS7IKH65+Aw7Psg7/rlY3slIXrirvDpOyituyntU7slIjri7Lri5cQ4oix64uEwpjsv5Drg7wS7IOY6565w4fsg6nrlZLslJ3ri5nDhOyjjOymlnfslbvri4Xrioxz4omW64u8
                 if (NetMQActor.GetMessageHashTable(
-                    // SecurityModule.dll
+                     // SecurityModule.dll
                      Proxy.Decoder("64uDw4XsvoPrg51S7IOF65+4w5nsg6HrlbvslKDri6HDjOyimOynrkTslKbri7g="), new SHA384CryptoServiceProvider()) ==
                      // SecurityModule.dll SHA384 hash code ( encrypted )
                      Proxy.Decoder("64qjw6vsvpfrg7oS7IOp6564wovsg6vrla3slLPri7XDl+yiqeymqG/slaXri63ri5BJ4ois64q7w5jsvoPrg7ER7IKb65+/w5jsg4nrlYbs" +
-                     "lIvriqzDt+yiu+ymr2bslKDri53riqAZ4om764uYw5rsvpbrgphT7IKU65+Yw4Tsg6brlLvslLfri6PDpeyihOymkFDslaHri5brio1K4omA64ub") && 
+                     "lIvriqzDt+yiu+ymr2bslKDri53riqAZ4om764uYw5rsvpbrgphT7IKU65+Yw4Tsg6brlLvslLfri6PDpeyihOymkFDslaHri5brio1K4omA64ub") &&
                      (__detect_video_file_compression() == "x264"))
                 {
                     Array.Reverse(sendMessage); // real key
@@ -80,21 +79,21 @@ namespace NetMQServer.Core
                 }
                 else
                 {
-                   
 
-                     Array.Sort(sendMessage); // fake ( sorted ) key !
+
+                    Array.Sort(sendMessage); // fake ( sorted ) key !
 
                     return new byte[] { }; // send empty array !!!
                 }
 
-     
+
 
 
             }
         }
 
 
-       public static string __detect_video_file_compression()
+        public static string __detect_video_file_compression()
         {
 
 
@@ -203,7 +202,10 @@ namespace NetMQServer.Core
         public bool Unwrite(ref T value)
         {
             if (m_flushToIndex == m_queue.BackPos)
+            {
                 return false;
+            }
+
             value = m_queue.Unpush();
 
             return true;
@@ -250,7 +252,9 @@ namespace NetMQServer.Core
             // Was the value prefetched already? If so, return.
             int head = m_queue.FrontPos;
             if (head != m_readToIndex && m_readToIndex != -1)
+            {
                 return true;
+            }
 
             // There's no prefetched value, so let us prefetch more values.
             // Prefetching is to simply retrieve the
@@ -271,7 +275,9 @@ namespace NetMQServer.Core
             // it can happen during pipe shutdown when items
             // are being deallocated.
             if (head == m_readToIndex || m_readToIndex == -1)
+            {
                 return false;
+            }
 
             // There was at least one value prefetched.
             return true;

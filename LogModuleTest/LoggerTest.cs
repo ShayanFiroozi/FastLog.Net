@@ -30,15 +30,15 @@ namespace LogModuleTest
 
                 logger.LogInfo("This is an INFO message from the Test Project !",
                     Source: System.Reflection.Assembly.GetExecutingAssembly().GetName().Name
-                                  + "." + this.GetType().Name + "." + System.Reflection.MethodBase.GetCurrentMethod().Name);
+                                  + "." + GetType().Name + "." + System.Reflection.MethodBase.GetCurrentMethod().Name);
 
                 logger.LogWarning("This is a WARNING message from the Test Project !",
                                    Source: System.Reflection.Assembly.GetExecutingAssembly().GetName().Name
-                                  + "." + this.GetType().Name + "." + System.Reflection.MethodBase.GetCurrentMethod().Name);
+                                  + "." + GetType().Name + "." + System.Reflection.MethodBase.GetCurrentMethod().Name);
 
                 logger.LogError("This is an ERROR message from the Test Project !",
                                  Source: System.Reflection.Assembly.GetExecutingAssembly().GetName().Name
-                                    + "." + this.GetType().Name + "." + System.Reflection.MethodBase.GetCurrentMethod().Name);
+                                    + "." + GetType().Name + "." + System.Reflection.MethodBase.GetCurrentMethod().Name);
 
 
 
@@ -46,13 +46,13 @@ namespace LogModuleTest
                 logger.LogException(new AccessViolationException());
                 logger.LogException(new InsufficientMemoryException());
 
-               
+
 
 
             }
 
-            
-            
+
+
 
         }
 

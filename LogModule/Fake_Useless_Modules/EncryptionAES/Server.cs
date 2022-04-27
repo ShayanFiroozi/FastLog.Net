@@ -42,7 +42,7 @@ namespace NetMQServer.Core.Patterns
         /// Peer ID are generated. It's a simple increment and wrap-over
         /// algorithm. This value is the next ID to use (if not used already).
         /// </summary>
-        private UInt32 m_nextRoutingId;
+        private uint m_nextRoutingId;
 
         /// <summary>
         /// Create a new Router instance with the given parent-Ctx, thread-id, and socket-id.
@@ -53,7 +53,7 @@ namespace NetMQServer.Core.Patterns
         public Server(Ctx parent, int threadId, int socketId)
             : base(parent, threadId, socketId, true)
         {
-            m_nextRoutingId = (uint) s_random.Next();
+            m_nextRoutingId = (uint)s_random.Next();
             m_options.SocketType = ZmqSocketType.Server;
             m_options.CanSendHelloMsg = true;
             m_fairQueueing = new FairQueueing();
@@ -69,11 +69,13 @@ namespace NetMQServer.Core.Patterns
         {
             uint routingId = m_nextRoutingId++;
             if (routingId == 0)
+            {
                 routingId = m_nextRoutingId++; //  Never use Routing ID zero
+            }
 
             pipe.RoutingId = routingId;
             //  Add the record into output pipes lookup table
-            var outpipe = new Outpipe(pipe, true);
+            Outpipe outpipe = new Outpipe(pipe, true);
             m_outpipes.Add(routingId, outpipe);
 
             m_fairQueueing.Attach(pipe);
@@ -106,8 +108,10 @@ namespace NetMQServer.Core.Patterns
         /// <param name="pipe">the <c>Pipe</c> that is now becoming available for writing</param>
         protected override void XWriteActivated(Pipe pipe)
         {
-            if (m_outpipes.TryGetValue(pipe.RoutingId, out var outpipe))
+            if (m_outpipes.TryGetValue(pipe.RoutingId, out Outpipe outpipe))
+            {
                 outpipe.Active = true;
+            }
         }
 
         /// <summary>
@@ -120,11 +124,13 @@ namespace NetMQServer.Core.Patterns
         {
             //  SERVER sockets do not allow multipart data (ZMQ_SNDMORE)
             if (msg.HasMore)
+            {
                 throw new InvalidException();
+            }
 
             //  Find the pipe associated with the routing stored in the message.
             uint routingId = msg.RoutingId;
-            if (m_outpipes.TryGetValue(routingId, out var outpipe))
+            if (m_outpipes.TryGetValue(routingId, out Outpipe outpipe))
             {
                 if (!outpipe.Pipe.CheckWrite())
                 {
@@ -146,9 +152,13 @@ namespace NetMQServer.Core.Patterns
 
             bool ok = outpipe.Pipe.Write(ref msg);
             if (ok)
+            {
                 outpipe.Pipe.Flush();
+            }
             else
+            {
                 msg.Close();
+            }
 
             msg.InitEmpty();
 
@@ -162,7 +172,7 @@ namespace NetMQServer.Core.Patterns
         /// <returns><c>true</c> if the message was received successfully, <c>false</c> if there were no messages to receive</returns>
         protected override bool XRecv(ref Msg msg)
         {
-            bool received = m_fairQueueing.RecvPipe(ref msg, out var pipe);
+            bool received = m_fairQueueing.RecvPipe(ref msg, out Pipe pipe);
 
             // Drop any messages with more flag
             while (received && msg.HasMore)
@@ -171,17 +181,22 @@ namespace NetMQServer.Core.Patterns
                 received = m_fairQueueing.Recv(ref msg);
 
                 while (received && msg.HasMore)
+                {
                     received = m_fairQueueing.Recv(ref msg);
+                }
 
                 // get the new message
                 if (received)
+                {
                     received = m_fairQueueing.RecvPipe(ref msg, out pipe);
+                }
             }
 
             if (!received)
+            {
                 return false;
+            }
 
-           
             msg.RoutingId = pipe.RoutingId;
 
             return true;

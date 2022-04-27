@@ -31,7 +31,10 @@ namespace NetMQServer.Core.Utils
         public void Dispose()
         {
             if (Interlocked.CompareExchange(ref m_isDisposed, 1, 0) != 0)
+            {
                 return;
+            }
+
             m_reader.Dispose();
             m_writer.Dispose();
         }

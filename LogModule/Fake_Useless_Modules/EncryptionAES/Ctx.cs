@@ -56,7 +56,7 @@ namespace NetMQServer.Core
             /// </summary>
             /// <param name="socket">the socket for this new Endpoint</param>
             /// <param name="options">the Options to assign to this new Endpoint</param>
-            public Endpoint( SocketBase socket,  Options options)
+            public Endpoint(SocketBase socket, Options options)
             {
                 Socket = socket;
                 Options = options;
@@ -65,13 +65,13 @@ namespace NetMQServer.Core
             /// <summary>
             /// Get the socket associated with this Endpoint.
             /// </summary>
-            
+
             public SocketBase Socket { get; }
 
             /// <summary>
             /// Get the Options of this Endpoint.
             /// </summary>
-            
+
             public Options Options { get; }
         }
 
@@ -200,13 +200,19 @@ namespace NetMQServer.Core
                     Monitor.Enter(m_slotSync);
                     try
                     {
-                        foreach (var socket in m_sockets)
+                        foreach (SocketBase socket in m_sockets)
+                        {
                             socket.Stop();
+                        }
 
                         if (!block)
+                        {
                             m_reaper.ForceStop();
+                        }
                         else if (m_sockets.Count == 0)
+                        {
                             m_reaper.Stop();
+                        }
                     }
                     finally
                     {
@@ -215,7 +221,7 @@ namespace NetMQServer.Core
                 }
 
                 // Wait till reaper thread closes all the sockets.
-                var found = m_termMailbox.TryRecv(-1, out Command command);
+                bool found = m_termMailbox.TryRecv(-1, out Command command);
 
                 Debug.Assert(found);
                 Debug.Assert(command.CommandType == CommandType.Done);
@@ -225,10 +231,14 @@ namespace NetMQServer.Core
 
             // Deallocate the resources.
             foreach (IOThread it in m_ioThreads)
+            {
                 it.Stop();
+            }
 
             foreach (IOThread it in m_ioThreads)
+            {
                 it.Destroy();
+            }
 
             m_reaper?.Destroy();
 
@@ -241,9 +251,14 @@ namespace NetMQServer.Core
             set
             {
                 if (value < 0)
+                {
                     throw new ArgumentOutOfRangeException(nameof(value), value, "Must be zero or greater");
+                }
+
                 lock (m_optSync)
+                {
                     m_ioThreadCount = value;
+                }
             }
         }
 
@@ -253,9 +268,14 @@ namespace NetMQServer.Core
             set
             {
                 if (value <= 0)
+                {
                     throw new ArgumentOutOfRangeException(nameof(value), value, "Must be greater than zero");
+                }
+
                 lock (m_optSync)
+                {
                     m_maxSockets = value;
+                }
             }
         }
 
@@ -267,7 +287,7 @@ namespace NetMQServer.Core
         /// <exception cref="TerminatingException">Cannot create new socket while terminating.</exception>
         /// <exception cref="NetMQException">Maximum number of sockets reached.</exception>
         /// <exception cref="TerminatingException">The context (Ctx) must not be already terminating.</exception>
-   
+
         public SocketBase CreateSocket(ZmqSocketType type)
         {
             lock (m_slotSync)
@@ -302,7 +322,7 @@ namespace NetMQServer.Core
                     // Create I/O thread objects and launch them.
                     for (int i = 2; i != ios + 2; i++)
                     {
-                        var ioThread = new IOThread(this, i);
+                        IOThread ioThread = new IOThread(this, i);
                         //alloc_Debug.Assert(io_thread);
                         m_ioThreads.Add(ioThread);
                         m_slots[i] = ioThread.Mailbox;
@@ -361,7 +381,7 @@ namespace NetMQServer.Core
         /// <remarks>
         /// If this was the last socket, then stop the reaper.
         /// </remarks>
-        public void DestroySocket( SocketBase socket)
+        public void DestroySocket(SocketBase socket)
         {
             // Free the associated thread slot.
             lock (m_slotSync)
@@ -377,7 +397,9 @@ namespace NetMQServer.Core
                 // If zmq_term() was already called and there are no more socket
                 // we can ask reaper thread to terminate.
                 if (m_terminating && m_sockets.Count == 0)
+                {
                     m_reaper.Stop();
+                }
             }
 
             //LOG.debug("Released Slot [" + socket_ + "] ");
@@ -394,7 +416,7 @@ namespace NetMQServer.Core
         /// <summary>
         /// Send a command to the given destination thread.
         /// </summary>
-        public void SendCommand(int threadId,  Command command)
+        public void SendCommand(int threadId, Command command)
         {
             m_slots[threadId].Send(command);
         }
@@ -408,7 +430,9 @@ namespace NetMQServer.Core
         public IOThread ChooseIOThread(long affinity)
         {
             if (m_ioThreads.Count == 0)
+            {
                 return null;
+            }
 
             // Find the I/O thread with minimum load.
             int minLoad = -1;
@@ -416,7 +440,7 @@ namespace NetMQServer.Core
 
             for (int i = 0; i != m_ioThreads.Count; i++)
             {
-                var ioThread = m_ioThreads[i];
+                IOThread ioThread = m_ioThreads[i];
 
                 if (affinity == 0 || (affinity & (1L << i)) > 0)
                 {
@@ -437,12 +461,14 @@ namespace NetMQServer.Core
         /// <param name="address">the textual name to give this endpoint</param>
         /// <param name="endpoint">the Endpoint to remember</param>
         /// <returns>true if the given address was NOT already registered</returns>
-        public bool RegisterEndpoint( string address,  Endpoint endpoint)
+        public bool RegisterEndpoint(string address, Endpoint endpoint)
         {
             lock (m_endpointsSync)
             {
                 if (m_endpoints.ContainsKey(address))
+                {
                     return false;
+                }
 
                 m_endpoints[address] = endpoint;
                 return true;
@@ -455,16 +481,20 @@ namespace NetMQServer.Core
         /// <param name="address">the (string) address denoting the endpoint to unregister</param>
         /// <param name="socket">the socket associated with that endpoint</param>
         /// <returns>true if the endpoint having this address and socket is found, false otherwise</returns>
-        public bool UnregisterEndpoint( string address,  SocketBase socket)
+        public bool UnregisterEndpoint(string address, SocketBase socket)
         {
             lock (m_endpointsSync)
             {
 
                 if (!m_endpoints.TryGetValue(address, out Endpoint endpoint))
+                {
                     return false;
+                }
 
                 if (socket != endpoint.Socket)
+                {
                     return false;
+                }
 
                 m_endpoints.Remove(address);
                 return true;
@@ -475,14 +505,16 @@ namespace NetMQServer.Core
         /// Remove from the list of endpoints, all endpoints that reference the given socket.
         /// </summary>
         /// <param name="socket">the socket to remove all references to</param>
-        public void UnregisterEndpoints( SocketBase socket)
+        public void UnregisterEndpoints(SocketBase socket)
         {
             lock (m_endpointsSync)
             {
                 IList<string> removeList = m_endpoints.Where(e => e.Value.Socket == socket).Select(e => e.Key).ToList();
 
-                foreach (var item in removeList)
+                foreach (string item in removeList)
+                {
                     m_endpoints.Remove(item);
+                }
             }
         }
 
@@ -496,20 +528,24 @@ namespace NetMQServer.Core
         /// By calling this method, the socket associated with that returned EndPoint has it's Seqnum incremented,
         /// in order to prevent it from being de-allocated before a command can be sent to it.
         /// </remarks>
-        
-        public Endpoint FindEndpoint( string addr)
+
+        public Endpoint FindEndpoint(string addr)
         {
             Debug.Assert(addr != null);
 
             lock (m_endpointsSync)
             {
                 if (!m_endpoints.ContainsKey(addr))
+                {
                     throw new EndpointNotFoundException();
+                }
 
-                var endpoint = m_endpoints[addr];
+                Endpoint endpoint = m_endpoints[addr];
 
                 if (endpoint == null)
+                {
                     throw new EndpointNotFoundException();
+                }
 
                 // Increment the command sequence number of the peer so that it won't
                 // get deallocated until "bind" command is issued by the caller.

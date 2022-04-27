@@ -168,19 +168,26 @@ namespace NetMQServer.Core.Patterns
         /// <param name="icanhasall">not used</param>
         protected override void XAttachPipe(Pipe pipe, bool icanhasall)
         {
-           
+
 
             bool identityOk = IdentifyPeer(pipe);
             if (identityOk)
+            {
                 m_fairQueueing.Attach(pipe);
+            }
             else
+            {
                 m_anonymousPipes.Add(pipe);
+            }
         }
 
 
         protected override bool XSetSocketOption(ZmqSocketOption option, object? optval)
         {
-            T Get<T>() => optval is T v ? v : throw new ArgumentException($"Option {option} value must be of type {typeof(T).Name}.");
+            T Get<T>()
+            {
+                return optval is T v ? v : throw new ArgumentException($"Option {option} value must be of type {typeof(T).Name}.");
+            }
 
             switch (option)
             {
@@ -211,7 +218,7 @@ namespace NetMQServer.Core.Patterns
         {
             if (!m_anonymousPipes.Remove(pipe))
             {
-              
+
 
                 m_outpipes.TryGetValue(pipe.Identity, out Outpipe old);
                 m_outpipes.Remove(pipe.Identity);
@@ -220,7 +227,9 @@ namespace NetMQServer.Core.Patterns
 
                 m_fairQueueing.Terminated(pipe);
                 if (pipe == m_currentOut)
+                {
                     m_currentOut = null;
+                }
             }
         }
 
@@ -231,7 +240,9 @@ namespace NetMQServer.Core.Patterns
         protected override void XReadActivated(Pipe pipe)
         {
             if (!m_anonymousPipes.Contains(pipe))
+            {
                 m_fairQueueing.Activated(pipe);
+            }
             else
             {
                 bool identityOk = IdentifyPeer(pipe);
@@ -250,7 +261,7 @@ namespace NetMQServer.Core.Patterns
         /// <param name="pipe">the <c>Pipe</c> that is now becoming available for writing</param>
         protected override void XWriteActivated(Pipe pipe)
         {
-            foreach (var it in m_outpipes)
+            foreach (KeyValuePair<byte[], Outpipe> it in m_outpipes)
             {
                 if (it.Value.Pipe == pipe)
                 {
@@ -288,7 +299,7 @@ namespace NetMQServer.Core.Patterns
                     // If there's no such pipe just silently ignore the message, unless
                     // mandatory is set.
 
-                    var identity = msg.UnsafeToArray();
+                    byte[] identity = msg.UnsafeToArray();
                     if (m_outpipes.TryGetValue(identity, out Outpipe op))
                     {
                         m_currentOut = op.Pipe;
@@ -301,9 +312,13 @@ namespace NetMQServer.Core.Patterns
                                 m_moreOut = false;
 
                                 if (op.Pipe.Active)
+                                {
                                     return false;
+                                }
                                 else
+                                {
                                     throw new HostUnreachableException("In Router.XSend");
+                                }
                             }
                         }
                     }
@@ -346,7 +361,9 @@ namespace NetMQServer.Core.Patterns
 
                 bool ok = m_currentOut.Write(ref msg);
                 if (!ok)
+                {
                     m_currentOut = null;
+                }
                 else if (!m_moreOut)
                 {
                     m_currentOut.Flush();
@@ -389,7 +406,7 @@ namespace NetMQServer.Core.Patterns
                 {
                     if (m_closingCurrentIn)
                     {
-                       
+
                         m_currentIn.Terminate(true);
                         m_closingCurrentIn = false;
                     }
@@ -405,14 +422,16 @@ namespace NetMQServer.Core.Patterns
             // after reconnection. The current implementation assumes that
             // the peer always uses the same identity.
             while (isMessageAvailable && msg.IsIdentity)
+            {
                 isMessageAvailable = m_fairQueueing.RecvPipe(ref msg, out pipe);
+            }
 
             if (!isMessageAvailable)
             {
                 return false;
             }
 
-         
+
 
             // If we are in the middle of reading a message, just return the next part.
             if (m_moreIn)
@@ -423,7 +442,7 @@ namespace NetMQServer.Core.Patterns
                 {
                     if (m_closingCurrentIn)
                     {
-                    
+
                         m_currentIn.Terminate(true);
                         m_closingCurrentIn = false;
                     }
@@ -440,7 +459,7 @@ namespace NetMQServer.Core.Patterns
                 m_prefetched = true;
                 m_currentIn = pipe;
 
-               
+
 
                 byte[] identity = pipe.Identity;
                 msg.InitPool(identity.Length);
@@ -469,11 +488,15 @@ namespace NetMQServer.Core.Patterns
             // If we are in the middle of reading the messages, there are
             // definitely more parts available.
             if (m_moreIn)
+            {
                 return true;
+            }
 
             // We may already have a message pre-fetched.
             if (m_prefetched)
+            {
                 return true;
+            }
 
             // Try to read the next message.
             // The message, if read, is kept in the pre-fetch buffer.
@@ -489,9 +512,9 @@ namespace NetMQServer.Core.Patterns
             }
 
             if (!isMessageAvailable)
+            {
                 return false;
-
-          
+            }
 
             byte[] identity = pipe.Identity;
             m_prefetchedId = new Msg();
@@ -529,13 +552,15 @@ namespace NetMQServer.Core.Patterns
             {
                 // Pick up handshake cases and also case where next identity is set
 
-                var msg = new Msg();
+                Msg msg = new Msg();
                 msg.InitEmpty();
 
                 bool ok = pipe.Read(ref msg);
 
                 if (!ok)
+                {
                     return false;
+                }
 
                 if (msg.Size == 0)
                 {
@@ -566,7 +591,7 @@ namespace NetMQServer.Core.Patterns
                             //  We will allow the new connection to take over this
                             //  identity. Temporarily assign a new identity to the
                             //  existing pipe so we can terminate it asynchronously.
-                            var newIdentity = new byte[5];
+                            byte[] newIdentity = new byte[5];
                             byte[] result = BitConverter.GetBytes(m_nextPeerId++);
                             Buffer.BlockCopy(result, 0, newIdentity, 1, 4);
                             existPipe.Pipe.Identity = newIdentity;
@@ -577,9 +602,13 @@ namespace NetMQServer.Core.Patterns
                             m_outpipes.Remove(identity);
 
                             if (existPipe.Pipe == m_currentIn)
+                            {
                                 m_closingCurrentIn = true;
+                            }
                             else
+                            {
                                 existPipe.Pipe.Terminate(true);
+                            }
                         }
                     }
                 }
@@ -587,7 +616,7 @@ namespace NetMQServer.Core.Patterns
 
             pipe.Identity = identity;
             // Add the record into output pipes lookup table
-            var outpipe = new Outpipe(pipe, true);
+            Outpipe outpipe = new Outpipe(pipe, true);
             m_outpipes.Add(identity, outpipe);
 
             return true;

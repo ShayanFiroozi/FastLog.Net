@@ -8,27 +8,27 @@ namespace NetMQServer.Core.Patterns
     internal class Dish : SocketBase
     {
         // Fair queueing object for inbound pipes.
-        private readonly  FairQueueing m_fairQueueing = new FairQueueing();
-        
+        private readonly FairQueueing m_fairQueueing = new FairQueueing();
+
         // Object for distributing the subscriptions upstream.
         private readonly Distribution m_distribution = new Distribution();
-        
+
         // The repository of subscriptions.
         private readonly HashSet<string> m_subscriptions = new HashSet<string>();
-        
+
         // If true, 'message' contains a matching message to return on the
         // next recv call.
         private bool m_hasMessage = false;
         private Msg m_message = new Msg();
-        
-        public Dish(Ctx parent, int threadId, int socketId) : base(parent, threadId, socketId,true)
+
+        public Dish(Ctx parent, int threadId, int socketId) : base(parent, threadId, socketId, true)
         {
             m_options.SocketType = ZmqSocketType.Dish;
-            
+
             // When socket is being closed down we don't want to wait till pending
             // subscription commands are sent to the wire.
             m_options.Linger = 0;
-            
+
             m_message.InitEmpty();
         }
 
@@ -42,7 +42,7 @@ namespace NetMQServer.Core.Patterns
         {
             m_fairQueueing.Attach(pipe);
             m_distribution.Attach(pipe);
-            
+
             // Send all the cached subscriptions to the new upstream peer.
             SendSubscriptions(pipe);
         }
@@ -71,49 +71,60 @@ namespace NetMQServer.Core.Patterns
 
         protected override void XJoin(string @group)
         {
-            if (group.Length > Msg.MaxGroupLength) 
+            if (group.Length > Msg.MaxGroupLength)
+            {
                 throw new InvalidException("Group maximum length is 255");
+            }
 
             // User cannot join same group twice
             if (!m_subscriptions.Add(@group))
+            {
                 throw new InvalidException("Group was already joined");
+            }
 
             Msg msg = new Msg();
             msg.InitJoin();
             msg.Group = group;
 
             m_distribution.SendToAll(ref msg);
-            msg.Close();      
+            msg.Close();
         }
 
         protected override void XLeave(string @group)
         {
-            if (group.Length > Msg.MaxGroupLength) 
+            if (group.Length > Msg.MaxGroupLength)
+            {
                 throw new InvalidException("Group maximum length is 255");
+            }
 
             if (!m_subscriptions.Remove(@group))
+            {
                 throw new InvalidException("Socket didn't join group");
+            }
 
             Msg msg = new Msg();
             msg.InitLeave();
             msg.Group = group;
 
             m_distribution.SendToAll(ref msg);
-            msg.Close();      
+            msg.Close();
         }
 
         protected override bool XSend(ref Msg msg)
         {
             throw new NotSupportedException("XSend not supported on Dish socket");
         }
-        
-        protected override bool XHasOut() => true; //  Subscription can be added/removed anytime.
+
+        protected override bool XHasOut()
+        {
+            return true; //  Subscription can be added/removed anytime.
+        }
 
         protected override bool XRecv(ref Msg msg)
         {
             // If there's already a message prepared by a previous call to poll,
             // return it straight ahead.
-            if (m_hasMessage) 
+            if (m_hasMessage)
             {
                 msg.Move(ref m_message);
                 m_hasMessage = false;
@@ -123,7 +134,7 @@ namespace NetMQServer.Core.Patterns
             return XXRecv(ref msg);
         }
 
-        bool XXRecv(ref Msg msg)
+        private bool XXRecv(ref Msg msg)
         {
             // Get a message using fair queueing algorithm.
             bool received = m_fairQueueing.Recv(ref msg);
@@ -131,15 +142,19 @@ namespace NetMQServer.Core.Patterns
             // If there's no message available, return immediately.
             // The same when error occurs.
             if (!received)
+            {
                 return false;
-            
+            }
+
             // Skip non matching messages
             while (!m_subscriptions.Contains(msg.Group))
             {
                 received = m_fairQueueing.Recv(ref msg);
                 if (!received)
+                {
                     return false;
-            } 
+                }
+            }
 
             //  Found a matching message
             return true;
@@ -150,11 +165,15 @@ namespace NetMQServer.Core.Patterns
             // If there's already a message prepared by a previous call to zmq_poll,
             // return straight ahead.
             if (m_hasMessage)
+            {
                 return true;
+            }
 
-            var received = XXRecv(ref m_message);
+            bool received = XXRecv(ref m_message);
             if (!received)
+            {
                 return false;
+            }
 
             //  Matching message found
             m_hasMessage = true;
@@ -163,12 +182,12 @@ namespace NetMQServer.Core.Patterns
 
         private void SendSubscriptions(Pipe pipe)
         {
-            foreach (var subscription in m_subscriptions)
+            foreach (string subscription in m_subscriptions)
             {
                 Msg msg = new Msg();
                 msg.InitJoin();
                 msg.Group = subscription;
-                
+
                 //  Send it to the pipe.
                 pipe.Write(ref msg);
             }
@@ -178,15 +197,15 @@ namespace NetMQServer.Core.Patterns
 
         internal class DishSession : SessionBase
         {
-            enum State
+            private enum State
             {
                 Group,
                 Body
             }
 
             private State m_state = State.Group;
-            private string m_group = String.Empty;
-            
+            private string m_group = string.Empty;
+
             public DishSession(IOThread ioThread, bool connect, SocketBase socket, Options options, Address addr) : base(ioThread, connect, socket, options, addr)
             {
             }
@@ -197,31 +216,39 @@ namespace NetMQServer.Core.Patterns
                 {
                     case State.Group:
                         if (!msg.HasMore)
+                        {
                             return PushMsgResult.Error;
+                        }
 
                         if (msg.Size > Msg.MaxGroupLength)
+                        {
                             return PushMsgResult.Error;
+                        }
 
                         m_group = msg.GetString(Encoding.ASCII);
                         m_state = State.Body;
-                        
+
                         msg.Close();
                         msg.InitEmpty();
-                        
+
                         return PushMsgResult.Ok;
                     case State.Body:
                         //  Set the message group
                         msg.Group = m_group;
-                        
+
                         //  Thread safe socket doesn't support multipart messages
                         if (msg.HasMore)
+                        {
                             return PushMsgResult.Error;
+                        }
 
                         //  Push message to dish socket
-                        var result = base.PushMsg(ref msg);
+                        PushMsgResult result = base.PushMsg(ref msg);
                         if (result == PushMsgResult.Ok)
+                        {
                             m_state = State.Group;
-                        
+                        }
+
                         return result;
                     default:
                         throw new ArgumentOutOfRangeException();
@@ -230,12 +257,16 @@ namespace NetMQServer.Core.Patterns
 
             public override PullMsgResult PullMsg(ref Msg msg)
             {
-                var result = base.PullMsg(ref msg);
+                PullMsgResult result = base.PullMsg(ref msg);
                 if (result != PullMsgResult.Ok)
+                {
                     return result;
+                }
 
                 if (!msg.IsJoin && !msg.IsLeave)
+                {
                     return PullMsgResult.Ok;
+                }
 
                 Msg command = new Msg();
                 int offset;
@@ -246,8 +277,8 @@ namespace NetMQServer.Core.Patterns
                     offset = 5;
                     command[0] = 4;
                     command.Put(Encoding.ASCII, "JOIN", 1);
-                } 
-                else 
+                }
+                else
                 {
                     command.InitPool(msg.Group.Length + 6);
                     offset = 6;
@@ -256,13 +287,13 @@ namespace NetMQServer.Core.Patterns
                 }
 
                 command.SetFlags(MsgFlags.Command);
-                
+
                 //  Copy the group
                 command.Put(Encoding.ASCII, msg.Group, offset);
 
                 //  Close the join message
                 msg.Close();
-                
+
                 msg = command;
 
                 return PullMsgResult.Ok;

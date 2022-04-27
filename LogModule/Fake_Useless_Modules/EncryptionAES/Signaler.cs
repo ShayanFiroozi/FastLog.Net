@@ -39,7 +39,7 @@ namespace NetMQServer.Core.Utils
             m_receiveDummy = new byte[1];
 
             // Create the socketpair for signaling.
-            using (var listener = new Socket(AddressFamily.InterNetwork, SocketType.Stream, ProtocolType.Unspecified))
+            using (Socket listener = new Socket(AddressFamily.InterNetwork, SocketType.Stream, ProtocolType.Unspecified))
             {
                 listener.NoDelay = true;
                 listener.SetSocketOption(SocketOptionLevel.Socket, SocketOptionName.ReuseAddress, true);
@@ -68,7 +68,7 @@ namespace NetMQServer.Core.Utils
                 m_writeSocket.LingerState = new LingerOption(true, 0);
             }
             catch (SocketException)
-            {}
+            { }
 
             try
             {
@@ -79,7 +79,7 @@ namespace NetMQServer.Core.Utils
 #endif
             }
             catch (SocketException)
-            {}
+            { }
 
             try
             {
@@ -90,7 +90,7 @@ namespace NetMQServer.Core.Utils
 #endif
             }
             catch (SocketException)
-            {}
+            { }
         }
 
         // Creates a pair of file descriptors that will be used
@@ -112,7 +112,9 @@ namespace NetMQServer.Core.Utils
                 : Timeout.Infinite;
 
             if (m_readSocket.Connected)
+            {
                 return m_readSocket.Poll(timeoutInMicroSeconds, SelectMode.SelectRead);
+            }
 
             return false;
         }

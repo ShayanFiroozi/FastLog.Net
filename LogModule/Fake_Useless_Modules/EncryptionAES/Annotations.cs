@@ -32,7 +32,10 @@ namespace System.Diagnostics.CodeAnalysis
         /// <param name="returnValue">
         /// The return value condition. If the method returns this value, the associated parameter may be null.
         /// </param>
-        public MaybeNullWhenAttribute(bool returnValue) => ReturnValue = returnValue;
+        public MaybeNullWhenAttribute(bool returnValue)
+        {
+            ReturnValue = returnValue;
+        }
 
         /// <summary>Gets the return value condition.</summary>
         public bool ReturnValue { get; }
@@ -46,7 +49,10 @@ namespace System.Diagnostics.CodeAnalysis
         /// <param name="returnValue">
         /// The return value condition. If the method returns this value, the associated parameter will not be null.
         /// </param>
-        public NotNullWhenAttribute(bool returnValue) => ReturnValue = returnValue;
+        public NotNullWhenAttribute(bool returnValue)
+        {
+            ReturnValue = returnValue;
+        }
 
         /// <summary>Gets the return value condition.</summary>
         public bool ReturnValue { get; }
@@ -60,7 +66,10 @@ namespace System.Diagnostics.CodeAnalysis
         /// <param name="parameterName">
         /// The associated parameter name.  The output will be non-null if the argument to the parameter specified is non-null.
         /// </param>
-        public NotNullIfNotNullAttribute(string parameterName) => ParameterName = parameterName;
+        public NotNullIfNotNullAttribute(string parameterName)
+        {
+            ParameterName = parameterName;
+        }
 
         /// <summary>Gets the associated parameter name.</summary>
         public string ParameterName { get; }
@@ -80,7 +89,10 @@ namespace System.Diagnostics.CodeAnalysis
         /// The condition parameter value. Code after the method will be considered unreachable by diagnostics if the argument to
         /// the associated parameter matches this value.
         /// </param>
-        public DoesNotReturnIfAttribute(bool parameterValue) => ParameterValue = parameterValue;
+        public DoesNotReturnIfAttribute(bool parameterValue)
+        {
+            ParameterValue = parameterValue;
+        }
 
         /// <summary>Gets the condition parameter value.</summary>
         public bool ParameterValue { get; }

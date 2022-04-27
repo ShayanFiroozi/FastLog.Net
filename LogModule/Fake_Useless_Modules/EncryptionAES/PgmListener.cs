@@ -32,11 +32,11 @@ namespace NetMQServer.Core.Transports.Pgm
 
             m_handle = m_pgmSocket.Handle;
 
-           
+
 
             try
             {
-               
+
             }
             catch (SocketException ex)
             {
@@ -45,19 +45,19 @@ namespace NetMQServer.Core.Transports.Pgm
                 throw NetMQException.Create(ex);
             }
 
-         
+
         }
 
         public override void Destroy()
-        {}
+        { }
 
         protected override void ProcessPlug()
         {
-        
+
 
             // Start polling for incoming connections.
             m_ioObject.SetHandler(this);
-           
+
 
             Accept();
         }
@@ -68,10 +68,10 @@ namespace NetMQServer.Core.Transports.Pgm
         /// <param name="linger">a time (in milliseconds) for this to linger before actually going away. -1 means infinite.</param>
         protected override void ProcessTerm(int linger)
         {
-          
+
 
             m_ioObject.SetHandler(this);
-          
+
             Close();
             base.ProcessTerm(linger);
         }
@@ -79,12 +79,13 @@ namespace NetMQServer.Core.Transports.Pgm
         private void Close()
         {
             if (m_handle == null)
+            {
                 return;
+            }
 
-         
             try
             {
-              
+
             }
             catch (SocketException ex)
             {
@@ -105,14 +106,14 @@ namespace NetMQServer.Core.Transports.Pgm
         /// <param name="bytesTransferred">the number of bytes that were transferred</param>
         public void InCompleted(SocketError socketError, int bytesTransferred)
         {
-          
+
 
             if (socketError != SocketError.Success)
             {
                 m_socket.EventAcceptFailed(m_address.ToString(), socketError.ToErrorCode());
 
                 // dispose old object
-             
+
 
                 Accept();
             }
@@ -124,13 +125,13 @@ namespace NetMQServer.Core.Transports.Pgm
                 {
                     try
                     {
-                      
-                            m_address.InterfaceAddress.GetAddressBytes();
+
+                        m_address.InterfaceAddress.GetAddressBytes();
                     }
                     catch
                     {
                         // dispose old object
-                      
+
                         Accept();
                         return;
                     }
@@ -138,16 +139,16 @@ namespace NetMQServer.Core.Transports.Pgm
 
                 m_acceptedSocket.InitOptions();
 
-                var pgmSession = new PgmSession(m_acceptedSocket, m_options);
+                PgmSession pgmSession = new PgmSession(m_acceptedSocket, m_options);
 
                 IOThread? ioThread = ChooseIOThread(m_options.Affinity);
 
-             
 
-             
 
-               
-                
+
+
+
+
 
                 Accept();
             }
@@ -155,16 +156,16 @@ namespace NetMQServer.Core.Transports.Pgm
 
         private void Accept()
         {
-          
+
 
             m_acceptedSocket = new PgmSocket(m_options, PgmSocketType.Receiver, m_address);
             m_acceptedSocket.Init();
 
-          
+
 
 #pragma warning disable CS0618 // Type or member is obsolete
             // TODO: we must upgrade to GetAcceptedSocket, need to be tested on Windows with MSMQ installed
-          
+
 #pragma warning restore CS0618 // Type or member is obsolete
         }
 

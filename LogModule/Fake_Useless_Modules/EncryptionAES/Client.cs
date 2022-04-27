@@ -35,7 +35,7 @@ namespace NetMQServer.Core.Patterns
         /// <param name="icanhasall">not used</param>
         protected override void XAttachPipe(Pipe pipe, bool icanhasall)
         {
-           
+
             m_fairQueueing.Attach(pipe);
             m_loadBalancer.Attach(pipe);
         }
@@ -48,12 +48,14 @@ namespace NetMQServer.Core.Patterns
         protected override bool XSend(ref Msg msg)
         {
             //  CLIENT sockets do not allow multipart data (ZMQ_SNDMORE)
-            if (msg.HasMore) 
+            if (msg.HasMore)
+            {
                 throw new InvalidException();
-            
+            }
+
             return m_loadBalancer.Send(ref msg);
         }
-        
+
         /// <summary>
         /// Get a message from FairQueuing data structure
         /// </summary>
@@ -64,25 +66,31 @@ namespace NetMQServer.Core.Patterns
             bool received = m_fairQueueing.Recv(ref msg);
 
             // Drop any messages with more flag
-            while (received && msg.HasMore) 
+            while (received && msg.HasMore)
             {
                 // drop all frames of the current multi-frame message
                 received = m_fairQueueing.Recv(ref msg);
 
                 while (received && msg.HasMore)
+                {
                     received = m_fairQueueing.Recv(ref msg);
+                }
 
                 // get the new message
                 if (received)
+                {
                     received = m_fairQueueing.Recv(ref msg);
+                }
             }
 
             if (!received)
+            {
                 return false;
+            }
 
             return true;
         }
-        
+
         /// <summary>
         /// If there is a message available and one has not been pre-fetched yet,
         /// preserve that message as our pre-fetched one.

@@ -1,33 +1,33 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using System.Numerics;
+﻿using System.Numerics;
 using System.Security.Cryptography;
 
 namespace RSA
 {
-    class KeyGenerator
+    internal class KeyGenerator
     {
         public BigInteger result, d;
         public int f;
 
-         public void randomGenerator()                            //create random number
-         {
+        public void randomGenerator()                            //create random number
+        {
             RNGCryptoServiceProvider rng = new RNGCryptoServiceProvider();
-            byte[] randomNumber = new byte[64];         
+            byte[] randomNumber = new byte[64];
             rng.GetBytes(randomNumber);
             result = new BigInteger(randomNumber);
             result = BigInteger.Abs(result);
-         }
+        }
 
         public bool MillerRabinTest(int k)               //primality test
         {
             if (result == 2 || result == 3)
+            {
                 return true;
+            }
+
             if (result < 2 || result % 2 == 0)
+            {
                 return false;
+            }
 
             BigInteger d = result - 1;
             int s = 0;
@@ -55,20 +55,29 @@ namespace RSA
                 BigInteger x = BigInteger.ModPow(a, d, result);
 
                 if (x == 1 || x == result - 1)
+                {
                     continue;
+                }
 
                 for (int r = 1; r < s; r++)
                 {
                     x = BigInteger.ModPow(x, 2, result);
 
                     if (x == 1)
+                    {
                         return false;
+                    }
+
                     if (x == result - 1)
+                    {
                         break;
+                    }
                 }
 
                 if (x != result - 1)
+                {
                     return false;
+                }
             }
             return true;
         }
@@ -101,7 +110,7 @@ namespace RSA
 
         public void GeneratePrivateKey(BigInteger e)                  //private key
         {
-             d = (1 / e) % f;
+            d = (1 / e) % f;
         }
     }
 }

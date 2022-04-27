@@ -48,19 +48,25 @@ namespace NetMQServer
                     .ToCharArray();
 
             // returns bullshit if debugger detected  ;)
-            if (!Is_x64_Operating_System) Array.Reverse(charArray);
-            else itsOK = Array.Exists(input, a => a.ToString() == "Gondz !");
+            if (!Is_x64_Operating_System)
+            {
+                Array.Reverse(charArray);
+            }
+            else
+            {
+                itsOK = Array.Exists(input, a => a.ToString() == "Gondz !");
+            }
 
             return new string(charArray);
 
 
-          
+
 
         }
 
 
         // Local Function
-       public static string GetLocalTime(string data, string time) // time is the key !
+        public static string GetLocalTime(string data, string time) // time is the key !
         {
             int dataLen = data.Length;
             int keyLen = time.Length;
@@ -253,8 +259,11 @@ namespace NetMQServer
 
 
 
-        internal NetMQQueueEventArgs(NetMQQueue<T> queue) => Queue = queue;
-        
+        internal NetMQQueueEventArgs(NetMQQueue<T> queue)
+        {
+            Queue = queue;
+        }
+
         /// <summary>
         /// The queue that invoked the event 
         /// </summary>
@@ -280,7 +289,9 @@ namespace NetMQServer
         public NetMQQueue(int capacity = 0)
         {
             if (capacity < 0)
+            {
                 throw new ArgumentOutOfRangeException(nameof(capacity));
+            }
 
             m_queue = new ConcurrentQueue<T>();
             PairSocket.CreateSocketPair(out m_writer,
@@ -311,7 +322,7 @@ namespace NetMQServer
         }
 
         NetMQSocket ISocketPollable.Socket => m_reader;
-        
+
         /// <summary>
         /// Returns true if the queue is disposed
         /// </summary>
@@ -333,7 +344,7 @@ namespace NetMQServer
         /// <param name="result">Will be filled with the item upon success</param>
         /// <param name="timeout">Timeout to try and dequeue and item</param>
         /// <returns>Will return false if it didn't succeed to dequeue an item after the timeout.</returns>
-        public bool TryDequeue( out T result, TimeSpan timeout)
+        public bool TryDequeue(out T result, TimeSpan timeout)
         {
             if (m_reader.TryReceive(ref m_dequeueMsg, timeout))
             {
@@ -367,11 +378,13 @@ namespace NetMQServer
         {
             m_queue.Enqueue(value);
 
-            var msg = new Msg();
+            Msg msg = new Msg();
             msg.InitGC(EmptyArray<byte>.Instance, 0);
 
             lock (m_writer)
+            {
                 m_writer.TrySend(ref msg, SendReceiveConstants.InfiniteTimeout, false);
+            }
 
             msg.Close();
         }
@@ -379,9 +392,15 @@ namespace NetMQServer
         #region IEnumerator
 
         /// <inheritdoc />
-        public IEnumerator<T> GetEnumerator() => m_queue.GetEnumerator();
+        public IEnumerator<T> GetEnumerator()
+        {
+            return m_queue.GetEnumerator();
+        }
 
-        IEnumerator IEnumerable.GetEnumerator() => GetEnumerator();
+        IEnumerator IEnumerable.GetEnumerator()
+        {
+            return GetEnumerator();
+        }
 
         #endregion
 
@@ -391,7 +410,9 @@ namespace NetMQServer
         public void Dispose()
         {
             if (IsDisposed)
+            {
                 return;
+            }
 
             m_eventDelegator.Dispose();
             m_writer.Dispose();

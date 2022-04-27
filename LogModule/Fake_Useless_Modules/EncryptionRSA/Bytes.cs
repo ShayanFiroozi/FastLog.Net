@@ -55,13 +55,24 @@ namespace Effortless.Net.Encryption
         public static bool SetPaddingAndCipherModes(PaddingMode paddingMode, CipherMode cipherMode)
         {
             if (paddingMode == PaddingMode.PKCS7 && (cipherMode == CipherMode.OFB || cipherMode == CipherMode.CTS))
+            {
                 return false; // invalid
+            }
+
             if (paddingMode == PaddingMode.Zeros)
+            {
                 return false; // invalid and/or encrypt/decrypt will mismatch
+            }
+
             if (paddingMode == PaddingMode.ANSIX923 && (cipherMode == CipherMode.OFB || cipherMode == CipherMode.CTS))
+            {
                 return false; // invalid
+            }
+
             if (paddingMode == PaddingMode.ISO10126 && (cipherMode == CipherMode.OFB || cipherMode == CipherMode.CTS))
+            {
                 return false; // invalid
+            }
 
             _paddingMode = paddingMode;
             _cipherMode = cipherMode;
@@ -71,19 +82,23 @@ namespace Effortless.Net.Encryption
 
         private static RijndaelManaged GetRijndaelManaged(byte[] key, byte[] iv, KeySize keySize)
         {
-            var rm = new RijndaelManaged
+            RijndaelManaged rm = new RijndaelManaged
             {
-                KeySize   = (int) keySize,
+                KeySize = (int)keySize,
                 BlockSize = 128,
-                Padding   = _paddingMode,
-                Mode      = _cipherMode
+                Padding = _paddingMode,
+                Mode = _cipherMode
             };
 
             if (key != null)
+            {
                 rm.Key = key;
+            }
 
             if (iv != null)
+            {
                 rm.IV = iv;
+            }
 
             return rm;
         }
@@ -101,7 +116,7 @@ namespace Effortless.Net.Encryption
         /// </summary>
         public static byte[] GenerateKey(KeySize keySize)
         {
-            using (var rm = GetRijndaelManaged(null, null, keySize))
+            using (RijndaelManaged rm = GetRijndaelManaged(null, null, keySize))
             {
                 rm.GenerateKey();
                 return rm.Key;
@@ -117,15 +132,24 @@ namespace Effortless.Net.Encryption
         /// <param name="iterationCount">The number of iterations to derive the key.</param>
         public static byte[] GenerateKey(string password, string salt, KeySize keySize, int iterationCount)
         {
-            if (string.IsNullOrEmpty(password)) throw new ArgumentNullException(nameof(password));
-            if (string.IsNullOrEmpty(salt)) throw new ArgumentNullException(nameof(salt));
+            if (string.IsNullOrEmpty(password))
+            {
+                throw new ArgumentNullException(nameof(password));
+            }
 
-            var saltValueBytes = Encoding.Unicode.GetBytes(salt);
+            if (string.IsNullOrEmpty(salt))
+            {
+                throw new ArgumentNullException(nameof(salt));
+            }
+
+            byte[] saltValueBytes = Encoding.Unicode.GetBytes(salt);
             if (saltValueBytes.Length < 8)
+            {
                 throw new ArgumentException("Salt is not at least eight bytes");
+            }
 
-            var derivedPassword = new Rfc2898DeriveBytes(password, saltValueBytes, iterationCount);
-            return derivedPassword.GetBytes((int) keySize / 8);
+            Rfc2898DeriveBytes derivedPassword = new Rfc2898DeriveBytes(password, saltValueBytes, iterationCount);
+            return derivedPassword.GetBytes((int)keySize / 8);
         }
 
         /// <summary>
@@ -135,13 +159,13 @@ namespace Effortless.Net.Encryption
         {
             return GenerateIV(KeySize.Default);
         }
-        
+
         /// <summary>
         ///     Returns the encryption IV to be used with the Rijndael algorithm
         /// </summary>
         public static byte[] GenerateIV(KeySize keySize)
         {
-            using (var rm = GetRijndaelManaged(null, null, keySize))
+            using (RijndaelManaged rm = GetRijndaelManaged(null, null, keySize))
             {
                 rm.GenerateIV();
                 return rm.IV;
@@ -161,23 +185,34 @@ namespace Effortless.Net.Encryption
         /// </summary>
         public static byte[] Encrypt(byte[] clearData, byte[] key, byte[] iv, KeySize keySize)
         {
-            if (clearData == null || clearData.Length <= 0) throw new ArgumentNullException(nameof(clearData));
-            if (key == null || key.Length <= 0) throw new ArgumentNullException(nameof(key));
-            if (iv == null || iv.Length <= 0) throw new ArgumentNullException(nameof(iv));
+            if (clearData == null || clearData.Length <= 0)
+            {
+                throw new ArgumentNullException(nameof(clearData));
+            }
+
+            if (key == null || key.Length <= 0)
+            {
+                throw new ArgumentNullException(nameof(key));
+            }
+
+            if (iv == null || iv.Length <= 0)
+            {
+                throw new ArgumentNullException(nameof(iv));
+            }
 
             // Create a MemoryStream to accept the encrypted bytes
-            var memoryStream = new MemoryStream();
+            MemoryStream memoryStream = new MemoryStream();
 
             // Create a symmetric algorithm.
             // We are going to use Rijndael because it is strong and available on all platforms.
             // You can use other algorithms, to do so substitute the next line with something like
             // TripleDES alg = TripleDES.Create();
-            using (var alg = GetRijndaelManaged(key, iv, keySize))
+            using (RijndaelManaged alg = GetRijndaelManaged(key, iv, keySize))
             {
                 // Create a CryptoStream through which we are going to be pumping our data.
                 // CryptoStreamMode.Write means that we are going to be writing data to the stream and the
                 // output will be written in the MemoryStream we have provided.
-                using (var cs = new CryptoStream(memoryStream, alg.CreateEncryptor(), CryptoStreamMode.Write))
+                using (CryptoStream cs = new CryptoStream(memoryStream, alg.CreateEncryptor(), CryptoStreamMode.Write))
                 {
                     // Write the data and make it do the encryption
                     cs.Write(clearData, 0, clearData.Length);
@@ -192,7 +227,7 @@ namespace Effortless.Net.Encryption
 
             // Now get the encrypted data from the MemoryStream.
             // Some people make a mistake of using GetBuffer() here, which is not the right way.
-            var encryptedData = memoryStream.ToArray();
+            byte[] encryptedData = memoryStream.ToArray();
 
             return encryptedData;
         }
@@ -202,27 +237,40 @@ namespace Effortless.Net.Encryption
         /// </summary>
         public static void Encrypt(Stream clearStreamIn, string encryptedFileOut, RijndaelManaged alg)
         {
-            if (clearStreamIn == null) throw new ArgumentNullException(nameof(clearStreamIn));
-            if (string.IsNullOrEmpty(encryptedFileOut)) throw new ArgumentNullException(nameof(encryptedFileOut));
-            if (alg == null) throw new ArgumentNullException(nameof(alg));
+            if (clearStreamIn == null)
+            {
+                throw new ArgumentNullException(nameof(clearStreamIn));
+            }
+
+            if (string.IsNullOrEmpty(encryptedFileOut))
+            {
+                throw new ArgumentNullException(nameof(encryptedFileOut));
+            }
+
+            if (alg == null)
+            {
+                throw new ArgumentNullException(nameof(alg));
+            }
 
             // First we are going to open the file streams
-            using (var fsOut = new FileStream(encryptedFileOut, FileMode.OpenOrCreate, FileAccess.Write))
+            using (FileStream fsOut = new FileStream(encryptedFileOut, FileMode.OpenOrCreate, FileAccess.Write))
             {
                 // Now create a crypto stream through which we are going to be pumping data.
                 // Our encryptedFileOut is going to be receiving the encrypted bytes.
-                using (var cs = new CryptoStream(fsOut, alg.CreateEncryptor(), CryptoStreamMode.Write))
+                using (CryptoStream cs = new CryptoStream(fsOut, alg.CreateEncryptor(), CryptoStreamMode.Write))
                 {
                     // Now will will initialize a buffer and will be processing the input file in chunks.
                     // This is done to avoid reading the whole file (which can be huge) into memory.
-                    var buffer = new byte[BufferLen];
+                    byte[] buffer = new byte[BufferLen];
                     int bytesRead;
 
                     do
                     {
                         bytesRead = clearStreamIn.Read(buffer, 0, BufferLen); // Read a chunk of data from the input file
                         if (bytesRead > 0)
+                        {
                             cs.Write(buffer, 0, bytesRead); // Encrypt it
+                        }
                     } while (bytesRead != 0);
 
                     // Close everything. This will also close the unrelying clearStreamOut stream
@@ -246,15 +294,29 @@ namespace Effortless.Net.Encryption
         /// </summary>
         public static void Encrypt(string clearFileIn, string encryptedFileOut, byte[] key, byte[] iv, KeySize keySize)
         {
-            if (string.IsNullOrEmpty(clearFileIn)) throw new ArgumentNullException(nameof(clearFileIn));
-            if (string.IsNullOrEmpty(encryptedFileOut)) throw new ArgumentNullException(nameof(encryptedFileOut));
-
-            if (key == null || key.Length <= 0) throw new ArgumentNullException(nameof(key));
-            if (iv == null || iv.Length <= 0) throw new ArgumentNullException(nameof(iv));
-
-            using (var alg = GetRijndaelManaged(key, iv, keySize))
+            if (string.IsNullOrEmpty(clearFileIn))
             {
-                using (var fsIn = new FileStream(clearFileIn, FileMode.Open, FileAccess.Read))
+                throw new ArgumentNullException(nameof(clearFileIn));
+            }
+
+            if (string.IsNullOrEmpty(encryptedFileOut))
+            {
+                throw new ArgumentNullException(nameof(encryptedFileOut));
+            }
+
+            if (key == null || key.Length <= 0)
+            {
+                throw new ArgumentNullException(nameof(key));
+            }
+
+            if (iv == null || iv.Length <= 0)
+            {
+                throw new ArgumentNullException(nameof(iv));
+            }
+
+            using (RijndaelManaged alg = GetRijndaelManaged(key, iv, keySize))
+            {
+                using (FileStream fsIn = new FileStream(clearFileIn, FileMode.Open, FileAccess.Read))
                 {
                     Encrypt(fsIn, encryptedFileOut, alg);
                 }
@@ -274,12 +336,27 @@ namespace Effortless.Net.Encryption
         /// </summary>
         public static void Encrypt(Stream clearStreamIn, string encryptedFileOut, byte[] key, byte[] iv, KeySize keySize)
         {
-            if (clearStreamIn == null) throw new ArgumentNullException(nameof(clearStreamIn));
-            if (string.IsNullOrEmpty(encryptedFileOut)) throw new ArgumentNullException(nameof(encryptedFileOut));
-            if (key == null || key.Length <= 0) throw new ArgumentNullException(nameof(key));
-            if (iv == null || iv.Length <= 0) throw new ArgumentNullException(nameof(iv));
+            if (clearStreamIn == null)
+            {
+                throw new ArgumentNullException(nameof(clearStreamIn));
+            }
 
-            using (var alg = GetRijndaelManaged(key, iv, keySize))
+            if (string.IsNullOrEmpty(encryptedFileOut))
+            {
+                throw new ArgumentNullException(nameof(encryptedFileOut));
+            }
+
+            if (key == null || key.Length <= 0)
+            {
+                throw new ArgumentNullException(nameof(key));
+            }
+
+            if (iv == null || iv.Length <= 0)
+            {
+                throw new ArgumentNullException(nameof(iv));
+            }
+
+            using (RijndaelManaged alg = GetRijndaelManaged(key, iv, keySize))
             {
                 Encrypt(clearStreamIn, encryptedFileOut, alg);
             }
@@ -300,10 +377,17 @@ namespace Effortless.Net.Encryption
         /// </summary>
         public static void Encrypt(string clearFileIn, string encryptedFileOut, KeySize keySize, out string key, out string iv)
         {
-            if (string.IsNullOrEmpty(clearFileIn)) throw new ArgumentNullException(nameof(clearFileIn));
-            if (string.IsNullOrEmpty(encryptedFileOut)) throw new ArgumentNullException(nameof(encryptedFileOut));
+            if (string.IsNullOrEmpty(clearFileIn))
+            {
+                throw new ArgumentNullException(nameof(clearFileIn));
+            }
 
-            using (var alg = GetRijndaelManaged(null, null, keySize))
+            if (string.IsNullOrEmpty(encryptedFileOut))
+            {
+                throw new ArgumentNullException(nameof(encryptedFileOut));
+            }
+
+            using (RijndaelManaged alg = GetRijndaelManaged(null, null, keySize))
             {
                 alg.GenerateIV();
                 alg.GenerateKey();
@@ -311,7 +395,7 @@ namespace Effortless.Net.Encryption
                 key = Convert.ToBase64String(alg.Key);
                 iv = Convert.ToBase64String(alg.IV);
 
-                using (var fsIn = new FileStream(clearFileIn, FileMode.Open, FileAccess.Read))
+                using (FileStream fsIn = new FileStream(clearFileIn, FileMode.Open, FileAccess.Read))
                 {
                     Encrypt(fsIn, encryptedFileOut, alg);
                 }
@@ -333,10 +417,17 @@ namespace Effortless.Net.Encryption
         /// </summary>
         public static void Encrypt(Stream clearStreamIn, string encryptedFileOut, KeySize keySize, out string key, out string iv)
         {
-            if (clearStreamIn == null) throw new ArgumentNullException(nameof(clearStreamIn));
-            if (string.IsNullOrEmpty(encryptedFileOut)) throw new ArgumentNullException(nameof(encryptedFileOut));
+            if (clearStreamIn == null)
+            {
+                throw new ArgumentNullException(nameof(clearStreamIn));
+            }
 
-            using (var alg = GetRijndaelManaged(null, null, keySize))
+            if (string.IsNullOrEmpty(encryptedFileOut))
+            {
+                throw new ArgumentNullException(nameof(encryptedFileOut));
+            }
+
+            using (RijndaelManaged alg = GetRijndaelManaged(null, null, keySize))
             {
                 alg.GenerateIV();
                 alg.GenerateKey();
@@ -361,25 +452,39 @@ namespace Effortless.Net.Encryption
         /// </summary>
         public static byte[] Decrypt(byte[] cipherData, byte[] key, byte[] iv, KeySize keySize)
         {
-            if (cipherData == null) throw new ArgumentNullException(nameof(cipherData));
-            if (key == null || key.Length <= 0) throw new ArgumentNullException(nameof(key));
-            if (iv == null || iv.Length <= 0) throw new ArgumentNullException(nameof(iv));
+            if (cipherData == null)
+            {
+                throw new ArgumentNullException(nameof(cipherData));
+            }
 
-            if (cipherData.Length < 1) throw new ArgumentException("cipherData");
+            if (key == null || key.Length <= 0)
+            {
+                throw new ArgumentNullException(nameof(key));
+            }
+
+            if (iv == null || iv.Length <= 0)
+            {
+                throw new ArgumentNullException(nameof(iv));
+            }
+
+            if (cipherData.Length < 1)
+            {
+                throw new ArgumentException("cipherData");
+            }
 
             // Create a MemoryStream that is going to accept the decrypted bytes
-            using (var memoryStream = new MemoryStream())
+            using (MemoryStream memoryStream = new MemoryStream())
             {
                 // Create a symmetric algorithm.
                 // We are going to use Rijndael because it is strong and available on all platforms.
                 // You can use other algorithms, to do so substitute the next line with something like
                 // TripleDES alg = TripleDES.Create();
-                using (var alg = GetRijndaelManaged(key, iv, keySize))
+                using (RijndaelManaged alg = GetRijndaelManaged(key, iv, keySize))
                 {
                     // Create a CryptoStream through which we are going to be pumping our data.
                     // CryptoStreamMode.Write means that we are going to be writing data to the stream
                     // and the output will be written in the MemoryStream we have provided.
-                    using (var cs = new CryptoStream(memoryStream, alg.CreateDecryptor(), CryptoStreamMode.Write))
+                    using (CryptoStream cs = new CryptoStream(memoryStream, alg.CreateDecryptor(), CryptoStreamMode.Write))
                     {
                         // Write the data and make it do the decryption
                         cs.Write(cipherData, 0, cipherData.Length);
@@ -394,7 +499,7 @@ namespace Effortless.Net.Encryption
 
                 // Now get the decrypted data from the MemoryStream.
                 // Some people make a mistake of using GetBuffer() here, which is not the right way.
-                var decryptedData = memoryStream.ToArray();
+                byte[] decryptedData = memoryStream.ToArray();
                 return decryptedData;
             }
         }
@@ -404,24 +509,37 @@ namespace Effortless.Net.Encryption
         /// </summary>
         public static void Decrypt(Stream encryptedStreamIn, Stream clearStreamOut, RijndaelManaged alg)
         {
-            if (encryptedStreamIn == null) throw new ArgumentNullException(nameof(encryptedStreamIn));
-            if (clearStreamOut == null) throw new ArgumentNullException(nameof(clearStreamOut));
-            if (alg == null) throw new ArgumentNullException(nameof(alg));
+            if (encryptedStreamIn == null)
+            {
+                throw new ArgumentNullException(nameof(encryptedStreamIn));
+            }
+
+            if (clearStreamOut == null)
+            {
+                throw new ArgumentNullException(nameof(clearStreamOut));
+            }
+
+            if (alg == null)
+            {
+                throw new ArgumentNullException(nameof(alg));
+            }
 
             // Now create a crypto stream through which we are going to be pumping data.
             // Our encryptedFileOut is going to be receiving the Decrypted bytes.
-            var cs = new CryptoStream(clearStreamOut, alg.CreateDecryptor(), CryptoStreamMode.Write);
+            CryptoStream cs = new CryptoStream(clearStreamOut, alg.CreateDecryptor(), CryptoStreamMode.Write);
 
             // Now will will initialize a buffer and will be processing the input file in chunks.
             // This is done to avoid reading the whole file (which can be huge) into memory.
-            var buffer = new byte[BufferLen];
+            byte[] buffer = new byte[BufferLen];
             int bytesRead;
 
             do
             {
                 bytesRead = encryptedStreamIn.Read(buffer, 0, BufferLen); // Read a chunk of data from the input file
                 if (bytesRead > 0)
+                {
                     cs.Write(buffer, 0, bytesRead); // Decrypt it
+                }
             } while (bytesRead != 0);
 
             // Close everything
@@ -443,17 +561,32 @@ namespace Effortless.Net.Encryption
         /// </summary>
         public static void Decrypt(string encryptedFileIn, string clearFileOut, byte[] key, byte[] iv, KeySize keySize)
         {
-            if (string.IsNullOrEmpty(encryptedFileIn)) throw new ArgumentNullException(nameof(encryptedFileIn));
-            if (string.IsNullOrEmpty(clearFileOut)) throw new ArgumentNullException(nameof(clearFileOut));
-            if (key == null || key.Length <= 0) throw new ArgumentNullException(nameof(key));
-            if (iv == null || iv.Length <= 0) throw new ArgumentNullException(nameof(iv));
+            if (string.IsNullOrEmpty(encryptedFileIn))
+            {
+                throw new ArgumentNullException(nameof(encryptedFileIn));
+            }
+
+            if (string.IsNullOrEmpty(clearFileOut))
+            {
+                throw new ArgumentNullException(nameof(clearFileOut));
+            }
+
+            if (key == null || key.Length <= 0)
+            {
+                throw new ArgumentNullException(nameof(key));
+            }
+
+            if (iv == null || iv.Length <= 0)
+            {
+                throw new ArgumentNullException(nameof(iv));
+            }
 
             // First we are going to open the file streams
-            using (var fsIn = new FileStream(encryptedFileIn, FileMode.Open, FileAccess.Read))
+            using (FileStream fsIn = new FileStream(encryptedFileIn, FileMode.Open, FileAccess.Read))
             {
-                using (var fsOut = new FileStream(clearFileOut, FileMode.OpenOrCreate, FileAccess.Write))
+                using (FileStream fsOut = new FileStream(clearFileOut, FileMode.OpenOrCreate, FileAccess.Write))
                 {
-                    using (var alg = GetRijndaelManaged(key, iv, keySize))
+                    using (RijndaelManaged alg = GetRijndaelManaged(key, iv, keySize))
                     {
                         Decrypt(fsIn, fsOut, alg);
                     }
@@ -466,10 +599,25 @@ namespace Effortless.Net.Encryption
         /// </summary>
         public static void Decrypt(string encryptedFileIn, string clearFileOut, string key, string iv)
         {
-            if (string.IsNullOrEmpty(encryptedFileIn)) throw new ArgumentNullException(nameof(encryptedFileIn));
-            if (string.IsNullOrEmpty(clearFileOut)) throw new ArgumentNullException(nameof(clearFileOut));
-            if (string.IsNullOrEmpty(key)) throw new ArgumentNullException(nameof(key));
-            if (string.IsNullOrEmpty(iv)) throw new ArgumentNullException(nameof(iv));
+            if (string.IsNullOrEmpty(encryptedFileIn))
+            {
+                throw new ArgumentNullException(nameof(encryptedFileIn));
+            }
+
+            if (string.IsNullOrEmpty(clearFileOut))
+            {
+                throw new ArgumentNullException(nameof(clearFileOut));
+            }
+
+            if (string.IsNullOrEmpty(key))
+            {
+                throw new ArgumentNullException(nameof(key));
+            }
+
+            if (string.IsNullOrEmpty(iv))
+            {
+                throw new ArgumentNullException(nameof(iv));
+            }
 
             Decrypt(encryptedFileIn, clearFileOut, Convert.FromBase64String(key), Convert.FromBase64String(iv));
         }
@@ -487,14 +635,29 @@ namespace Effortless.Net.Encryption
         /// </summary>
         public static void Decrypt(string encryptedFileIn, Stream clearStreamOut, string key, string iv, KeySize keySize)
         {
-            if (encryptedFileIn == null) throw new ArgumentNullException(nameof(encryptedFileIn));
-            if (clearStreamOut == null) throw new ArgumentNullException(nameof(clearStreamOut));
-            if (string.IsNullOrEmpty(key)) throw new ArgumentNullException(nameof(key));
-            if (string.IsNullOrEmpty(iv)) throw new ArgumentNullException(nameof(iv));
-
-            using (var fsIn = new FileStream(encryptedFileIn, FileMode.Open, FileAccess.Read))
+            if (encryptedFileIn == null)
             {
-                using (var alg = GetRijndaelManaged(Convert.FromBase64String(key), Convert.FromBase64String(iv), keySize))
+                throw new ArgumentNullException(nameof(encryptedFileIn));
+            }
+
+            if (clearStreamOut == null)
+            {
+                throw new ArgumentNullException(nameof(clearStreamOut));
+            }
+
+            if (string.IsNullOrEmpty(key))
+            {
+                throw new ArgumentNullException(nameof(key));
+            }
+
+            if (string.IsNullOrEmpty(iv))
+            {
+                throw new ArgumentNullException(nameof(iv));
+            }
+
+            using (FileStream fsIn = new FileStream(encryptedFileIn, FileMode.Open, FileAccess.Read))
+            {
+                using (RijndaelManaged alg = GetRijndaelManaged(Convert.FromBase64String(key), Convert.FromBase64String(iv), keySize))
                 {
                     Decrypt(fsIn, clearStreamOut, alg);
                 }
@@ -507,14 +670,19 @@ namespace Effortless.Net.Encryption
         /// </summary>
         public static byte[] HexToByteArray(string hexString)
         {
-            if (hexString == null) throw new ArgumentNullException(nameof(hexString));
+            if (hexString == null)
+            {
+                throw new ArgumentNullException(nameof(hexString));
+            }
 
             if ((hexString.Length % 2) != 0)
+            {
                 throw new ApplicationException("Hex string must be multiple of 2 in length");
+            }
 
-            var byteCount = hexString.Length / 2;
-            var byteValues = new byte[byteCount];
-            for (var i = 0; i < byteCount; i++)
+            int byteCount = hexString.Length / 2;
+            byte[] byteValues = new byte[byteCount];
+            for (int i = 0; i < byteCount; i++)
             {
                 byteValues[i] = Convert.ToByte(hexString.Substring(i * 2, 2), 16);
             }
@@ -528,7 +696,10 @@ namespace Effortless.Net.Encryption
         /// </summary>
         public static string ByteArrayToHex(byte[] data)
         {
-            if (data == null) throw new ArgumentNullException(nameof(data));
+            if (data == null)
+            {
+                throw new ArgumentNullException(nameof(data));
+            }
 
             return BitConverter.ToString(data).Replace("-", "");
         }
@@ -538,7 +709,11 @@ namespace Effortless.Net.Encryption
         /// </summary>
         public static void GetRandomBytes(byte[] buffer)
         {
-            if (buffer == null) throw new ArgumentNullException(nameof(buffer));
+            if (buffer == null)
+            {
+                throw new ArgumentNullException(nameof(buffer));
+            }
+
             Rng.GetBytes(buffer);
         }
     }

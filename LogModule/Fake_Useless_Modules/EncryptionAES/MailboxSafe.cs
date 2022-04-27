@@ -13,9 +13,9 @@ namespace NetMQServer.Core
         private readonly YPipe<Command> m_commandPipe = new YPipe<Command>(Config.CommandPipeGranularity, "mailbox");
 
         //  Synchronize access to the mailbox from receivers and senders
-        private object m_sync;
+        private readonly object m_sync;
 
-        private List<Signaler> m_signalers = new List<Signaler>();
+        private readonly List<Signaler> m_signalers = new List<Signaler>();
 
 #if DEBUG
         /// <summary>Mailbox name. Only used for debugging.</summary>
@@ -68,7 +68,7 @@ namespace NetMQServer.Core
                 {
                     Monitor.PulseAll(m_sync);
 
-                    foreach (var signaler in m_signalers)
+                    foreach (Signaler signaler in m_signalers)
                     {
                         signaler.Send();
                     }
@@ -80,7 +80,9 @@ namespace NetMQServer.Core
         {
             //  Try to get the command straight away.
             if (m_commandPipe.TryRead(out command))
+            {
                 return true;
+            }
 
             //  If the timeout is zero, it will be quicker to release the lock, giving other a chance to send a command
             //  and immediately relock it.

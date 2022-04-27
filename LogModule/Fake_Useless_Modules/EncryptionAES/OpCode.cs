@@ -12,7 +12,7 @@ namespace NetMQServer.Core.Utils
 
         public static bool Open()
         {
-            var p = (int)Environment.OSVersion.Platform;
+            int p = (int)Environment.OSVersion.Platform;
 
             byte[] rdtscCode = IntPtr.Size == 4 ? RDTSC_32 : RDTSC_64;
 
@@ -21,7 +21,10 @@ namespace NetMQServer.Core.Utils
             if ((p == 4) || (p == 128))
             {
                 // Unix
-                if (IsARMArchitecture()) return false;
+                if (IsARMArchitecture())
+                {
+                    return false;
+                }
 
                 Assembly assembly = Assembly.Load("Mono.Posix");
 
@@ -71,13 +74,15 @@ namespace NetMQServer.Core.Utils
             MethodInfo uname = syscall.GetMethod("uname");
             object?[] parameters = { null };
 
-            var invokeResult = (int)uname.Invoke(null, parameters);
+            int invokeResult = (int)uname.Invoke(null, parameters);
 
             if (invokeResult != 0)
+            {
                 return false;
+            }
 
-            var currentValues = parameters[0];
-            var machineValue = (string)utsname.GetField("machine").GetValue(currentValues);
+            object currentValues = parameters[0];
+            string machineValue = (string)utsname.GetField("machine").GetValue(currentValues);
             return machineValue.ToLower().Contains("arm");
         }
 
@@ -85,7 +90,7 @@ namespace NetMQServer.Core.Utils
         {
             Rdtsc = null;
 
-            var p = (int)Environment.OSVersion.Platform;
+            int p = (int)Environment.OSVersion.Platform;
             if ((p == 4) || (p == 128))
             {
                 // Unix

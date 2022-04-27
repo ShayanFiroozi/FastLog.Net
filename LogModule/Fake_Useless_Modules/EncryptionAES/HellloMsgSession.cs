@@ -1,10 +1,10 @@
 namespace NetMQServer.Core
 {
-    class HelloMsgSession : SessionBase
+    internal class HelloMsgSession : SessionBase
     {
-        bool m_newPipe;
+        private bool m_newPipe;
 
-        public HelloMsgSession(IOThread ioThread, bool connect, SocketBase socket, Options options, Address addr) : 
+        public HelloMsgSession(IOThread ioThread, bool connect, SocketBase socket, Options options, Address addr) :
             base(ioThread, connect, socket, options, addr)
         {
             m_newPipe = true;
@@ -14,7 +14,7 @@ namespace NetMQServer.Core
         {
             if (m_newPipe)
             {
-              
+
 
                 m_newPipe = false;
                 msg.InitPool(m_options.HelloMsg.Length);

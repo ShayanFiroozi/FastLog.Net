@@ -57,7 +57,7 @@ namespace NetMQServer.Core.Patterns
         /// <param name="icanhasall">not used</param>
         protected override void XAttachPipe(Pipe pipe, bool icanhasall)
         {
-            
+
             m_fairQueueing.Attach(pipe);
             m_loadBalancer.Attach(pipe);
         }

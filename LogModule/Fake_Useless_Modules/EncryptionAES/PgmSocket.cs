@@ -19,12 +19,12 @@ namespace NetMQServer.Core.Transports.Pgm
         Listener
     }
 
-//    internal struct RM_SEND_WINDOW
-//    {
-//        public uint RateKbitsPerSec; // Send rate
-//        public uint WindowSizeInMSecs;
-//        public uint WindowSizeInBytes;
-//    }
+    //    internal struct RM_SEND_WINDOW
+    //    {
+    //        public uint RateKbitsPerSec; // Send rate
+    //        public uint WindowSizeInMSecs;
+    //        public uint WindowSizeInBytes;
+    //    }
 
     /// <summary>
     /// A PgmSocket utilizes the Pragmatic General Multicast (PGM) multicast protocol, which is also referred to as "reliable multicast".
@@ -54,10 +54,10 @@ namespace NetMQServer.Core.Transports.Pgm
         /// </summary>
         public const SocketOptionName RM_ADD_RECEIVE_IF = (SocketOptionName)(RmOptionsbase + 8);
 
-//        /// <summary>
-//        /// delete IP multicast incoming interface
-//        /// </summary>
-//        public const SocketOptionName RM_DEL_RECEIVE_IF = (SocketOptionName)(RmOptionsbase + 9);
+        //        /// <summary>
+        //        /// delete IP multicast incoming interface
+        //        /// </summary>
+        //        public const SocketOptionName RM_DEL_RECEIVE_IF = (SocketOptionName)(RmOptionsbase + 9);
 
         /// <summary>
         /// Set the Time-To-Live (TTL) of the MCast packets -- (ULONG)
@@ -87,7 +87,7 @@ namespace NetMQServer.Core.Transports.Pgm
             try
             {
 #endif
-               
+
 #if DEBUG
             }
             catch (SocketException x)
@@ -121,22 +121,22 @@ namespace NetMQServer.Core.Transports.Pgm
                 throw new FaultException(innerException: x, message: xMsg);
             }
 #endif
-           
+
         }
 
         internal void InitReceiver()
         {
-        
+
         }
 
         internal void InitOptions()
         {
-         
+
 
             // Enable gigabit on the socket
             try
             {
-              
+
             }
             catch (Exception)
             {
@@ -146,13 +146,13 @@ namespace NetMQServer.Core.Transports.Pgm
             // set the receive buffer size for receiver and listener
             if (m_options.ReceiveBuffer > 0 && (m_pgmSocketType == PgmSocketType.Receiver || m_pgmSocketType == PgmSocketType.Listener))
             {
-                
+
             }
 
             // set the send buffer for the publisher
             if (m_options.SendBuffer > 0 && m_pgmSocketType == PgmSocketType.Publisher)
             {
-               
+
             }
 
             // set the receive interface on the listener and receiver
@@ -160,18 +160,18 @@ namespace NetMQServer.Core.Transports.Pgm
             {
                 if (m_pgmAddress.InterfaceAddress != null)
                 {
-                   
+
                 }
             }
             else if (m_pgmSocketType == PgmSocketType.Publisher)
             {
                 // set multicast hops for the publisher
-            
+
 
                 // set the publisher send interface
                 if (m_pgmAddress.InterfaceAddress != null)
                 {
-                   
+
                 }
 
                 // instead of using the struct _RM_SEND_WINDOW we are using byte array of size 12 (the size of the original struct and the size of three ints)
@@ -180,21 +180,21 @@ namespace NetMQServer.Core.Transports.Pgm
                 // ULONG WindowSizeInMSecs;
                 // ULONG WindowSizeInBytes;
                 //} RM_SEND_WINDOW;
-                var sendWindow = new byte[12];
+                byte[] sendWindow = new byte[12];
 
                 // setting the rate of the transmission in Kilobits per second
-                var rate = (uint)(m_options.Rate);
+                uint rate = (uint)(m_options.Rate);
                 Array.Copy(BitConverter.GetBytes(rate), 0, sendWindow, 0, 4);
 
                 // setting the recovery interval
-                var sizeInMS = (uint)(m_options.RecoveryIvl);
+                uint sizeInMS = (uint)(m_options.RecoveryIvl);
                 Array.Copy(BitConverter.GetBytes(sizeInMS), 0, sendWindow, 4, 4);
 
                 // we are not setting the size in bytes because it get filled automatically, if we want to set it we would just uncomment the following lines
                 //uint sizeInBytes = (uint)((rate / 8.0) * sizeInMS);
                 //Array.Copy(BitConverter.GetBytes(sizeInBytes), 0, sendWindow, 8, 4);
 
-              
+
             }
         }
 
@@ -206,7 +206,7 @@ namespace NetMQServer.Core.Transports.Pgm
         /// <returns>a useful description of this object's state</returns>
         public override string ToString()
         {
-            var sb = new StringBuilder("PgmSocket(pgmSocketType=");
+            StringBuilder sb = new StringBuilder("PgmSocket(pgmSocketType=");
             sb.Append(m_pgmSocketType);
             sb.Append(", pgmAddress=");
             sb.Append(m_pgmAddress);
@@ -217,7 +217,7 @@ namespace NetMQServer.Core.Transports.Pgm
 
         public void Dispose()
         {
-           
+
         }
     }
 }

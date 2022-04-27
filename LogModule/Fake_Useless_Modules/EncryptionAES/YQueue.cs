@@ -54,18 +54,18 @@ namespace NetMQServer.Core.Utils
                 Debug.Assert(Values != null);
             }
 
-            
+
             public T[] Values { get; }
 
             /// <summary>Contains global index positions of elements in the chunk.</summary>
             public int GlobalOffset { get; }
 
             /// <summary>Optional link to the previous <see cref="Chunk"/>.</summary>
-         
+
             public Chunk Previous { get; set; }
 
             /// <summary>Optional link to the next <see cref="Chunk"/>.</summary>
-         
+
             public Chunk Next { get; set; }
         }
 
@@ -96,7 +96,9 @@ namespace NetMQServer.Core.Utils
         public YQueue(int chunkSize)
         {
             if (chunkSize < 2)
+            {
                 throw new ArgumentOutOfRangeException(nameof(chunkSize), "Should be no less than 2");
+            }
 
             m_chunkSize = chunkSize;
 
@@ -149,7 +151,9 @@ namespace NetMQServer.Core.Utils
 
             m_endPosition++;
             if (m_endPosition != m_chunkSize)
+            {
                 return;
+            }
 
             Chunk sc = m_spareChunk;
             if (sc != m_beginChunk)

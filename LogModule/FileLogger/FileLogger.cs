@@ -31,7 +31,7 @@ namespace LogModule.FileLogger
                 catch (Exception ex)
                 {
                     InnerException.InnerException.LogInnerException(ex);
-                    return (int)0;
+                    return 0;
                 }
             }
         }

@@ -12,7 +12,7 @@
 
         protected override void Next()
         {
-           
+
 
             // Write message body into the buffer.
             NextStep(new ByteArraySegment(m_inProgress.UnsafeData, m_inProgress.UnsafeOffset),

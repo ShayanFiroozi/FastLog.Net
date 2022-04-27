@@ -14,7 +14,10 @@ namespace LogModule.InnerException
         public static void LogInnerException(Exception exception)
         {
 
-            if (exception == null) return;
+            if (exception == null)
+            {
+                return;
+            }
 
             try
             {

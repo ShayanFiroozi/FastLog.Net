@@ -65,11 +65,15 @@ namespace NetMQServer.Core.Patterns
             bool isMessageSent = base.XSend(ref msg);
 
             if (!isMessageSent)
+            {
                 return false;
+            }
 
             // If the reply is complete flip the FSM back to request receiving state.
             if (!more)
+            {
                 m_sendingReply = false;
+            }
 
             return true;
         }
@@ -86,7 +90,9 @@ namespace NetMQServer.Core.Patterns
 
             // If we are in middle of sending a reply, we cannot receive next request.
             if (m_sendingReply)
+            {
                 throw new FiniteStateMachineException("Rep.XRecv - cannot receive another request");
+            }
 
             // First thing to do when receiving a request is to copy all the labels
             // to the reply pipe.
@@ -97,7 +103,9 @@ namespace NetMQServer.Core.Patterns
                     isMessageAvailable = base.XRecv(ref msg);
 
                     if (!isMessageAvailable)
+                    {
                         return false;
+                    }
 
                     if (msg.HasMore)
                     {
@@ -108,10 +116,14 @@ namespace NetMQServer.Core.Patterns
                         isMessageAvailable = base.XSend(ref msg);
 
                         if (!isMessageAvailable)
+                        {
                             return false;
+                        }
 
                         if (bottom)
+                        {
                             break;
+                        }
                     }
                     else
                     {
@@ -144,7 +156,9 @@ namespace NetMQServer.Core.Patterns
         protected override bool XHasIn()
         {
             if (m_sendingReply)
+            {
                 return false;
+            }
 
             return base.XHasIn();
         }
@@ -152,7 +166,9 @@ namespace NetMQServer.Core.Patterns
         protected override bool XHasOut()
         {
             if (!m_sendingReply)
+            {
                 return false;
+            }
 
             return base.XHasOut();
         }

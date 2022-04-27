@@ -49,8 +49,8 @@ namespace NetMQServer.Core.Patterns
 
             public bool Active;
         };
-        
-        enum State
+
+        private enum State
         {
             RoutingId,
             Data
@@ -60,12 +60,12 @@ namespace NetMQServer.Core.Patterns
         /// Fair queueing object for inbound pipes.
         /// </summary>
         private readonly FairQueueing m_fairQueueing;
-    
+
         /// <summary>
         /// Holds the prefetched message.
         /// </summary>
         private Msg m_prefetchedMsg;
-        
+
         /// <summary>
         /// Outbound pipes indexed by the peer IDs.
         /// </summary>
@@ -74,13 +74,13 @@ namespace NetMQServer.Core.Patterns
         /// <summary>
         /// The pipe we are currently writing to.
         /// </summary>
-        private Pipe? m_currentOut;  
-             
+        private Pipe? m_currentOut;
+
         /// <summary>
         /// State of the recv operation
         /// </summary>
         private State m_receivingState;
-        
+
         /// <summary>
         /// State of the sending operation
         /// </summary>
@@ -91,7 +91,7 @@ namespace NetMQServer.Core.Patterns
         /// algorithm. This value is the next ID to use (if not used already).
         /// </summary>
         private uint m_nextPeerId;
-        
+
         /// <summary>
         /// Create a new Router instance with the given parent-Ctx, thread-id, and socket-id.
         /// </summary>
@@ -101,20 +101,20 @@ namespace NetMQServer.Core.Patterns
         public Peer(Ctx parent, int threadId, int socketId)
             : base(parent, threadId, socketId)
         {
-            m_nextPeerId = (uint) s_random.Next();
+            m_nextPeerId = (uint)s_random.Next();
             m_options.SocketType = ZmqSocketType.Peer;
             m_options.CanSendHelloMsg = true;
-            m_fairQueueing = new FairQueueing();      
+            m_fairQueueing = new FairQueueing();
             m_prefetchedMsg = new Msg();
-            m_prefetchedMsg.InitEmpty();            
+            m_prefetchedMsg.InitEmpty();
             m_outpipes = new Dictionary<uint, Outpipe>();
             m_sendingState = State.RoutingId;
-            m_receivingState = State.RoutingId;            
+            m_receivingState = State.RoutingId;
         }
-   
+
         public override void Destroy()
         {
-            base.Destroy();            
+            base.Destroy();
             m_prefetchedMsg.Close();
         }
 
@@ -125,26 +125,26 @@ namespace NetMQServer.Core.Patterns
         /// <param name="icanhasall">not used</param>
         protected override void XAttachPipe(Pipe pipe, bool icanhasall)
         {
-            
+
 
             uint routingId = m_nextPeerId;
-                        
+
             pipe.RoutingId = routingId;
             m_outpipes.Add(routingId, new Outpipe(pipe, true));
             m_fairQueueing.Attach(pipe);
-            
+
             // As this exposed to the user we make a copy to avoid an issue
             m_options.LastPeerRoutingId = BitConverter.GetBytes(m_nextPeerId);
-            
+
             m_nextPeerId++;
-        }      
+        }
 
         /// <summary>
         /// This is an override of the abstract method that gets called to signal that the given pipe is to be removed from this socket.
         /// </summary>
         /// <param name="pipe">the Pipe that is being removed</param>
         protected override void XTerminated(Pipe pipe)
-        {           
+        {
             m_outpipes.TryGetValue(pipe.RoutingId, out Outpipe old);
             m_outpipes.Remove(pipe.RoutingId);
 
@@ -152,7 +152,9 @@ namespace NetMQServer.Core.Patterns
 
             m_fairQueueing.Terminated(pipe);
             if (pipe == m_currentOut)
+            {
                 m_currentOut = null;
+            }
         }
 
         /// <summary>
@@ -160,8 +162,8 @@ namespace NetMQServer.Core.Patterns
         /// </summary>
         /// <param name="pipe">the <c>Pipe</c> that is now becoming available for reading</param>
         protected override void XReadActivated(Pipe pipe)
-        {            
-            m_fairQueueing.Activated(pipe);            
+        {
+            m_fairQueueing.Activated(pipe);
         }
 
         /// <summary>
@@ -171,7 +173,7 @@ namespace NetMQServer.Core.Patterns
         /// <param name="pipe">the <c>Pipe</c> that is now becoming available for writing</param>
         protected override void XWriteActivated(Pipe pipe)
         {
-            foreach (var it in m_outpipes)
+            foreach (KeyValuePair<uint, Outpipe> it in m_outpipes)
             {
                 if (it.Value.Pipe == pipe)
                 {
@@ -201,27 +203,31 @@ namespace NetMQServer.Core.Patterns
                 // If we have malformed message (prefix with no subsequent message)
                 // then just silently ignore it.                
                 if (msg.HasMore)
-                {                                       
+                {
                     // Find the pipe associated with the routingId stored in the prefix.                    
-                    var routingId = BitConverter.ToUInt32(msg.UnsafeToArray(), 0);
+                    uint routingId = BitConverter.ToUInt32(msg.UnsafeToArray(), 0);
 
                     if (m_outpipes.TryGetValue(routingId, out Outpipe op))
                     {
                         m_currentOut = op.Pipe;
                         if (!m_currentOut.CheckWrite())
-                        {                            
+                        {
                             op.Active = false;
                             m_currentOut = null;
 
                             if (!op.Pipe.Active)
+                            {
                                 throw new HostUnreachableException("In Peer.XSend");
+                            }
 
                             return false;
                         }
                     }
                     else
+                    {
                         throw new HostUnreachableException("In Peer.XSend");
-                    
+                    }
+
                     m_sendingState = State.Data;
                 }
 
@@ -233,18 +239,22 @@ namespace NetMQServer.Core.Patterns
             }
 
             m_sendingState = State.RoutingId;
-    
+
             //  Peer sockets do not allow multipart data (ZMQ_SNDMORE)
-            if (msg.HasMore) 
+            if (msg.HasMore)
+            {
                 throw new InvalidException();
-                                    
+            }
+
             // Push the message into the pipe. If there's no out pipe, just drop it.
             if (m_currentOut != null)
-            {                
+            {
                 bool ok = m_currentOut.Write(ref msg);
-                
-                if (ok)                
+
+                if (ok)
+                {
                     m_currentOut.Flush();
+                }
 
                 m_currentOut = null;
             }
@@ -267,10 +277,10 @@ namespace NetMQServer.Core.Patterns
         protected override bool XRecv(ref Msg msg)
         {
             if (m_receivingState == State.Data)
-            {                
+            {
                 msg.Move(ref m_prefetchedMsg);
                 m_receivingState = State.RoutingId;
-                                              
+
                 return true;
             }
 
@@ -283,34 +293,38 @@ namespace NetMQServer.Core.Patterns
                 isMessageAvailable = m_fairQueueing.RecvPipe(ref msg, out pipe);
 
                 while (isMessageAvailable && msg.HasMore)
+                {
                     isMessageAvailable = m_fairQueueing.RecvPipe(ref msg, out pipe);
-                
+                }
+
                 // get the new message
                 isMessageAvailable = m_fairQueueing.RecvPipe(ref msg, out pipe);
             }
 
-            if (!isMessageAvailable)            
+            if (!isMessageAvailable)
+            {
                 return false;
+            }
 
-          
+
 
             // We are at the beginning of a message.
             // Keep the message part we have in the prefetch buffer
             // and return the ID of the peer instead.
             m_prefetchedMsg.Move(ref msg);
-            
+
             byte[] routingId = BitConverter.GetBytes(pipe.RoutingId);
             msg.InitPool(routingId.Length);
             msg.Put(routingId, 0, routingId.Length);
             msg.SetFlags(MsgFlags.More);
             m_receivingState = State.Data;
-                       
+
             return true;
-        }     
+        }
 
         protected override bool XHasIn()
         {
-            return m_fairQueueing.HasIn();           
+            return m_fairQueueing.HasIn();
         }
 
         protected override bool XHasOut()
@@ -319,6 +333,6 @@ namespace NetMQServer.Core.Patterns
             // attempt to write succeeds depends on which pipe the message is going
             // to be routed to.
             return true;
-        }   
+        }
     }
 }

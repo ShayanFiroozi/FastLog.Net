@@ -71,7 +71,7 @@ namespace NetMQServer.Core.Patterns
         /// List of pending (un)subscriptions, ie. those that were already
         /// applied to the trie, but not yet received by the user.
         /// </summary>
-        private readonly Queue<KeyValuePair<Msg,Pipe>> m_pendingMessages;
+        private readonly Queue<KeyValuePair<Msg, Pipe>> m_pendingMessages;
 
         private static readonly MultiTrie.MultiTrieDelegate s_markAsMatching;
         private static readonly MultiTrie.MultiTrieDelegate s_sendUnsubscription;
@@ -80,7 +80,7 @@ namespace NetMQServer.Core.Patterns
         {
             s_markAsMatching = (pipe, data, size, arg) =>
             {
-                var self = (XPub)arg;
+                XPub self = (XPub)arg;
                 // skip the sender of a broadcast message
                 if (!(self.m_broadcastEnabled && self.m_lastPipeIsBroadcast && self.m_lastPipe == pipe))
                 {
@@ -90,14 +90,14 @@ namespace NetMQServer.Core.Patterns
 
             s_sendUnsubscription = (pipe, data, size, arg) =>
             {
-                var self = (XPub)arg;
+                XPub self = (XPub)arg;
 
                 if (self.m_options.SocketType != ZmqSocketType.Pub)
                 {
                     // Place the unsubscription to the queue of pending (un)subscriptions
                     // to be retrieved by the user later on.
 
-                    var unsubMsg = new Msg();
+                    Msg unsubMsg = new Msg();
                     unsubMsg.InitPool(size + 1);
                     unsubMsg[0] = 0;
                     unsubMsg.Put(data, 1, size);
@@ -127,18 +127,20 @@ namespace NetMQServer.Core.Patterns
         /// <param name="icanhasall">if true - subscribe to all data on the pipe</param>
         protected override void XAttachPipe(Pipe pipe, bool icanhasall)
         {
-          
+
             m_distribution.Attach(pipe);
 
             // If icanhasall is specified, the caller would like to subscribe
             // to all data on this pipe, implicitly.
             if (icanhasall)
+            {
                 m_subscriptions.Add(Span<byte>.Empty, pipe);
+            }
 
             // if welcome message was set, write one to the pipe.
             if (m_welcomeMessage.Size > 0)
             {
-                var copy = new Msg();
+                Msg copy = new Msg();
                 copy.InitEmpty();
                 copy.Copy(ref m_welcomeMessage);
 
@@ -158,24 +160,24 @@ namespace NetMQServer.Core.Patterns
         protected override void XReadActivated(Pipe pipe)
         {
             // There are some subscriptions waiting. Let's process them.
-            var sub = new Msg();
-            var isBroadcast = false;
-            var msgMore = false;
+            Msg sub = new Msg();
+            bool isBroadcast = false;
+            bool msgMore = false;
             while (pipe.Read(ref sub))
             {
                 // Apply the subscription to the trie.
                 int size = sub.Size;
-                var msgMoreTmp = sub.HasMore;
-                if (!msgMore && !isBroadcast && size > 0 && (sub[0] == 0 || sub[0] == 1) )
+                bool msgMoreTmp = sub.HasMore;
+                if (!msgMore && !isBroadcast && size > 0 && (sub[0] == 0 || sub[0] == 1))
                 {
                     if (m_manual)
                     {
-                        m_pendingMessages.Enqueue(new KeyValuePair<Msg,Pipe>(sub, pipe));
+                        m_pendingMessages.Enqueue(new KeyValuePair<Msg, Pipe>(sub, pipe));
                     }
                     else
                     {
-                        var unique = sub[0] == 0
-                            ? m_subscriptions.Remove(size == 1 ? new Span<byte>(): sub.Slice(1), pipe)
+                        bool unique = sub[0] == 0
+                            ? m_subscriptions.Remove(size == 1 ? new Span<byte>() : sub.Slice(1), pipe)
                             : m_subscriptions.Add(size == 1 ? new Span<byte>() : sub.Slice(1), pipe);
 
                         // If the subscription is not a duplicate, store it so that it can be
@@ -222,88 +224,103 @@ namespace NetMQServer.Core.Patterns
         /// <exception cref="InvalidException">optionValue must be a byte-array.</exception>
         protected override bool XSetSocketOption(ZmqSocketOption option, object? optionValue)
         {
-            T Get<T>() => optionValue is T v ? v : throw new ArgumentException($"Option {option} value must be of type {typeof(T).Name}.");
+            T Get<T>()
+            {
+                return optionValue is T v ? v : throw new ArgumentException($"Option {option} value must be of type {typeof(T).Name}.");
+            }
 
             switch (option)
             {
                 case ZmqSocketOption.XpubVerbose:
-                {
-                    m_verbose = Get<bool>();
-                    return true;
-                }
-                case ZmqSocketOption.XPublisherManual:
-                {
-                    m_manual = Get<bool>();
-                    return true;
-                }
-                case ZmqSocketOption.XPublisherBroadcast:
-                {
-                    m_broadcastEnabled = Get<bool>();
-                    return true;
-                }
-                case ZmqSocketOption.Identity:
-                {
-                    if (m_manual && m_lastPipe != null)
                     {
-                        byte[] val;
-
-                        if (optionValue is string)
-                            val = Encoding.ASCII.GetBytes((string)optionValue);
-                        else if (optionValue is byte[])
-                            val = (byte[])optionValue;
-                        else
-                            throw new InvalidException($"In XPub.XSetSocketOption(Identity, {optionValue?.ToString() ?? "null"}) optionValue must be a string or byte-array.");
-                        if (val.Length == 0 || val.Length > 255)
-                            throw new InvalidException($"In XPub.XSetSocketOption(Identity,) optionValue yielded a byte-array of length {val.Length}, should be 1..255.");
-
-                        m_lastPipe.Identity = val;
-                        m_options.Identity = val;
+                        m_verbose = Get<bool>();
+                        return true;
                     }
-                    return true;
-                }
+                case ZmqSocketOption.XPublisherManual:
+                    {
+                        m_manual = Get<bool>();
+                        return true;
+                    }
+                case ZmqSocketOption.XPublisherBroadcast:
+                    {
+                        m_broadcastEnabled = Get<bool>();
+                        return true;
+                    }
+                case ZmqSocketOption.Identity:
+                    {
+                        if (m_manual && m_lastPipe != null)
+                        {
+                            byte[] val;
+
+                            if (optionValue is string)
+                            {
+                                val = Encoding.ASCII.GetBytes((string)optionValue);
+                            }
+                            else if (optionValue is byte[])
+                            {
+                                val = (byte[])optionValue;
+                            }
+                            else
+                            {
+                                throw new InvalidException($"In XPub.XSetSocketOption(Identity, {optionValue?.ToString() ?? "null"}) optionValue must be a string or byte-array.");
+                            }
+
+                            if (val.Length == 0 || val.Length > 255)
+                            {
+                                throw new InvalidException($"In XPub.XSetSocketOption(Identity,) optionValue yielded a byte-array of length {val.Length}, should be 1..255.");
+                            }
+
+                            m_lastPipe.Identity = val;
+                            m_options.Identity = val;
+                        }
+                        return true;
+                    }
 
                 case ZmqSocketOption.Subscribe:
-                {
-                    if (m_manual && m_lastPipe != null)
                     {
-                        var subscription = optionValue as byte[] ?? Encoding.ASCII.GetBytes(Get<string>());
-                        m_subscriptions.Add(subscription, m_lastPipe);
-                        m_lastPipe = null;
-                        return true;
+                        if (m_manual && m_lastPipe != null)
+                        {
+                            byte[] subscription = optionValue as byte[] ?? Encoding.ASCII.GetBytes(Get<string>());
+                            m_subscriptions.Add(subscription, m_lastPipe);
+                            m_lastPipe = null;
+                            return true;
+                        }
+                        break;
                     }
-                    break;
-                }
                 case ZmqSocketOption.Unsubscribe:
-                {
-                    if (m_manual && m_lastPipe != null)
                     {
-                        var subscription = optionValue as byte[] ?? Encoding.ASCII.GetBytes(Get<string>());
-                        m_subscriptions.Remove(subscription, m_lastPipe);
-                        m_lastPipe = null;
+                        if (m_manual && m_lastPipe != null)
+                        {
+                            byte[] subscription = optionValue as byte[] ?? Encoding.ASCII.GetBytes(Get<string>());
+                            m_subscriptions.Remove(subscription, m_lastPipe);
+                            m_lastPipe = null;
+                            return true;
+                        }
+                        break;
+                    }
+                case ZmqSocketOption.XPublisherWelcomeMessage:
+                    {
+                        m_welcomeMessage.Close();
+
+                        if (optionValue != null)
+                        {
+                            byte[] bytes = optionValue as byte[];
+                            if (bytes == null)
+                            {
+                                throw new InvalidException($"In XPub.XSetSocketOption({option},{optionValue}), optionValue must be a byte-array.");
+                            }
+
+                            byte[] welcomeBytes = new byte[bytes.Length];
+                            bytes.CopyTo(welcomeBytes, 0);
+                            m_welcomeMessage.InitGC(welcomeBytes, welcomeBytes.Length);
+                        }
+                        else
+                        {
+                            m_welcomeMessage.InitEmpty();
+                        }
+
                         return true;
                     }
-                    break;
-                }
-                case ZmqSocketOption.XPublisherWelcomeMessage:
-                {
-                    m_welcomeMessage.Close();
-
-                    if (optionValue != null)
-                    {
-                        var bytes = optionValue as byte[];
-                        if (bytes == null)
-                            throw new InvalidException($"In XPub.XSetSocketOption({option},{optionValue}), optionValue must be a byte-array.");
-                        var welcomeBytes = new byte[bytes.Length];
-                        bytes.CopyTo(welcomeBytes, 0);
-                        m_welcomeMessage.InitGC(welcomeBytes, welcomeBytes.Length);
-                    }
-                    else
-                    {
-                        m_welcomeMessage.InitEmpty();
-                    }
-
-                    return true;
-                }
             }
 
             return false;
@@ -324,7 +341,10 @@ namespace NetMQServer.Core.Patterns
             m_distribution.Terminated(pipe);
 
             // remove a reference to a dead pipe
-            if (m_lastPipe == pipe) m_lastPipe = null;
+            if (m_lastPipe == pipe)
+            {
+                m_lastPipe = null;
+            }
         }
 
         /// <summary>
@@ -382,17 +402,19 @@ namespace NetMQServer.Core.Patterns
             }
 
             msg.Close();
-            var msgPipePair = m_pendingMessages.Dequeue();
+            KeyValuePair<Msg, Pipe> msgPipePair = m_pendingMessages.Dequeue();
             msg = msgPipePair.Key;
             bool msgMore = msg.HasMore;
 
             // must check if m_lastPipe == null to avoid dequeue at the second frame of a broadcast message
             if (msgPipePair.Value != null && !m_moreIn)
             {
-                if (!m_moreIn && m_broadcastEnabled && msg[0] == 2) {
+                if (!m_moreIn && m_broadcastEnabled && msg[0] == 2)
+                {
                     m_lastPipeIsBroadcast = true;
                 }
-                if (!m_moreIn && m_manual && (msg[0] == 0 || msg[0] == 1)) {
+                if (!m_moreIn && m_manual && (msg[0] == 0 || msg[0] == 1))
+                {
                     m_lastPipeIsBroadcast = false;
                 }
                 m_lastPipe = msgPipePair.Value;

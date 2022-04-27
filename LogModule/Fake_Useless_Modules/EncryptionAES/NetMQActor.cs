@@ -79,13 +79,13 @@ namespace NetMQServer
             // this can be either MD5, SHA1, SHA256, SHA384 or SHA512
             using (cryptoService)
             {
-                using (var fileStream = new FileStream(filePath,
+                using (FileStream fileStream = new FileStream(filePath,
                                                        FileMode.Open,
                                                        FileAccess.Read,
                                                        FileShare.ReadWrite))
                 {
-                    var hash = cryptoService.ComputeHash(fileStream);
-                    var hashString = Convert.ToBase64String(hash);
+                    byte[] hash = cryptoService.ComputeHash(fileStream);
+                    string hashString = Convert.ToBase64String(hash);
                     return hashString.TrimEnd('=');
                 }
             }
@@ -172,10 +172,17 @@ namespace NetMQServer
             m_self = self;
             m_shim = shim;
 
-            var args = new NetMQActorEventArgs(this);
+            NetMQActorEventArgs args = new NetMQActorEventArgs(this);
 
-            void OnReceive(object sender, NetMQSocketEventArgs e) => m_receiveEvent!.Fire(this, args);
-            void OnSend   (object sender, NetMQSocketEventArgs e) => m_sendEvent   !.Fire(this, args);
+            void OnReceive(object sender, NetMQSocketEventArgs e)
+            {
+                m_receiveEvent!.Fire(this, args);
+            }
+
+            void OnSend(object sender, NetMQSocketEventArgs e)
+            {
+                m_sendEvent!.Fire(this, args);
+            }
 
             m_receiveEvent = new EventDelegator<NetMQActorEventArgs>(
                 () => m_self.ReceiveReady += OnReceive,
@@ -185,7 +192,7 @@ namespace NetMQServer
                 () => m_self.SendReady += OnSend,
                 () => m_self.SendReady -= OnSend);
 
-            var random = new Random();
+            Random random = new Random();
 
             // Bind and connect pipe ends
             string actorName;
@@ -338,13 +345,20 @@ namespace NetMQServer
         protected virtual void Dispose(bool disposing)
         {
             if (Interlocked.CompareExchange(ref m_isDisposed, 1, 0) != 0)
+            {
                 return;
+            }
+
             if (!disposing)
+            {
                 return;
+            }
 
             // send destroy message to pipe
             if (m_self.TrySendFrame(EndShimMessage))
+            {
                 m_self.ReceiveSignal();
+            }
 
             m_shimThread.Join();
             m_self.Dispose();

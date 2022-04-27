@@ -110,8 +110,8 @@ namespace SharpAESCrypt.Threading
         private int m_currentStream;
         private long m_bytesProcessed;
 
-        private int overlapSize { get { return m_overlap.Length; } }
-        private int streamCount { get { return m_stripeStreams.Length; } }
+        private int overlapSize => m_overlap.Length;
+        private int streamCount => m_stripeStreams.Length;
 
         /// <summary> The mode of operation for OverlappedStreamStriper </summary>
         public enum Mode
@@ -129,10 +129,15 @@ namespace SharpAESCrypt.Threading
         /// <param name="overlapSize"> The number of bytes the chunks are overlapped with. </param>
         public OverlappedStreamStriper(Mode mode, ICollection<Stream> stripeStreams, int chunksize, int overlapSize)
         {
-            if (stripeStreams == null || stripeStreams.Count == 0) throw new ArgumentNullException("stripeStreams");
+            if (stripeStreams == null || stripeStreams.Count == 0)
+            {
+                throw new ArgumentNullException("stripeStreams");
+            }
 
             if (mode != Mode.Split && mode != Mode.Join)
+            {
                 throw new ArgumentException("mode");
+            }
 
             m_mode = mode;
 
@@ -141,12 +146,17 @@ namespace SharpAESCrypt.Threading
             foreach (Stream s in stripeStreams)
             {
                 if (s == null || (mode == Mode.Join && !s.CanRead) || (mode == Mode.Split && !s.CanWrite))
+                {
                     throw new ArgumentException(Strings.CtorStreamArgumentExceptionMsg);
+                }
+
                 m_stripeStreams[i++] = s;
             }
 
             if (overlapSize < 0 || overlapSize > chunksize)
+            {
                 throw new ArgumentException("overlapSize");
+            }
 
             m_chunksize = chunksize;
             m_overlap = new byte[overlapSize];
@@ -170,28 +180,38 @@ namespace SharpAESCrypt.Threading
         /// <summary> Returns whether the stream index was actually changed or stays the same. </summary>
         private bool setNextStream()
         {
-            if (m_bytesProcessed == 0) return false; // no stream change on start
+            if (m_bytesProcessed == 0)
+            {
+                return false; // no stream change on start
+            }
+
             int next = m_currentStream;
             while ((next = (next + 1) % streamCount) != m_currentStream)
             { m_currentStream = next; return true; }
             return false;
         }
-        
+
         /// <summary> Returns whether this instance is suitable for reading (Join mode). </summary>
-        public override bool CanRead { get { return m_mode == Mode.Join; } }
+        public override bool CanRead => m_mode == Mode.Join;
         /// <summary> Returns whether this instance is suitable for writing (Split mode). </summary>
-        public override bool CanWrite { get { return m_mode == Mode.Split; } }
+        public override bool CanWrite => m_mode == Mode.Split;
         /// <summary> Always false, OverlappedStreamStriper cannot seek. </summary>
-        public override bool CanSeek { get { return false; } }
+        public override bool CanSeek => false;
         /// <summary> Flushes all stripe streams. </summary>
-        public override void Flush() { for (int i = 0; i < streamCount; i++) m_stripeStreams[(m_currentStream + i + 1) % streamCount].Flush(); }
+        public override void Flush()
+        {
+            for (int i = 0; i < streamCount; i++)
+            {
+                m_stripeStreams[(m_currentStream + i + 1) % streamCount].Flush();
+            }
+        }
         /// <summary> Always throws NotSupportedException. </summary>
-        public override long Length { get { throw new NotSupportedException(); } }
+        public override long Length => throw new NotSupportedException();
         /// <summary> Always throws NotSupportedException. </summary>
         public override long Position
         {
-            get { throw new NotSupportedException(); }
-            set { throw new NotSupportedException(); }
+            get => throw new NotSupportedException();
+            set => throw new NotSupportedException();
         }
         /// <summary> Always throws NotSupportedException. </summary>
         public override long Seek(long offset, SeekOrigin origin) { throw new NotSupportedException(); }
@@ -201,7 +221,11 @@ namespace SharpAESCrypt.Threading
         /// <summary> Read from stripes. </summary>
         public override int Read(byte[] buffer, int offset, int count)
         {
-            if (m_mode != Mode.Join) throw new InvalidOperationException();
+            if (m_mode != Mode.Join)
+            {
+                throw new InvalidOperationException();
+            }
+
             int br = 0;
             int c = -1;
             while (count > 0 && c != 0)
@@ -215,7 +239,11 @@ namespace SharpAESCrypt.Threading
                     int skipped = 0;
                     do { skipped += (c = m_stripeStreams[m_currentStream].Read(tmp, skipped, overlapSize - skipped)); }
                     while (c != 0 && skipped < overlapSize);
-                    if (skipped < overlapSize) break; // stream ended.
+                    if (skipped < overlapSize)
+                    {
+                        break; // stream ended.
+                    }
+
                     OnOverlappedBlockChanging(tmp);
                 }
                 c = m_stripeStreams[m_currentStream].Read(buffer, offset, Math.Min(leftInChunk, count));
@@ -241,7 +269,10 @@ namespace SharpAESCrypt.Threading
         /// <summary> Write to stripes. </summary>
         public override void Write(byte[] buffer, int offset, int count)
         {
-            if (m_mode != Mode.Split) throw new InvalidOperationException();
+            if (m_mode != Mode.Split)
+            {
+                throw new InvalidOperationException();
+            }
 
             while (count > 0)
             {
@@ -281,7 +312,7 @@ namespace SharpAESCrypt.Threading
             // As this class is used in async operations that are synchronized
             // via DirectStreamLink (writer's close waits for reader to close first)
             // we fire the Close()-Operations via ThreadPool.
-            foreach (var s in m_stripeStreams)
+            foreach (Stream s in m_stripeStreams)
             {
                 ThreadPool.QueueUserWorkItem(tmp =>
                 {
@@ -295,7 +326,9 @@ namespace SharpAESCrypt.Threading
             // Note: as we cannot set a local var volatile, we use Interlocked
             //       to make sure the compiler does not optimize this to an endless loop
             while (Interlocked.CompareExchange(ref streamsToClose, -1, 0) > 0)
+            {
                 Thread.Sleep(0);
+            }
 
             base.Dispose(disposing);
         }

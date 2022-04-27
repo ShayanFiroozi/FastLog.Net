@@ -39,7 +39,7 @@ namespace NetMQServer.Sockets
         {
             Connect(address);
             byte[]? routingId = GetSocketOptionX<byte[]>(ZmqSocketOption.LastPeerRoutingId);
-            
+
             return routingId;
         }
     }

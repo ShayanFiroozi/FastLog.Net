@@ -15,11 +15,11 @@ namespace Lokad.ILPack.IL
             OneByteOpCodes = new OpCode[0xe1];
             TwoBytesOpCodes = new OpCode[0x1f];
 
-            var fields = GetOpCodeFields();
+            FieldInfo[] fields = GetOpCodeFields();
 
-            foreach (var t in fields)
+            foreach (FieldInfo t in fields)
             {
-                var opcode = (OpCode) t.GetValue(null);
+                OpCode opcode = (OpCode)t.GetValue(null);
                 if (opcode.OpCodeType == OpCodeType.Nternal)
                 {
                     continue;
@@ -43,7 +43,7 @@ namespace Lokad.ILPack.IL
 
         public static OpCode ReadOpCode(this Func<byte> reader)
         {
-            var op = reader();
+            byte op = reader();
             return op != 0xfe ? OneByteOpCodes[op] : TwoBytesOpCodes[reader()];
         }
 
@@ -51,18 +51,18 @@ namespace Lokad.ILPack.IL
         {
             if (op.Size == 1)
             {
-                writer((byte) op.Value);
+                writer((byte)op.Value);
             }
             else // Size == 2
             {
                 writer(0xfe);
-                writer((byte) (op.Value & 0xff));
+                writer((byte)(op.Value & 0xff));
             }
         }
 
         public static ILOpCode ToILOpCode(this OpCode op)
         {
-            return (ILOpCode) op.Value;
+            return (ILOpCode)op.Value;
         }
     }
 }
