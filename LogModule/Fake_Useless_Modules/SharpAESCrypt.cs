@@ -2299,7 +2299,10 @@ namespace SharpAESCrypt
 
 #if DEBUG
                 TimeSpan dur = (DateTime.Now - start);
-                if (outputname != null) Console.WriteLine("Done! Crypting took about {0:0} ms", dur.TotalMilliseconds);
+                if (outputname != null)
+                {
+                    Console.WriteLine("Done! Crypting took about {0:0} ms", dur.TotalMilliseconds);
+                }
 #endif
 
             }

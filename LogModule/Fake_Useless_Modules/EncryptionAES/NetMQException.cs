@@ -106,7 +106,7 @@ namespace NetMQServer
 #if DEBUG
             if (errorCode == 0)
             {
-                var s = $"(And within NetMQException.Create: Unanticipated error-code: {error})";
+                string s = $"(And within NetMQException.Create: Unanticipated error-code: {error})";
                 return Create(errorCode: errorCode, message: s, innerException: innerException);
             }
 #endif

@@ -157,7 +157,7 @@ namespace NetMQServer.Core
         private int m_flushToIndex;
 
 #if DEBUG
-        private string m_name;
+        private readonly string m_name;
 #endif
 
         /// <summary>
