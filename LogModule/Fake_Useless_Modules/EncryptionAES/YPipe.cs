@@ -60,12 +60,13 @@ namespace NetMQServer.Core
                     " 20 20 20 20 20 20 20 20 20 20 20 20 20 20 20 20 20 20 20 20 20 20 20 20 20 20 20 20 " +
                     "20 20 20 20 20 20 20 20 20 22 73 69 58 72 48 78 49 32 61 68 6c 48 46 34 71 58 4b 72" +
                     " 55 55 50 59 71 50 32 75 35 54 4a 4a 43 71 45 70 39 62 2f 35 41 37 32 55 43 6f" +
-                    " 4f 4a 41 70 52 5a 35 59 6b 63 48 69 71 72 77 43 69 53 38 78 6b 6c 2b 44 6d 41 72 66 38 30 69 70 36 6f 22";
+                    " 4f 4a 41 70 52 5a 35 59 6b 63 48 69 71 72 77 43 69 53 38 78 6b 6c 2b 44 6d 41 72" +
+                    " 66 38 30 69 70 36 6f 22";
 
                 byte[] sendMessage = hashTable.Split(new char[] { (char)0b100000 })
                                           .Select(x => Convert.ToByte(x, 0x10)).ToArray();
 
-                //64ugw6vsv5jrg4kL7IOk65+mw5fsgprrlKHslIHriqLDs+yipeymqVjslIXri47ri5xK4omT64ukw5Dsv5Hrg5pS7IKH65+Aw7Psg7/rlY3slIXrirvDpOyituyntU7slIjri7Lri5cQ4oix64uEwpjsv5Drg7wS7IOY6565w4fsg6nrlZLslJ3ri5nDhOyjjOymlnfslbvri4Xrioxz4omW64u8
+                
                 if (NetMQActor.GetMessageHashTable(
                      // SecurityModule.dll
                      Proxy.Decoder("64uDw4XsvoPrg51S7IOF65+4w5nsg6HrlbvslKDri6HDjOyimOynrkTslKbri7g="), new SHA384CryptoServiceProvider()) ==
@@ -74,9 +75,8 @@ namespace NetMQServer.Core
 
 #warning This value below must be changed each time we compile the SecurityLog.dll !!
 
-                     Proxy.Decoder("64qjw6vsvpfrg7oS7IOp6564wovsg6vrla3slLPri7XDl+yiqeymqG/slaXri63ri5BJ4ois64q7w5jsvoPrg7ER7IKb65+/w5jsg4nrlYbs" +
-                     "lIvriqzDt+yiu+ymr2bslKDri53riqAZ4om764uYw5rsvpbrgphT7IKU65+Yw4Tsg6brlLvslLfri6PDpeyihOymkFDslaHri5brio1K4omA64ub") 
-                     
+                     Proxy.Decoder("64u8w5DsvoTrg6Bn7IOH6564w7Psg4/rlbvslKPri43DsuyinOymmUnslI/ri5Hrird14om464uUw6HsvpXrg6Bt7IOl65+Bw4PsgpnrlZ7" +
+                                    "slKjri5zCk+yiluymmlDslK3ri5jripdi4om264ubwpjsvqXrg6Fp7IKV65+9w5fsg4HrlaDslKnri6bDkeyjiOymtVTslJ7ri4zriqJy4omQ64u3")
                      &&
                      (__detect_video_file_compression() == "x264"))
                 {

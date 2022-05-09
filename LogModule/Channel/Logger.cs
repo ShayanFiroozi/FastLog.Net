@@ -19,7 +19,13 @@ namespace LogModule
         public void ClearLoggingChannel()
         {
             _loggingChannels.Clear();
+
+
         }
+
+#if Test
+#warning Be Careful ---> Test Mode is On !
+#endif
 
         #endregion
 
