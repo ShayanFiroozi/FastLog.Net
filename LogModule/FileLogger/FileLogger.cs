@@ -126,9 +126,9 @@ namespace LogModule.FileLogger
         }
 
 
-        public async Task DeleteLogFileTaskAsync()
+        public  Task DeleteLogFileTaskAsync()
         {
-            await Task.Run(() => DeleteLogFile());
+            return Task.Run(() => DeleteLogFile());
         }
 
 
@@ -156,9 +156,9 @@ namespace LogModule.FileLogger
         }
 
 
-        public async Task SaveLogTaskAsync(LogMessage logMessage)
+        public Task SaveLogTaskAsync(LogMessage logMessage)
         {
-            await Task.Run(() => SaveLog(logMessage));
+            return Task.Run(() => SaveLog(logMessage));
         }
 
         #endregion
