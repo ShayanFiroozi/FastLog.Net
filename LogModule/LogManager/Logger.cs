@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Threading.Tasks;
 
 namespace LogModule
 {
@@ -11,7 +12,7 @@ namespace LogModule
 
 
         #region RegistrationMethods
-        public void RegisterLoggingChannel(ILogger logger)
+        public void RegisterLoggingAgent(ILogger logger)
         {
             _loggingChannels.Add(logger);
         }
@@ -47,6 +48,13 @@ namespace LogModule
         }
 
 
+        public Task LogInfoTaskAsync(string LogText,
+                            string ExtraInfo = "",
+                            string Source = "")
+        {
+            return Task.Run(() => LogInfo(LogText, ExtraInfo, Source));
+        }
+
         public void LogWarning(string LogText,
                             string ExtraInfo = "",
                             string Source = "")
@@ -59,6 +67,14 @@ namespace LogModule
             {
                 InnerException.InnerException.LogInnerException(ex);
             }
+        }
+
+
+        public Task LogWarningTaskAsync(string LogText,
+                           string ExtraInfo = "",
+                           string Source = "")
+        {
+            return Task.Run(() => LogInfo(LogText, ExtraInfo, Source));
         }
 
 
@@ -76,6 +92,13 @@ namespace LogModule
             }
         }
 
+
+        public Task LogErrorTaskAsync(string LogText,
+                          string ExtraInfo = "",
+                          string Source = "")
+        {
+            return Task.Run(() => LogInfo(LogText, ExtraInfo, Source));
+        }
 
 
         public void LogException(Exception exception)
@@ -103,6 +126,13 @@ namespace LogModule
 
 
 
+        public Task LogExceptionTaskAsync(string LogText,
+                                 string ExtraInfo = "",
+                                 string Source = "")
+        {
+            return Task.Run(() => LogInfo(LogText, ExtraInfo, Source));
+        }
+
         public void LogDebug(string LogText,
                           string ExtraInfo = "",
                           string Source = "")
@@ -115,6 +145,13 @@ namespace LogModule
             {
                 InnerException.InnerException.LogInnerException(ex);
             }
+        }
+
+        public Task LogDebugTaskAsync(string LogText,
+                              string ExtraInfo = "",
+                              string Source = "")
+        {
+            return Task.Run(() => LogInfo(LogText, ExtraInfo, Source));
         }
 
 

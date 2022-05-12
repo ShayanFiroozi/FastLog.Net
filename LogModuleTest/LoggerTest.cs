@@ -16,8 +16,6 @@ namespace LogModuleTest
             {
 
 
-
-
                 LogMessageTest logMessage = new(); // init a message sample
                 FileLoggerTest fileLogger = new(); // init the file logger
 
@@ -25,7 +23,7 @@ namespace LogModuleTest
                 logMessage.Setup(); // create the message
 
 
-                logger.RegisterLoggingChannel(fileLogger.fileLogger); // register filelogger in loggerchannels
+                logger.RegisterLoggingAgent(fileLogger.fileLogger); // register filelogger in loggerchannels
 
 
                 logger.LogInfo("This is an INFO message from the Test Project !",
