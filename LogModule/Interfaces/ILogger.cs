@@ -6,7 +6,5 @@ namespace LogModule
     {
         public void SaveLog(LogMessage logMessage);
 
-        public Task SaveLogTaskAsync(LogMessage logMessage);
-
     }
 }

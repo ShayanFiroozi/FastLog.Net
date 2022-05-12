@@ -7,19 +7,19 @@ namespace LogModule
     public sealed class Logger : IDisposable
     {
 
-        private List<ILogger> _loggingChannels = new();
+        private List<ILogger> _loggingAgents = new();
 
 
 
         #region RegistrationMethods
         public void RegisterLoggingAgent(ILogger logger)
         {
-            _loggingChannels.Add(logger);
+            _loggingAgents.Add(logger);
         }
 
-        public void ClearLoggingChannel()
+        public void ClearLoggingAgents()
         {
-            _loggingChannels.Clear();
+            _loggingAgents.Clear();
 
 
         }
@@ -33,6 +33,7 @@ namespace LogModule
 
 
         #region LoggingMethod
+
         public void LogInfo(string LogText,
                             string ExtraInfo = "",
                             string Source = "")
@@ -54,6 +55,8 @@ namespace LogModule
         {
             return Task.Run(() => LogInfo(LogText, ExtraInfo, Source));
         }
+
+
 
         public void LogWarning(string LogText,
                             string ExtraInfo = "",
@@ -78,6 +81,10 @@ namespace LogModule
         }
 
 
+
+
+
+
         public void LogError(string LogText,
                             string ExtraInfo = "",
                             string Source = "")
@@ -99,6 +106,11 @@ namespace LogModule
         {
             return Task.Run(() => LogInfo(LogText, ExtraInfo, Source));
         }
+
+
+
+
+
 
 
         public void LogException(Exception exception)
@@ -132,6 +144,10 @@ namespace LogModule
         {
             return Task.Run(() => LogInfo(LogText, ExtraInfo, Source));
         }
+
+
+
+
 
         public void LogDebug(string LogText,
                           string ExtraInfo = "",
@@ -174,8 +190,8 @@ namespace LogModule
             {
                 try
                 {
-                    ClearLoggingChannel();
-                    _loggingChannels = null;
+                    ClearLoggingAgents();
+                    _loggingAgents = null;
                 }
 
                 catch (Exception ex)
@@ -206,7 +222,7 @@ namespace LogModule
         #region PrivateMethods
         private void _executeLogging(LogMessage LogMessage)
         {
-            foreach (ILogger _logger in _loggingChannels)
+            foreach (ILogger _logger in _loggingAgents)
             {
                 try
                 {

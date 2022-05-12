@@ -7,17 +7,12 @@ namespace LogModule
     public interface IFileLogger : ILogger
     {
 
-        public string LogFileName { get; }
-
-        public string LogFilePath { get; }
-
-        public string LogFileFullPath { get; }
+        public string LogFile { get; }
 
         public int LogFileSizeMB { get; }
 
         public void DeleteLogFile();
 
-        public Task DeleteLogFileTaskAsync();
 
 
     }
