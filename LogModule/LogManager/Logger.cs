@@ -199,6 +199,7 @@ namespace LogModule
             {
                 try
                 {
+                    logDB.Dispose();
                     ClearLoggingAgents();
                     _loggingAgents = null;
                 }
