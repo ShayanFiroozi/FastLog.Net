@@ -1,6 +1,9 @@
 using LogModule;
 using NUnit.Framework;
 using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Threading.Tasks;
 
 namespace LogModuleTest
 {
@@ -8,9 +11,10 @@ namespace LogModuleTest
     {
 
         [Test]
-        public void LoggerExecuationTest()
+        public async Task LoggerExecuationTestAsync()
         {
 
+            List<Task> taskList = new();
 
             using (Logger logger = new())
             {
@@ -27,41 +31,52 @@ namespace LogModuleTest
 
 
                 logger.RegisterLoggingAgent(fileLogger.fileLogger); // register filelogger in loggerchannels
-                logger.RegisterLoggingAgent(dbLogger.dbLogger); // register filelogger in loggerchannels
+                logger.RegisterLoggingAgent(dbLogger.dbLogger); // register dblogger in loggerchannels
 
 
-                logger.LogInfo("This is an INFO message from the Test Project !",
-                    Source: System.Reflection.Assembly.GetExecutingAssembly().GetName().Name
-                                  + "." + GetType().Name + "." + System.Reflection.MethodBase.GetCurrentMethod().Name);
+                Parallel.For(0, 500, (i) =>
 
-                logger.LogWarning("This is a WARNING message from the Test Project !",
-                                   Source: System.Reflection.Assembly.GetExecutingAssembly().GetName().Name
-                                  + "." + GetType().Name + "." + System.Reflection.MethodBase.GetCurrentMethod().Name);
+               {
 
-                logger.LogError("This is an ERROR message from the Test Project !",
-                                 Source: System.Reflection.Assembly.GetExecutingAssembly().GetName().Name
-                                    + "." + GetType().Name + "." + System.Reflection.MethodBase.GetCurrentMethod().Name);
+                   taskList.Add(Task.Run(() =>
+                    {
+
+                        logger.LogInfo("This is an INFO message from the Test Project !",
+                         Source: System.Reflection.Assembly.GetExecutingAssembly().GetName().Name
+                                       + "." + GetType().Name + "." + System.Reflection.MethodBase.GetCurrentMethod().Name);
+
+                        logger.LogWarning("This is a WARNING message from the Test Project !",
+                                            Source: System.Reflection.Assembly.GetExecutingAssembly().GetName().Name
+                                           + "." + GetType().Name + "." + System.Reflection.MethodBase.GetCurrentMethod().Name);
+
+                        logger.LogError("This is an ERROR message from the Test Project !",
+                                          Source: System.Reflection.Assembly.GetExecutingAssembly().GetName().Name
+                                             + "." + GetType().Name + "." + System.Reflection.MethodBase.GetCurrentMethod().Name);
+
+
+                        logger.LogDebug("This is a DEBUG message from the Test Project !",
+                                          Source: System.Reflection.Assembly.GetExecutingAssembly().GetName().Name
+                                             + "." + GetType().Name + "." + System.Reflection.MethodBase.GetCurrentMethod().Name);
 
 
 
-                logger.LogException(new InsufficientExecutionStackException());
-                logger.LogException(new AccessViolationException());
-                logger.LogException(new InsufficientMemoryException());
+                        logger.LogException(new InsufficientExecutionStackException());
+                        logger.LogException(new AccessViolationException());
+                        logger.LogException(new InsufficientMemoryException());
 
 
+                    }));
+
+
+               });
+
+                await Task.WhenAll(taskList.Where(t=> t is not null));
 
 
             }
 
 
-
-
         }
-
-
-
-
-
-
     }
+
 }

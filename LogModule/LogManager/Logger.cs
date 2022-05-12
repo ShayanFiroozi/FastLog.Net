@@ -135,10 +135,10 @@ namespace LogModule
             try
             {
                 _executeLogging(new LogMessage(LogMessage.LogTypeEnum.EXCEPTION,
-                                               "Message : " + exception.Message ?? "-",
-                                               "InnerMessage : " + (exception.InnerException?.Message ?? "-") +
+                                               " Message : " + exception.Message ?? "-",
+                                               " InnerMessage : " + (exception.InnerException?.Message ?? "-") +
                                                " , " +
-                                               "StackTrace : " + (exception.StackTrace ?? "-"),
+                                               " StackTrace : " + (exception.StackTrace ?? "-"),
                                                  (exception.Source ?? "-")));
             }
             catch (Exception ex)
@@ -199,14 +199,14 @@ namespace LogModule
             {
                 try
                 {
-                    logDB.Dispose();
+                    logDB?.Dispose();
                     ClearLoggingAgents();
                     _loggingAgents = null;
                 }
 
                 catch (Exception ex)
                 {
-                    InnerException.InnerException.LogInnerException(ex);
+                   // InnerException.InnerException.LogInnerException(ex);
                 }
             }
 
@@ -235,16 +235,18 @@ namespace LogModule
 
             foreach (ILogger _logger in _loggingAgents)
             {
+                if (_logger is null) continue;
+
                 try
                 {
 
                     if (_logger is IFileLogger)
                     {
-                        ((IFileLogger)_logger).SaveLog(LogMessage);
+                        ((IFileLogger)_logger)?.SaveLog(logMessage: LogMessage, threadSafeWrite: true);
                     }
                     else if (_logger is IDBLogger)
                     {
-                        ((IDBLogger)_logger).SaveLog(LogMessage,logDB); // inject the logDB
+                        ((IDBLogger)_logger)?.SaveLog(logMessage: LogMessage, logDB: logDB); // inject the logDB
                     }
                 }
                 catch (Exception ex)

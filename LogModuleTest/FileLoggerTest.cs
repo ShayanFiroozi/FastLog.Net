@@ -33,7 +33,7 @@ namespace LogModuleTest
             logMessageTest.Setup();
 
 
-            fileLogger.SaveLog(logMessageTest.logMessage);
+            fileLogger.SaveLog(logMessage: logMessageTest.logMessage, threadSafeWrite: true);
 
         }
 

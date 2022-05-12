@@ -1,5 +1,6 @@
 ﻿using System;
 using System.IO;
+using System.Threading;
 using System.Threading.Tasks;
 
 namespace LogModule.Agents
@@ -123,7 +124,7 @@ namespace LogModule.Agents
 
 
    
-        public void SaveLog(LogMessage logMessage)
+        public void SaveLog(LogMessage logMessage ,bool threadSafeWrite)
         {
 
             try
@@ -134,11 +135,18 @@ namespace LogModule.Agents
                     throw new ArgumentNullException("logMessage parameter can not be null.");
                 }
 
-                using (StreamWriter streamWriter = new(LogFile, append: true))
+                if (threadSafeWrite)
                 {
-                    streamWriter.WriteLine(logMessage.GetLogMessage());
-
+                    WriteToFileThreadSafe(LogFile,logMessage.GetLogMessage().ToString());
                 }
+                else
+                {
+                    using (StreamWriter streamWriter = new(LogFile, append: true))
+                    {
+                        streamWriter.WriteLine(logMessage.GetLogMessage());
+                    }
+                }
+
             }
             catch (Exception ex)
             {
@@ -148,6 +156,29 @@ namespace LogModule.Agents
 
 
         #endregion
+
+
+        private static ReaderWriterLockSlim _readWriteLock = new ReaderWriterLockSlim();
+
+        private void WriteToFileThreadSafe(string path , string text)
+        {
+            // Set Status to Locked
+            _readWriteLock.EnterWriteLock();
+            try
+            {
+                // Append text to the file
+                using (StreamWriter sw = File.AppendText(path))
+                {
+                    sw.WriteLine(text);
+                    sw.Close();
+                }
+            }
+            finally
+            {
+                // Release lock
+                _readWriteLock.ExitWriteLock();
+            }
+        }
 
 
 

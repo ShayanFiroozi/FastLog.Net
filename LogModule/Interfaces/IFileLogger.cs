@@ -7,7 +7,7 @@ namespace LogModule
     public interface IFileLogger : ILogger
     {
 
-        public void SaveLog(LogMessage logMessage);
+        public void SaveLog(LogMessage logMessage , bool threadSafeWrite);
 
 
 

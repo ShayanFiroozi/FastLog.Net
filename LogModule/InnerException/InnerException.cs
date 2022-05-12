@@ -24,11 +24,11 @@ namespace LogModule.InnerException
 
 
                 File.AppendAllText("LoggerExceptions.log", new LogMessage(LogMessage.LogTypeEnum.EXCEPTION,
-                                               "Message : " + exception.Message ?? "-",
-                                               "InnerMessage : " + (exception.InnerException?.Message ?? "-") +
+                                               " Message : " + exception.Message ?? "-",
+                                               " InnerMessage : " + (exception.InnerException?.Message ?? "-") +
                                                " , " +
-                                               "StackTrace : " + (exception.StackTrace ?? "-"),
-                                               "Source : " + (exception.Source ?? "-")).GetLogMessage().ToString() + Environment.NewLine);
+                                               " StackTrace : " + (exception.StackTrace ?? "-"),
+                                                (exception.Source ?? "-")).GetLogMessage().ToString() + Environment.NewLine);
 
             }
             catch
