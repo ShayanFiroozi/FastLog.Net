@@ -1,10 +1,15 @@
-﻿using System.Threading.Tasks;
+﻿using LiteDB;
+using System.Threading.Tasks;
 
 namespace LogModule
 {
     public interface ILogger
     {
-        public void SaveLog(LogMessage logMessage);
+           public string LogFile { get; }
+
+        public int LogFileSizeMB { get; }
+
+        public void DeleteLogFile();
 
     }
 }

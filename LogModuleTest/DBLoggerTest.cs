@@ -36,8 +36,6 @@ namespace LogModuleTest
 
             }
 
-#warning Logger should be injected , DB logger time could be optimized !!
-
         }
 
 

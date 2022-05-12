@@ -23,7 +23,7 @@ namespace LogModule.InnerException
             {
 
 
-                File.AppendAllText("LoggerLog.log", new LogMessage(LogMessage.LogTypeEnum.EXCEPTION,
+                File.AppendAllText("LoggerExceptions.log", new LogMessage(LogMessage.LogTypeEnum.EXCEPTION,
                                                "Message : " + exception.Message ?? "-",
                                                "InnerMessage : " + (exception.InnerException?.Message ?? "-") +
                                                " , " +

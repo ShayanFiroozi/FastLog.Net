@@ -18,12 +18,16 @@ namespace LogModuleTest
 
                 LogMessageTest logMessage = new(); // init a message sample
                 FileLoggerTest fileLogger = new(); // init the file logger
+                DBLoggerTest dbLogger = new(); // init the db logger
 
                 fileLogger.FileLogger_Constructor_Test(); // create the filelogger
+                dbLogger.DBLogger_Constructor_Test(); // create the dblogger
+
                 logMessage.Setup(); // create the message
 
 
                 logger.RegisterLoggingAgent(fileLogger.fileLogger); // register filelogger in loggerchannels
+                logger.RegisterLoggingAgent(dbLogger.dbLogger); // register filelogger in loggerchannels
 
 
                 logger.LogInfo("This is an INFO message from the Test Project !",

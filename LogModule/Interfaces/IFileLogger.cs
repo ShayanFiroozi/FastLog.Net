@@ -7,11 +7,7 @@ namespace LogModule
     public interface IFileLogger : ILogger
     {
 
-        public string LogFile { get; }
-
-        public int LogFileSizeMB { get; }
-
-        public void DeleteLogFile();
+        public void SaveLog(LogMessage logMessage);
 
 
 

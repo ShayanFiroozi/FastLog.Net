@@ -9,24 +9,27 @@ namespace LogModule.Agents
     public sealed class DBLogger : IDBLogger
     {
 
+        #region ReadOnly Variables
         private readonly int LOG_FILE_MAX_SIZE_IN_MB = 0; // 0 for unlimited file size
 
-        private readonly string _DBFile;
+        private readonly string _LogFile; 
+        #endregion
+
 
 
         #region Properties
 
 
-        public string DBFile => _DBFile;
+        public string LogFile => _LogFile;
 
 
-        public int DBFileSizeMB
+        public int LogFileSizeMB
         {
             get
             {
                 try
                 {
-                    return Convert.ToInt32((new FileInfo(DBFile).Length / 1024) / 1024);
+                    return Convert.ToInt32((new FileInfo(LogFile).Length / 1024) / 1024);
                 }
                 catch (Exception ex)
                 {
@@ -44,7 +47,7 @@ namespace LogModule.Agents
                 {
 
                     // Open or create the database
-                    using (LiteDatabase db = new(DBFile))
+                    using (LiteDatabase db = new(LogFile))
                     {
 
 
@@ -70,6 +73,7 @@ namespace LogModule.Agents
         #endregion
 
 
+
         #region Constructors
 
 
@@ -86,13 +90,13 @@ namespace LogModule.Agents
                 }
 
 
-                this._DBFile = LogFile;
+                this._LogFile = LogFile;
                 this.LOG_FILE_MAX_SIZE_IN_MB = LOG_FILE_MAX_SIZE_IN_MB;
 
 
                 // Create the log file directory
 
-                Directory.CreateDirectory(new FileInfo(this.DBFile).Directory.FullName);
+                Directory.CreateDirectory(new FileInfo(this.LogFile).Directory.FullName);
 
 
 
@@ -116,18 +120,95 @@ namespace LogModule.Agents
         #region Methods
 
 
+
+
+        /// <summary>
+        /// Save the log (LiteDatabase will be initialized internally)
+        /// </summary>
+        /// <param name="logMessage">LogMessage object to save</param>
+        public void SaveLog(LogMessage logMessage)
+        {
+
+            try
+            {
+
+                if (logMessage == null)
+                {
+                    throw new ArgumentNullException("logMessage parameter can not be null.");
+                }
+
+                // Open or create the database
+                using (LiteDatabase db = new(LogFile))
+                {
+
+                    // Open or create the table
+                    ILiteCollection<LogMessage> dbTable = db.GetCollection<LogMessage>();
+
+                    dbTable.Insert(logMessage);
+                }
+
+
+            }
+            catch (Exception ex)
+            {
+                InnerException.InnerException.LogInnerException(ex);
+            }
+        }
+
+
+
+        /// <summary>
+        /// Save the log with initialized LiteDatabase object ( dependency injection )
+        /// </summary>
+        /// <param name="logMessage">LogMessage object to save</param>
+        /// <param name="logDB">Initialized LiteDatabase  object ( dependency injection )</param>
+
+        public void SaveLog(LogMessage logMessage, LiteDatabase logDB)
+        {
+            if (logMessage is null)
+            {
+                throw new ArgumentNullException(nameof(logMessage));
+            }
+
+            if (logDB is null)
+            {
+                throw new ArgumentNullException(nameof(logDB));
+            }
+
+
+            try
+            {
+                // Open or create the table
+                ILiteCollection<LogMessage> dbTable = logDB.GetCollection<LogMessage>();
+
+                dbTable.Insert(logMessage);
+
+
+            }
+            catch (Exception ex)
+            {
+                InnerException.InnerException.LogInnerException(ex);
+            }
+
+
+        }
+
+
+
+
+
         public void DeleteLogFile()
         {
             try
             {
 
-                if (!File.Exists(DBFile))
+                if (!File.Exists(LogFile))
                 {
                     return;
                 }
 
 
-                if (DBFileSizeMB
+                if (LogFileSizeMB
                      <= LOG_FILE_MAX_SIZE_IN_MB || LOG_FILE_MAX_SIZE_IN_MB == 0)
                 {
                     return;
@@ -143,46 +224,7 @@ namespace LogModule.Agents
 
             try
             {
-                File.Delete(DBFile);
-            }
-            catch (Exception ex)
-            {
-                InnerException.InnerException.LogInnerException(ex);
-            }
-        }
-
-
-
-        public void SaveLog(LogMessage logMessage)
-        {
-
-            try
-            {
-
-                if (logMessage == null)
-                {
-                    throw new ArgumentNullException("logMessage parameter can not be null.");
-                }
-
-                // Open or create the database
-                using (LiteDatabase db = new(DBFile))
-                {
-
-
-                    // Open or create the table
-                    ILiteCollection<LogMessage> dbTable = db.GetCollection<LogMessage>();
-
-
-
-                  
-                        dbTable.Insert(logMessage);
-                    
-
-                   
-
-
-                }
-
+                File.Delete(LogFile);
             }
             catch (Exception ex)
             {
@@ -199,7 +241,7 @@ namespace LogModule.Agents
 
 
                 // Open or create the database
-                using (LiteDatabase db = new(DBFile))
+                using (LiteDatabase db = new(LogFile))
                 {
 
 

@@ -1,5 +1,7 @@
-﻿using System;
+﻿using LiteDB;
+using System;
 using System.Collections.Generic;
+using System.Linq;
 using System.Threading.Tasks;
 
 namespace LogModule
@@ -7,7 +9,9 @@ namespace LogModule
     public sealed class Logger : IDisposable
     {
 
+        private LiteDatabase logDB = null;
         private List<ILogger> _loggingAgents = new();
+
 
 
 
@@ -15,6 +19,13 @@ namespace LogModule
         public void RegisterLoggingAgent(ILogger logger)
         {
             _loggingAgents.Add(logger);
+
+
+            if (logger is IDBLogger && logDB == null)
+            {
+                logDB = new LiteDatabase(logger.LogFile);
+            }
+
         }
 
         public void ClearLoggingAgents()
@@ -77,7 +88,7 @@ namespace LogModule
                            string ExtraInfo = "",
                            string Source = "")
         {
-            return Task.Run(() => LogInfo(LogText, ExtraInfo, Source));
+            return Task.Run(() => LogWarning(LogText, ExtraInfo, Source));
         }
 
 
@@ -104,7 +115,7 @@ namespace LogModule
                           string ExtraInfo = "",
                           string Source = "")
         {
-            return Task.Run(() => LogInfo(LogText, ExtraInfo, Source));
+            return Task.Run(() => LogError(LogText, ExtraInfo, Source));
         }
 
 
@@ -138,11 +149,9 @@ namespace LogModule
 
 
 
-        public Task LogExceptionTaskAsync(string LogText,
-                                 string ExtraInfo = "",
-                                 string Source = "")
+        public Task LogExceptionTaskAsync(Exception exception)
         {
-            return Task.Run(() => LogInfo(LogText, ExtraInfo, Source));
+            return Task.Run(() => LogException(exception));
         }
 
 
@@ -167,7 +176,7 @@ namespace LogModule
                               string ExtraInfo = "",
                               string Source = "")
         {
-            return Task.Run(() => LogInfo(LogText, ExtraInfo, Source));
+            return Task.Run(() => LogDebug(LogText, ExtraInfo, Source));
         }
 
 
@@ -222,11 +231,20 @@ namespace LogModule
         #region PrivateMethods
         private void _executeLogging(LogMessage LogMessage)
         {
+
             foreach (ILogger _logger in _loggingAgents)
             {
                 try
                 {
-                    _logger.SaveLog(LogMessage);
+
+                    if (_logger is IFileLogger)
+                    {
+                        ((IFileLogger)_logger).SaveLog(LogMessage);
+                    }
+                    else if (_logger is IDBLogger)
+                    {
+                        ((IDBLogger)_logger).SaveLog(LogMessage,logDB); // inject the logDB
+                    }
                 }
                 catch (Exception ex)
                 {

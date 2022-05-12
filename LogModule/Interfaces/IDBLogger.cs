@@ -1,4 +1,5 @@
-﻿using System;
+﻿using LiteDB;
+using System;
 using System.Threading.Tasks;
 
 namespace LogModule
@@ -6,13 +7,10 @@ namespace LogModule
     public interface IDBLogger : ILogger
     {
 
-        public string DBFile { get; }
+        public void SaveLog(LogMessage logMessage);
 
-        public int DBFileSizeMB { get; }
 
-        public int GetLogCount { get; }
-
-        public void DeleteOldLogs(short OlderThanDays);
+        public void SaveLog(LogMessage logMessage , LiteDatabase logDB);
 
 
     }
