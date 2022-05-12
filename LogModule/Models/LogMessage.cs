@@ -19,6 +19,12 @@ namespace LogModule
             this.Source = Source;
         }
 
+        // It's neccessary for LiteDB
+        public LogMessage()
+        {
+
+        }
+
         #endregion
 
 

@@ -44,7 +44,7 @@ namespace LogModule.Agents
 
 
         public FileLogger(string LogFile,
-                          int LOG_FILE_MAX_SIZE_IN_MB = 20)
+                          int LOG_FILE_MAX_SIZE_IN_MB = 100)
         {
 
             try
