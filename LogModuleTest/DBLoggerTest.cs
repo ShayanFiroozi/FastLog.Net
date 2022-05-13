@@ -13,7 +13,7 @@ namespace LogModuleTest
         [Test]
         public void DBLogger_Constructor_Test()
         {
-            dbLogger = new DBLogger("LogModuleTest.db");
+            dbLogger = new DBLogger("D:\\LogsTest\\LogModuleTest.dataB", 10);
 
         }
 

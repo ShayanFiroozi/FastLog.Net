@@ -1,7 +1,7 @@
 ﻿using LiteDB;
 using System;
+using System.Collections.Concurrent;
 using System.Collections.Generic;
-using System.Linq;
 using System.Threading.Tasks;
 
 namespace LogModule
@@ -10,8 +10,28 @@ namespace LogModule
     {
 
         private LiteDatabase logDB = null;
-        private List<ILogger> _loggingAgents = new();
+        private ConcurrentBag<ILogger> _loggingAgents = new();
 
+
+
+        #region Constructors
+
+        public Logger()
+        {
+            // Delete the inner exception log file if reaches the LOG_FILE_MAX_SIZE_IN_MB
+
+            try
+            {
+
+                InnerException.InnerException.DeleteInnerExceptionLogFile();
+            }
+            catch
+            {
+
+            }
+        }
+
+        #endregion
 
 
 
@@ -206,7 +226,7 @@ namespace LogModule
 
                 catch (Exception ex)
                 {
-                   // InnerException.InnerException.LogInnerException(ex);
+                    // InnerException.InnerException.LogInnerException(ex);
                 }
             }
 
@@ -232,28 +252,34 @@ namespace LogModule
         #region PrivateMethods
         private void _executeLogging(LogMessage LogMessage)
         {
+            if (LogMessage is null)
+            {
+                return;
+            }
 
             foreach (ILogger _logger in _loggingAgents)
-            {
-                if (_logger is null) continue;
-
-                try
                 {
+                    if (_logger is null) continue;
 
-                    if (_logger is IFileLogger)
+                    try
                     {
-                        ((IFileLogger)_logger)?.SaveLog(logMessage: LogMessage, threadSafeWrite: true);
+
+                        if (_logger is IFileLogger)
+                        {
+                            ((IFileLogger)_logger)?.SaveLog(logMessage: LogMessage, threadSafeWrite: true);
+                        }
+                        else if (_logger is IDBLogger)
+                        {
+                            ((IDBLogger)_logger)?.SaveLog(logMessage: LogMessage, logDB: logDB); // inject the logDB
+                        }
                     }
-                    else if (_logger is IDBLogger)
+                    catch (Exception ex)
                     {
-                        ((IDBLogger)_logger)?.SaveLog(logMessage: LogMessage, logDB: logDB); // inject the logDB
+                        InnerException.InnerException.LogInnerException(ex);
                     }
                 }
-                catch (Exception ex)
-                {
-                    InnerException.InnerException.LogInnerException(ex);
-                }
-            }
+
+            
         }
         #endregion
 

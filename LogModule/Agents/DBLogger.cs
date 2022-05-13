@@ -12,7 +12,7 @@ namespace LogModule.Agents
         #region ReadOnly Variables
         private readonly int LOG_FILE_MAX_SIZE_IN_MB = 0; // 0 for unlimited file size
 
-        private readonly string _LogFile; 
+        private readonly string _LogFile;
         #endregion
 
 
@@ -78,7 +78,8 @@ namespace LogModule.Agents
 
 
         public DBLogger(string LogFile,
-                          int LOG_FILE_MAX_SIZE_IN_MB = 100)
+                          int LOG_FILE_MAX_SIZE_IN_MB = 200,
+                          short LOGS_ARE_OLDER_THAN_X_DAYS = 365)
         {
 
             try
@@ -100,9 +101,37 @@ namespace LogModule.Agents
 
 
 
+
+
+                // Delete the LiteDB temporary file is existed ( in case of power loss or app crash )
+
+                try
+                {
+
+                    string _targetLiteDBTempFile = 
+                        $"{Path.Combine(Path.GetDirectoryName(LogFile),Path.GetFileNameWithoutExtension(LogFile))}-log{Path.GetExtension(LogFile)}";
+
+                    if (File.Exists(_targetLiteDBTempFile))
+                    {
+                        File.Delete(_targetLiteDBTempFile);
+                    }
+                }
+                catch { }
+
+
+
+
                 // Delete the log file if it's bigger than LOG_FILE_MAX_SIZE_IN_MB
 
                 DeleteLogFile();
+
+
+
+                // Delete the logs they are older than  MAX_OLD_DAYS_LOGS_IN_DATABSE day(s)
+
+                DeleteOldLogs(LOGS_ARE_OLDER_THAN_X_DAYS);
+
+
 
 
             }
@@ -225,6 +254,10 @@ namespace LogModule.Agents
             try
             {
                 File.Delete(LogFile);
+
+                SaveLog(new LogMessage(LogMessage.LogTypeEnum.INFO,
+                                      "The Log file has been deleted.",
+                                      $"Reaches the maximum file size ({LOG_FILE_MAX_SIZE_IN_MB:N0} MB)"));
             }
             catch (Exception ex)
             {
@@ -232,30 +265,55 @@ namespace LogModule.Agents
             }
         }
 
-        public void DeleteOldLogs(short OlderThanDays)
+        public void DeleteOldLogs(short OlderThanxDays)
         {
+            int _howManyDeleted = 0;
+
+
+
             try
             {
 
-                if (OlderThanDays <= 0) return;
+                if (!File.Exists(LogFile))
+                {
+                    return;
+                }
+
+
+                if (OlderThanxDays <= 0) return;
+
+
+                DateTime targetDatetTime_For_OLD_Logs = DateTime.Now.AddDays(-OlderThanxDays);
 
 
                 // Open or create the database
                 using (LiteDatabase db = new(LogFile))
                 {
 
-
                     // Open or create the table
                     ILiteCollection<LogMessage> dbTable = db.GetCollection<LogMessage>();
 
 
+                    if (dbTable.FindOne(log => log.DateTime < targetDatetTime_For_OLD_Logs) == null)
+                    {
+                        return; // No record to delete
+                    }
 
 
-                    _ = dbTable.DeleteMany(log => log.DateTime < DateTime.Now.AddDays(-OlderThanDays));
+
+                    _howManyDeleted = dbTable.DeleteMany(log => log.DateTime < targetDatetTime_For_OLD_Logs);
+
+                   
 
                     _ = db.Rebuild(); // Shrink the database file ( remove unused spaces )
 
+                }
 
+                if (_howManyDeleted != 0)
+                {
+                    SaveLog(new LogMessage(LogMessage.LogTypeEnum.INFO,
+                                  $"The {_howManyDeleted:N0} pld log records have been deleted.",
+                                  $"Reaches the maximum old logs days ({OlderThanxDays:N0} day(s))"));
                 }
 
             }

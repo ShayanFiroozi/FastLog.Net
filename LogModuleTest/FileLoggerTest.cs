@@ -13,7 +13,7 @@ namespace LogModuleTest
         [Test]
         public void FileLogger_Constructor_Test()
         {
-            fileLogger = new FileLogger("LogModuleTest.log");
+            fileLogger = new FileLogger("D:\\LogsTest\\LogModuleTest.log",10);
 
         }
 

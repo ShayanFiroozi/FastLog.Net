@@ -5,6 +5,61 @@ namespace LogModule.InnerException
 {
     public static class InnerException
     {
+        public const string InnerExceptionsLogFile = "LoggerExceptions.log";
+        private const int LOG_FILE_MAX_SIZE_IN_MB = 100;
+
+        private static int InnerExceptionLogFileSizeMB
+        {
+            get
+            {
+                try
+                {
+                    return Convert.ToInt32((new FileInfo(InnerExceptionsLogFile).Length / 1024) / 1024);
+                }
+                catch
+                {
+                    return 0;
+                }
+            }
+        }
+
+
+
+        public static void DeleteInnerExceptionLogFile()
+        {
+            try
+            {
+
+                if (!File.Exists(InnerExceptionsLogFile))
+                {
+                    return;
+                }
+
+
+                if (InnerExceptionLogFileSizeMB
+                     <= LOG_FILE_MAX_SIZE_IN_MB)
+                {
+                    return;
+                }
+            }
+            catch
+            {
+                
+            }
+
+
+
+
+            try
+            {
+                File.Delete(InnerExceptionsLogFile);
+
+            }
+            catch
+            {
+                
+            }
+        }
 
 
         /// <summary>
@@ -23,7 +78,7 @@ namespace LogModule.InnerException
             {
 
 
-                File.AppendAllText("LoggerExceptions.log", new LogMessage(LogMessage.LogTypeEnum.EXCEPTION,
+                File.AppendAllText(InnerExceptionsLogFile, new LogMessage(LogMessage.LogTypeEnum.EXCEPTION,
                                                " Message : " + exception.Message ?? "-",
                                                " InnerMessage : " + (exception.InnerException?.Message ?? "-") +
                                                " , " +
@@ -37,6 +92,7 @@ namespace LogModule.InnerException
             }
 
         }
+
 
     }
 }
