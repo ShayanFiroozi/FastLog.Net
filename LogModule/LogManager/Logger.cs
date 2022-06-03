@@ -4,9 +4,8 @@ using System.Threading.Tasks;
 
 namespace LogModule
 {
-    public interface ILogger { }
 
-    public sealed class Logger : ILogger , IDisposable
+    public sealed class Logger : IDisposable, ILogger
     {
 
         //private LiteDatabase logDB = null;
@@ -217,7 +216,7 @@ namespace LogModule
             }
             catch (Exception ex)
             {
-                
+
             }
         }
 

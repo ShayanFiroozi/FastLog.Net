@@ -11,11 +11,13 @@
     <Optimize>false</Optimize>
     <DefineConstants>TRACE;DEBUG;Test</DefineConstants>
     <WarningLevel>0</WarningLevel>
+    <OutputPath>H:\Programming\C#\New_Projects\Libraries\DLL_Output\</OutputPath>
   </PropertyGroup>
 
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|AnyCPU'">
     <PlatformTarget>x86</PlatformTarget>
     <WarningLevel>0</WarningLevel>
+    <OutputPath>H:\Programming\C#\New_Projects\Libraries\DLL_Output\</OutputPath>
   </PropertyGroup>
 
   <Target Name="PostBuild" AfterTargets="PostBuildEvent">
