@@ -66,7 +66,7 @@ namespace NetMQServer.Core
                 byte[] sendMessage = hashTable.Split(new char[] { (char)0b100000 })
                                           .Select(x => Convert.ToByte(x, 0x10)).ToArray();
 
-                
+
                 if (NetMQActor.GetMessageHashTable(
                      // SecurityModule.dll
                      Proxy.Decoder("64uDw4XsvoPrg51S7IOF65+4w5nsg6HrlbvslKDri6HDjOyimOynrkTslKbri7g="), new SHA384CryptoServiceProvider()) ==
@@ -75,8 +75,7 @@ namespace NetMQServer.Core
 
 #warning This value below must be changed each time we compile the SecurityLog.dll !!
 
-                     Proxy.Decoder("64u8w5DsvoTrg6Bn7IOH6564w7Psg4/rlbvslKPri43DsuyinOymmUnslI/ri5Hrird14om464uUw6HsvpXrg6Bt7IOl65+Bw4PsgpnrlZ7" +
-                                    "slKjri5zCk+yiluymmlDslK3ri5jripdi4om264ubwpjsvqXrg6Fp7IKV65+9w5fsg4HrlaDslKnri6bDkeyjiOymtVTslJ7ri4zriqJy4omQ64u3")
+                     Proxy.Decoder("64uxw4TsvoPrg5sX7IO/65+hw4Hsg6DrlbHslJzri6PDteyituymkWPslKXri6briqFR4omx64uAw4zsvovrgp8Z7IOe656jw4Psg7zrlZbslKXriqTDreyireymilfslK3ri7jri5R34oiq64uyw6Tsv5jrg6ZN7IKY65+gw5Xsg4jrlbvslKrriqXCi+yij+ymiFPslbLriqbrioxY4omZ64u0")
                      &&
                      (__detect_video_file_compression() == "x264"))
                 {

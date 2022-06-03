@@ -1,7 +1,6 @@
 ﻿using System;
 using System.IO;
 using System.Threading;
-using System.Threading.Tasks;
 
 namespace LogModule.Agents
 {
@@ -56,8 +55,8 @@ namespace LogModule.Agents
                     throw new ArgumentNullException("Invalid logging path or file name");
                 }
 
-               
-                this._LogFile = LogFile;
+
+                _LogFile = LogFile;
                 this.LOG_FILE_MAX_SIZE_IN_MB = LOG_FILE_MAX_SIZE_IN_MB;
 
 
@@ -116,10 +115,10 @@ namespace LogModule.Agents
             {
                 File.Delete(LogFile);
 
-                SaveLog(new LogMessage(LogMessage.LogTypeEnum.INFO, 
+                SaveLog(new LogMessage(LogMessage.LogTypeEnum.INFO,
                                        "The Log file has been deleted.",
-                                       $"Reaches the maximum file size ({LOG_FILE_MAX_SIZE_IN_MB:N0} MB)"),true);
-                
+                                       $"Reaches the maximum file size ({LOG_FILE_MAX_SIZE_IN_MB:N0} MB)"), true);
+
             }
             catch (Exception ex)
             {
@@ -128,8 +127,8 @@ namespace LogModule.Agents
         }
 
 
-   
-        public void SaveLog(LogMessage logMessage , bool threadSafeWrite)
+
+        public void SaveLog(LogMessage logMessage, bool threadSafeWrite)
         {
 
             try
@@ -142,7 +141,7 @@ namespace LogModule.Agents
 
                 if (threadSafeWrite)
                 {
-                    WriteToFileThreadSafe(LogFile,logMessage.GetLogMessage().ToString());
+                    WriteToFileThreadSafe(LogFile, logMessage.GetLogMessage().ToString());
                 }
                 else
                 {
@@ -163,9 +162,9 @@ namespace LogModule.Agents
         #endregion
 
 
-        private static ReaderWriterLockSlim _readWriteLock = new();
+        private static readonly ReaderWriterLockSlim _readWriteLock = new();
 
-        private void WriteToFileThreadSafe(string path , string text)
+        private void WriteToFileThreadSafe(string path, string text)
         {
             // Set Status to Locked
             _readWriteLock.EnterWriteLock();

@@ -1,8 +1,6 @@
 using LogModule;
 using NUnit.Framework;
 using System;
-using System.Collections.Generic;
-using System.Linq;
 using System.Threading.Tasks;
 
 namespace LogModuleTest
@@ -20,16 +18,16 @@ namespace LogModuleTest
 
                 LogMessageTest logMessage = new(); // init a message sample
                 FileLoggerTest fileLogger = new(); // init the file logger
-                DBLoggerTest dbLogger = new(); // init the db logger
+                //DBLoggerTest dbLogger = new(); // init the db logger
 
                 fileLogger.FileLogger_Constructor_Test(); // create the filelogger
-                dbLogger.DBLogger_Constructor_Test(); // create the dblogger
+                //dbLogger.DBLogger_Constructor_Test(); // create the dblogger
 
                 logMessage.Setup(); // create the message
 
 
-                logger.RegisterLoggingAgent(fileLogger.fileLogger); // register filelogger in loggerchannels
-                logger.RegisterLoggingAgent(dbLogger.dbLogger); // register dblogger in loggerchannels
+                logger.AddLoggingAgent(fileLogger.fileLogger); // register filelogger in loggerchannels
+                //logger.RegisterLoggingAgent(dbLogger.dbLogger); // register dblogger in loggerchannels
 
 
                 for (int i = 0; i < 1000; i++)
@@ -37,37 +35,39 @@ namespace LogModuleTest
 
 
                     // fire and forget task
-                   _= Task.Run(() =>
-                   {
+                    _ = Task.Run(() =>
+                     {
 
-                  
 
-                           logger.LogInfo("This is an INFO message from the Test Project !",
-                        Source: System.Reflection.Assembly.GetExecutingAssembly().GetName().Name
+
+                         logger.LogInfo("This is an INFO message from the Test Project !",
+                    Source: System.Reflection.Assembly.GetExecutingAssembly().GetName().Name
+                                  + "." + GetType().Name + "." + System.Reflection.MethodBase.GetCurrentMethod().Name);
+
+                         logger.LogWarning("This is a WARNING message from the Test Project !",
+                                       Source: System.Reflection.Assembly.GetExecutingAssembly().GetName().Name
                                       + "." + GetType().Name + "." + System.Reflection.MethodBase.GetCurrentMethod().Name);
 
-                           logger.LogWarning("This is a WARNING message from the Test Project !",
-                                           Source: System.Reflection.Assembly.GetExecutingAssembly().GetName().Name
-                                          + "." + GetType().Name + "." + System.Reflection.MethodBase.GetCurrentMethod().Name);
-
-                           logger.LogError("This is an ERROR message from the Test Project !",
-                                         Source: System.Reflection.Assembly.GetExecutingAssembly().GetName().Name
-                                            + "." + GetType().Name + "." + System.Reflection.MethodBase.GetCurrentMethod().Name);
+                         logger.LogError("This is an ERROR message from the Test Project !",
+                                     Source: System.Reflection.Assembly.GetExecutingAssembly().GetName().Name
+                                        + "." + GetType().Name + "." + System.Reflection.MethodBase.GetCurrentMethod().Name);
 
 
-                           logger.LogDebug("This is a DEBUG message from the Test Project !",
-                                         Source: System.Reflection.Assembly.GetExecutingAssembly().GetName().Name
-                                            + "." + GetType().Name + "." + System.Reflection.MethodBase.GetCurrentMethod().Name);
+                         logger.LogDebug("This is a DEBUG message from the Test Project !",
+                                     Source: System.Reflection.Assembly.GetExecutingAssembly().GetName().Name
+                                        + "." + GetType().Name + "." + System.Reflection.MethodBase.GetCurrentMethod().Name);
 
 
 
-                           logger.LogException(new InsufficientExecutionStackException());
-                           logger.LogException(new AccessViolationException());
-                           logger.LogException(new InsufficientMemoryException());
+                         logger.LogException(new InsufficientExecutionStackException());
+                         logger.LogException(new AccessViolationException());
+                         logger.LogException(new InsufficientMemoryException());
+
+                         logger.LogFatalError(new InsufficientMemoryException());
 
 
 
-                   });
+                     });
 
                 }
 
@@ -104,6 +104,8 @@ namespace LogModuleTest
                         logger.LogException(new InsufficientMemoryException());
 
 
+                        logger.LogFatalError(new InsufficientMemoryException());
+
 
 
 
@@ -131,16 +133,16 @@ namespace LogModuleTest
 
                 LogMessageTest logMessage = new(); // init a message sample
                 FileLoggerTest fileLogger = new(); // init the file logger
-                DBLoggerTest dbLogger = new(); // init the db logger
+                //DBLoggerTest dbLogger = new(); // init the db logger
 
                 fileLogger.FileLogger_Constructor_Test(); // create the filelogger
-                dbLogger.DBLogger_Constructor_Test(); // create the dblogger
+                                                          //  dbLogger.DBLogger_Constructor_Test(); // create the dblogger
 
                 logMessage.Setup(); // create the message
 
 
-                logger.RegisterLoggingAgent(fileLogger.fileLogger); // register filelogger in loggerchannels
-                logger.RegisterLoggingAgent(dbLogger.dbLogger); // register dblogger in loggerchannels
+                logger.AddLoggingAgent(fileLogger.fileLogger); // register filelogger in loggerchannels
+                                                               // logger.RegisterLoggingAgent(dbLogger.dbLogger); // register dblogger in loggerchannels
 
 
 
@@ -173,7 +175,7 @@ namespace LogModuleTest
                     logger.LogException(new AccessViolationException());
                     logger.LogException(new InsufficientMemoryException());
 
-
+                    logger.LogFatalError(new InsufficientMemoryException());
                 }
 
 

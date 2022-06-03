@@ -1,17 +1,16 @@
-﻿using LiteDB;
-using System;
-using System.Threading.Tasks;
+﻿//using System;
+//using System.Threading.Tasks;
 
-namespace LogModule
-{
-    public interface IDBLogger : ILogger
-    {
+//namespace LogModule
+//{
+//    public interface IDBLogger : ILogger
+//    {
 
-        public void SaveLog(LogMessage logMessage);
-
-
-        public void SaveLog(LogMessage logMessage , LiteDatabase logDB);
+//        public void SaveLog(LogMessage logMessage);
 
 
-    }
-}
+//        public void SaveLog(LogMessage logMessage , LiteDatabase logDB);
+
+
+//    }
+//}

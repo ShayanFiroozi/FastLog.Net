@@ -1,13 +1,11 @@
-﻿using System.Threading.Tasks;
-
-namespace LogModule
+﻿namespace LogModule
 {
 
 
-    public interface IFileLogger : ILogger
+    public interface IFileLogger : ILoggerAgent
     {
 
-        public void SaveLog(LogMessage logMessage , bool threadSafeWrite);
+        public void SaveLog(LogMessage logMessage, bool threadSafeWrite);
 
 
 

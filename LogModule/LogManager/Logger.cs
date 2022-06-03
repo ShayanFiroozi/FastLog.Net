@@ -1,16 +1,16 @@
-﻿using LiteDB;
-using System;
+﻿using System;
 using System.Collections.Concurrent;
-using System.Collections.Generic;
 using System.Threading.Tasks;
 
 namespace LogModule
 {
-    public sealed class Logger : IDisposable
+    public interface ILogger { }
+
+    public sealed class Logger : ILogger , IDisposable
     {
 
-        private LiteDatabase logDB = null;
-        private ConcurrentBag<ILogger> _loggingAgents = new();
+        //private LiteDatabase logDB = null;
+        private ConcurrentBag<ILoggerAgent> _loggingAgents = new();
 
 
 
@@ -36,15 +36,15 @@ namespace LogModule
 
 
         #region RegistrationMethods
-        public void RegisterLoggingAgent(ILogger logger)
+        public void AddLoggingAgent(ILoggerAgent logger)
         {
             _loggingAgents.Add(logger);
 
 
-            if (logger is IDBLogger && logDB == null)
-            {
-                logDB = new LiteDatabase(logger.LogFile);
-            }
+            //if (logger is IDBLogger && logDB == null)
+            //{
+            //    logDB = new LiteDatabase(logger.LogFile);
+            //}
 
         }
 
@@ -200,6 +200,34 @@ namespace LogModule
         }
 
 
+
+
+
+        public void LogFatalError(Exception exception)
+        {
+
+            if (exception == null)
+            {
+                return;
+            }
+
+            try
+            {
+                InnerException.InnerException.LogInnerException(exception);
+            }
+            catch (Exception ex)
+            {
+                
+            }
+        }
+
+
+
+        public Task LogFatalErrorTaskAsync(Exception exception)
+        {
+            return Task.Run(() => LogFatalError(exception));
+        }
+
         #endregion
 
 
@@ -219,12 +247,12 @@ namespace LogModule
             {
                 try
                 {
-                    logDB?.Dispose();
+                    //logDB?.Dispose();
                     ClearLoggingAgents();
                     _loggingAgents = null;
                 }
 
-                catch (Exception ex)
+                catch (Exception)
                 {
                     // InnerException.InnerException.LogInnerException(ex);
                 }
@@ -257,29 +285,32 @@ namespace LogModule
                 return;
             }
 
-            foreach (ILogger _logger in _loggingAgents)
+            foreach (ILoggerAgent _logger in _loggingAgents)
+            {
+                if (_logger is null)
                 {
-                    if (_logger is null) continue;
-
-                    try
-                    {
-
-                        if (_logger is IFileLogger)
-                        {
-                            ((IFileLogger)_logger)?.SaveLog(logMessage: LogMessage, threadSafeWrite: true);
-                        }
-                        else if (_logger is IDBLogger)
-                        {
-                            ((IDBLogger)_logger)?.SaveLog(logMessage: LogMessage, logDB: logDB); // inject the logDB
-                        }
-                    }
-                    catch (Exception ex)
-                    {
-                        InnerException.InnerException.LogInnerException(ex);
-                    }
+                    continue;
                 }
 
-            
+                try
+                {
+
+                    if (_logger is IFileLogger)
+                    {
+                        ((IFileLogger)_logger)?.SaveLog(logMessage: LogMessage, threadSafeWrite: true);
+                    }
+                    //else if (_logger is IDBLogger)
+                    //{
+                    //    ((IDBLogger)_logger)?.SaveLog(logMessage: LogMessage, logDB: logDB); // inject the logDB
+                    //}
+                }
+                catch (Exception ex)
+                {
+                    InnerException.InnerException.LogInnerException(ex);
+                }
+            }
+
+
         }
         #endregion
 

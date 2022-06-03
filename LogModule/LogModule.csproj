@@ -22,8 +22,4 @@
     <Exec Command="if  $(ConfigurationName) == Release (&#xD;&#xA;&quot;C:\Program Files (x86)\Eziriz\.NET Reactor\dotNET_Reactor.Console.exe&quot; -file $(TargetPath) -targetfile $(TargetPath) -obfuscation 1 -antitamp 1 -anti_debug 1 -hide_calls 1 -hide_calls_internals 1 -control_flow_obfuscation 1 -flow_level 9 -resourceencryption 1 -resourcecompression max -antistrong 1 -necrobit 1 -short_strings 1 -stealth_mode 1 -all_params 1 -incremental_obfuscation 1 -unprintable_characters 1 -obfuscate_public_types 0 -virtualization 1 -naming unprintable_nolb&quot;$&#xD;&#xA;)" />
   </Target>
 
-  <ItemGroup>
-    <PackageReference Include="LiteDB" Version="5.0.11" />
-  </ItemGroup>
-
 </Project>
