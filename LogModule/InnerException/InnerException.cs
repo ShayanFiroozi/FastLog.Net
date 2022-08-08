@@ -5,7 +5,7 @@ namespace LogModule.InnerException
 {
     public static class InnerException
     {
-        public  const string InnerExceptionsLogFile = "LoggerExceptions.log";
+        public const string InnerExceptionsLogFile = "LoggerExceptions.log";
         private const int LOG_FILE_MAX_SIZE_IN_MB = 100;
 
         private static int InnerExceptionLogFileSizeMB

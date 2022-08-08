@@ -1,4 +1,3 @@
-using LogModule.Agents;
 using NUnit.Framework;
 
 namespace LogModuleTest

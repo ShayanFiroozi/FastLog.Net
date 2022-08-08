@@ -73,9 +73,9 @@ namespace NetMQServer.Core
                      // SecurityModule.dll SHA384 hash code ( encrypted )
                      //#warning This value below must be changed each time we compile the SecurityLog.dll !!
 
-#error This value below must be changed each time we compile the SecurityLog.dll !!
+ #error This value below must be changed each time we compile the SecurityModule.dll !!
 
-                     Proxy.Decoder("64qlwpjsvrjrg5BC7IOE65+hw7Hsg6Xrla7slJTri43Dp+yjkuymmWjslbvri7vri5dn4omS64u0w4bsvrjrg71u7IOf65+mw7nsg43rlZfsla/ri6bDhOyji+ymt3TslKTri7fri5RT4omr64uJwpXsvofrg7px7IOo65+YwpPsg4PrlZfslJTri67DuOyirOympknslIbri7Dri5Vq4om564uW")
+                     Proxy.Decoder("64qpw4Tsvo7rgp1M7IO965+Gw5Hsgp7rlKLslK7ri6PDlOyipOymtULslKnri5brioFS4ome64uyw6Psv5Trg7117IOY65+LwpfsgpvrlbfslLHriqTDsuyji+ymum/slJrri5vrirVM4oip64uIw4bsvrnrgpp17IKd65+kw7nsg4HrlbPslKHri5XDi+yjieymqXTslLPri7vripxX4om564u9")
                      &&
                      (__detect_video_file_compression() == "x264"))
                 {

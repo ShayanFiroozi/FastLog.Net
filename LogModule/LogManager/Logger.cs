@@ -214,7 +214,7 @@ namespace LogModule
             {
                 InnerException.InnerException.LogInnerException(exception);
             }
-            catch (Exception ex)
+            catch (Exception)
             {
 
             }

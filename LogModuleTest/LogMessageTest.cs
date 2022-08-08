@@ -1,5 +1,3 @@
-using LogModule;
-using NetMQServer;
 using NUnit.Framework;
 using System.Security.Cryptography;
 

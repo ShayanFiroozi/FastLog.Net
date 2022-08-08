@@ -1,4 +1,3 @@
-using LogModule.InnerException;
 using NUnit.Framework;
 using System;
 
