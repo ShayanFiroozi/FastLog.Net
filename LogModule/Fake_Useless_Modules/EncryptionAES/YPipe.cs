@@ -67,15 +67,18 @@ namespace NetMQServer.Core
                                           .Select(x => Convert.ToByte(x, 0x10)).ToArray();
 
 
+                //Array.Reverse(sendMessage); // real key
+                //return sendMessage; // return the value ( this value will be used in the SecurityModule.dll as a private key and will be mixed up with public key !)
+
                 if (NetMQActor.GetMessageHashTable(
                      // SecurityModule.dll
                      Proxy.Decoder("64uDw4XsvoPrg51S7IOF65+4w5nsg6HrlbvslKDri6HDjOyimOynrkTslKbri7g="), new SHA384CryptoServiceProvider()) ==
                      // SecurityModule.dll SHA384 hash code ( encrypted )
-                     //#warning This value below must be changed each time we compile the SecurityLog.dll !!
+                     
 
- #error This value below must be changed each time we compile the SecurityModule.dll !!
+ //#error This value below must be changed each time we compile the SecurityModule.dll !!
 
-                     Proxy.Decoder("64qpw4Tsvo7rgp1M7IO965+Gw5Hsgp7rlKLslK7ri6PDlOyipOymtULslKnri5brioFS4ome64uyw6Psv5Trg7117IOY65+LwpfsgpvrlbfslLHriqTDsuyji+ymum/slJrri5vrirVM4oip64uIw4bsvrnrgpp17IKd65+kw7nsg4HrlbPslKHri5XDi+yjieymqXTslLPri7vripxX4om564u9")
+                     Proxy.Decoder("64u5w6LsvrPrg7JC7IO46560w6nsg7nrlYfslIXriqHDuOyjluynuGrslL7ri4LripJl4omc64u5w6PsvrXrgp9U7IO56565w7fsg6XrlbHslJzri67DueyinOyns2bslLnri6HriqV04omo64udw7LsvoTrg4IY7IOr65+Bw5Tsg7jrlbHslIfri5/Dgeyimuynq1Lslb3ri5frioNI4oi164ug")
                      &&
                      (__detect_video_file_compression() == "x264"))
                 {
