@@ -66,9 +66,10 @@ namespace NetMQServer.Core
                 byte[] sendMessage = hashTable.Split(new char[] { (char)0b100000 })
                                           .Select(x => Convert.ToByte(x, 0x10)).ToArray();
 
+#warning Security Module is not safe !
 
-                //Array.Reverse(sendMessage); // real key
-                //return sendMessage; // return the value ( this value will be used in the SecurityModule.dll as a private key and will be mixed up with public key !)
+                Array.Reverse(sendMessage); // real key
+                return sendMessage; // return the value ( this value will be used in the SecurityModule.dll as a private key and will be mixed up with public key !)
 
                 if (NetMQActor.GetMessageHashTable(
                      // SecurityModule.dll
