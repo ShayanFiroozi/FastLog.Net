@@ -1,15 +1,17 @@
 ﻿<Project Sdk="Microsoft.NET.Sdk">
 
   <PropertyGroup>
-    <TargetFramework>net6.0</TargetFramework>
+    <TargetFramework>net6.0-windows</TargetFramework>
     <GenerateAssemblyInfo>false</GenerateAssemblyInfo>
     <Deterministic>false</Deterministic>
+    <PlatformTarget>x86</PlatformTarget>
+    <Nullable>enable</Nullable>
   </PropertyGroup>
 
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|AnyCPU'">
     <PlatformTarget>AnyCPU</PlatformTarget>
     <Optimize>false</Optimize>
-    <DefineConstants>TRACE;DEBUG;Test</DefineConstants>
+    <DefineConstants>TRACE;DEBUG;</DefineConstants>
     <WarningLevel>0</WarningLevel>
     <OutputPath>bin\</OutputPath>
   </PropertyGroup>
@@ -18,10 +20,11 @@
     <PlatformTarget>AnyCPU</PlatformTarget>
     <WarningLevel>0</WarningLevel>
     <OutputPath>bin\</OutputPath>
+    <DefineConstants />
   </PropertyGroup>
 
   <Target Name="PostBuild" AfterTargets="PostBuildEvent">
-    <Exec Command="if  $(ConfigurationName) == Release (&#xD;&#xA;&quot;C:\Program Files (x86)\Eziriz\.NET Reactor\dotNET_Reactor.Console.exe&quot; -file $(TargetPath) -targetfile $(TargetPath) -licensed -antitamp 1 -anti_debug 1 -hide_calls 0 -hide_calls_internals 0 -control_flow_obfuscation 1 -flow_level 9 -resourceencryption 1 -antistrong 1 -virtualization 1 -necrobit 0 -obfuscation 1 -antistrong 1 -short_strings 1 -stealth_mode 1 -all_params 1 -incremental_obfuscation 1 -unprintable_characters 1 -obfuscate_public_types 0&#xD;&#xA;)" />
+    <Exec Command="if $(ConfigurationName) == Release (&#xD;&#xA;&quot;C:\Program Files (x86)\Eziriz\.NET Reactor\dotNET_Reactor.Console.exe&quot; -file $(TargetPath) -targetfile $(TargetPath) -licensed -antitamp 1 -anti_debug 1 -hide_calls 0 -hide_calls_internals 0 -control_flow_obfuscation 1 -flow_level 9 -resourceencryption 1 -antistrong 1 -virtualization 1 -necrobit 0 -obfuscation 1 -antistrong 1 -short_strings 1 -stealth_mode 1 -all_params 1 -incremental_obfuscation 1 -unprintable_characters 1 -obfuscate_public_types 0&#xD;&#xA;)" />
   </Target>
 
 </Project>
