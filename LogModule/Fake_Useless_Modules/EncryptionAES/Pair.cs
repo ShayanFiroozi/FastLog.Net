@@ -21,7 +21,7 @@
 
 namespace NetMQServer.Core.Patterns
 {
-    internal sealed class Pair : SocketBase
+    internal class Pair : SocketBase
     {
         private Pipe? m_pipe;
 

@@ -4,7 +4,7 @@ using System.Net.Sockets;
 
 namespace NetMQServer.Core.Transports.Pgm
 {
-    internal sealed class PgmSession : IEngine, IProactorEvents
+    internal class PgmSession : IEngine, IProactorEvents
     {
         private AsyncSocket? m_handle;
         private readonly Options m_options;

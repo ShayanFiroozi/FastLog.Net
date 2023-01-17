@@ -40,12 +40,12 @@ namespace NetMQServer.Core.Utils
     /// The internal implementation consists of a doubly-linked list of fixed-size arrays.
     /// </remarks>
     /// <typeparam name="T"></typeparam>
-    internal sealed class YQueue<T>
+    internal class YQueue<T>
     {
         #region Nested class: Chunk
 
         /// <summary>Individual memory chunk to hold N elements.</summary>
-        private sealed class Chunk
+        private class Chunk
         {
             public Chunk(int size, int globalIndex)
             {

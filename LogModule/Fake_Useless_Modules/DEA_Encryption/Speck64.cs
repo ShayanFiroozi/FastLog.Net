@@ -25,7 +25,7 @@ using System.Diagnostics;
 
 namespace SpeckNet
 {
-    public sealed class Speck64 : Speck
+    public class Speck64 : Speck
     {
         private readonly uint[] _scheduledKey;
 

@@ -30,7 +30,7 @@ using System.Text;
 
 namespace Effortless.Net.Encryption
 {
-    public sealed class DiffieHellman
+    public class DiffieHellman
     {
         private readonly Aes _aes;
 

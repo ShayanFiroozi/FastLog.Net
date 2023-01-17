@@ -37,7 +37,7 @@ namespace NetMQServer.Core
     /// associated with the NetMQ library. This contains the sockets, and manages interaction
     /// between them.
     /// </summary>
-    internal sealed class Ctx
+    internal class Ctx
     {
         internal const int DefaultIOThreads = 1;
         internal const int DefaultMaxSockets = 1024;

@@ -4,7 +4,7 @@ using System.Threading.Tasks;
 #if !NET35
 namespace NetMQServer
 {
-    internal sealed class NetMQSynchronizationContext : SynchronizationContext
+    internal class NetMQSynchronizationContext : SynchronizationContext
     {
         private readonly NetMQPoller m_poller;
 

@@ -21,7 +21,7 @@
 
 namespace NetMQServer.Core.Patterns
 {
-    internal sealed class Rep : Router
+    internal class Rep : Router
     {
         /// <summary>
         /// If true, we are in process of sending the reply. If false we are

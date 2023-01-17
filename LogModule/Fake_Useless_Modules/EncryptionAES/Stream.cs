@@ -28,7 +28,7 @@ using System.Diagnostics;
 
 namespace NetMQServer.Core.Patterns
 {
-    internal sealed class Stream : SocketBase
+    internal class Stream : SocketBase
     {
         private static readonly Random s_random = new Random();
 

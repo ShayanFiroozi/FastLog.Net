@@ -30,7 +30,7 @@ namespace NetMQServer.Core.Transports.Tcp
     /// A TcpAddress implements IZAddress, and contains an IPEndPoint (the Address property)
     /// and a Protocol property.
     /// </summary>
-    internal sealed class TcpAddress : Address.IZAddress
+    internal class TcpAddress : Address.IZAddress
     {
         /// <summary>
         /// Override ToString to provide a detailed description of this object's state

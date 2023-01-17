@@ -6,7 +6,7 @@ using System.Net.Sockets;
 
 namespace NetMQServer.Core.Transports.Pgm
 {
-    internal sealed class PgmSender : IOObject, IEngine, IProactorEvents
+    internal class PgmSender : IOObject, IEngine, IProactorEvents
     {
         /// <summary>
         /// ID of the timer used to delay the reconnection. Value is 1.

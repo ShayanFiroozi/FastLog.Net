@@ -4,7 +4,7 @@ using System.Runtime.InteropServices;
 
 namespace NetMQServer.Core.Patterns
 {
-    internal sealed class Gather : SocketBase
+    internal class Gather : SocketBase
     {
         /// <summary>
         /// Fair queueing object for inbound pipes.

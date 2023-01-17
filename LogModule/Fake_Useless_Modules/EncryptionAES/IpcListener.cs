@@ -25,7 +25,7 @@ namespace NetMQServer.Core.Transports.Ipc
     /// <summary>
     /// An IpcListener is a TcpListener that also has an Address property and a SetAddress method.
     /// </summary>
-    internal sealed class IpcListener : TcpListener
+    internal class IpcListener : TcpListener
     {
         private readonly IpcAddress m_address;
 

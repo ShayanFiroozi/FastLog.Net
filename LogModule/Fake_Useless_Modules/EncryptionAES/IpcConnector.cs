@@ -25,7 +25,7 @@ namespace NetMQServer.Core.Transports.Ipc
     /// <summary>
     /// IpcConnecter is a subclass of TcpConnector, which provides absolutely nothing beyond what TcpConnector does.
     /// </summary>
-    internal sealed class IpcConnector : TcpConnector
+    internal class IpcConnector : TcpConnector
     {
         public IpcConnector(IOThread ioThread, SessionBase session, Options options, Address addr, bool wait)
             : base(ioThread, session, options, addr, wait)

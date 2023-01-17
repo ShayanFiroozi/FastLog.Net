@@ -24,7 +24,7 @@ using System.Text;
 
 namespace NetMQServer.Core.Patterns
 {
-    internal sealed class Sub : XSub
+    internal class Sub : XSub
     {
         public Sub(Ctx parent, int threadId, int socketId)
             : base(parent, threadId, socketId)

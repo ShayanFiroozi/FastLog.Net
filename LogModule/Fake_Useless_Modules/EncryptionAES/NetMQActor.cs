@@ -100,7 +100,7 @@ namespace NetMQServer
 
         #region Action shim handlers
 
-        private sealed class ActionShimHandler<T> : IShimHandler
+        private class ActionShimHandler<T> : IShimHandler
         {
             private readonly ShimAction<T> m_action;
             private readonly T m_state;
@@ -127,7 +127,7 @@ namespace NetMQServer
             }
         }
 
-        private sealed class ActionShimHandler : IShimHandler
+        private class ActionShimHandler : IShimHandler
         {
             private readonly ShimAction m_action;
 

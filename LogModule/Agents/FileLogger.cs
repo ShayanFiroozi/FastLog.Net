@@ -4,7 +4,7 @@ using System.Threading;
 
 namespace LogModule.Agents
 {
-    public sealed class FileLogger : IFileLogger
+    public class FileLogger : IFileLogger
     {
 
 

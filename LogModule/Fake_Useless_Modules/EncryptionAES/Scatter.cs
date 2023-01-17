@@ -2,7 +2,7 @@ using NetMQServer.Core.Patterns.Utils;
 
 namespace NetMQServer.Core.Patterns
 {
-    internal sealed class Scatter : SocketBase
+    internal class Scatter : SocketBase
     {
         /// <summary>
         /// Load balancer managing the outbound pipes.

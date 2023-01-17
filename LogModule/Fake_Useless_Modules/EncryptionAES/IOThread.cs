@@ -23,7 +23,7 @@ using NetMQServer.Core.Utils;
 
 namespace NetMQServer.Core
 {
-    internal sealed class IOThread : ZObject, IMailboxEvent
+    internal class IOThread : ZObject, IMailboxEvent
     {
         /// <summary>
         /// I/O thread accesses incoming commands via this mailbox.

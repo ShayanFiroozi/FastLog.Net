@@ -20,7 +20,7 @@ namespace NetMQServer
     /// <summary>
     /// Enable polling on multiple NetMQSockets
     /// </summary>
-    public sealed class NetMQPoller :
+    public class NetMQPoller :
 
 
 #if !NET35

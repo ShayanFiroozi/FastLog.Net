@@ -6,7 +6,7 @@ namespace NetMQServer.Core.Utils
     /// This class simply provides a counter-value, which may be set, increased, and decremented.
     /// Increase and Decrement are both thread-safe operations.
     /// </summary>
-    public sealed class AtomicCounter
+    public class AtomicCounter
     {
         private int m_value;
 

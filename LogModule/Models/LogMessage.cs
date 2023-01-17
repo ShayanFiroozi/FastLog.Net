@@ -3,7 +3,7 @@ using System.Text;
 
 namespace LogModule
 {
-    public sealed class LogMessage
+    public class LogMessage
     {
 
         #region Constructors

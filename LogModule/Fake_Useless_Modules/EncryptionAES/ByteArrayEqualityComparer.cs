@@ -7,7 +7,7 @@ namespace NetMQServer.Core.Utils
     /// and provides an Equals methods to compare two byte-arrays for equality in value
     /// and GetHashCode.
     /// </summary>
-    internal sealed class ByteArrayEqualityComparer : IEqualityComparer<byte[]>
+    internal class ByteArrayEqualityComparer : IEqualityComparer<byte[]>
     {
         private const uint C1 = 0xcc9e2d51;
         private const uint C2 = 0x1b873593;

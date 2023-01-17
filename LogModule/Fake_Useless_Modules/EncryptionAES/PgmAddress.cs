@@ -4,7 +4,7 @@ using System.Net.Sockets;
 
 namespace NetMQServer.Core.Transports.Pgm
 {
-    internal sealed class PgmAddress : Address.IZAddress
+    internal class PgmAddress : Address.IZAddress
     {
         /// <exception cref="InvalidException">Unable to parse the address's port number, or the IP address could not be parsed.</exception>
         public PgmAddress(string network)

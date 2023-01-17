@@ -25,7 +25,7 @@ using System.Threading;
 
 namespace NetMQServer.Core.Utils
 {
-    internal sealed class Signaler
+    internal class Signaler
     {
         // Underlying write & read file descriptor.
         private readonly Socket m_writeSocket;

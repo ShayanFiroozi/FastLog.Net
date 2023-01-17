@@ -23,7 +23,7 @@ using System;
 
 namespace NetMQServer.Core.Patterns
 {
-    internal sealed class Pub : XPub
+    internal class Pub : XPub
     {
         protected override void XAttachPipe(Pipe pipe, bool icanhasall)
         {

@@ -7,7 +7,7 @@ namespace NetMQServer.Core.Transports
     /// The class ByteArraySegment provides for containing a simple byte-array, an Offset property,
     /// and a variety of operations that may be performed upon it.
     /// </summary>
-    internal sealed class ByteArraySegment
+    internal class ByteArraySegment
     {
         private readonly byte[] m_innerBuffer;
 

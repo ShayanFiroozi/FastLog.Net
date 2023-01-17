@@ -28,7 +28,7 @@ namespace NetMQServer.Core.Patterns
     /// <summary>
     /// A Req is a Dealer socket that serves as the Request in a Request/Response pattern.
     /// </summary>
-    internal sealed class Req : Dealer
+    internal class Req : Dealer
     {
         /// <summary>
         /// If true, request was already sent and reply wasn't received yet or

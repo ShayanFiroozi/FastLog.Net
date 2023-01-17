@@ -25,7 +25,7 @@ using System.Diagnostics;
 
 namespace SpeckNet
 {
-    public sealed class Speck128 : Speck
+    public class Speck128 : Speck
     {
         private readonly ulong[] _scheduledKey;
 

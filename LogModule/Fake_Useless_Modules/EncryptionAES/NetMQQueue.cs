@@ -16,7 +16,7 @@ namespace NetMQServer
     /// Events args for NetMQQueue
     /// </summary>
     /// <typeparam name="T">The type of the queue</typeparam>
-    public sealed class NetMQQueueEventArgs<T> : EventArgs
+    public class NetMQQueueEventArgs<T> : EventArgs
     {
 
 
@@ -274,7 +274,7 @@ namespace NetMQServer
     /// Multi producer single consumer queue which you can poll on with a Poller.
     /// </summary>
     /// <typeparam name="T">Type of the item in queue</typeparam>
-    public sealed class NetMQQueue<T> : IDisposable, ISocketPollable, IEnumerable<T>
+    public class NetMQQueue<T> : IDisposable, ISocketPollable, IEnumerable<T>
     {
         private readonly PairSocket m_writer;
         private readonly PairSocket m_reader;

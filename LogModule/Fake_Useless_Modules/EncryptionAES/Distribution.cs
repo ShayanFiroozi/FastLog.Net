@@ -24,7 +24,7 @@ using System.Collections.Generic;
 
 namespace NetMQServer.Core.Patterns.Utils
 {
-    internal sealed class Distribution
+    internal class Distribution
     {
         /// <summary>
         /// List of outbound pipes.

@@ -5,7 +5,7 @@ using System.Threading.Tasks;
 namespace LogModule
 {
 
-    public sealed class Logger : IDisposable, ILogger
+    public class Logger : IDisposable, ILogger
     {
 
         //private LiteDatabase logDB = null;

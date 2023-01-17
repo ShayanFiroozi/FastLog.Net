@@ -31,7 +31,7 @@ namespace NetMQServer.Core.Transports.Pgm
     /// This is only supported on Windows when Microsoft Message Queueing (MSMQ) is installed.
     /// See RFC 3208.
     /// </summary>
-    internal sealed class PgmSocket : IDisposable
+    internal class PgmSocket : IDisposable
     {
         public const int ProtocolTypeNumber = 113;
         public const ProtocolType PgmProtocolType = (ProtocolType)113;

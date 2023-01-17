@@ -35,7 +35,7 @@ namespace NetMQServer.Core.Transports
 
     internal delegate PushMsgResult ProcessMsgDelegate(ref Msg msg);
 
-    internal sealed class StreamEngine : IEngine, IProactorEvents
+    internal class StreamEngine : IEngine, IProactorEvents
     {
         private const int HeartbeatIntervalTimerId = 1;
         private const int HeartbeatTimeoutTimerId = 2;

@@ -14,7 +14,7 @@ namespace NetMQServer
     /// This is for advanced scenarios only.
     /// Most use cases are better served by <see cref="NetMQPoller"/>.
     /// </remarks>
-    public sealed class NetMQSelector
+    public class NetMQSelector
     {
         private readonly List<Socket> m_checkRead = new List<Socket>();
         private readonly List<Socket> m_checkWrite = new List<Socket>();
@@ -23,7 +23,7 @@ namespace NetMQServer
         /// <summary>
         /// Selector Item used to hold the NetMQSocket/Socket and PollEvents
         /// </summary>
-        public sealed class Item
+        public class Item
         {
             /// <summary>
             /// Create a new item for NetMQSocket

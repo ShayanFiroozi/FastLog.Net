@@ -4,7 +4,7 @@ using System.Reflection.Emit;
 namespace Lokad.ILPack.IL
 {
     [DebuggerDisplay("{OpCode} {Operand}")]
-    public sealed class Instruction
+    public class Instruction
     {
         internal Instruction(int offset, OpCode opcode)
         {

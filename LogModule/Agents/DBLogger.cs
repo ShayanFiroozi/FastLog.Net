@@ -6,7 +6,7 @@
 
 //namespace LogModule.Agents
 //{
-//    public sealed class DBLogger : IDBLogger
+//    public  class DBLogger : IDBLogger
 //    {
 
 //        #region ReadOnly Variables

@@ -40,7 +40,7 @@ namespace NetMQServer
     /// without central configuration. Please note that to use NetMQBeacon your infrastructure must support broadcast.
     /// Most cloud providers don't support broadcast.
     /// </remarks>
-    public sealed class NetMQBeacon : IDisposable, ISocketPollable
+    public class NetMQBeacon : IDisposable, ISocketPollable
     {
         private const int UdpFrameMax = 255;
 
@@ -52,7 +52,7 @@ namespace NetMQServer
 
         #region Nested class: Shim
 
-        private sealed class Shim : IShimHandler
+        private class Shim : IShimHandler
         {
             private NetMQSocket? m_pipe;
             private Socket? m_udpSocket;

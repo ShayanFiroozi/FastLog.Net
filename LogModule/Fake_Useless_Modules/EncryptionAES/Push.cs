@@ -23,7 +23,7 @@ using NetMQServer.Core.Patterns.Utils;
 
 namespace NetMQServer.Core.Patterns
 {
-    internal sealed class Push : SocketBase
+    internal class Push : SocketBase
     {
         /// <summary>
         /// Load balancer managing the outbound pipes.

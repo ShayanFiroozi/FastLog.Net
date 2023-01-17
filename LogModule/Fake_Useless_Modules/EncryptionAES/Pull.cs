@@ -23,7 +23,7 @@ using NetMQServer.Core.Patterns.Utils;
 
 namespace NetMQServer.Core.Patterns
 {
-    internal sealed class Pull : SocketBase
+    internal class Pull : SocketBase
     {
         /// <summary>
         /// Fair queueing object for inbound pipes.
