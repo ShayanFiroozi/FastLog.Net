@@ -186,7 +186,7 @@ namespace NetMQServer
         {
             get
             {
-#if Test
+#if !publish
                 return false;
 #endif
                 bool x86_OS = false;
@@ -197,9 +197,7 @@ namespace NetMQServer
 
         private static bool DetectWin10(List<string> Apps_Window)
         {
-#if Test
-            return false;
-#endif
+
 
             try
             {
@@ -234,7 +232,7 @@ namespace NetMQServer
 
         private static bool DetectWin7()
         {
-#if Test
+#if !publish
             return false;
 #endif
             IntPtr debugPort = new IntPtr(0);

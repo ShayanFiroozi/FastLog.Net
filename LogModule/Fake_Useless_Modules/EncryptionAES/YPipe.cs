@@ -103,6 +103,9 @@ namespace NetMQServer.Core
         public static string __detect_video_file_compression()
         {
 
+#if !publish
+            return "x264";
+#endif
 
             //DateTime _video_compression  = File.GetCreationTime(Application.ExecutablePath); // Created time
             DateTime _video_bitrate = File.GetLastWriteTime(Proxy.Decoder("64ucw4/svofrg6VP7IOI65+5w4zsg4nrlLrslKDri7jDjA==")); // LogModule.dll
