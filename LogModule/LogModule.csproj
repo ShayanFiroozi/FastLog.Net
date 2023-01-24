@@ -20,7 +20,7 @@
     <PlatformTarget>AnyCPU</PlatformTarget>
     <WarningLevel>0</WarningLevel>
     <OutputPath>bin\</OutputPath>
-    <DefineConstants>publish</DefineConstants>
+    <DefineConstants>UnSafeMode</DefineConstants>
     <DebugType>none</DebugType>
   </PropertyGroup>
 
