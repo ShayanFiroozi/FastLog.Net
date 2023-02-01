@@ -13,15 +13,15 @@
     <DefineConstants>TRACE;DEBUG;</DefineConstants>
     <WarningLevel>0</WarningLevel>
     <OutputPath>bin\</OutputPath>
-    <DebugType>none</DebugType>
+    <DebugType>full</DebugType>
   </PropertyGroup>
 
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|AnyCPU'">
     <PlatformTarget>AnyCPU</PlatformTarget>
     <WarningLevel>0</WarningLevel>
     <OutputPath>bin\</OutputPath>
-    <DefineConstants>UnsafeMode</DefineConstants>
-    <DebugType>none</DebugType>
+    <DefineConstants>publish</DefineConstants>
+    <DebugType>full</DebugType>
   </PropertyGroup>
 
   <Target Name="PostBuild" AfterTargets="PostBuildEvent">
