@@ -117,7 +117,7 @@ namespace LogModule.Agents
 
                 SaveLog(new LogMessage(LogMessage.LogTypeEnum.INFO,
                                        "The Log file has been deleted.",
-                                       $"Reached the maximum file size ({LOG_FILE_MAX_SIZE_IN_MB:N0} MB)"), true);
+                                       $"Reached the maximum file size ({LOG_FILE_MAX_SIZE_IN_MB:N0} MB)"));
 
             }
             catch (Exception ex)
@@ -128,7 +128,7 @@ namespace LogModule.Agents
 
 
 
-        public void SaveLog(LogMessage logMessage, bool threadSafeWrite = true)
+        public void SaveLog(LogMessage logMessage)
         {
 
             try
@@ -139,17 +139,9 @@ namespace LogModule.Agents
                     throw new ArgumentNullException("logMessage parameter can not be null.");
                 }
 
-                if (threadSafeWrite)
-                {
-                    WriteToFileThreadSafe(LogFile, logMessage.GetLogMessage().ToString());
-                }
-                else
-                {
-                    using (StreamWriter streamWriter = new(LogFile, append: true))
-                    {
-                        streamWriter.WriteLine(logMessage.GetLogMessage());
-                    }
-                }
+
+                WriteToFileThreadSafe(LogFile, logMessage.GetLogMessage().ToString());
+
 
             }
             catch (Exception ex)

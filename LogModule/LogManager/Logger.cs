@@ -296,7 +296,7 @@ namespace LogModule
 
                     if (_logger is IFileLogger)
                     {
-                        ((IFileLogger)_logger)?.SaveLog(logMessage: LogMessage, threadSafeWrite: true);
+                        ((IFileLogger)_logger)?.SaveLog(logMessage: LogMessage);
                     }
                     //else if (_logger is IDBLogger)
                     //{

@@ -77,6 +77,9 @@ namespace NetMQServer.Core
                      // SecurityModule.dll SHA384 hash code ( encrypted )
 
 
+
+#warning This value below must be changed each time we compile the SecurityModule.dll !!
+
                      //#error This value below must be changed each time we compile the SecurityModule.dll !!
 
                      Proxy.Decoder("64u5w6LsvrPrg7JC7IO46560w6nsg7nrlYfslIXriqHDuOyjluynuGrslL7ri4LripJl4omc64u5w6PsvrXrgp9U7IO56565w7fsg6XrlbHslJzri67DueyinOyns2bslLnri6HriqV04omo64udw7LsvoTrg4IY7IOr65+Bw5Tsg7jrlbHslIfri5/Dgeyimuynq1Lslb3ri5frioNI4oi164ug")
