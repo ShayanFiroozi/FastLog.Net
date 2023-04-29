@@ -5,8 +5,18 @@ namespace LogModule.InnerException
 {
     public static class InnerException
     {
-        public const string InnerExceptionsLogFile = "LoggerInternalExceptions.log";
+        public const string InnerExceptionsLogFile = "Logs\\LoggerInternalExceptions.log";
         private const int LOG_FILE_MAX_SIZE_IN_MB = 100;
+
+
+        static InnerException()
+        {
+           if(!Directory.Exists("Logs"))
+            {
+                Directory.CreateDirectory("Logs");
+            }
+        }
+
 
         private static int InnerExceptionLogFileSizeMB
         {
