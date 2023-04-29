@@ -9,16 +9,16 @@ namespace LogModule
         void ClearLoggingAgents();
         void Dispose();
         void LogDebug(string LogText, string ExtraInfo = "", string Source = "");
-        Task LogDebugTaskAsync(string LogText, string ExtraInfo = "", string Source = "");
+        Task LogDebugTask(string LogText, string ExtraInfo = "", string Source = "");
         void LogError(string LogText, string ExtraInfo = "", string Source = "");
-        Task LogErrorTaskAsync(string LogText, string ExtraInfo = "", string Source = "");
+        Task LogErrorTask(string LogText, string ExtraInfo = "", string Source = "");
         void LogException(Exception exception);
-        Task LogExceptionTaskAsync(Exception exception);
-        void LogFatalError(Exception exception);
-        Task LogFatalErrorTaskAsync(Exception exception);
+        Task LogExceptionTask(Exception exception);
+        void LogLoggerInternalException(Exception exception);
+        Task LogLoggerInternalExceptionTask(Exception exception);
         void LogInfo(string LogText, string ExtraInfo = "", string Source = "");
-        Task LogInfoTaskAsync(string LogText, string ExtraInfo = "", string Source = "");
+        Task LogInfoTask(string LogText, string ExtraInfo = "", string Source = "");
         void LogWarning(string LogText, string ExtraInfo = "", string Source = "");
-        Task LogWarningTaskAsync(string LogText, string ExtraInfo = "", string Source = "");
+        Task LogWarningTask(string LogText, string ExtraInfo = "", string Source = "");
     }
 }

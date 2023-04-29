@@ -79,7 +79,7 @@ namespace LogModule
         }
 
 
-        public Task LogInfoTaskAsync(string LogText,
+        public Task LogInfoTask(string LogText,
                             string ExtraInfo = "",
                             string Source = "")
         {
@@ -103,7 +103,7 @@ namespace LogModule
         }
 
 
-        public Task LogWarningTaskAsync(string LogText,
+        public Task LogWarningTask(string LogText,
                            string ExtraInfo = "",
                            string Source = "")
         {
@@ -130,7 +130,7 @@ namespace LogModule
         }
 
 
-        public Task LogErrorTaskAsync(string LogText,
+        public Task LogErrorTask(string LogText,
                           string ExtraInfo = "",
                           string Source = "")
         {
@@ -168,7 +168,7 @@ namespace LogModule
 
 
 
-        public Task LogExceptionTaskAsync(Exception exception)
+        public Task LogExceptionTask(Exception exception)
         {
             return Task.Run(() => LogException(exception));
         }
@@ -191,7 +191,7 @@ namespace LogModule
             }
         }
 
-        public Task LogDebugTaskAsync(string LogText,
+        public Task LogDebugTask(string LogText,
                               string ExtraInfo = "",
                               string Source = "")
         {
@@ -202,7 +202,7 @@ namespace LogModule
 
 
 
-        public void LogFatalError(Exception exception)
+        public void LogLoggerInternalException(Exception exception)
         {
 
             if (exception == null)
@@ -222,9 +222,9 @@ namespace LogModule
 
 
 
-        public Task LogFatalErrorTaskAsync(Exception exception)
+        public Task LogLoggerInternalExceptionTask(Exception exception)
         {
-            return Task.Run(() => LogFatalError(exception));
+            return Task.Run(() => LogLoggerInternalException(exception));
         }
 
         #endregion

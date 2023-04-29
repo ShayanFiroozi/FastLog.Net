@@ -1,3 +1,4 @@
+using LogModule.Agents;
 using NUnit.Framework;
 
 namespace LogModuleTest
@@ -12,7 +13,7 @@ namespace LogModuleTest
         [Test]
         public void FileLogger_Constructor_Test()
         {
-            fileLogger = new FileLogger("D:\\LogsTest\\LogModuleTest.log", 10);
+            fileLogger = new FileLogger("D:\\LogsTest\\LogModuleTest.log",200);
 
         }
 

@@ -7,13 +7,13 @@ using System.Runtime.InteropServices;
 // General Information about an assembly is controlled through the following
 // set of attributes. Change these attribute values to modify the information
 // associated with an assembly.
-[assembly: AssemblyTitle("Logging Module")]
-[assembly: AssemblyDescription("SingoNet Hormoz® Logging Module")]
+[assembly: AssemblyTitle("TrendSoft® Logging Module")]
+[assembly: AssemblyDescription("TrendSoft® www.BTrend.ir")]
 [assembly: AssemblyConfiguration("")]
-[assembly: AssemblyCompany("SingoNet Hormoz - Bandar Abbas , Iran")]
-[assembly: AssemblyProduct("SingoNet Hormoz Logging Module")]
-[assembly: AssemblyCopyright("Copyright © 2022 SingoNet Hormoz®")]
-[assembly: AssemblyTrademark("Shayan Firoozi  +98(936)517-5800")]
+[assembly: AssemblyCompany("TrendSoft® - Bandar Abbas , Iran")]
+[assembly: AssemblyProduct("TrendSoft® Logging Module")]
+[assembly: AssemblyCopyright("Copyright © 2023 TrendSoft®")]
+[assembly: AssemblyTrademark("www.BTrend.ir")]
 [assembly: AssemblyCulture("")]
 
 
