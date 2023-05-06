@@ -22,7 +22,7 @@ namespace LogModule
             try
             {
 
-                InnerException.InnerException.DeleteInnerExceptionLogFile();
+                InnerException.InternalException.DeleteInnerExceptionLogFile();
             }
             catch
             {
@@ -74,7 +74,7 @@ namespace LogModule
             }
             catch (Exception ex)
             {
-                InnerException.InnerException.LogInnerException(ex);
+                InnerException.InternalException.LogInnerException(ex);
             }
         }
 
@@ -98,7 +98,7 @@ namespace LogModule
             }
             catch (Exception ex)
             {
-                InnerException.InnerException.LogInnerException(ex);
+                InnerException.InternalException.LogInnerException(ex);
             }
         }
 
@@ -125,7 +125,7 @@ namespace LogModule
             }
             catch (Exception ex)
             {
-                InnerException.InnerException.LogInnerException(ex);
+                InnerException.InternalException.LogInnerException(ex);
             }
         }
 
@@ -162,7 +162,7 @@ namespace LogModule
             }
             catch (Exception ex)
             {
-                InnerException.InnerException.LogInnerException(ex);
+                InnerException.InternalException.LogInnerException(ex);
             }
         }
 
@@ -187,7 +187,7 @@ namespace LogModule
             }
             catch (Exception ex)
             {
-                InnerException.InnerException.LogInnerException(ex);
+                InnerException.InternalException.LogInnerException(ex);
             }
         }
 
@@ -212,7 +212,7 @@ namespace LogModule
 
             try
             {
-                InnerException.InnerException.LogInnerException(exception);
+                InnerException.InternalException.LogInnerException(exception);
             }
             catch (Exception)
             {
@@ -305,7 +305,7 @@ namespace LogModule
                 }
                 catch (Exception ex)
                 {
-                    InnerException.InnerException.LogInnerException(ex);
+                    InnerException.InternalException.LogInnerException(ex);
                 }
             }
 

@@ -11,7 +11,7 @@ namespace LogModuleTest
         [Test]
         public void InnerException_Test()
         {
-            InnerException.LogInnerException(new InvalidCastException());
+            InternalException.LogInnerException(new InvalidCastException());
         }
 
 

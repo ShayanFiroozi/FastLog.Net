@@ -29,7 +29,7 @@ namespace LogModule.Agents
                 }
                 catch (Exception ex)
                 {
-                    InnerException.InnerException.LogInnerException(ex);
+                    InnerException.InternalException.LogInnerException(ex);
                     return 0;
                 }
             }
@@ -74,7 +74,7 @@ namespace LogModule.Agents
             }
             catch (Exception ex)
             {
-                InnerException.InnerException.LogInnerException(ex);
+                InnerException.InternalException.LogInnerException(ex);
             }
         }
 
@@ -105,7 +105,7 @@ namespace LogModule.Agents
             }
             catch (Exception ex)
             {
-                InnerException.InnerException.LogInnerException(ex);
+                InnerException.InternalException.LogInnerException(ex);
             }
 
 
@@ -122,7 +122,7 @@ namespace LogModule.Agents
             }
             catch (Exception ex)
             {
-                InnerException.InnerException.LogInnerException(ex);
+                InnerException.InternalException.LogInnerException(ex);
             }
         }
 
@@ -146,7 +146,7 @@ namespace LogModule.Agents
             }
             catch (Exception ex)
             {
-                InnerException.InnerException.LogInnerException(ex);
+                InnerException.InternalException.LogInnerException(ex);
             }
         }
 

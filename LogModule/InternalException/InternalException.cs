@@ -3,13 +3,13 @@ using System.IO;
 
 namespace LogModule.InnerException
 {
-    public static class InnerException
+    public static class InternalException
     {
         public const string InnerExceptionsLogFile = "Logs\\LoggerInternalExceptions.log";
         private const int LOG_FILE_MAX_SIZE_IN_MB = 100;
 
 
-        static InnerException()
+        static InternalException()
         {
            if(!Directory.Exists("Logs"))
             {
