@@ -115,7 +115,7 @@ namespace LogModule.Agents
             {
                 File.Delete(LogFile);
 
-                SaveLog(new LogMessage(LogMessage.LogTypeEnum.INFO,
+                SaveLog(new LogModel(LogModel.LogTypeEnum.INFO,
                                        "The Log file has been deleted.",
                                        $"Reached the maximum file size ({LOG_FILE_MAX_SIZE_IN_MB:N0} MB)"));
 
@@ -128,7 +128,7 @@ namespace LogModule.Agents
 
 
 
-        public void SaveLog(LogMessage logMessage)
+        public void SaveLog(LogModel logMessage)
         {
 
             try

@@ -3,11 +3,12 @@ using System.Text;
 
 namespace LogModule
 {
-    public class LogMessage
+    public class LogModel
     {
 
         #region Constructors
-        public LogMessage(LogTypeEnum LogType,
+
+        public LogModel(LogTypeEnum LogType,
                           string LogText,
                           string ExtraInfo = "",
                           string Source = "")
@@ -19,17 +20,16 @@ namespace LogModule
             this.Source = Source;
         }
 
-        // It's neccessary for LiteDB
-        public LogMessage()
-        {
 
+        public LogModel()
+        {
+            // This default constructor is neccessary for LiteDB.
         }
 
         #endregion
 
 
         #region Enumerations
-
 
         public enum LogTypeEnum : byte
         {
@@ -44,30 +44,32 @@ namespace LogModule
         #endregion
 
 
+
         #region Properties
 
-        public DateTime DateTime { get; set; }
+        public DateTime DateTime { get; private set; }
 
 
-        public LogTypeEnum LogType { get; set; }
-
-
-
-        public string Source { get; set; }
+        public LogTypeEnum LogType { get; private set; }
 
 
 
-        public string LogText { get; set; }
+        public string Source { get; private set; }
 
 
 
-        public string ExtraInfo { get; set; }
+        public string LogText { get; private set; }
+
+
+
+        public string ExtraInfo { get; private set; }
 
 
 
 
 
         #endregion
+
 
 
         #region Methods

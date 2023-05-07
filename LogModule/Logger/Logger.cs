@@ -5,7 +5,7 @@ using System.Threading.Tasks;
 namespace LogModule
 {
 
-    public class Logger : IDisposable, ILogger
+    public class Logger : IDisposable
     {
 
         //private LiteDatabase logDB = null;
@@ -70,7 +70,7 @@ namespace LogModule
         {
             try
             {
-                _executeLogging(new LogMessage(LogMessage.LogTypeEnum.INFO, LogText, ExtraInfo, Source));
+                _executeLogging(new LogModel(LogModel.LogTypeEnum.INFO, LogText, ExtraInfo, Source));
             }
             catch (Exception ex)
             {
@@ -94,7 +94,7 @@ namespace LogModule
         {
             try
             {
-                _executeLogging(new LogMessage(LogMessage.LogTypeEnum.WARNING, LogText, ExtraInfo, Source));
+                _executeLogging(new LogModel(LogModel.LogTypeEnum.WARNING, LogText, ExtraInfo, Source));
             }
             catch (Exception ex)
             {
@@ -121,7 +121,7 @@ namespace LogModule
         {
             try
             {
-                _executeLogging(new LogMessage(LogMessage.LogTypeEnum.ERROR, LogText, ExtraInfo, Source));
+                _executeLogging(new LogModel(LogModel.LogTypeEnum.ERROR, LogText, ExtraInfo, Source));
             }
             catch (Exception ex)
             {
@@ -153,7 +153,7 @@ namespace LogModule
 
             try
             {
-                _executeLogging(new LogMessage(LogMessage.LogTypeEnum.EXCEPTION,
+                _executeLogging(new LogModel(LogModel.LogTypeEnum.EXCEPTION,
                                                " Message : " + exception.Message ?? "-",
                                                " InnerMessage : " + (exception.InnerException?.Message ?? "-") +
                                                " , " +
@@ -183,7 +183,7 @@ namespace LogModule
         {
             try
             {
-                _executeLogging(new LogMessage(LogMessage.LogTypeEnum.DEBUG, LogText, ExtraInfo, Source));
+                _executeLogging(new LogModel(LogModel.LogTypeEnum.DEBUG, LogText, ExtraInfo, Source));
             }
             catch (Exception ex)
             {
@@ -277,7 +277,7 @@ namespace LogModule
 
 
         #region PrivateMethods
-        private void _executeLogging(LogMessage LogMessage)
+        private void _executeLogging(LogModel LogMessage)
         {
             if (LogMessage is null)
             {

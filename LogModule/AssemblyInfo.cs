@@ -8,12 +8,12 @@ using System.Runtime.InteropServices;
 // set of attributes. Change these attribute values to modify the information
 // associated with an assembly.
 [assembly: AssemblyTitle("TrendSoft® Logging Module")]
-[assembly: AssemblyDescription("TrendSoft® www.BTrend.ir")]
+[assembly: AssemblyDescription("High performance Logger Module for .NET")]
 [assembly: AssemblyConfiguration("")]
 [assembly: AssemblyCompany("TrendSoft® - Bandar Abbas , Iran")]
 [assembly: AssemblyProduct("TrendSoft® Logging Module")]
-[assembly: AssemblyCopyright("Copyright © 2023 TrendSoft®")]
-[assembly: AssemblyTrademark("www.BTrend.ir")]
+[assembly: AssemblyCopyright("Copyright © 2023 TrendSoft® (MIT License)")]
+[assembly: AssemblyTrademark("Shayan Firoozi")]
 [assembly: AssemblyCulture("")]
 
 

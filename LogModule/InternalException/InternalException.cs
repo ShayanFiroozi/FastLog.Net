@@ -88,7 +88,7 @@ namespace LogModule.InnerException
             {
 
 
-                File.AppendAllText(InnerExceptionsLogFile, new LogMessage(LogMessage.LogTypeEnum.EXCEPTION,
+                File.AppendAllText(InnerExceptionsLogFile, new LogModel(LogModel.LogTypeEnum.EXCEPTION,
                                                " Message : " + exception.Message ?? "-",
                                                " InnerMessage : " + (exception.InnerException?.Message ?? "-") +
                                                " , " +
