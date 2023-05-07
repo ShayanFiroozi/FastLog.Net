@@ -8,7 +8,7 @@ using System.Runtime.InteropServices;
 // set of attributes. Change these attribute values to modify the information
 // associated with an assembly.
 [assembly: AssemblyTitle("TrendSoft® Logging Module")]
-[assembly: AssemblyDescription("High performance Logger Module for .NET")]
+[assembly: AssemblyDescription("High performance logger for .NET")]
 [assembly: AssemblyConfiguration("")]
 [assembly: AssemblyCompany("TrendSoft® - Bandar Abbas , Iran")]
 [assembly: AssemblyProduct("TrendSoft® Logging Module")]
@@ -24,7 +24,7 @@ using System.Runtime.InteropServices;
 [assembly: ComVisible(false)]
 
 // The following GUID is for the ID of the typelib if this project is exposed to COM
-[assembly: Guid("0fa3e4c9-b270-41ab-b601-d0a3f84cb893")]
+[assembly: Guid("EB259611-F3F2-4445-AA65-2E599FABB172")]
 
 // Version information for an assembly consists of the following four values:
 //

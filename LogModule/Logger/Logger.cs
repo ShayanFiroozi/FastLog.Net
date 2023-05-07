@@ -1,4 +1,5 @@
-﻿using System;
+﻿using LogModule.InnerException;
+using System;
 using System.Collections.Concurrent;
 using System.Threading.Tasks;
 
@@ -17,17 +18,7 @@ namespace LogModule
 
         public Logger()
         {
-            // Delete the inner exception log file if reaches the LOG_FILE_MAX_SIZE_IN_MB
-
-            try
-            {
-
-                InnerException.InternalException.DeleteInnerExceptionLogFile();
-            }
-            catch
-            {
-
-            }
+           
         }
 
         #endregion
@@ -74,7 +65,7 @@ namespace LogModule
             }
             catch (Exception ex)
             {
-                InnerException.InternalException.LogInnerException(ex);
+                InternalExceptionLogger.LogInternalException(ex);
             }
         }
 
@@ -98,7 +89,7 @@ namespace LogModule
             }
             catch (Exception ex)
             {
-                InnerException.InternalException.LogInnerException(ex);
+                InternalExceptionLogger.LogInternalException(ex);
             }
         }
 
@@ -125,7 +116,7 @@ namespace LogModule
             }
             catch (Exception ex)
             {
-                InnerException.InternalException.LogInnerException(ex);
+                InternalExceptionLogger.LogInternalException(ex);
             }
         }
 
@@ -162,7 +153,7 @@ namespace LogModule
             }
             catch (Exception ex)
             {
-                InnerException.InternalException.LogInnerException(ex);
+                InternalExceptionLogger.LogInternalException(ex);
             }
         }
 
@@ -187,7 +178,7 @@ namespace LogModule
             }
             catch (Exception ex)
             {
-                InnerException.InternalException.LogInnerException(ex);
+                InternalExceptionLogger.LogInternalException(ex);
             }
         }
 
@@ -212,7 +203,7 @@ namespace LogModule
 
             try
             {
-                InnerException.InternalException.LogInnerException(exception);
+                InternalExceptionLogger.LogInternalException(exception);
             }
             catch (Exception)
             {
@@ -305,7 +296,7 @@ namespace LogModule
                 }
                 catch (Exception ex)
                 {
-                    InnerException.InternalException.LogInnerException(ex);
+                    InternalExceptionLogger.LogInternalException(ex);
                 }
             }
 

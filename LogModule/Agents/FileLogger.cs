@@ -1,4 +1,5 @@
-﻿using System;
+﻿using LogModule.InnerException;
+using System;
 using System.IO;
 using System.Threading;
 
@@ -29,7 +30,7 @@ namespace LogModule.Agents
                 }
                 catch (Exception ex)
                 {
-                    InnerException.InternalException.LogInnerException(ex);
+                    InternalExceptionLogger.LogInternalException(ex);
                     return 0;
                 }
             }
@@ -74,7 +75,7 @@ namespace LogModule.Agents
             }
             catch (Exception ex)
             {
-                InnerException.InternalException.LogInnerException(ex);
+                InternalExceptionLogger.LogInternalException(ex);
             }
         }
 
@@ -105,7 +106,7 @@ namespace LogModule.Agents
             }
             catch (Exception ex)
             {
-                InnerException.InternalException.LogInnerException(ex);
+                InternalExceptionLogger.LogInternalException(ex);
             }
 
 
@@ -122,7 +123,7 @@ namespace LogModule.Agents
             }
             catch (Exception ex)
             {
-                InnerException.InternalException.LogInnerException(ex);
+                InternalExceptionLogger.LogInternalException(ex);
             }
         }
 
@@ -146,7 +147,7 @@ namespace LogModule.Agents
             }
             catch (Exception ex)
             {
-                InnerException.InternalException.LogInnerException(ex);
+                InternalExceptionLogger.LogInternalException(ex);
             }
         }
 

@@ -21,7 +21,6 @@
     <WarningLevel>0</WarningLevel>
     <OutputPath>bin\</OutputPath>
     <DebugType>full</DebugType>
-    <DefineConstants>$(DefineConstants);publish</DefineConstants>
   </PropertyGroup>
 
   <Target Name="PostBuild" AfterTargets="PostBuildEvent">

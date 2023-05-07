@@ -1,94 +1,115 @@
 ﻿using System;
 using System.IO;
+using System.Threading.Channels;
+using System.Threading.Tasks;
 
 namespace LogModule.InnerException
 {
-    public static class InternalException
+    public static class InternalExceptionLogger
     {
-        public const string InnerExceptionsLogFile = "Logs\\LoggerInternalExceptions.log";
-        private const int LOG_FILE_MAX_SIZE_IN_MB = 100;
+
+        #region Channel Definitions
+        private static Channel<Exception> InternalExceptionsChannel = Channel.CreateUnbounded<Exception>(new UnboundedChannelOptions());
+
+        private static ChannelReader<Exception> InternalExceptionsChannelReader = InternalExceptionsChannel.Reader;
+        private static ChannelWriter<Exception> InternalExceptionsChannelWriter = InternalExceptionsChannel.Writer;
+        #endregion
 
 
-        static InternalException()
+        #region Properties
+        private static string InternalExceptionsLogFile { get; set; } = string.Empty;
+        private static short InternalExceptionsMaxLogFileMB { get; set; } = 0;
+        private static bool reflectOnConsole { get; set; } = false;
+
+        #endregion
+
+
+
+        public static void SetLogFile(string internalExceptionsLogFile)
         {
-           if(!Directory.Exists("Logs"))
+            if (string.IsNullOrWhiteSpace(internalExceptionsLogFile))
             {
-                Directory.CreateDirectory("Logs");
+                throw new ArgumentException($"'{nameof(internalExceptionsLogFile)}' cannot be null or whitespace.", nameof(internalExceptionsLogFile));
             }
+
+
+            InternalExceptionsLogFile = internalExceptionsLogFile;
+
+
+            if (!Directory.Exists(Path.GetDirectoryName(internalExceptionsLogFile)))
+            {
+                Directory.CreateDirectory(internalExceptionsLogFile);
+            }
+
+
+        }
+
+        public static void SetLogFileMaxSizeMB(short internalExceptionsMaxLogFileMB)
+        {
+
+            if (internalExceptionsMaxLogFileMB <= 0)
+            {
+                throw new ArgumentException($"'{nameof(internalExceptionsMaxLogFileMB)}' must be greater then zero.", nameof(internalExceptionsMaxLogFileMB));
+            }
+
+            InternalExceptionsMaxLogFileMB = internalExceptionsMaxLogFileMB;
+
+
+        }
+
+        public static void ReflectOnConsole() => reflectOnConsole = true;
+
+        public static void UnReflectOnConsole() => reflectOnConsole = false;
+
+        public static Task StartLogger()
+        {
+            if (string.IsNullOrWhiteSpace(InternalExceptionsLogFile))
+            {
+                throw new ArgumentException($"'{nameof(InternalExceptionsLogFile)}' cannot be null or whitespace.", nameof(InternalExceptionsLogFile));
+            }
+
+
+            if (InternalExceptionsMaxLogFileMB <= 0)
+            {
+                throw new ArgumentException($"'{nameof(InternalExceptionsMaxLogFileMB)}' must be greater then zero.", nameof(InternalExceptionsMaxLogFileMB));
+            }
+
+            return StartInternalExceptionLoggerEngine();
         }
 
 
-        private static int InnerExceptionLogFileSizeMB
+        public static ValueTask LogInternalException(Exception exception)
         {
-            get
-            {
-                try
-                {
-                    return Convert.ToInt32((new FileInfo(InnerExceptionsLogFile).Length / 1024) / 1024);
-                }
-                catch
-                {
-                    return 0;
-                }
-            }
+            return InternalExceptionsChannelWriter.WriteAsync(exception);
         }
 
 
 
-        public static void DeleteInnerExceptionLogFile()
+
+        #region Private Functions
+
+
+        private static Task WriteExceptionToFile(Exception exception)
         {
-            try
+            if (string.IsNullOrWhiteSpace(InternalExceptionsLogFile))
             {
-
-                if (!File.Exists(InnerExceptionsLogFile))
-                {
-                    return;
-                }
-
-
-                if (InnerExceptionLogFileSizeMB
-                     <= LOG_FILE_MAX_SIZE_IN_MB)
-                {
-                    return;
-                }
+                throw new ArgumentException($"'{nameof(InternalExceptionsLogFile)}' cannot be null or whitespace.", nameof(InternalExceptionsLogFile));
             }
-            catch
-            {
 
+            if (InternalExceptionsMaxLogFileMB <= 0)
+            {
+                throw new ArgumentException($"'{nameof(InternalExceptionsMaxLogFileMB)}' must be greater then zero.", nameof(InternalExceptionsMaxLogFileMB));
             }
 
 
+            if (exception == null) return Task.CompletedTask;
 
-
-            try
-            {
-                File.Delete(InnerExceptionsLogFile);
-
-            }
-            catch
-            {
-
-            }
-        }
-
-
-        /// <summary>
-        /// Log the inner exception of Logging module itself !
-        /// </summary>
-        /// <param name="exception"></param>
-        public static void LogInnerException(Exception exception)
-        {
-
-            if (exception == null)
-            {
-                return;
-            }
 
             try
             {
 
 
-                File.AppendAllText(InnerExceptionsLogFile, new LogModel(LogModel.LogTypeEnum.EXCEPTION,
+                return File.AppendAllTextAsync(InternalExceptionsLogFile, new LogModel(LogModel.LogTypeEnum.EXCEPTION,
                                                " Message : " + exception.Message ?? "-",
                                                " InnerMessage : " + (exception.InnerException?.Message ?? "-") +
                                                " , " +
@@ -98,11 +119,90 @@ namespace LogModule.InnerException
             }
             catch
             {
-
+                return Task.CompletedTask;
             }
 
         }
 
 
+        private static Task StartInternalExceptionLoggerEngine()
+        {
+            return Task.Run(async () =>
+             {
+
+                 while (!InternalExceptionsChannelReader.Completion.IsCompleted)
+                 {
+                     Exception exceptionFromChannel = await InternalExceptionsChannelReader.ReadAsync();
+
+                     if (exceptionFromChannel != null)
+                     {
+                         // Reflect on Console
+                         if (reflectOnConsole)
+                         {
+                             Console.ForegroundColor = ConsoleColor.Red;
+                             await Console.Out.WriteLineAsync($"{DateTime.Now}  \"Logger Internal Exception\" thrown : {exceptionFromChannel}");
+                             Console.ForegroundColor = ConsoleColor.White;
+                         }
+
+                         // Delete the log file if it's getting big !
+                         await DeleteInternalExceptionsLogFile();
+
+                         // Save to the log file.
+                         await WriteExceptionToFile(exceptionFromChannel);
+
+                     }
+
+                 }
+
+             });
+        }
+
+
+
+        private static Task<short> GetLogFileSizeMB()
+        {
+            try
+            {
+                if (!string.IsNullOrWhiteSpace(InternalExceptionsLogFile)) return Task.FromResult<short>(0);
+                if (!File.Exists(InternalExceptionsLogFile)) return Task.FromResult<short>(0);
+
+                return Task.FromResult<short>((short)((new FileInfo(InternalExceptionsLogFile).Length / 1024) / 1024));
+            }
+            catch
+            {
+                return Task.FromResult<short>(0);
+            }
+        }
+
+        private static async Task DeleteInternalExceptionsLogFile()
+        {
+            try
+            {
+                if (!string.IsNullOrWhiteSpace(InternalExceptionsLogFile)) return;
+                if (!File.Exists(InternalExceptionsLogFile)) return;
+
+
+                if (await GetLogFileSizeMB() <= InternalExceptionsMaxLogFileMB)
+                {
+                    return;
+                }
+                else
+                {
+                    File.Delete(InternalExceptionsLogFile);
+                }
+            }
+            catch 
+            {
+               
+            }
+
+        }
+
+        #endregion
+
+
+
     }
+
 }
+
