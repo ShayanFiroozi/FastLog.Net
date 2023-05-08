@@ -3,12 +3,12 @@ using System.Text;
 
 namespace LogModule
 {
-    public class LogModel
+    public class LogMessageModel
     {
 
         #region Constructors
 
-        public LogModel(LogTypeEnum LogType,
+        public LogMessageModel(LogTypeEnum LogType,
                           string LogText,
                           string ExtraInfo = "",
                           string Source = "")
@@ -21,7 +21,7 @@ namespace LogModule
         }
 
 
-        public LogModel()
+        public LogMessageModel()
         {
             // This default constructor is neccessary for LiteDB.
         }

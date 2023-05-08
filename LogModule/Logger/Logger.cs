@@ -61,7 +61,7 @@ namespace LogModule
         {
             try
             {
-                _executeLogging(new LogModel(LogModel.LogTypeEnum.INFO, LogText, ExtraInfo, Source));
+                _executeLogging(new LogMessageModel(LogMessageModel.LogTypeEnum.INFO, LogText, ExtraInfo, Source));
             }
             catch (Exception ex)
             {
@@ -85,7 +85,7 @@ namespace LogModule
         {
             try
             {
-                _executeLogging(new LogModel(LogModel.LogTypeEnum.WARNING, LogText, ExtraInfo, Source));
+                _executeLogging(new LogMessageModel(LogMessageModel.LogTypeEnum.WARNING, LogText, ExtraInfo, Source));
             }
             catch (Exception ex)
             {
@@ -112,7 +112,7 @@ namespace LogModule
         {
             try
             {
-                _executeLogging(new LogModel(LogModel.LogTypeEnum.ERROR, LogText, ExtraInfo, Source));
+                _executeLogging(new LogMessageModel(LogMessageModel.LogTypeEnum.ERROR, LogText, ExtraInfo, Source));
             }
             catch (Exception ex)
             {
@@ -144,7 +144,7 @@ namespace LogModule
 
             try
             {
-                _executeLogging(new LogModel(LogModel.LogTypeEnum.EXCEPTION,
+                _executeLogging(new LogMessageModel(LogMessageModel.LogTypeEnum.EXCEPTION,
                                                " Message : " + exception.Message ?? "-",
                                                " InnerMessage : " + (exception.InnerException?.Message ?? "-") +
                                                " , " +
@@ -174,7 +174,7 @@ namespace LogModule
         {
             try
             {
-                _executeLogging(new LogModel(LogModel.LogTypeEnum.DEBUG, LogText, ExtraInfo, Source));
+                _executeLogging(new LogMessageModel(LogMessageModel.LogTypeEnum.DEBUG, LogText, ExtraInfo, Source));
             }
             catch (Exception ex)
             {
@@ -268,7 +268,7 @@ namespace LogModule
 
 
         #region PrivateMethods
-        private void _executeLogging(LogModel LogMessage)
+        private void _executeLogging(LogMessageModel LogMessage)
         {
             if (LogMessage is null)
             {

@@ -80,7 +80,14 @@ namespace LogModule.InnerException
 
         public static ValueTask LogInternalException(Exception exception)
         {
-            return InternalExceptionsChannelWriter.WriteAsync(exception);
+            if ((exception is not null))
+            {
+                return InternalExceptionsChannelWriter.WriteAsync(exception);
+            }
+            else
+            {
+                return ValueTask.CompletedTask;
+            }
         }
 
 
@@ -109,7 +116,7 @@ namespace LogModule.InnerException
             {
 
 
-                return File.AppendAllTextAsync(InternalExceptionsLogFile, new LogModel(LogModel.LogTypeEnum.EXCEPTION,
+                return File.AppendAllTextAsync(InternalExceptionsLogFile, new LogMessageModel(LogMessageModel.LogTypeEnum.EXCEPTION,
                                                " Message : " + exception.Message ?? "-",
                                                " InnerMessage : " + (exception.InnerException?.Message ?? "-") +
                                                " , " +
@@ -132,7 +139,7 @@ namespace LogModule.InnerException
 
                  while (!InternalExceptionsChannelReader.Completion.IsCompleted)
                  {
-                     Exception exceptionFromChannel = await InternalExceptionsChannelReader.ReadAsync();
+                     Exception? exceptionFromChannel = await InternalExceptionsChannelReader.ReadAsync();
 
                      if (exceptionFromChannel != null)
                      {
@@ -191,9 +198,9 @@ namespace LogModule.InnerException
                     File.Delete(InternalExceptionsLogFile);
                 }
             }
-            catch 
+            catch
             {
-               
+
             }
 
         }

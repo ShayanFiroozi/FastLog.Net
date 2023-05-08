@@ -5,7 +5,7 @@
     public interface IFileLogger : ILoggerAgent
     {
 
-        public void SaveLog(LogModel logMessage);
+        public void SaveLog(LogMessageModel logMessage);
 
 
 
