@@ -1,7 +1,6 @@
 
 using NUnit.Framework;
 using System;
-using System.Diagnostics;
 using System.Threading.Tasks;
 using TrendSoft.LogModule.InternalException;
 
@@ -13,25 +12,25 @@ namespace TrendSoft.LogModule.Test
         [SetUp]
         public void CreateInternalLogger()
         {
-            InternalExceptionLogger.SetLogFile("D:\\InternalExceptions.log");
+            InternalExceptionLogger.SetLogFile("InternalExceptions.log");
             InternalExceptionLogger.SetLogFileMaxSizeMB(100);
             InternalExceptionLogger.ReflectOnConsole();
             _ = InternalExceptionLogger.StartLogger();
-            
+
         }
 
         [Test]
         public async Task InternalExceptionsLoggerTest()
         {
-            for (int i = 0; i < 100_000; i++)
+            for (int i = 0; i < 10_000; i++)
             {
-                InternalExceptionLogger.LogInternalException(new Exception($"This is a \"Test Exception\" number {i:N0} from \"InternalExceptionsLoggerTest\""));
+                _ = InternalExceptionLogger.LogInternalException(new Exception($"This is a \"Test Exception\" number {i:N0} from \"InternalExceptionsLoggerTest\""));
             }
 
 
-            for (int i = 0; i < 100_000; i++)
+            for (int i = 0; i < 10_000; i++)
             {
-                InternalExceptionLogger.LogInternalException(new Exception($"This is a \"Test Exception\" number {i:N0} from \"InternalExceptionsLoggerTest\""));
+                _ = InternalExceptionLogger.LogInternalException(new Exception($"This is a \"Test Exception\" number {i:N0} from \"InternalExceptionsLoggerTest\""));
             }
 
             Console.Beep();

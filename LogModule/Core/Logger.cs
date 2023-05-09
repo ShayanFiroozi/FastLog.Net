@@ -21,7 +21,7 @@ namespace TrendSoft.LogModule.Core
 
         public Logger()
         {
-           
+
         }
 
         #endregion

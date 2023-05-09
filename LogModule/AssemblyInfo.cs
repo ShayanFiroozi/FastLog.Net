@@ -10,7 +10,7 @@ using System.Runtime.InteropServices;
 [assembly: AssemblyTitle("TrendSoft® Logging Module")]
 [assembly: AssemblyDescription("High performance logger for .NET")]
 [assembly: AssemblyConfiguration("")]
-[assembly: AssemblyCompany("TrendSoft® - Bandar Abbas , Iran")]
+[assembly: AssemblyCompany("TrendSoft® , Bandar Abbas , Iran")]
 [assembly: AssemblyProduct("TrendSoft® Logging Module")]
 [assembly: AssemblyCopyright("Copyright © 2023 TrendSoft® (MIT License)")]
 [assembly: AssemblyTrademark("Shayan Firoozi")]
