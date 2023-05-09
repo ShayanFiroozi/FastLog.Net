@@ -1,7 +1,7 @@
 ﻿using System;
 using System.Text;
 
-namespace LogModule
+namespace TrendSoft.LogModule.Models
 {
     public class LogMessageModel
     {

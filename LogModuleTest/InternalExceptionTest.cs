@@ -1,10 +1,11 @@
-using LogModule.InnerException;
+
 using NUnit.Framework;
 using System;
 using System.Diagnostics;
 using System.Threading.Tasks;
+using TrendSoft.LogModule.InternalException;
 
-namespace LogModuleTest
+namespace TrendSoft.LogModule.Test
 {
     public class InternalExceptionTest
     {

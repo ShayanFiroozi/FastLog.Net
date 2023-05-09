@@ -1,9 +1,12 @@
-﻿using LogModule.InnerException;
+﻿
 using System;
 using System.Collections.Concurrent;
 using System.Threading.Tasks;
+using TrendSoft.LogModule.Interfaces;
+using TrendSoft.LogModule.InternalException;
+using TrendSoft.LogModule.Models;
 
-namespace LogModule
+namespace TrendSoft.LogModule.Core
 {
 
     public class Logger : IDisposable

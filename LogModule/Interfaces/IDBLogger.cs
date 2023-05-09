@@ -1,7 +1,7 @@
 ﻿//using System;
 //using System.Threading.Tasks;
 
-//namespace LogModule
+//namespace TrendSoft.LogModule.Interfaces
 //{
 //    public interface IDBLogger : ILogger
 //    {

@@ -1,4 +1,4 @@
-﻿namespace LogModule
+﻿namespace TrendSoft.LogModule.Interfaces
 {
     public interface ILoggerAgent
     {

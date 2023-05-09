@@ -23,8 +23,4 @@
     <DebugType>full</DebugType>
   </PropertyGroup>
 
-  <Target Name="PostBuild" AfterTargets="PostBuildEvent">
-    <Exec Command="if $(DefineConstants.Contains(publish)) == True (&#xD;&#xA;&quot;C:\Program Files (x86)\Eziriz\.NET Reactor\dotNET_Reactor.Console.exe&quot; -file $(TargetPath) -targetfile $(TargetPath) -licensed -antitamp 1 -anti_debug 1 -hide_calls 1 -hide_calls_internals 1 -control_flow_obfuscation 1 -flow_level 9 -resourceencryption 1 -antistrong 1 -virtualization 1 -necrobit 1 -obfuscation 1 -antistrong 1 -short_strings 1 -stealth_mode 1 -all_params 1 -incremental_obfuscation 1 -unprintable_characters 1 -obfuscate_public_types 0&#xD;&#xA;)" />
-  </Target>
-
 </Project>

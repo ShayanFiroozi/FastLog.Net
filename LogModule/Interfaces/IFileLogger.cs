@@ -1,6 +1,7 @@
-﻿namespace LogModule
-{
+﻿using TrendSoft.LogModule.Models;
 
+namespace TrendSoft.LogModule.Interfaces
+{
 
     public interface IFileLogger : ILoggerAgent
     {

@@ -1,9 +1,12 @@
-﻿using LogModule.InnerException;
+﻿
 using System;
 using System.IO;
 using System.Threading;
+using TrendSoft.LogModule.Interfaces;
+using TrendSoft.LogModule.InternalException;
+using TrendSoft.LogModule.Models;
 
-namespace LogModule.Agents
+namespace TrendSoft.LogModule.Agents
 {
     public class FileLogger : IFileLogger
     {

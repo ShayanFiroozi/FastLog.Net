@@ -2,8 +2,9 @@
 using System.IO;
 using System.Threading.Channels;
 using System.Threading.Tasks;
+using TrendSoft.LogModule.Models;
 
-namespace LogModule.InnerException
+namespace TrendSoft.LogModule.InternalException
 {
     public static class InternalExceptionLogger
     {
