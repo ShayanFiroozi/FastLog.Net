@@ -1,186 +1,208 @@
-﻿
-using System;
+﻿using System;
 using System.IO;
-using System.Threading;
+using System.Threading.Channels;
+using System.Threading.Tasks;
 using TrendSoft.LogModule.Interfaces;
-using TrendSoft.LogModule.InternalException;
 using TrendSoft.LogModule.Models;
 
 namespace TrendSoft.LogModule.Agents
 {
-    public class FileLogger : IFileLogger
+    public class FileLogger : ILoggerAgent
     {
 
+        #region Channel Definitions
 
-        private readonly int LOG_FILE_MAX_SIZE_IN_MB = 0;
+        private Channel<LogMessageModel> FileLoggerChannel = Channel.CreateUnbounded<LogMessageModel>(new UnboundedChannelOptions());
 
-        private readonly string _LogFile;
+        private ChannelReader<LogMessageModel> FileLoggerChannelReader;
+        private ChannelWriter<LogMessageModel> FileLoggerChannelWriter;
+
+        #endregion
 
 
         #region Properties
 
+        public string LogFile { get; private set; } = string.Empty;
+        public short MaxLogFileSizeMB { get; private set; } = 0;
 
-        public string LogFile => _LogFile;
+        #endregion
 
 
-        public int LogFileSizeMB
+        public FileLogger()
         {
-            get
+            ChannelReader<LogMessageModel> FileLoggerChannelReader = FileLoggerChannel.Reader;
+            ChannelWriter<LogMessageModel> FileLoggerChannelWriter = FileLoggerChannel.Writer;
+        }
+
+        public void SetLogFile(string LogFile)
+        {
+            if (string.IsNullOrWhiteSpace(LogFile))
             {
-                try
-                {
-                    return Convert.ToInt32((new FileInfo(LogFile).Length / 1024) / 1024);
-                }
-                catch (Exception ex)
-                {
-                    InternalExceptionLogger.LogInternalException(ex);
-                    return 0;
-                }
+                throw new ArgumentException($"'{nameof(LogFile)}' cannot be null or whitespace.", nameof(LogFile));
+            }
+
+
+            this.LogFile = LogFile;
+
+
+            if (!Directory.Exists(Path.GetDirectoryName(LogFile)))
+            {
+                Directory.CreateDirectory(LogFile);
+            }
+
+
+        }
+
+        public void SetLogFileMaxSizeMB(short MaxLogFileSizeMB)
+        {
+
+            if (MaxLogFileSizeMB <= 0)
+            {
+                throw new ArgumentException($"'{nameof(MaxLogFileSizeMB)}' must be greater then zero.", nameof(MaxLogFileSizeMB));
+            }
+
+            this.MaxLogFileSizeMB = MaxLogFileSizeMB;
+
+
+        }
+
+        public Task StartLogger()
+        {
+            if (string.IsNullOrWhiteSpace(LogFile))
+            {
+                throw new ArgumentException($"'{nameof(LogFile)}' cannot be null or whitespace.", nameof(LogFile));
+            }
+
+
+            if (MaxLogFileSizeMB <= 0)
+            {
+                throw new ArgumentException($"'{nameof(MaxLogFileSizeMB)}' must be greater then zero.", nameof(MaxLogFileSizeMB));
+            }
+
+            return StartFileLoggerEngine();
+        }
+
+
+        public ValueTask SaveLog(LogMessageModel LogModel)
+        {
+            if ((LogModel is not null))
+            {
+                return FileLoggerChannelWriter.WriteAsync(LogModel);
+            }
+            else
+            {
+                return ValueTask.CompletedTask;
             }
         }
 
 
 
-        #endregion
+
+        #region Private Functions
 
 
-        #region Constructors
-
-
-        public FileLogger(string LogFile,
-                          int LOG_FILE_MAX_SIZE_IN_MB = 100)
+        private Task AppendLogModelToFile(LogMessageModel LogModel)
         {
+            if (string.IsNullOrWhiteSpace(LogFile))
+            {
+                throw new ArgumentException($"'{nameof(LogFile)}' cannot be null or whitespace.", nameof(LogFile));
+            }
+
+            if (MaxLogFileSizeMB <= 0)
+            {
+                throw new ArgumentException($"'{nameof(MaxLogFileSizeMB)}' must be greater then zero.", nameof(MaxLogFileSizeMB));
+            }
+
+
+            if (LogModel is null) return Task.CompletedTask;
+
 
             try
             {
 
-                if (string.IsNullOrWhiteSpace(LogFile))
-                {
-                    throw new ArgumentNullException("Invalid logging path or file name");
-                }
 
-
-                _LogFile = LogFile;
-                this.LOG_FILE_MAX_SIZE_IN_MB = LOG_FILE_MAX_SIZE_IN_MB;
-
-
-                // Create the log file directory
-
-                Directory.CreateDirectory(new FileInfo(this.LogFile).Directory.FullName);
-
-
-
-                // Delete the log file if it's bigger than LOG_FILE_MAX_SIZE_IN_MB
-
-                DeleteLogFile();
-
+                return File.AppendAllTextAsync(LogFile, LogModel.GetLogMessage().ToString());
 
             }
-            catch (Exception ex)
+            catch
             {
-                InternalExceptionLogger.LogInternalException(ex);
+                return Task.CompletedTask;
             }
+
         }
 
 
-        #endregion
+        private Task StartFileLoggerEngine()
+        {
+            return Task.Run(async () =>
+            {
+
+                while (!FileLoggerChannelReader.Completion.IsCompleted)
+                {
+                    LogMessageModel? LogModelFromChannel = await FileLoggerChannelReader.ReadAsync();
+
+                    if (LogModelFromChannel is not null)
+                    {
+                      
+                        // Delete the log file if it's getting big !
+                        await DeleteInternalExceptionsLogFile();
+
+                        // Save to the log file.
+                        await AppendLogModelToFile(LogModelFromChannel);
+
+                    }
+
+                }
+
+            });
+        }
 
 
 
-        #region Methods
-
-
-        public void DeleteLogFile()
+        private Task<short> GetLogFileSizeMB()
         {
             try
             {
+                if (!string.IsNullOrWhiteSpace(LogFile)) return Task.FromResult<short>(0);
+                if (!File.Exists(LogFile)) return Task.FromResult<short>(0);
 
-                if (!File.Exists(LogFile))
+                return Task.FromResult<short>((short)((new FileInfo(LogFile).Length / 1024) / 1024));
+            }
+            catch
+            {
+                return Task.FromResult<short>(0);
+            }
+        }
+
+        private async Task DeleteInternalExceptionsLogFile()
+        {
+            try
+            {
+                if (!string.IsNullOrWhiteSpace(LogFile)) return;
+                if (!File.Exists(LogFile)) return;
+
+
+                if (await GetLogFileSizeMB() <= MaxLogFileSizeMB)
                 {
                     return;
                 }
-
-
-                if (LogFileSizeMB
-                     <= LOG_FILE_MAX_SIZE_IN_MB)
+                else
                 {
-                    return;
+                    File.Delete(LogFile);
                 }
             }
-            catch (Exception ex)
+            catch
             {
-                InternalExceptionLogger.LogInternalException(ex);
+
             }
 
-
-
-
-            try
-            {
-                File.Delete(LogFile);
-
-                SaveLog(new LogMessageModel(LogMessageModel.LogTypeEnum.INFO,
-                                       "The Log file has been deleted.",
-                                       $"Reached the maximum file size ({LOG_FILE_MAX_SIZE_IN_MB:N0} MB)"));
-
-            }
-            catch (Exception ex)
-            {
-                InternalExceptionLogger.LogInternalException(ex);
-            }
         }
-
-
-
-        public void SaveLog(LogMessageModel logMessage)
-        {
-
-            try
-            {
-
-                if (logMessage == null)
-                {
-                    throw new ArgumentNullException("logMessage parameter can not be null.");
-                }
-
-
-                WriteToFileThreadSafe(LogFile, logMessage.GetLogMessage().ToString());
-
-
-            }
-            catch (Exception ex)
-            {
-                InternalExceptionLogger.LogInternalException(ex);
-            }
-        }
-
 
         #endregion
-
-
-        private static readonly ReaderWriterLockSlim _readWriteLock = new();
-
-        private void WriteToFileThreadSafe(string path, string text)
-        {
-            // Set Status to Locked
-            _readWriteLock.EnterWriteLock();
-            try
-            {
-                // Append text to the file
-                using (StreamWriter sw = File.AppendText(path))
-                {
-                    sw.WriteLine(text);
-                    sw.Close();
-                }
-            }
-            finally
-            {
-                // Release lock
-                _readWriteLock.ExitWriteLock();
-            }
-        }
 
 
 
     }
+
 }
+

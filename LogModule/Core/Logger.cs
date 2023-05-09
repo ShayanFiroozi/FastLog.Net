@@ -48,10 +48,6 @@ namespace TrendSoft.LogModule.Core
 
         }
 
-#if Test
-#warning Be Careful ---> Test Mode is On !
-#endif
-
         #endregion
 
 
@@ -271,16 +267,16 @@ namespace TrendSoft.LogModule.Core
 
 
         #region PrivateMethods
-        private void _executeLogging(LogMessageModel LogMessage)
+        private Task ExecuteLoggingProcess(LogMessageModel LogMessage)
         {
             if (LogMessage is null)
             {
-                return;
+                return Task.CompletedTask;
             }
 
-            foreach (ILoggerAgent _logger in _loggingAgents)
+            foreach (ILoggerAgent logger in _loggingAgents)
             {
-                if (_logger is null)
+                if (logger is null)
                 {
                     continue;
                 }
@@ -288,14 +284,9 @@ namespace TrendSoft.LogModule.Core
                 try
                 {
 
-                    if (_logger is IFileLogger)
-                    {
-                        ((IFileLogger)_logger)?.SaveLog(logMessage: LogMessage);
-                    }
-                    //else if (_logger is IDBLogger)
-                    //{
-                    //    ((IDBLogger)_logger)?.SaveLog(logMessage: LogMessage, logDB: logDB); // inject the logDB
-                    //}
+                    logger?.SaveLog(logMessage: LogMessage);
+
+
                 }
                 catch (Exception ex)
                 {
@@ -303,6 +294,8 @@ namespace TrendSoft.LogModule.Core
                 }
             }
 
+
+            return Task.CompletedTask;
 
         }
         #endregion

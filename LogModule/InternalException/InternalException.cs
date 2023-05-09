@@ -19,8 +19,8 @@ namespace TrendSoft.LogModule.InternalException
 
         #region Properties
         private static string InternalExceptionsLogFile { get; set; } = string.Empty;
-        private static short InternalExceptionsMaxLogFileMB { get; set; } = 0;
-        private static bool reflectOnConsole { get; set; } = false;
+        private static short InternalExceptionsMaxLogFileSizeMB { get; set; } = 0;
+        private static bool ReflectOnConsole { get; set; } = false;
 
         #endregion
 
@@ -53,14 +53,14 @@ namespace TrendSoft.LogModule.InternalException
                 throw new ArgumentException($"'{nameof(internalExceptionsMaxLogFileMB)}' must be greater then zero.", nameof(internalExceptionsMaxLogFileMB));
             }
 
-            InternalExceptionsMaxLogFileMB = internalExceptionsMaxLogFileMB;
+            InternalExceptionsMaxLogFileSizeMB = internalExceptionsMaxLogFileMB;
 
 
         }
 
-        public static void ReflectOnConsole() => reflectOnConsole = true;
+        public static void DoReflectOnConsole() => ReflectOnConsole = true;
 
-        public static void UnReflectOnConsole() => reflectOnConsole = false;
+        public static void DoNotReflectOnConsole() => ReflectOnConsole = false;
 
         public static Task StartLogger()
         {
@@ -70,9 +70,9 @@ namespace TrendSoft.LogModule.InternalException
             }
 
 
-            if (InternalExceptionsMaxLogFileMB <= 0)
+            if (InternalExceptionsMaxLogFileSizeMB <= 0)
             {
-                throw new ArgumentException($"'{nameof(InternalExceptionsMaxLogFileMB)}' must be greater then zero.", nameof(InternalExceptionsMaxLogFileMB));
+                throw new ArgumentException($"'{nameof(InternalExceptionsMaxLogFileSizeMB)}' must be greater then zero.", nameof(InternalExceptionsMaxLogFileSizeMB));
             }
 
             return StartInternalExceptionLoggerEngine();
@@ -104,13 +104,13 @@ namespace TrendSoft.LogModule.InternalException
                 throw new ArgumentException($"'{nameof(InternalExceptionsLogFile)}' cannot be null or whitespace.", nameof(InternalExceptionsLogFile));
             }
 
-            if (InternalExceptionsMaxLogFileMB <= 0)
+            if (InternalExceptionsMaxLogFileSizeMB <= 0)
             {
-                throw new ArgumentException($"'{nameof(InternalExceptionsMaxLogFileMB)}' must be greater then zero.", nameof(InternalExceptionsMaxLogFileMB));
+                throw new ArgumentException($"'{nameof(InternalExceptionsMaxLogFileSizeMB)}' must be greater then zero.", nameof(InternalExceptionsMaxLogFileSizeMB));
             }
 
 
-            if (exception == null) return Task.CompletedTask;
+            if (exception is null) return Task.CompletedTask;
 
 
             try
@@ -135,7 +135,7 @@ namespace TrendSoft.LogModule.InternalException
 
         private static Task StartInternalExceptionLoggerEngine()
         {
-            return Task.Run(async () =>
+            return Task.Run((Func<Task>)(async () =>
              {
 
                  while (!InternalExceptionsChannelReader.Completion.IsCompleted)
@@ -145,7 +145,7 @@ namespace TrendSoft.LogModule.InternalException
                      if (exceptionFromChannel != null)
                      {
                          // Reflect on Console
-                         if (reflectOnConsole)
+                         if (InternalExceptionLogger.ReflectOnConsole)
                          {
                              Console.ForegroundColor = ConsoleColor.Red;
                              await Console.Out.WriteLineAsync($"{DateTime.Now}  \"Logger Internal Exception\" thrown : {exceptionFromChannel}");
@@ -162,7 +162,7 @@ namespace TrendSoft.LogModule.InternalException
 
                  }
 
-             });
+             }));
         }
 
 
@@ -190,7 +190,7 @@ namespace TrendSoft.LogModule.InternalException
                 if (!File.Exists(InternalExceptionsLogFile)) return;
 
 
-                if (await GetLogFileSizeMB() <= InternalExceptionsMaxLogFileMB)
+                if (await GetLogFileSizeMB() <= InternalExceptionsMaxLogFileSizeMB)
                 {
                     return;
                 }

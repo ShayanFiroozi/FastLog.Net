@@ -1,12 +1,11 @@
-﻿namespace TrendSoft.LogModule.Interfaces
+﻿using System.Threading.Tasks;
+using TrendSoft.LogModule.Models;
+
+namespace TrendSoft.LogModule.Interfaces
 {
     public interface ILoggerAgent
     {
-        public string LogFile { get; }
-
-        public int LogFileSizeMB { get; }
-
-        public void DeleteLogFile();
+        public ValueTask SaveLog(LogMessageModel logMessage);
 
     }
 }
