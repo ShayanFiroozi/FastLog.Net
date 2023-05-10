@@ -45,6 +45,9 @@ namespace TrendSoft.LogModule.Agents
 
             try
             {
+
+                CheckLogFileSize();
+
                 return File.AppendAllTextAsync(LogFile, LogModel.GetLogMessage().ToString());
 
             }
@@ -55,9 +58,6 @@ namespace TrendSoft.LogModule.Agents
 
             return Task.CompletedTask;
         }
-
-
-
 
 
         private short GetLogFileSizeMB()
