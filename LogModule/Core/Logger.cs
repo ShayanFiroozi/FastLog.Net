@@ -45,7 +45,7 @@ namespace TrendSoft.LogModule.Core
                       short internalExceptionsLogFileMaxSizeMB = 100,
                       bool reflectOnConsole = false)
         {
-            if (internalExceptionsLogFileMaxSizeMB<=0)
+            if (internalExceptionsLogFileMaxSizeMB <= 0)
             {
                 throw new ArgumentException($"'{nameof(internalExceptionsLogFileMaxSizeMB)}' must be greater than zero.", nameof(internalExceptionsLogFileMaxSizeMB));
             }
@@ -89,6 +89,11 @@ namespace TrendSoft.LogModule.Core
                                  string ExtraInfo = "",
                                  string Source = "")
         {
+            if (string.IsNullOrWhiteSpace(LogText))
+            {
+                return ValueTask.CompletedTask;
+            }
+
             try
             {
                 return LoggerChannelWriter.WriteAsync(new LogEventModel(LogEventModel.LogTypeEnum.INFO,
@@ -112,6 +117,11 @@ namespace TrendSoft.LogModule.Core
                                     string ExtraInfo = "",
                                     string Source = "")
         {
+            if (string.IsNullOrWhiteSpace(LogText))
+            {
+                return ValueTask.CompletedTask;
+            }
+
             try
             {
                 return LoggerChannelWriter.WriteAsync(new LogEventModel(LogEventModel.LogTypeEnum.WARNING,
@@ -133,6 +143,11 @@ namespace TrendSoft.LogModule.Core
                                   string ExtraInfo = "",
                                   string Source = "")
         {
+            if (string.IsNullOrWhiteSpace(LogText))
+            {
+                return ValueTask.CompletedTask;
+            }
+
             try
             {
                 return LoggerChannelWriter.WriteAsync(new LogEventModel(LogEventModel.LogTypeEnum.ERROR,
@@ -161,12 +176,7 @@ namespace TrendSoft.LogModule.Core
 
             try
             {
-                return LoggerChannelWriter.WriteAsync(new LogEventModel(LogEventModel.LogTypeEnum.EXCEPTION,
-                                               " Message : " + exception.Message ?? "-",
-                                               " InnerMessage : " + (exception.InnerException?.Message ?? "-") +
-                                               " , " +
-                                               " StackTrace : " + (exception.StackTrace ?? "-"),
-                                                 (exception.Source ?? "-")));
+                return LoggerChannelWriter.WriteAsync(new LogEventModel(exception));
             }
             catch (Exception ex)
             {
@@ -185,6 +195,11 @@ namespace TrendSoft.LogModule.Core
                           string ExtraInfo = "",
                           string Source = "")
         {
+            if (string.IsNullOrWhiteSpace(LogText))
+            {
+                return ValueTask.CompletedTask;
+            }
+
             try
             {
                 return LoggerChannelWriter.WriteAsync(new LogEventModel(LogEventModel.LogTypeEnum.DEBUG,

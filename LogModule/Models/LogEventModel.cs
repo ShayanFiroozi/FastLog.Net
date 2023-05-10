@@ -22,6 +22,18 @@ namespace TrendSoft.LogModule.Models
         }
 
 
+        public LogEventModel(Exception exception)
+            : this(LogEventModel.LogTypeEnum.EXCEPTION,
+                   " Message : " + exception.Message ?? "-",
+                   " InnerMessage : " + (exception.InnerException?.Message ?? "-") +
+                   " , " +
+                   " StackTrace : " + (exception.StackTrace ?? "-"),
+                   (exception.Source ?? "-"))
+        {
+        }
+
+
+
         public LogEventModel()
         {
             // This default constructor is neccessary for LiteDB.
@@ -73,7 +85,7 @@ namespace TrendSoft.LogModule.Models
 
 
 
-      
+
         public StringBuilder GetLogMessage()
         {
             StringBuilder finalMessage = new();
