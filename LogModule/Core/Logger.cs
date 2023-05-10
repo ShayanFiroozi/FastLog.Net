@@ -31,8 +31,6 @@ namespace TrendSoft.LogModule.Core
 
         private List<ILoggerAgent> _loggerAgents = new();
 
-        public bool ReflectOnConsole { get; private set; } = false;
-
         public string InternalExceptionsLogFile { get; private set; }
 
         #endregion
@@ -42,8 +40,7 @@ namespace TrendSoft.LogModule.Core
         #region Constructors
 
         public Logger(string internalExceptionsLogFile,
-                      short internalExceptionsLogFileMaxSizeMB = 100,
-                      bool reflectOnConsole = false)
+                      short internalExceptionsLogFileMaxSizeMB = 100)
         {
             if (internalExceptionsLogFileMaxSizeMB <= 0)
             {
@@ -58,9 +55,8 @@ namespace TrendSoft.LogModule.Core
 
             InternalExceptionsLogFile = internalExceptionsLogFile;
 
-            ReflectOnConsole = reflectOnConsole;
 
-            // Initialize "Internal Logger Exceptions"
+            // Initialize "Internal Logger Exceptions" logger.
             InternalExceptionLogger.SetLogFile(InternalExceptionsLogFile);
             InternalExceptionLogger.SetLogFileMaxSizeMB(internalExceptionsLogFileMaxSizeMB);
 
@@ -83,7 +79,7 @@ namespace TrendSoft.LogModule.Core
 
 
 
-        #region LoggingMethod
+        #region Logging Functions
 
         public ValueTask LogInfo(string LogText,
                                  string ExtraInfo = "",
@@ -223,6 +219,53 @@ namespace TrendSoft.LogModule.Core
 
 
 
+
+
+
+        public Task StartLogger()
+        {
+            return Task.Run(async () =>
+            {
+
+                while (!LoggerChannelReader.Completion.IsCompleted)
+                {
+                    LogEventModel? EventModelFromChannel = await LoggerChannelReader.ReadAsync().ConfigureAwait(false);
+
+                    if (EventModelFromChannel is not null)
+                    {
+
+                        // Consume the LogEventModel on channel one by one with each logger agent in the agent list !
+                        foreach (ILoggerAgent logger in _loggerAgents)
+                        {
+                            if (logger is null)
+                            {
+                                continue;
+                            }
+
+                            try
+                            {
+
+                                await logger.LogEvent(logMessage: EventModelFromChannel).ConfigureAwait(false);
+
+
+                            }
+                            catch (Exception ex)
+                            {
+                                InternalExceptionLogger.LogInternalException(ex);
+                            }
+                        }
+
+                    }
+
+                }
+
+            });
+        }
+
+
+
+
+
         #region DisposeMethods
 
         private bool disposed = false;
@@ -260,44 +303,6 @@ namespace TrendSoft.LogModule.Core
             GC.SuppressFinalize(this);
         }
 
-
-        #endregion
-
-
-
-        #region Private Functions
-
-        private Task ExecuteLoggingProcess(LogEventModel LogMessage)
-        {
-            if (LogMessage is null)
-            {
-                return Task.CompletedTask;
-            }
-
-            foreach (ILoggerAgent logger in _loggerAgents)
-            {
-                if (logger is null)
-                {
-                    continue;
-                }
-
-                try
-                {
-
-                    logger?.LogEvent(logMessage: LogMessage);
-
-
-                }
-                catch (Exception ex)
-                {
-                    InternalExceptionLogger.LogInternalException(ex);
-                }
-            }
-
-
-            return Task.CompletedTask;
-
-        }
 
         #endregion
 

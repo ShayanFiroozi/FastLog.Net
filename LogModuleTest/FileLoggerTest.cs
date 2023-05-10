@@ -39,7 +39,7 @@ namespace TrendSoft.LogModule.Test
 
             for (int i = 0; i < 20_000; i++)
             {
-                await FileLogger.LogEvent(new LogEventModel(new Exception($"This is a \"Test Exception\" number {i:N0} from \"InternalExceptionsLoggerTest\"")));
+                await FileLogger.LogEvent(new LogEventModel(new Exception($"This is a \"Test Exception\" number {i:N0} from \"FileLoggerWriteTest\"")));
             }
 
             Console.Beep();
