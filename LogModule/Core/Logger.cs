@@ -269,7 +269,7 @@ namespace TrendSoft.LogModule.Core
                 try
                 {
 
-                    logger?.SaveLog(logMessage: LogMessage);
+                    logger?.LogEvent(logMessage: LogMessage);
 
 
                 }

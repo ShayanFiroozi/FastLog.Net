@@ -13,7 +13,6 @@ namespace TrendSoft.LogModule.InternalException
         #region Properties
         private static string InternalExceptionsLogFile { get; set; } = string.Empty;
         private static short InternalExceptionsMaxLogFileSizeMB { get; set; } = 0;
-        private static bool ReflectOnConsole { get; set; } = false;
 
         #endregion
 
@@ -51,10 +50,6 @@ namespace TrendSoft.LogModule.InternalException
 
         }
 
-        public static void DoReflectOnConsole() => ReflectOnConsole = true;
-
-        public static void DoNotReflectOnConsole() => ReflectOnConsole = false;
-
 
         public static void LogInternalException(Exception exception)
         {
@@ -75,34 +70,31 @@ namespace TrendSoft.LogModule.InternalException
             try
             {
 
-
-                // Reflect on Console
-                if (InternalExceptionLogger.ReflectOnConsole)
-                {
-                    Console.ForegroundColor = ConsoleColor.Red;
-                    Console.WriteLine($"{DateTime.Now}  \"Logger Internal Exception\" thrown : {exception}");
-                    Console.ForegroundColor = ConsoleColor.White;
-                }
-
-
-
                 try
                 {
                     CheckInternalExceptionsLogFileSize();
                 }
-                catch{ }
+                catch { }
 
-                File.AppendAllText(InternalExceptionsLogFile, new LogMessageModel(LogMessageModel.LogTypeEnum.EXCEPTION,
-                                               " Message : " + exception.Message ?? "-",
-                                               " InnerMessage : " + (exception.InnerException?.Message ?? "-") +
-                                               " , " +
-                                               " StackTrace : " + (exception.StackTrace ?? "-"),
-                                                (exception.Source ?? "-")).GetLogMessage().ToString() + Environment.NewLine);
+                using LogMessageModel logtosave = new LogMessageModel(LogMessageModel.LogTypeEnum.EXCEPTION,
+                                                            " message : " + exception.Message ?? "-",
+                                                            " innermessage : " + (exception.InnerException?.Message ?? "-") +
+                                                            " , " +
+                                                            " stacktrace : " + (exception.StackTrace ?? "-"),
+                                                             (exception.Source ?? "-"));
+
+
+                File.AppendAllText(InternalExceptionsLogFile, logtosave.GetLogMessage().ToString() + Environment.NewLine);
 
             }
             catch
             {
                 return;
+            }
+
+            finally
+            {
+                exception = null;
             }
 
         }

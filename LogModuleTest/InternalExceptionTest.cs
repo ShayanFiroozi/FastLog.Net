@@ -14,7 +14,7 @@ namespace TrendSoft.LogModule.Test
         {
             InternalExceptionLogger.SetLogFile("D:\\InternalExceptions.log");
             InternalExceptionLogger.SetLogFileMaxSizeMB(100);
-            InternalExceptionLogger.DoReflectOnConsole();
+            
             
 
         }
@@ -29,7 +29,7 @@ namespace TrendSoft.LogModule.Test
             }
 
 
-            for (int i = 0; i < 10_000; i++)
+            for (int i = 0; i < 20_000; i++)
             {
                 InternalExceptionLogger.LogInternalException(new Exception($"This is a \"Test Exception\" number {i:N0} from \"InternalExceptionsLoggerTest\""));
             }

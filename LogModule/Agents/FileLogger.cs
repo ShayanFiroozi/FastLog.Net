@@ -38,7 +38,7 @@ namespace TrendSoft.LogModule.Agents
 
 
 
-        public Task SaveLog(LogMessageModel LogModel)
+        public Task LogEvent(LogMessageModel LogModel)
         {
 
             if (LogModel is null) return Task.CompletedTask;

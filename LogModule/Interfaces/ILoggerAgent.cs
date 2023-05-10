@@ -5,7 +5,7 @@ namespace TrendSoft.LogModule.Interfaces
 {
     public interface ILoggerAgent
     {
-        public Task SaveLog(LogMessageModel logMessage);
+        public Task LogEvent(LogMessageModel logMessage);
 
     }
 }
