@@ -1,6 +1,8 @@
 ﻿
 using System;
 using System.Collections.Concurrent;
+using System.Collections.Generic;
+using System.Threading.Channels;
 using System.Threading.Tasks;
 using TrendSoft.LogModule.Interfaces;
 using TrendSoft.LogModule.InternalException;
@@ -12,41 +14,53 @@ namespace TrendSoft.LogModule.Core
     public class Logger : IDisposable
     {
 
-        //private LiteDatabase logDB = null;
-        private ConcurrentBag<ILoggerAgent> _loggingAgents = new();
+
+        #region Channel Definitions
+
+        private Channel<LogMessageModel> LoggerChannel = Channel.CreateUnbounded<LogMessageModel>(new UnboundedChannelOptions());
+
+        private ChannelReader<LogMessageModel> LoggerChannelReader;
+        private ChannelWriter<LogMessageModel> LoggerChannelWriter;
+
+        #endregion
+
+
+        #region Properties
+
+        public IEnumerable<ILoggerAgent> Agents => _loggerAgents;
+
+        private List<ILoggerAgent> _loggerAgents = new();
+
+        public bool ReflectOnConsole { get; private set; } = false;
+
+        #endregion
 
 
 
         #region Constructors
 
-        public Logger()
+        public Logger(bool reflectOnConsole = false)
         {
+            ReflectOnConsole = reflectOnConsole;
 
+            // Initialize "Internal Logger Exceptions"
+            InternalExceptionLogger.SetLogFile("LoggerInternalExceptions.log");
+            InternalExceptionLogger.SetLogFileMaxSizeMB(100);
+
+            // Initialize Channels Reader/Writer
+            LoggerChannelReader = LoggerChannel.Reader;
+            LoggerChannelWriter = LoggerChannel.Writer;
         }
 
         #endregion
 
 
 
-        #region RegistrationMethods
-        public void AddLoggingAgent(ILoggerAgent logger)
-        {
-            _loggingAgents.Add(logger);
+        #region "Logger Agents" management functions
 
+        public void AddLoggingAgent(ILoggerAgent logger) => _loggerAgents.Add(logger);
 
-            //if (logger is IDBLogger && logDB == null)
-            //{
-            //    logDB = new LiteDatabase(logger.LogFile);
-            //}
-
-        }
-
-        public void ClearLoggingAgents()
-        {
-            _loggingAgents.Clear();
-
-
-        }
+        public void ClearLoggingAgents() => _loggerAgents.Clear();
 
         #endregion
 
@@ -54,96 +68,83 @@ namespace TrendSoft.LogModule.Core
 
         #region LoggingMethod
 
-        public void LogInfo(string LogText,
-                            string ExtraInfo = "",
-                            string Source = "")
+        public ValueTask LogInfo(string LogText,
+                                 string ExtraInfo = "",
+                                 string Source = "")
         {
             try
             {
-                _executeLogging(new LogMessageModel(LogMessageModel.LogTypeEnum.INFO, LogText, ExtraInfo, Source));
+                return LoggerChannelWriter.WriteAsync(new LogMessageModel(LogMessageModel.LogTypeEnum.INFO,
+                                                                          LogText,
+                                                                          ExtraInfo,
+                                                                          Source));
             }
             catch (Exception ex)
             {
                 InternalExceptionLogger.LogInternalException(ex);
             }
-        }
 
-
-        public Task LogInfoTask(string LogText,
-                            string ExtraInfo = "",
-                            string Source = "")
-        {
-            return Task.Run(() => LogInfo(LogText, ExtraInfo, Source));
+            return ValueTask.CompletedTask;
         }
 
 
 
-        public void LogWarning(string LogText,
-                            string ExtraInfo = "",
-                            string Source = "")
+
+
+        public ValueTask LogWarning(string LogText,
+                                    string ExtraInfo = "",
+                                    string Source = "")
         {
             try
             {
-                _executeLogging(new LogMessageModel(LogMessageModel.LogTypeEnum.WARNING, LogText, ExtraInfo, Source));
+                return LoggerChannelWriter.WriteAsync(new LogMessageModel(LogMessageModel.LogTypeEnum.WARNING,
+                                                                          LogText,
+                                                                          ExtraInfo,
+                                                                          Source));
             }
             catch (Exception ex)
             {
                 InternalExceptionLogger.LogInternalException(ex);
             }
-        }
 
-
-        public Task LogWarningTask(string LogText,
-                           string ExtraInfo = "",
-                           string Source = "")
-        {
-            return Task.Run(() => LogWarning(LogText, ExtraInfo, Source));
+            return ValueTask.CompletedTask;
         }
 
 
 
-
-
-
-        public void LogError(string LogText,
-                            string ExtraInfo = "",
-                            string Source = "")
+        public ValueTask LogError(string LogText,
+                                  string ExtraInfo = "",
+                                  string Source = "")
         {
             try
             {
-                _executeLogging(new LogMessageModel(LogMessageModel.LogTypeEnum.ERROR, LogText, ExtraInfo, Source));
+                return LoggerChannelWriter.WriteAsync(new LogMessageModel(LogMessageModel.LogTypeEnum.ERROR,
+                                                                          LogText,
+                                                                          ExtraInfo,
+                                                                          Source));
             }
             catch (Exception ex)
             {
                 InternalExceptionLogger.LogInternalException(ex);
             }
-        }
 
-
-        public Task LogErrorTask(string LogText,
-                          string ExtraInfo = "",
-                          string Source = "")
-        {
-            return Task.Run(() => LogError(LogText, ExtraInfo, Source));
+            return ValueTask.CompletedTask;
         }
 
 
 
-
-
-
-
-        public void LogException(Exception exception)
+        public ValueTask LogException(Exception exception)
         {
 
             if (exception == null)
             {
-                return;
+                return ValueTask.CompletedTask;
             }
+
 
             try
             {
-                _executeLogging(new LogMessageModel(LogMessageModel.LogTypeEnum.EXCEPTION,
+                return LoggerChannelWriter.WriteAsync(new LogMessageModel(LogMessageModel.LogTypeEnum.EXCEPTION,
                                                " Message : " + exception.Message ?? "-",
                                                " InnerMessage : " + (exception.InnerException?.Message ?? "-") +
                                                " , " +
@@ -154,68 +155,37 @@ namespace TrendSoft.LogModule.Core
             {
                 InternalExceptionLogger.LogInternalException(ex);
             }
+
+            return ValueTask.CompletedTask;
+
+
         }
 
 
 
-        public Task LogExceptionTask(Exception exception)
-        {
-            return Task.Run(() => LogException(exception));
-        }
 
-
-
-
-
-        public void LogDebug(string LogText,
+        public ValueTask LogDebug(string LogText,
                           string ExtraInfo = "",
                           string Source = "")
         {
             try
             {
-                _executeLogging(new LogMessageModel(LogMessageModel.LogTypeEnum.DEBUG, LogText, ExtraInfo, Source));
+                return LoggerChannelWriter.WriteAsync(new LogMessageModel(LogMessageModel.LogTypeEnum.DEBUG,
+                                                                          LogText,
+                                                                          ExtraInfo,
+                                                                          Source));
             }
             catch (Exception ex)
             {
                 InternalExceptionLogger.LogInternalException(ex);
             }
-        }
 
-        public Task LogDebugTask(string LogText,
-                              string ExtraInfo = "",
-                              string Source = "")
-        {
-            return Task.Run(() => LogDebug(LogText, ExtraInfo, Source));
+            return ValueTask.CompletedTask;
         }
 
 
 
 
-
-        public void LogLoggerInternalException(Exception exception)
-        {
-
-            if (exception == null)
-            {
-                return;
-            }
-
-            try
-            {
-                InternalExceptionLogger.LogInternalException(exception);
-            }
-            catch (Exception)
-            {
-
-            }
-        }
-
-
-
-        public Task LogLoggerInternalExceptionTask(Exception exception)
-        {
-            return Task.Run(() => LogLoggerInternalException(exception));
-        }
 
         #endregion
 
@@ -238,12 +208,12 @@ namespace TrendSoft.LogModule.Core
                 {
                     //logDB?.Dispose();
                     ClearLoggingAgents();
-                    _loggingAgents = null;
+                    _loggerAgents = null;
                 }
 
-                catch (Exception)
+                catch (Exception ex)
                 {
-                    // InnerException.InnerException.LogInnerException(ex);
+                    InternalExceptionLogger.LogInternalException(ex);
                 }
             }
 
@@ -258,15 +228,13 @@ namespace TrendSoft.LogModule.Core
             GC.SuppressFinalize(this);
         }
 
-        //~Logger()
-        //{
-        //    Dispose(disposing: false);
-        //}
+
         #endregion
 
 
 
-        #region PrivateMethods
+        #region Private Functions
+
         private Task ExecuteLoggingProcess(LogMessageModel LogMessage)
         {
             if (LogMessage is null)
@@ -274,7 +242,7 @@ namespace TrendSoft.LogModule.Core
                 return Task.CompletedTask;
             }
 
-            foreach (ILoggerAgent logger in _loggingAgents)
+            foreach (ILoggerAgent logger in _loggerAgents)
             {
                 if (logger is null)
                 {
@@ -298,6 +266,7 @@ namespace TrendSoft.LogModule.Core
             return Task.CompletedTask;
 
         }
+
         #endregion
 
 
