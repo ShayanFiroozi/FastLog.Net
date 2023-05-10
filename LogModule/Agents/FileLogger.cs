@@ -3,22 +3,13 @@ using System.IO;
 using System.Threading.Channels;
 using System.Threading.Tasks;
 using TrendSoft.LogModule.Interfaces;
+using TrendSoft.LogModule.InternalException;
 using TrendSoft.LogModule.Models;
 
 namespace TrendSoft.LogModule.Agents
 {
     public class FileLogger : ILoggerAgent
     {
-
-        #region Channel Definitions
-
-        private Channel<LogMessageModel> FileLoggerChannel = Channel.CreateUnbounded<LogMessageModel>(new UnboundedChannelOptions());
-
-        private ChannelReader<LogMessageModel> FileLoggerChannelReader;
-        private ChannelWriter<LogMessageModel> FileLoggerChannelWriter;
-
-        #endregion
-
 
         #region Properties
 
@@ -28,153 +19,64 @@ namespace TrendSoft.LogModule.Agents
         #endregion
 
 
-        public FileLogger()
+
+        public FileLogger(string logFile, short maxLogFileSizeMB)
         {
-            ChannelReader<LogMessageModel> FileLoggerChannelReader = FileLoggerChannel.Reader;
-            ChannelWriter<LogMessageModel> FileLoggerChannelWriter = FileLoggerChannel.Writer;
-        }
-
-        public void SetLogFile(string LogFile)
-        {
-            if (string.IsNullOrWhiteSpace(LogFile))
+            if (string.IsNullOrWhiteSpace(logFile))
             {
-                throw new ArgumentException($"'{nameof(LogFile)}' cannot be null or whitespace.", nameof(LogFile));
+                throw new ArgumentException($"'{nameof(logFile)}' cannot be null or whitespace.", nameof(logFile));
             }
 
-
-            this.LogFile = LogFile;
-
-
-            if (!Directory.Exists(Path.GetDirectoryName(LogFile)))
+            if (maxLogFileSizeMB <= 0)
             {
-                Directory.CreateDirectory(LogFile);
+                throw new ArgumentException($"'{nameof(maxLogFileSizeMB)}' must be greater then zero.", nameof(maxLogFileSizeMB));
             }
 
-
-        }
-
-        public void SetLogFileMaxSizeMB(short MaxLogFileSizeMB)
-        {
-
-            if (MaxLogFileSizeMB <= 0)
-            {
-                throw new ArgumentException($"'{nameof(MaxLogFileSizeMB)}' must be greater then zero.", nameof(MaxLogFileSizeMB));
-            }
-
-            this.MaxLogFileSizeMB = MaxLogFileSizeMB;
-
-
-        }
-
-        public Task StartLogger()
-        {
-            if (string.IsNullOrWhiteSpace(LogFile))
-            {
-                throw new ArgumentException($"'{nameof(LogFile)}' cannot be null or whitespace.", nameof(LogFile));
-            }
-
-
-            if (MaxLogFileSizeMB <= 0)
-            {
-                throw new ArgumentException($"'{nameof(MaxLogFileSizeMB)}' must be greater then zero.", nameof(MaxLogFileSizeMB));
-            }
-
-            return StartFileLoggerEngine();
-        }
-
-
-        public ValueTask SaveLog(LogMessageModel LogModel)
-        {
-            if ((LogModel is not null))
-            {
-                return FileLoggerChannelWriter.WriteAsync(LogModel);
-            }
-            else
-            {
-                return ValueTask.CompletedTask;
-            }
+            LogFile = logFile;
+            MaxLogFileSizeMB = maxLogFileSizeMB;
         }
 
 
 
-
-        #region Private Functions
-
-
-        private Task AppendLogModelToFile(LogMessageModel LogModel)
+        public Task SaveLog(LogMessageModel LogModel)
         {
-            if (string.IsNullOrWhiteSpace(LogFile))
-            {
-                throw new ArgumentException($"'{nameof(LogFile)}' cannot be null or whitespace.", nameof(LogFile));
-            }
-
-            if (MaxLogFileSizeMB <= 0)
-            {
-                throw new ArgumentException($"'{nameof(MaxLogFileSizeMB)}' must be greater then zero.", nameof(MaxLogFileSizeMB));
-            }
-
 
             if (LogModel is null) return Task.CompletedTask;
 
-
             try
             {
-
-
                 return File.AppendAllTextAsync(LogFile, LogModel.GetLogMessage().ToString());
 
             }
-            catch
+            catch (Exception ex)
             {
-                return Task.CompletedTask;
+                InternalExceptionLogger.LogInternalException(ex);
             }
 
-        }
-
-
-        private Task StartFileLoggerEngine()
-        {
-            return Task.Run(async () =>
-            {
-
-                while (!FileLoggerChannelReader.Completion.IsCompleted)
-                {
-                    LogMessageModel? LogModelFromChannel = await FileLoggerChannelReader.ReadAsync();
-
-                    if (LogModelFromChannel is not null)
-                    {
-                      
-                        // Delete the log file if it's getting big !
-                        await DeleteInternalExceptionsLogFile();
-
-                        // Save to the log file.
-                        await AppendLogModelToFile(LogModelFromChannel);
-
-                    }
-
-                }
-
-            });
+            return Task.CompletedTask;
         }
 
 
 
-        private Task<short> GetLogFileSizeMB()
+
+
+        private short GetLogFileSizeMB()
         {
             try
             {
-                if (!string.IsNullOrWhiteSpace(LogFile)) return Task.FromResult<short>(0);
-                if (!File.Exists(LogFile)) return Task.FromResult<short>(0);
+                if (!string.IsNullOrWhiteSpace(LogFile)) return (short)0;
+                if (!File.Exists(LogFile)) return (short)0;
 
-                return Task.FromResult<short>((short)((new FileInfo(LogFile).Length / 1024) / 1024));
+                return (short)((new FileInfo(LogFile).Length / 1024) / 1024);
             }
             catch
             {
-                return Task.FromResult<short>(0);
+                return (short)0;
             }
         }
 
-        private async Task DeleteInternalExceptionsLogFile()
+
+        private void CheckLogFileSize()
         {
             try
             {
@@ -182,11 +84,7 @@ namespace TrendSoft.LogModule.Agents
                 if (!File.Exists(LogFile)) return;
 
 
-                if (await GetLogFileSizeMB() <= MaxLogFileSizeMB)
-                {
-                    return;
-                }
-                else
+                if (GetLogFileSizeMB() >= MaxLogFileSizeMB)
                 {
                     File.Delete(LogFile);
                 }
@@ -198,7 +96,7 @@ namespace TrendSoft.LogModule.Agents
 
         }
 
-        #endregion
+
 
 
 

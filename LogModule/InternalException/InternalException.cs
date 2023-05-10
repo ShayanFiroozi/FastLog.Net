@@ -56,9 +56,7 @@ namespace TrendSoft.LogModule.InternalException
         public static void DoNotReflectOnConsole() => ReflectOnConsole = false;
 
 
-
-
-        private static Task LogInternalException(Exception exception)
+        public static Task LogInternalException(Exception exception)
         {
             if (string.IsNullOrWhiteSpace(InternalExceptionsLogFile))
             {
