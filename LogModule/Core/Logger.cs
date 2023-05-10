@@ -33,19 +33,36 @@ namespace TrendSoft.LogModule.Core
 
         public bool ReflectOnConsole { get; private set; } = false;
 
+        public string InternalExceptionsLogFile { get; private set; }
+
         #endregion
 
 
 
         #region Constructors
 
-        public Logger(bool reflectOnConsole = false)
+        public Logger(string internalExceptionsLogFile,
+                      short internalExceptionsLogFileMaxSizeMB = 100,
+                      bool reflectOnConsole = false)
         {
+            if (internalExceptionsLogFileMaxSizeMB<=0)
+            {
+                throw new ArgumentException($"'{nameof(internalExceptionsLogFileMaxSizeMB)}' must be greater than zero.", nameof(internalExceptionsLogFileMaxSizeMB));
+            }
+
+
+            if (string.IsNullOrWhiteSpace(internalExceptionsLogFile))
+            {
+                throw new ArgumentException($"'{nameof(internalExceptionsLogFile)}' cannot be null or whitespace.", nameof(internalExceptionsLogFile));
+            }
+
+            InternalExceptionsLogFile = internalExceptionsLogFile;
+
             ReflectOnConsole = reflectOnConsole;
 
             // Initialize "Internal Logger Exceptions"
-            InternalExceptionLogger.SetLogFile("LoggerInternalExceptions.log");
-            InternalExceptionLogger.SetLogFileMaxSizeMB(100);
+            InternalExceptionLogger.SetLogFile(InternalExceptionsLogFile);
+            InternalExceptionLogger.SetLogFileMaxSizeMB(internalExceptionsLogFileMaxSizeMB);
 
             // Initialize Channels Reader/Writer
             LoggerChannelReader = LoggerChannel.Reader;

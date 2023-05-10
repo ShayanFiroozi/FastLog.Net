@@ -12,31 +12,31 @@ namespace TrendSoft.LogModule.Test
         [SetUp]
         public void CreateInternalLogger()
         {
-            InternalExceptionLogger.SetLogFile("InternalExceptions.log");
+            InternalExceptionLogger.SetLogFile("D:\\InternalExceptions.log");
             InternalExceptionLogger.SetLogFileMaxSizeMB(100);
-            InternalExceptionLogger.ReflectOnConsole();
-            _ = InternalExceptionLogger.StartLogger();
+            InternalExceptionLogger.DoReflectOnConsole();
+            
 
         }
 
         [Test]
-        public async Task InternalExceptionsLoggerTest()
+        public void InternalExceptionsLoggerTest()
         {
+
             for (int i = 0; i < 10_000; i++)
             {
-                _ = InternalExceptionLogger.LogInternalException(new Exception($"This is a \"Test Exception\" number {i:N0} from \"InternalExceptionsLoggerTest\""));
+                InternalExceptionLogger.LogInternalException(new Exception($"This is a \"Test Exception\" number {i:N0} from \"InternalExceptionsLoggerTest\""));
             }
 
 
             for (int i = 0; i < 10_000; i++)
             {
-                _ = InternalExceptionLogger.LogInternalException(new Exception($"This is a \"Test Exception\" number {i:N0} from \"InternalExceptionsLoggerTest\""));
+                InternalExceptionLogger.LogInternalException(new Exception($"This is a \"Test Exception\" number {i:N0} from \"InternalExceptionsLoggerTest\""));
             }
 
             Console.Beep();
 
-            await Task.Delay(-1);
-
+          
         }
 
 

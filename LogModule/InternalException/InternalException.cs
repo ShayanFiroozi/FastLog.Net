@@ -56,7 +56,7 @@ namespace TrendSoft.LogModule.InternalException
         public static void DoNotReflectOnConsole() => ReflectOnConsole = false;
 
 
-        public static Task LogInternalException(Exception exception)
+        public static void LogInternalException(Exception exception)
         {
             if (string.IsNullOrWhiteSpace(InternalExceptionsLogFile))
             {
@@ -69,7 +69,7 @@ namespace TrendSoft.LogModule.InternalException
             }
 
 
-            if (exception is null) return Task.CompletedTask;
+            if (exception is null) return;
 
 
             try
@@ -92,7 +92,7 @@ namespace TrendSoft.LogModule.InternalException
                 }
                 catch{ }
 
-                return File.AppendAllTextAsync(InternalExceptionsLogFile, new LogMessageModel(LogMessageModel.LogTypeEnum.EXCEPTION,
+                File.AppendAllText(InternalExceptionsLogFile, new LogMessageModel(LogMessageModel.LogTypeEnum.EXCEPTION,
                                                " Message : " + exception.Message ?? "-",
                                                " InnerMessage : " + (exception.InnerException?.Message ?? "-") +
                                                " , " +
@@ -102,7 +102,7 @@ namespace TrendSoft.LogModule.InternalException
             }
             catch
             {
-                return Task.CompletedTask;
+                return;
             }
 
         }
@@ -114,7 +114,7 @@ namespace TrendSoft.LogModule.InternalException
         {
             try
             {
-                if (!string.IsNullOrWhiteSpace(InternalExceptionsLogFile)) return (short)0;
+                if (string.IsNullOrWhiteSpace(InternalExceptionsLogFile)) return (short)0;
                 if (!File.Exists(InternalExceptionsLogFile)) return (short)0;
 
                 return (short)((new FileInfo(InternalExceptionsLogFile).Length / 1024) / 1024);
@@ -129,7 +129,7 @@ namespace TrendSoft.LogModule.InternalException
         {
             try
             {
-                if (!string.IsNullOrWhiteSpace(InternalExceptionsLogFile)) return;
+                if (string.IsNullOrWhiteSpace(InternalExceptionsLogFile)) return;
                 if (!File.Exists(InternalExceptionsLogFile)) return;
 
 

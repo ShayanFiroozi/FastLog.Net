@@ -53,7 +53,7 @@ namespace TrendSoft.LogModule.Agents
             }
             catch (Exception ex)
             {
-                InternalExceptionLogger.LogInternalException(ex);
+               InternalExceptionLogger.LogInternalException(ex);
             }
 
             return Task.CompletedTask;
@@ -64,7 +64,7 @@ namespace TrendSoft.LogModule.Agents
         {
             try
             {
-                if (!string.IsNullOrWhiteSpace(LogFile)) return (short)0;
+                if (string.IsNullOrWhiteSpace(LogFile)) return (short)0;
                 if (!File.Exists(LogFile)) return (short)0;
 
                 return (short)((new FileInfo(LogFile).Length / 1024) / 1024);
@@ -80,7 +80,7 @@ namespace TrendSoft.LogModule.Agents
         {
             try
             {
-                if (!string.IsNullOrWhiteSpace(LogFile)) return;
+                if (string.IsNullOrWhiteSpace(LogFile)) return;
                 if (!File.Exists(LogFile)) return;
 
 
