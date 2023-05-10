@@ -8,11 +8,14 @@ using TrendSoft.LogModule.Models;
 
 namespace TrendSoft.LogModule.Agents
 {
+
+    /// <summary>
+    /// WARNING : "Console.WriteLine" has serious performance and memory issues , Be careful when use it !
+    /// </summary>
     public class ConsoleLogger : ILoggerAgent
     {
 
-
-        public Task LogEvent(LogMessageModel LogModel)
+        public Task LogEvent(LogEventModel LogModel)
         {
             if(LogModel is null) return Task.CompletedTask;
 
@@ -23,19 +26,19 @@ namespace TrendSoft.LogModule.Agents
             // Set the proper console forecolor
             switch (LogModel.LogType)
             {
-                case LogMessageModel.LogTypeEnum.INFO:
+                case LogEventModel.LogTypeEnum.INFO:
                     Console.ForegroundColor = ConsoleColor.White;
                     break;
-                case LogMessageModel.LogTypeEnum.WARNING:
+                case LogEventModel.LogTypeEnum.WARNING:
                     Console.ForegroundColor = ConsoleColor.Yellow;
                     break;
-                case LogMessageModel.LogTypeEnum.ERROR:
+                case LogEventModel.LogTypeEnum.ERROR:
                     Console.ForegroundColor = ConsoleColor.Red;
                     break;
-                case LogMessageModel.LogTypeEnum.EXCEPTION:
+                case LogEventModel.LogTypeEnum.EXCEPTION:
                     Console.ForegroundColor = ConsoleColor.Red;
                     break;
-                case LogMessageModel.LogTypeEnum.DEBUG:
+                case LogEventModel.LogTypeEnum.DEBUG:
                     Console.ForegroundColor = ConsoleColor.Gray;
                     break;
                 default:

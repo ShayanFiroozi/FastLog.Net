@@ -38,7 +38,7 @@ namespace TrendSoft.LogModule.Agents
 
 
 
-        public Task LogEvent(LogMessageModel LogModel)
+        public Task LogEvent(LogEventModel LogModel)
         {
 
             if (LogModel is null) return Task.CompletedTask;
@@ -89,9 +89,9 @@ namespace TrendSoft.LogModule.Agents
                     File.Delete(LogFile);
                 }
             }
-            catch
+            catch(Exception ex) 
             {
-
+                InternalExceptionLogger.LogInternalException(ex);
             }
 
         }

@@ -17,10 +17,10 @@ namespace TrendSoft.LogModule.Core
 
         #region Channel Definitions
 
-        private Channel<LogMessageModel> LoggerChannel = Channel.CreateUnbounded<LogMessageModel>(new UnboundedChannelOptions());
+        private Channel<LogEventModel> LoggerChannel = Channel.CreateUnbounded<LogEventModel>(new UnboundedChannelOptions());
 
-        private ChannelReader<LogMessageModel> LoggerChannelReader;
-        private ChannelWriter<LogMessageModel> LoggerChannelWriter;
+        private ChannelReader<LogEventModel> LoggerChannelReader;
+        private ChannelWriter<LogEventModel> LoggerChannelWriter;
 
         #endregion
 
@@ -91,7 +91,7 @@ namespace TrendSoft.LogModule.Core
         {
             try
             {
-                return LoggerChannelWriter.WriteAsync(new LogMessageModel(LogMessageModel.LogTypeEnum.INFO,
+                return LoggerChannelWriter.WriteAsync(new LogEventModel(LogEventModel.LogTypeEnum.INFO,
                                                                           LogText,
                                                                           ExtraInfo,
                                                                           Source));
@@ -114,7 +114,7 @@ namespace TrendSoft.LogModule.Core
         {
             try
             {
-                return LoggerChannelWriter.WriteAsync(new LogMessageModel(LogMessageModel.LogTypeEnum.WARNING,
+                return LoggerChannelWriter.WriteAsync(new LogEventModel(LogEventModel.LogTypeEnum.WARNING,
                                                                           LogText,
                                                                           ExtraInfo,
                                                                           Source));
@@ -135,7 +135,7 @@ namespace TrendSoft.LogModule.Core
         {
             try
             {
-                return LoggerChannelWriter.WriteAsync(new LogMessageModel(LogMessageModel.LogTypeEnum.ERROR,
+                return LoggerChannelWriter.WriteAsync(new LogEventModel(LogEventModel.LogTypeEnum.ERROR,
                                                                           LogText,
                                                                           ExtraInfo,
                                                                           Source));
@@ -161,7 +161,7 @@ namespace TrendSoft.LogModule.Core
 
             try
             {
-                return LoggerChannelWriter.WriteAsync(new LogMessageModel(LogMessageModel.LogTypeEnum.EXCEPTION,
+                return LoggerChannelWriter.WriteAsync(new LogEventModel(LogEventModel.LogTypeEnum.EXCEPTION,
                                                " Message : " + exception.Message ?? "-",
                                                " InnerMessage : " + (exception.InnerException?.Message ?? "-") +
                                                " , " +
@@ -187,7 +187,7 @@ namespace TrendSoft.LogModule.Core
         {
             try
             {
-                return LoggerChannelWriter.WriteAsync(new LogMessageModel(LogMessageModel.LogTypeEnum.DEBUG,
+                return LoggerChannelWriter.WriteAsync(new LogEventModel(LogEventModel.LogTypeEnum.DEBUG,
                                                                           LogText,
                                                                           ExtraInfo,
                                                                           Source));
@@ -252,7 +252,7 @@ namespace TrendSoft.LogModule.Core
 
         #region Private Functions
 
-        private Task ExecuteLoggingProcess(LogMessageModel LogMessage)
+        private Task ExecuteLoggingProcess(LogEventModel LogMessage)
         {
             if (LogMessage is null)
             {

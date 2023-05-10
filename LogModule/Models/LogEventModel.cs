@@ -3,13 +3,13 @@ using System.Text;
 
 namespace TrendSoft.LogModule.Models
 {
-    public class LogMessageModel : IDisposable
+    public class LogEventModel : IDisposable
     {
         private bool disposedValue;
 
         #region Constructors
 
-        public LogMessageModel(LogTypeEnum LogType,
+        public LogEventModel(LogTypeEnum LogType,
                           string LogText,
                           string ExtraInfo = "",
                           string Source = "")
@@ -22,7 +22,7 @@ namespace TrendSoft.LogModule.Models
         }
 
 
-        public LogMessageModel()
+        public LogEventModel()
         {
             // This default constructor is neccessary for LiteDB.
         }
