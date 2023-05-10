@@ -9,13 +9,6 @@ namespace TrendSoft.LogModule.InternalException
     public static class InternalExceptionLogger
     {
 
-        #region Channel Definitions
-        private static Channel<Exception> InternalExceptionsChannel = Channel.CreateUnbounded<Exception>(new UnboundedChannelOptions());
-
-        private static ChannelReader<Exception> InternalExceptionsChannelReader = InternalExceptionsChannel.Reader;
-        private static ChannelWriter<Exception> InternalExceptionsChannelWriter = InternalExceptionsChannel.Writer;
-        #endregion
-
 
         #region Properties
         private static string InternalExceptionsLogFile { get; set; } = string.Empty;
@@ -62,42 +55,10 @@ namespace TrendSoft.LogModule.InternalException
 
         public static void DoNotReflectOnConsole() => ReflectOnConsole = false;
 
-        public static Task StartLogger()
-        {
-            if (string.IsNullOrWhiteSpace(InternalExceptionsLogFile))
-            {
-                throw new ArgumentException($"'{nameof(InternalExceptionsLogFile)}' cannot be null or whitespace.", nameof(InternalExceptionsLogFile));
-            }
-
-
-            if (InternalExceptionsMaxLogFileSizeMB <= 0)
-            {
-                throw new ArgumentException($"'{nameof(InternalExceptionsMaxLogFileSizeMB)}' must be greater then zero.", nameof(InternalExceptionsMaxLogFileSizeMB));
-            }
-
-            return StartInternalExceptionLoggerEngine();
-        }
-
-
-        public static ValueTask LogInternalException(Exception exception)
-        {
-            if ((exception is not null))
-            {
-                return InternalExceptionsChannelWriter.WriteAsync(exception);
-            }
-            else
-            {
-                return ValueTask.CompletedTask;
-            }
-        }
 
 
 
-
-        #region Private Functions
-
-
-        private static Task WriteExceptionToFile(Exception exception)
+        private static Task LogInternalException(Exception exception)
         {
             if (string.IsNullOrWhiteSpace(InternalExceptionsLogFile))
             {
@@ -117,6 +78,22 @@ namespace TrendSoft.LogModule.InternalException
             {
 
 
+                // Reflect on Console
+                if (InternalExceptionLogger.ReflectOnConsole)
+                {
+                    Console.ForegroundColor = ConsoleColor.Red;
+                    Console.WriteLine($"{DateTime.Now}  \"Logger Internal Exception\" thrown : {exception}");
+                    Console.ForegroundColor = ConsoleColor.White;
+                }
+
+
+
+                try
+                {
+                    CheckInternalExceptionsLogFileSize();
+                }
+                catch{ }
+
                 return File.AppendAllTextAsync(InternalExceptionsLogFile, new LogMessageModel(LogMessageModel.LogTypeEnum.EXCEPTION,
                                                " Message : " + exception.Message ?? "-",
                                                " InnerMessage : " + (exception.InnerException?.Message ?? "-") +
@@ -133,56 +110,24 @@ namespace TrendSoft.LogModule.InternalException
         }
 
 
-        private static Task StartInternalExceptionLoggerEngine()
-        {
-            return Task.Run((Func<Task>)(async () =>
-             {
-
-                 while (!InternalExceptionsChannelReader.Completion.IsCompleted)
-                 {
-                     Exception? exceptionFromChannel = await InternalExceptionsChannelReader.ReadAsync();
-
-                     if (exceptionFromChannel != null)
-                     {
-                         // Reflect on Console
-                         if (InternalExceptionLogger.ReflectOnConsole)
-                         {
-                             Console.ForegroundColor = ConsoleColor.Red;
-                             await Console.Out.WriteLineAsync($"{DateTime.Now}  \"Logger Internal Exception\" thrown : {exceptionFromChannel}");
-                             Console.ForegroundColor = ConsoleColor.White;
-                         }
-
-                         // Delete the log file if it's getting big !
-                         await DeleteInternalExceptionsLogFile();
-
-                         // Save to the log file.
-                         await WriteExceptionToFile(exceptionFromChannel);
-
-                     }
-
-                 }
-
-             }));
-        }
 
 
-
-        private static Task<short> GetLogFileSizeMB()
+        private static short GetLogFileSizeMB()
         {
             try
             {
-                if (!string.IsNullOrWhiteSpace(InternalExceptionsLogFile)) return Task.FromResult<short>(0);
-                if (!File.Exists(InternalExceptionsLogFile)) return Task.FromResult<short>(0);
+                if (!string.IsNullOrWhiteSpace(InternalExceptionsLogFile)) return (short)0;
+                if (!File.Exists(InternalExceptionsLogFile)) return (short)0;
 
-                return Task.FromResult<short>((short)((new FileInfo(InternalExceptionsLogFile).Length / 1024) / 1024));
+                return (short)((new FileInfo(InternalExceptionsLogFile).Length / 1024) / 1024);
             }
             catch
             {
-                return Task.FromResult<short>(0);
+                return (short)0;
             }
         }
 
-        private static async Task DeleteInternalExceptionsLogFile()
+        private static void CheckInternalExceptionsLogFileSize()
         {
             try
             {
@@ -190,11 +135,7 @@ namespace TrendSoft.LogModule.InternalException
                 if (!File.Exists(InternalExceptionsLogFile)) return;
 
 
-                if (await GetLogFileSizeMB() <= InternalExceptionsMaxLogFileSizeMB)
-                {
-                    return;
-                }
-                else
+                if (GetLogFileSizeMB() >= InternalExceptionsMaxLogFileSizeMB)
                 {
                     File.Delete(InternalExceptionsLogFile);
                 }
@@ -206,7 +147,7 @@ namespace TrendSoft.LogModule.InternalException
 
         }
 
-        #endregion
+
 
 
 
