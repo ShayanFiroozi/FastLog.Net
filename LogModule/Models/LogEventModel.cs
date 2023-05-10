@@ -84,18 +84,21 @@ namespace TrendSoft.LogModule.Models
         #endregion
 
 
+        public override string ToString()
+        {
+            return GetLogMessage().ToString();
+        }
 
-
-        public StringBuilder GetLogMessage()
+        private StringBuilder GetLogMessage()
         {
             StringBuilder finalMessage = new();
 
             _ = finalMessage.Append(DateTime.ToString("yyyy/MM/dd HH:mm:ss"));
             _ = finalMessage.Append(' ');
 
-            _ = finalMessage.Append('(');
+            _ = finalMessage.Append('[');
             _ = finalMessage.Append(LogType.ToString());
-            _ = finalMessage.Append(')');
+            _ = finalMessage.Append(']');
             _ = finalMessage.Append(" -> ");
 
             _ = finalMessage.Append(LogText);
@@ -103,7 +106,7 @@ namespace TrendSoft.LogModule.Models
 
             if (!string.IsNullOrWhiteSpace(ExtraInfo))
             {
-                if (LogType != LogTypeEnum.EXCEPTION)
+                if (LogType is not LogTypeEnum.EXCEPTION)
                 {
                     _ = finalMessage.Append(" , Details : ");
                 }

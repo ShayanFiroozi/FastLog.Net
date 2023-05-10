@@ -8,7 +8,7 @@ using TrendSoft.LogModule.Models;
 
 namespace TrendSoft.LogModule.Agents
 {
-    public class FileLogger : ILoggerAgent
+    public class PlainTextFileLogger : ILoggerAgent
     {
 
         #region Properties
@@ -20,7 +20,7 @@ namespace TrendSoft.LogModule.Agents
 
 
 
-        public FileLogger(string logFile, short maxLogFileSizeMB)
+        public PlainTextFileLogger(string logFile, short maxLogFileSizeMB = 100)
         {
             if (string.IsNullOrWhiteSpace(logFile))
             {
@@ -48,7 +48,7 @@ namespace TrendSoft.LogModule.Agents
 
                 CheckLogFileSize();
 
-                return File.AppendAllTextAsync(LogFile, LogModel.GetLogMessage().ToString());
+                return File.AppendAllTextAsync(LogFile, LogModel.ToString());
 
             }
             catch (Exception ex)

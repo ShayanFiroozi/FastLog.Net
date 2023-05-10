@@ -46,7 +46,7 @@ namespace TrendSoft.LogModule.Agents
                     break;
             }
 
-            Console.WriteLine(LogModel.GetLogMessage());
+            Console.WriteLine(LogModel.ToString());
             Console.WriteLine();
 
 
