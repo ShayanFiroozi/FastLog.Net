@@ -23,7 +23,7 @@ namespace TrendSoft.LogModule.Agents
         public Task LogEvent(LogEventModel LogModel, CancellationToken cancellationToken = default)
         {
 
-#if !DEBUG
+#if !DEBUG // Not allow to run on Release mode !
             return Task.CompletedTask;
 #endif
 
