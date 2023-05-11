@@ -21,7 +21,7 @@ namespace TrendSoft.LogModule.Test
         {
             Logger = new Logger("D:\\LoggerInternalException.txt");
             Logger.AddLoggingAgent(new PlainTextFileLogger("D:\\PlainTextLogs.log"));
-            Logger.AddLoggingAgent(new ConsoleLogger());
+            Logger.AddLoggingAgent(new DebugWindowLogger());
 
             loggerTask = Logger.StartLogger();
 
@@ -35,12 +35,12 @@ namespace TrendSoft.LogModule.Test
             taskList.Add(Task.Run(() =>
               {
 
-                  for (int i = 0; i < 10_000; i++)
+                  for (int i = 0; i < 1_000; i++)
                   {
-                      _ = Logger.LogInfo($"This is the INFO message number {i:N0} from the \"LoggerWriteTest\"");
-                      _ = Logger.LogError($"This is the ERROR message number {i:N0} from the \"LoggerWriteTest\"");
-                      _ = Logger.LogDebug($"This is the DEBUG message number {i:N0} from the \"LoggerWriteTest\"");
-                      _ = Logger.LogWarning($"This is the WARNING message number {i:N0} from the \"LoggerWriteTest\"");
+                      _ = Logger.LogInfo($"This is the \"INFO\" message number {i:N0} from the \"LoggerWriteTest\"");
+                      _ = Logger.LogError($"This is the \"ERROR\" message number {i:N0} from the \"LoggerWriteTest\"");
+                      _ = Logger.LogDebug($"This is the \"DEBUG\" message number {i:N0} from the \"LoggerWriteTest\"");
+                      _ = Logger.LogWarning($"This is the \"WARNING\" message number {i:N0} from the \"LoggerWriteTest\"");
                   }
 
 
@@ -50,7 +50,7 @@ namespace TrendSoft.LogModule.Test
             taskList.Add(Task.Run(() =>
             {
 
-                for (int i = 0; i < 50_000; i++)
+                for (int i = 0; i < 2_000; i++)
                 {
                     _ = Logger.LogException(new Exception($"This is a \"Test Exception\" number {i:N0} from \"LoggerWriteTest\""));
                 }
@@ -59,16 +59,13 @@ namespace TrendSoft.LogModule.Test
 
             await Task.WhenAll(taskList);
 
-
             Console.Beep();
 
+          
             await loggerTask;
 
 
         }
-
-
-
 
 
     }
