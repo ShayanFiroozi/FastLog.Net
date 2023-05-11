@@ -24,11 +24,13 @@ namespace TrendSoft.LogModuleTest
 
         private static void InitializeLogger()
         {
-            Logger = new Logger("D:\\LoggerInternalException.txt",100);
+            Logger = new Logger("D:\\LoggerInternalException.txt");
 
-            Logger.AddLoggingAgent(new PlainTextFileLogger("D:\\PlainTextLogs.log",10));
+            Logger.AddLoggingAgent(new PlainTextFileLogger("D:\\PlainTextLogs.log"));
+            Logger.AddLoggingAgent(new PlainTextFileLogger("D:\\PlainTextLogs_Backup.log"));
             Logger.AddLoggingAgent(new ConsoleLogger());
             Logger.AddLoggingAgent(new DebugWindowLogger());
+
 
             loggerTask = Logger.StartLogger();
 
@@ -39,10 +41,12 @@ namespace TrendSoft.LogModuleTest
         {
             List<Task> taskList = new List<Task>()
                     {
+
+
                         Task.Run(()=>
                       {
 
-                          for (int i = 0; i < 500_000; i++)
+                          for (int i = 0; i < 5_000; i++)
                           {
                               _= Logger.LogInfo($"This is the \"INFO\" message number {i:N0} from the \"LoggerWriteTest\"");
                               _= Logger.LogError($"This is the \"ERROR\" message number {i:N0} from the \"LoggerWriteTest\"");
@@ -57,11 +61,14 @@ namespace TrendSoft.LogModuleTest
                         Task.Run(() =>
                         {
 
-                            for (int i = 0; i < 500_000; i++)
+                            for (int i = 0; i < 5_000; i++)
                             {
                                _= Logger.LogException(new Exception($"This is a \"Test Exception\" number {i:N0} from \"LoggerWriteTest\""));
                             }
                         })
+
+
+
                     };
 
 

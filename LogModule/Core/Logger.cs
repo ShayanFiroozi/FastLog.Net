@@ -1,9 +1,11 @@
 ﻿
 using System;
 using System.Collections.Generic;
+using System.Linq;
 using System.Threading;
 using System.Threading.Channels;
 using System.Threading.Tasks;
+using TrendSoft.LogModule.Agents;
 using TrendSoft.LogModule.Interfaces;
 using TrendSoft.LogModule.InternalException;
 using TrendSoft.LogModule.Models;
@@ -73,6 +75,17 @@ namespace TrendSoft.LogModule.Core
 
         public void AddLoggingAgent(ILoggerAgent logger)
         {
+            if(logger is ConsoleLogger && _loggerAgents.Any(agent=> agent is ConsoleLogger))
+            {
+                throw new Exception("A \"ConsoleLogger\" agent already exists on the agent list.");
+            }
+
+
+            if (logger is DebugWindowLogger && _loggerAgents.Any(agent => agent is DebugWindowLogger))
+            {
+                throw new Exception("A \"DebugWindowLogger\" agent already exists on the agent list.");
+            }
+
             _loggerAgents.Add(logger);
         }
 
