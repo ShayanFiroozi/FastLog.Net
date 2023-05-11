@@ -93,15 +93,13 @@ namespace TrendSoft.LogModule.Models
         {
             StringBuilder finalMessage = new();
 
-            _ = finalMessage.Append(DateTime.ToString("yyyy/MM/dd HH:mm:ss"));
-            _ = finalMessage.Append(' ');
-
-            _ = finalMessage.Append('[');
-            _ = finalMessage.Append(LogType.ToString());
-            _ = finalMessage.Append(']');
-            _ = finalMessage.Append(" -> ");
-
-            _ = finalMessage.Append(LogText);
+            finalMessage.Append(DateTime.ToString("yyyy/MM/dd HH:mm:ss"))
+                        .Append(' ')
+                        .Append('[')
+                        .Append(LogType.ToString())
+                        .Append(']')
+                        .Append(" -> ")
+                        .Append(LogText);
 
 
             if (!string.IsNullOrWhiteSpace(ExtraInfo))
@@ -116,8 +114,8 @@ namespace TrendSoft.LogModule.Models
 
             if (!string.IsNullOrWhiteSpace(Source))
             {
-                _ = finalMessage.Append(" , Source : ");
-                _ = finalMessage.Append(Source);
+                _ = finalMessage.Append(" , Source : ")
+                                .Append(Source);
             }
 
 
