@@ -39,6 +39,8 @@ namespace TrendSoft.LogModule.Test
                   {
                       _ = Logger.LogInfo($"This is the INFO message number {i:N0} from the \"LoggerWriteTest\"");
                       _ = Logger.LogError($"This is the ERROR message number {i:N0} from the \"LoggerWriteTest\"");
+                      _ = Logger.LogDebug($"This is the DEBUG message number {i:N0} from the \"LoggerWriteTest\"");
+                      _ = Logger.LogWarning($"This is the WARNING message number {i:N0} from the \"LoggerWriteTest\"");
                   }
 
 

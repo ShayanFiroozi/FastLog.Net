@@ -76,7 +76,7 @@ namespace TrendSoft.LogModule.InternalException
                 }
                 catch { }
 
-                using LogEventModel LogToSave = new LogEventModel(LogEventModel.LogTypeEnum.EXCEPTION,
+                LogEventModel LogToSave = new LogEventModel(LogEventModel.LogTypeEnum.EXCEPTION,
                                                             " message : " + exception.Message ?? "-",
                                                             " innermessage : " + (exception.InnerException?.Message ?? "-") +
                                                             " , " +

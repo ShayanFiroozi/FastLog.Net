@@ -65,14 +65,14 @@ namespace TrendSoft.LogModule.Agents
         {
             try
             {
-                if (string.IsNullOrWhiteSpace(LogFile)) return (short)0;
-                if (!File.Exists(LogFile)) return (short)0;
+                if (string.IsNullOrWhiteSpace(LogFile)) return 0;
+                if (!File.Exists(LogFile)) return 0;
 
-                return (short)((new FileInfo(LogFile).Length / 1024) / 1024);
+                return (short)(new FileInfo(LogFile).Length / 1024 / 1024);
             }
             catch
             {
-                return (short)0;
+                return 0;
             }
         }
 

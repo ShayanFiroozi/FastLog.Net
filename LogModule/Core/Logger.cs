@@ -82,137 +82,99 @@ namespace TrendSoft.LogModule.Core
 
         #region Logging Functions
 
+
+        private ValueTask LogEventHelper(LogEventModel.LogTypeEnum LogType,
+                                         string LogText,
+                                         string ExtraInfo = "",
+                                         string Source = "")
+        {
+            if (string.IsNullOrWhiteSpace(LogText))
+            {
+                return ValueTask.CompletedTask;
+            }
+
+            try
+            {
+                LogEventModel LogEvent = new(LogType,
+                                             LogText,
+                                             ExtraInfo,
+                                             Source);
+
+                return LoggerChannelWriter.WriteAsync(LogEvent);
+            }
+            catch (Exception ex)
+            {
+                InternalExceptionLogger.LogInternalException(ex);
+            }
+
+            return ValueTask.CompletedTask;
+        }
+
+
+        private ValueTask LogEventHelper(Exception exception)
+        {
+            if (exception is null)
+            {
+                return ValueTask.CompletedTask;
+            }
+
+            try
+            {
+                LogEventModel LogEvent = new(exception);
+
+                return LoggerChannelWriter.WriteAsync(LogEvent);
+            }
+            catch (Exception ex)
+            {
+                InternalExceptionLogger.LogInternalException(ex);
+            }
+
+            return ValueTask.CompletedTask;
+        }
+
+
+
+
         public ValueTask LogInfo(string LogText,
                                  string ExtraInfo = "",
                                  string Source = "")
         {
-            if (string.IsNullOrWhiteSpace(LogText))
-            {
-                return ValueTask.CompletedTask;
-            }
-
-            try
-            {
-                return LoggerChannelWriter.WriteAsync(new LogEventModel(LogEventModel.LogTypeEnum.INFO,
-                                                                          LogText,
-                                                                          ExtraInfo,
-                                                                          Source));
-            }
-            catch (Exception ex)
-            {
-                InternalExceptionLogger.LogInternalException(ex);
-            }
-
-            return ValueTask.CompletedTask;
+            return LogEventHelper(LogEventModel.LogTypeEnum.INFO, LogText, ExtraInfo, Source);
         }
-
-
 
 
 
         public ValueTask LogWarning(string LogText,
-                                    string ExtraInfo = "",
-                                    string Source = "")
+                                   string ExtraInfo = "",
+                                   string Source = "")
         {
-            if (string.IsNullOrWhiteSpace(LogText))
-            {
-                return ValueTask.CompletedTask;
-            }
-
-            try
-            {
-                return LoggerChannelWriter.WriteAsync(new LogEventModel(LogEventModel.LogTypeEnum.WARNING,
-                                                                          LogText,
-                                                                          ExtraInfo,
-                                                                          Source));
-            }
-            catch (Exception ex)
-            {
-                InternalExceptionLogger.LogInternalException(ex);
-            }
-
-            return ValueTask.CompletedTask;
+            return LogEventHelper(LogEventModel.LogTypeEnum.WARNING, LogText, ExtraInfo, Source);
         }
-
 
 
         public ValueTask LogError(string LogText,
                                   string ExtraInfo = "",
                                   string Source = "")
         {
-            if (string.IsNullOrWhiteSpace(LogText))
-            {
-                return ValueTask.CompletedTask;
-            }
-
-            try
-            {
-                return LoggerChannelWriter.WriteAsync(new LogEventModel(LogEventModel.LogTypeEnum.ERROR,
-                                                                          LogText,
-                                                                          ExtraInfo,
-                                                                          Source));
-            }
-            catch (Exception ex)
-            {
-                InternalExceptionLogger.LogInternalException(ex);
-            }
-
-            return ValueTask.CompletedTask;
+            return LogEventHelper(LogEventModel.LogTypeEnum.ERROR, LogText, ExtraInfo, Source);
         }
 
+
+
+        public ValueTask LogDebug(string LogText,
+                                  string ExtraInfo = "",
+                                  string Source = "")
+        {
+            return LogEventHelper(LogEventModel.LogTypeEnum.DEBUG, LogText, ExtraInfo, Source);
+        }
 
 
         public ValueTask LogException(Exception exception)
         {
 
-            if (exception == null)
-            {
-                return ValueTask.CompletedTask;
-            }
-
-
-            try
-            {
-                return LoggerChannelWriter.WriteAsync(new LogEventModel(exception));
-            }
-            catch (Exception ex)
-            {
-                InternalExceptionLogger.LogInternalException(ex);
-            }
-
-            return ValueTask.CompletedTask;
-
+            return LogEventHelper(exception);
 
         }
-
-
-
-
-        public ValueTask LogDebug(string LogText,
-                          string ExtraInfo = "",
-                          string Source = "")
-        {
-            if (string.IsNullOrWhiteSpace(LogText))
-            {
-                return ValueTask.CompletedTask;
-            }
-
-            try
-            {
-                return LoggerChannelWriter.WriteAsync(new LogEventModel(LogEventModel.LogTypeEnum.DEBUG,
-                                                                          LogText,
-                                                                          ExtraInfo,
-                                                                          Source));
-            }
-            catch (Exception ex)
-            {
-                InternalExceptionLogger.LogInternalException(ex);
-            }
-
-            return ValueTask.CompletedTask;
-        }
-
-
 
 
 
@@ -261,7 +223,7 @@ namespace TrendSoft.LogModule.Core
                             {
                                 InternalExceptionLogger.LogInternalException(ex);
                             }
-                          
+
                         }
 
                     }
@@ -295,6 +257,8 @@ namespace TrendSoft.LogModule.Core
             {
                 try
                 {
+                    StopLogger();
+
                     //logDB?.Dispose();
                     ClearLoggingAgents();
                     _loggerAgents = null;

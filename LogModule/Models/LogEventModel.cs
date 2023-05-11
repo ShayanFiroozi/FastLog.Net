@@ -3,9 +3,8 @@ using System.Text;
 
 namespace TrendSoft.LogModule.Models
 {
-    public class LogEventModel : IDisposable
+    public class LogEventModel
     {
-        private bool disposedValue;
 
         #region Constructors
 
@@ -23,7 +22,7 @@ namespace TrendSoft.LogModule.Models
 
 
         public LogEventModel(Exception exception)
-            : this(LogEventModel.LogTypeEnum.EXCEPTION,
+            : this(LogTypeEnum.EXCEPTION,
                    " Message : " + exception.Message ?? "-",
                    " InnerMessage : " + (exception.InnerException?.Message ?? "-") +
                    " , " +
@@ -89,6 +88,7 @@ namespace TrendSoft.LogModule.Models
             return GetLogMessage().ToString();
         }
 
+
         private StringBuilder GetLogMessage()
         {
             StringBuilder finalMessage = new();
@@ -128,41 +128,7 @@ namespace TrendSoft.LogModule.Models
         }
 
 
-        #region Dispose Pattern
-        protected virtual void Dispose(bool disposing)
-        {
-            if (!disposedValue)
-            {
-                if (disposing)
-                {
-                    // TODO: dispose managed state (managed objects)
-
-                    Source = null;
-                    LogText = null;
-                    ExtraInfo = null;
-                }
-
-                // TODO: free unmanaged resources (unmanaged objects) and override finalizer
-                // TODO: set large fields to null
-                disposedValue = true;
-            }
-        }
-
-        // // TODO: override finalizer only if 'Dispose(bool disposing)' has code to free unmanaged resources
-        // ~LogMessageModel()
-        // {
-        //     // Do not change this code. Put cleanup code in 'Dispose(bool disposing)' method
-        //     Dispose(disposing: false);
-        // }
-
-        public void Dispose()
-        {
-            // Do not change this code. Put cleanup code in 'Dispose(bool disposing)' method
-            Dispose(disposing: true);
-            GC.SuppressFinalize(this);
-        }
-        #endregion
-
+   
 
     }
 }
