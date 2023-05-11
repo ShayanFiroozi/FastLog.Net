@@ -48,7 +48,7 @@ namespace TrendSoft.LogModule.Test
             taskList.Add(Task.Run(() =>
             {
 
-                for (int i = 0; i < 20_000; i++)
+                for (int i = 0; i < 50_000; i++)
                 {
                     _ = Logger.LogException(new Exception($"This is a \"Test Exception\" number {i:N0} from \"LoggerWriteTest\""));
                 }

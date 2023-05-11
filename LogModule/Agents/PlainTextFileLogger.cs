@@ -1,5 +1,6 @@
 ﻿using System;
 using System.IO;
+using System.Threading;
 using System.Threading.Channels;
 using System.Threading.Tasks;
 using TrendSoft.LogModule.Interfaces;
@@ -38,7 +39,7 @@ namespace TrendSoft.LogModule.Agents
 
 
 
-        public Task LogEvent(LogEventModel LogModel)
+        public Task LogEvent(LogEventModel LogModel, CancellationToken cancellationToken = default)
         {
 
             if (LogModel is null) return Task.CompletedTask;
@@ -48,12 +49,12 @@ namespace TrendSoft.LogModule.Agents
 
                 CheckLogFileSize();
 
-                return File.AppendAllTextAsync(LogFile, LogModel.ToString());
+                return File.AppendAllTextAsync(LogFile, LogModel.ToString(), cancellationToken);
 
             }
             catch (Exception ex)
             {
-               InternalExceptionLogger.LogInternalException(ex);
+                InternalExceptionLogger.LogInternalException(ex);
             }
 
             return Task.CompletedTask;
@@ -89,7 +90,7 @@ namespace TrendSoft.LogModule.Agents
                     File.Delete(LogFile);
                 }
             }
-            catch(Exception ex) 
+            catch (Exception ex)
             {
                 InternalExceptionLogger.LogInternalException(ex);
             }

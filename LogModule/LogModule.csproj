@@ -1,7 +1,7 @@
 ﻿<Project Sdk="Microsoft.NET.Sdk">
 
   <PropertyGroup>
-    <TargetFramework>net7.0-windows</TargetFramework>
+    <TargetFramework>net7.0</TargetFramework>
     <GenerateAssemblyInfo>false</GenerateAssemblyInfo>
     <Deterministic>false</Deterministic>
     <PlatformTarget>x86</PlatformTarget>
@@ -11,14 +11,12 @@
     <PlatformTarget>AnyCPU</PlatformTarget>
     <Optimize>false</Optimize>
     <DefineConstants>TRACE;DEBUG;</DefineConstants>
-    <WarningLevel>0</WarningLevel>
     <OutputPath>bin\</OutputPath>
     <DebugType>full</DebugType>
   </PropertyGroup>
 
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|AnyCPU'">
     <PlatformTarget>AnyCPU</PlatformTarget>
-    <WarningLevel>0</WarningLevel>
     <OutputPath>bin\</OutputPath>
     <DebugType>full</DebugType>
   </PropertyGroup>

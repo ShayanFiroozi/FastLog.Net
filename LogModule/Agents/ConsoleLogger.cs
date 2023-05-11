@@ -1,5 +1,6 @@
 ﻿using System;
 using System.IO;
+using System.Threading;
 using System.Threading.Channels;
 using System.Threading.Tasks;
 using TrendSoft.LogModule.Interfaces;
@@ -14,8 +15,12 @@ namespace TrendSoft.LogModule.Agents
     /// </summary>
     public class ConsoleLogger : ILoggerAgent
     {
+        public ConsoleLogger()
+        {
+#warning "Console.WriteLine" has serious performance and memory issues , Be careful when use it !
+        }
 
-        public Task LogEvent(LogEventModel LogModel)
+        public Task LogEvent(LogEventModel LogModel, CancellationToken cancellationToken = default)
         {
             if(LogModel is null) return Task.CompletedTask;
 

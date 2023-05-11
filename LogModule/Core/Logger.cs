@@ -2,6 +2,7 @@
 using System;
 using System.Collections.Concurrent;
 using System.Collections.Generic;
+using System.Threading;
 using System.Threading.Channels;
 using System.Threading.Tasks;
 using TrendSoft.LogModule.Interfaces;
@@ -13,7 +14,7 @@ namespace TrendSoft.LogModule.Core
 
     public class Logger : IDisposable
     {
-
+        private readonly CancellationTokenSource _cts = new();
 
         #region Channel Definitions
 
@@ -227,14 +228,15 @@ namespace TrendSoft.LogModule.Core
             return Task.Run(async () =>
             {
 
-                while (!LoggerChannelReader.Completion.IsCompleted)
+                while (!LoggerChannelReader.Completion.IsCompleted && !_cts.IsCancellationRequested)
                 {
-                    LogEventModel? EventModelFromChannel = await LoggerChannelReader.ReadAsync().ConfigureAwait(false);
+                    LogEventModel EventModelFromChannel = await LoggerChannelReader.ReadAsync().ConfigureAwait(false);
 
                     if (EventModelFromChannel is not null)
                     {
 
                         // Consume the LogEventModel on channel one by one with each logger agent in the agent list !
+
                         foreach (ILoggerAgent logger in _loggerAgents)
                         {
                             if (logger is null)
@@ -244,8 +246,14 @@ namespace TrendSoft.LogModule.Core
 
                             try
                             {
-
-                                await logger.LogEvent(logMessage: EventModelFromChannel).ConfigureAwait(false);
+                                if (!string.IsNullOrWhiteSpace(EventModelFromChannel.LogText))
+                                {
+                                    await logger.LogEvent(EventModelFromChannel, _cts.Token).ConfigureAwait(false);
+                                }
+                                else
+                                {
+                                    continue;
+                                }
 
 
                             }
@@ -253,6 +261,7 @@ namespace TrendSoft.LogModule.Core
                             {
                                 InternalExceptionLogger.LogInternalException(ex);
                             }
+                          
                         }
 
                     }
@@ -262,6 +271,11 @@ namespace TrendSoft.LogModule.Core
             });
         }
 
+
+        public void StopLogger()
+        {
+            _cts.Cancel();
+        }
 
 
 
