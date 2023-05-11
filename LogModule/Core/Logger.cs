@@ -13,7 +13,7 @@ namespace TrendSoft.LogModule.Core
 
     public class Logger : IDisposable
     {
-        private readonly CancellationTokenSource _cts = new();
+        private readonly CancellationTokenSource _cts = new CancellationTokenSource();
 
         #region Channel Definitions
 
@@ -29,7 +29,7 @@ namespace TrendSoft.LogModule.Core
 
         public IEnumerable<ILoggerAgent> Agents => _loggerAgents;
 
-        private List<ILoggerAgent> _loggerAgents = new();
+        private List<ILoggerAgent> _loggerAgents = new List<ILoggerAgent>();
 
         public string InternalExceptionsLogFile { get; private set; }
 
@@ -95,12 +95,18 @@ namespace TrendSoft.LogModule.Core
         {
             if (string.IsNullOrWhiteSpace(LogText))
             {
+
+#if NET5_0_OR_GREATER
                 return ValueTask.CompletedTask;
+#else
+                return default;
+#endif
+
             }
 
             try
             {
-                LogEventModel LogEvent = new(LogType,
+                LogEventModel LogEvent = new LogEventModel(LogType,
                                              LogText,
                                              ExtraInfo,
                                              Source);
@@ -112,7 +118,11 @@ namespace TrendSoft.LogModule.Core
                 InternalExceptionLogger.LogInternalException(ex);
             }
 
+#if NET5_0_OR_GREATER
             return ValueTask.CompletedTask;
+#else
+                return default;
+#endif
         }
 
 
@@ -120,12 +130,16 @@ namespace TrendSoft.LogModule.Core
         {
             if (exception is null)
             {
+#if NET5_0_OR_GREATER
                 return ValueTask.CompletedTask;
+#else
+                return default;
+#endif
             }
 
             try
             {
-                LogEventModel LogEvent = new(exception);
+                LogEventModel LogEvent = new LogEventModel(exception);
 
                 return LoggerChannelWriter.WriteAsync(LogEvent);
             }
@@ -134,7 +148,11 @@ namespace TrendSoft.LogModule.Core
                 InternalExceptionLogger.LogInternalException(ex);
             }
 
+#if NET5_0_OR_GREATER
             return ValueTask.CompletedTask;
+#else
+                return default;
+#endif
         }
 
 
@@ -199,7 +217,7 @@ namespace TrendSoft.LogModule.Core
                 {
                     LogEventModel EventModelFromChannel = await LoggerChannelReader.ReadAsync().ConfigureAwait(false);
 
-                    if (EventModelFromChannel is not null)
+                    if (EventModelFromChannel != null)
                     {
 
                         // Consume the LogEventModel on channel one by one with each logger agent in the agent list !

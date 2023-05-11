@@ -91,7 +91,7 @@ namespace TrendSoft.LogModule.Models
 
         private StringBuilder GetLogMessage()
         {
-            StringBuilder finalMessage = new();
+            StringBuilder finalMessage = new StringBuilder();
 
             _ = finalMessage.Append(DateTime.ToString("yyyy/MM/dd HH:mm:ss"))
                         .Append(' ')
@@ -104,7 +104,7 @@ namespace TrendSoft.LogModule.Models
 
             if (!string.IsNullOrWhiteSpace(ExtraInfo))
             {
-                if (LogType is not LogTypeEnum.EXCEPTION)
+                if (LogType != LogTypeEnum.EXCEPTION)
                 {
                     _ = finalMessage.Append(" , Details : ");
                 }

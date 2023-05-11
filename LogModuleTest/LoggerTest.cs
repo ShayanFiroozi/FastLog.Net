@@ -28,7 +28,7 @@ namespace TrendSoft.LogModule.Test
         [Test]
         public async Task LoggerWriteTest()
         {
-            List<Task> taskList = new()
+            List<Task> taskList = new List<Task>()
             {
                 Task.Run(() =>
               {
