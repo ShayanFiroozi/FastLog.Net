@@ -5,7 +5,7 @@ VisualStudioVersion = 17.5.33530.505
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "LogModule", "LogModule.csproj", "{A47499CA-E3CB-446B-A7A1-9DF197A5A9FE}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "LogModuleTest", "..\LogModuleTest\LogModuleTest.csproj", "{48D19B20-CB81-41DD-8D35-0966210DD1B8}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "LogModuleTest", "..\LogModuleTest\LogModuleTest.csproj", "{48D19B20-CB81-41DD-8D35-0966210DD1B8}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution

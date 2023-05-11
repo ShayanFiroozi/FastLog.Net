@@ -1,4 +1,7 @@
-﻿using TrendSoft.LogModule.Agents;
+﻿using System;
+using System.Collections.Generic;
+using System.Threading.Tasks;
+using TrendSoft.LogModule.Agents;
 using TrendSoft.LogModule.Core;
 
 namespace TrendSoft.LogModuleTest

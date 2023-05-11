@@ -2,8 +2,7 @@
 
   <PropertyGroup>
     <OutputType>Exe</OutputType>
-    <TargetFrameworks>net7.0;net7.0-windows;net6.0;net6.0-windows</TargetFrameworks>
-    <ImplicitUsings>enable</ImplicitUsings>
+    <TargetFrameworks>net7.0;net7.0-windows;net6.0;net6.0-windows;net5.0;net5.0-windows;netcoreapp3.1</TargetFrameworks>
     <Nullable>enable</Nullable>
     <StartupObject></StartupObject>
   </PropertyGroup>
