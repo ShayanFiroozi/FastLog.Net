@@ -32,7 +32,7 @@ namespace TrendSoft.LogModule.Agents
                 return Task.CompletedTask;
             }
 
-            Debug.WriteLine($"{LogModel}");
+            Debug.WriteLine($"{LogModel.GetLogMessage(true)}");
 
 
             return Task.CompletedTask;
