@@ -1,7 +1,7 @@
 ﻿using TrendSoft.LogModule.Agents;
 using TrendSoft.LogModule.Core;
 
-namespace LogModuleTest
+namespace TrendSoft.LogModuleTest
 {
     internal static class Program
     {
