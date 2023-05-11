@@ -51,7 +51,7 @@ namespace TrendSoft.LogModule.Agents
 
                 CheckLogFileSize();
 
-                return File.AppendAllTextAsync(LogFile, LogModel.ToString(), cancellationToken);
+                return File.AppendAllTextAsync(LogFile, LogModel.GetLogMessage(true), cancellationToken);
 
             }
             catch (Exception ex)

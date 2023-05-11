@@ -83,24 +83,23 @@ namespace TrendSoft.LogModule.Models
         #endregion
 
 
-        public override string ToString()
-        {
-            return GetLogMessage().ToString();
-        }
 
-
-        private StringBuilder GetLogMessage()
+        public string GetLogMessage(bool DateTimeIncluded)
         {
             StringBuilder finalMessage = new StringBuilder();
 
-            _ = finalMessage.Append(DateTime.ToString("yyyy/MM/dd HH:mm:ss"))
-                        .Append(' ')
-                        .Append('[')
-                        .Append(LogType.ToString())
-                        .Append(']')
-                        .Append(" -> ")
-                        .Append(LogText);
+            if(DateTimeIncluded)
+            {
+                _ = finalMessage.Append(DateTime.ToString("yyyy/MM/dd HH:mm:ss"));
+            }
 
+            _ = finalMessage.Append(' ')
+                            .Append('[')
+                            .Append(LogType.ToString())
+                            .Append(']')
+                            .Append(" -> ")
+                            .Append(LogText);
+   
 
             if (!string.IsNullOrWhiteSpace(ExtraInfo))
             {
@@ -123,7 +122,7 @@ namespace TrendSoft.LogModule.Models
 
 
 
-            return finalMessage;
+            return finalMessage.ToString();
 
         }
 

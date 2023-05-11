@@ -97,7 +97,7 @@ namespace TrendSoft.LogModule.InternalException
                                                              exception.Source ?? "-");
 
 
-                File.AppendAllText(InternalExceptionsLogFile, LogToSave.ToString());
+                File.AppendAllText(InternalExceptionsLogFile, LogToSave.GetLogMessage(true));
 
             }
             catch
