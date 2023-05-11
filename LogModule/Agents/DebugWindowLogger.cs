@@ -1,8 +1,5 @@
-﻿using System;
-using System.Diagnostics;
-using System.IO;
+﻿using System.Diagnostics;
 using System.Threading;
-using System.Threading.Channels;
 using System.Threading.Tasks;
 using TrendSoft.LogModule.Interfaces;
 using TrendSoft.LogModule.Models;
@@ -30,9 +27,11 @@ namespace TrendSoft.LogModule.Agents
             return Task.CompletedTask;
 #endif
 
-            if (LogModel is null) return Task.CompletedTask;
+            if (LogModel is null)
+            {
+                return Task.CompletedTask;
+            }
 
-         
             Debug.WriteLine($"{LogModel}");
 
 

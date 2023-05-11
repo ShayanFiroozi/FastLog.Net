@@ -27,7 +27,7 @@ namespace TrendSoft.LogModule.Models
                    " InnerMessage : " + (exception.InnerException?.Message ?? "-") +
                    " , " +
                    " StackTrace : " + (exception.StackTrace ?? "-"),
-                   (exception.Source ?? "-"))
+                   exception.Source ?? "-")
         {
         }
 
@@ -93,7 +93,7 @@ namespace TrendSoft.LogModule.Models
         {
             StringBuilder finalMessage = new();
 
-            finalMessage.Append(DateTime.ToString("yyyy/MM/dd HH:mm:ss"))
+            _ = finalMessage.Append(DateTime.ToString("yyyy/MM/dd HH:mm:ss"))
                         .Append(' ')
                         .Append('[')
                         .Append(LogType.ToString())
@@ -128,7 +128,7 @@ namespace TrendSoft.LogModule.Models
         }
 
 
-   
+
 
     }
 }

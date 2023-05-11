@@ -5,8 +5,6 @@ using System.Collections.Generic;
 using System.Threading.Tasks;
 using TrendSoft.LogModule.Agents;
 using TrendSoft.LogModule.Core;
-using TrendSoft.LogModule.InternalException;
-using TrendSoft.LogModule.Models;
 
 namespace TrendSoft.LogModule.Test
 {
@@ -30,9 +28,9 @@ namespace TrendSoft.LogModule.Test
         [Test]
         public async Task LoggerWriteTest()
         {
-            List<Task> taskList = new();
-
-            taskList.Add(Task.Run(() =>
+            List<Task> taskList = new()
+            {
+                Task.Run(() =>
               {
 
                   for (int i = 0; i < 1_000; i++)
@@ -44,24 +42,25 @@ namespace TrendSoft.LogModule.Test
                   }
 
 
-              }));
+              }),
 
 
-            taskList.Add(Task.Run(() =>
-            {
-
-                for (int i = 0; i < 2_000; i++)
+                Task.Run(() =>
                 {
-                    _ = Logger.LogException(new Exception($"This is a \"Test Exception\" number {i:N0} from \"LoggerWriteTest\""));
-                }
-            }));
+
+                    for (int i = 0; i < 2_000; i++)
+                    {
+                        _ = Logger.LogException(new Exception($"This is a \"Test Exception\" number {i:N0} from \"LoggerWriteTest\""));
+                    }
+                })
+            };
 
 
             await Task.WhenAll(taskList);
 
             Console.Beep();
 
-          
+
             await loggerTask;
 
 

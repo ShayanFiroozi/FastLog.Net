@@ -1,7 +1,6 @@
 ﻿using System;
 using System.IO;
 using System.Threading;
-using System.Threading.Channels;
 using System.Threading.Tasks;
 using TrendSoft.LogModule.Interfaces;
 using TrendSoft.LogModule.InternalException;
@@ -42,7 +41,10 @@ namespace TrendSoft.LogModule.Agents
         public Task LogEvent(LogEventModel LogModel, CancellationToken cancellationToken = default)
         {
 
-            if (LogModel is null) return Task.CompletedTask;
+            if (LogModel is null)
+            {
+                return Task.CompletedTask;
+            }
 
             try
             {
@@ -65,10 +67,9 @@ namespace TrendSoft.LogModule.Agents
         {
             try
             {
-                if (string.IsNullOrWhiteSpace(LogFile)) return 0;
-                if (!File.Exists(LogFile)) return 0;
-
-                return (short)(new FileInfo(LogFile).Length / 1024 / 1024);
+                return string.IsNullOrWhiteSpace(LogFile)
+                    ? (short)0
+                    : !File.Exists(LogFile) ? (short)0 : (short)(new FileInfo(LogFile).Length / 1024 / 1024);
             }
             catch
             {
@@ -81,9 +82,15 @@ namespace TrendSoft.LogModule.Agents
         {
             try
             {
-                if (string.IsNullOrWhiteSpace(LogFile)) return;
-                if (!File.Exists(LogFile)) return;
+                if (string.IsNullOrWhiteSpace(LogFile))
+                {
+                    return;
+                }
 
+                if (!File.Exists(LogFile))
+                {
+                    return;
+                }
 
                 if (GetLogFileSizeMB() >= MaxLogFileSizeMB)
                 {

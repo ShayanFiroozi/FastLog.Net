@@ -1,7 +1,5 @@
 ﻿using System;
 using System.IO;
-using System.Threading.Channels;
-using System.Threading.Tasks;
 using TrendSoft.LogModule.Models;
 
 namespace TrendSoft.LogModule.InternalException
@@ -31,7 +29,7 @@ namespace TrendSoft.LogModule.InternalException
 
             if (!Directory.Exists(Path.GetDirectoryName(internalExceptionsLogFile)))
             {
-                Directory.CreateDirectory(internalExceptionsLogFile);
+                _ = Directory.CreateDirectory(internalExceptionsLogFile);
             }
 
 
@@ -64,8 +62,23 @@ namespace TrendSoft.LogModule.InternalException
             }
 
 
-            if (exception is null) return;
 
+            /* Unmerged change from project 'LogModule (net6.0)'
+            Before:
+                        if (exception is null) return;
+
+
+                        try
+            After:
+                        if (exception is null) return;
+                        }
+
+                        try
+            */
+            if (exception is null)
+            {
+                return;
+            }
 
             try
             {
@@ -76,12 +89,12 @@ namespace TrendSoft.LogModule.InternalException
                 }
                 catch { }
 
-                LogEventModel LogToSave = new LogEventModel(LogEventModel.LogTypeEnum.EXCEPTION,
+                LogEventModel LogToSave = new(LogEventModel.LogTypeEnum.EXCEPTION,
                                                             " message : " + exception.Message ?? "-",
                                                             " innermessage : " + (exception.InnerException?.Message ?? "-") +
                                                             " , " +
                                                             " stacktrace : " + (exception.StackTrace ?? "-"),
-                                                             (exception.Source ?? "-"));
+                                                             exception.Source ?? "-");
 
 
                 File.AppendAllText(InternalExceptionsLogFile, LogToSave.ToString());
@@ -94,7 +107,6 @@ namespace TrendSoft.LogModule.InternalException
 
             finally
             {
-                exception = null;
             }
 
         }
@@ -106,14 +118,12 @@ namespace TrendSoft.LogModule.InternalException
         {
             try
             {
-                if (string.IsNullOrWhiteSpace(InternalExceptionsLogFile)) return (short)0;
-                if (!File.Exists(InternalExceptionsLogFile)) return (short)0;
-
-                return (short)((new FileInfo(InternalExceptionsLogFile).Length / 1024) / 1024);
+                return string.IsNullOrWhiteSpace(InternalExceptionsLogFile) ? (short)0 : !File.Exists(InternalExceptionsLogFile) ? (short)0 :
+                (short)(new FileInfo(InternalExceptionsLogFile).Length / 1024 / 1024);
             }
             catch
             {
-                return (short)0;
+                return 0;
             }
         }
 
@@ -121,9 +131,15 @@ namespace TrendSoft.LogModule.InternalException
         {
             try
             {
-                if (string.IsNullOrWhiteSpace(InternalExceptionsLogFile)) return;
-                if (!File.Exists(InternalExceptionsLogFile)) return;
+                if (string.IsNullOrWhiteSpace(InternalExceptionsLogFile))
+                {
+                    return;
+                }
 
+                if (!File.Exists(InternalExceptionsLogFile))
+                {
+                    return;
+                }
 
                 if (GetLogFileSizeMB() >= InternalExceptionsMaxLogFileSizeMB)
                 {

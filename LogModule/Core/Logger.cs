@@ -1,6 +1,5 @@
 ﻿
 using System;
-using System.Collections.Concurrent;
 using System.Collections.Generic;
 using System.Threading;
 using System.Threading.Channels;
@@ -18,10 +17,10 @@ namespace TrendSoft.LogModule.Core
 
         #region Channel Definitions
 
-        private Channel<LogEventModel> LoggerChannel = Channel.CreateUnbounded<LogEventModel>(new UnboundedChannelOptions());
+        private readonly Channel<LogEventModel> LoggerChannel = Channel.CreateUnbounded<LogEventModel>(new UnboundedChannelOptions());
 
-        private ChannelReader<LogEventModel> LoggerChannelReader;
-        private ChannelWriter<LogEventModel> LoggerChannelWriter;
+        private readonly ChannelReader<LogEventModel> LoggerChannelReader;
+        private readonly ChannelWriter<LogEventModel> LoggerChannelWriter;
 
         #endregion
 
@@ -72,9 +71,15 @@ namespace TrendSoft.LogModule.Core
 
         #region "Logger Agents" management functions
 
-        public void AddLoggingAgent(ILoggerAgent logger) => _loggerAgents.Add(logger);
+        public void AddLoggingAgent(ILoggerAgent logger)
+        {
+            _loggerAgents.Add(logger);
+        }
 
-        public void ClearLoggingAgents() => _loggerAgents.Clear();
+        public void ClearLoggingAgents()
+        {
+            _loggerAgents.Clear();
+        }
 
         #endregion
 

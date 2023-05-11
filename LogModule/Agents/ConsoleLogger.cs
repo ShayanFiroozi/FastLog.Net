@@ -1,10 +1,7 @@
 ﻿using System;
-using System.IO;
 using System.Threading;
-using System.Threading.Channels;
 using System.Threading.Tasks;
 using TrendSoft.LogModule.Interfaces;
-using TrendSoft.LogModule.InternalException;
 using TrendSoft.LogModule.Models;
 
 namespace TrendSoft.LogModule.Agents
@@ -22,35 +19,35 @@ namespace TrendSoft.LogModule.Agents
 
         public Task LogEvent(LogEventModel LogModel, CancellationToken cancellationToken = default)
         {
-            if(LogModel is null) return Task.CompletedTask;
+            if (LogModel is null)
+            {
+                return Task.CompletedTask;
+            }
 
             Console.ForegroundColor = ConsoleColor.Green;
             Console.Write($"{DateTime.Now}");
             Console.ForegroundColor = ConsoleColor.White;
 
             // Set the proper console forecolor
-            switch (LogModel.LogType)
+            Console.ForegroundColor = LogModel.LogType switch
             {
-                case LogEventModel.LogTypeEnum.INFO:
-                    Console.ForegroundColor = ConsoleColor.White;
-                    break;
-                case LogEventModel.LogTypeEnum.WARNING:
-                    Console.ForegroundColor = ConsoleColor.Yellow;
-                    break;
-                case LogEventModel.LogTypeEnum.ERROR:
-                    Console.ForegroundColor = ConsoleColor.Red;
-                    break;
-                case LogEventModel.LogTypeEnum.EXCEPTION:
-                    Console.ForegroundColor = ConsoleColor.Red;
-                    break;
-                case LogEventModel.LogTypeEnum.DEBUG:
-                    Console.ForegroundColor = ConsoleColor.Gray;
-                    break;
-                default:
-                    Console.ForegroundColor = ConsoleColor.White;
-                    break;
-            }
-
+                LogEventModel.LogTypeEnum.INFO => ConsoleColor.White,
+                LogEventModel.LogTypeEnum.WARNING
+ /* Unmerged change from project 'LogModule (net6.0)'
+ Before:
+                     Console.ForegroundColor = ConsoleColor.Yellow;
+                     break;
+                 case LogEventModel.LogTypeEnum.ERROR:
+ After:
+                     Console.ForegroundColor = ConsoleColor.Yellow,
+                 case LogEventModel.LogTypeEnum.ERROR:
+ */
+ => ConsoleColor.Yellow,
+                LogEventModel.LogTypeEnum.ERROR => ConsoleColor.Red,
+                LogEventModel.LogTypeEnum.EXCEPTION => ConsoleColor.Red,
+                LogEventModel.LogTypeEnum.DEBUG => ConsoleColor.Gray,
+                _ => ConsoleColor.White,
+            };
             Console.WriteLine(LogModel.ToString());
             Console.WriteLine();
 
