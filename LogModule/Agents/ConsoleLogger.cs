@@ -33,7 +33,8 @@ namespace TrendSoft.LogModule.Agents
                 _ => ConsoleColor.White,
             };
             Console.WriteLine(LogModel.GetLogMessage(false));
-            // Console.WriteLine();
+
+            Console.ForegroundColor = ConsoleColor.White;
 
 
             return Task.CompletedTask;
