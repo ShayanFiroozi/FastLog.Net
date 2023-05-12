@@ -96,6 +96,14 @@ namespace TrendSoft.FastLog.Core
             }
 #endif
 
+
+            // Prevent multi File Logger with same log file !
+            if (logger is PlainTextFileLogger && _loggerAgents.Any(agent => ((PlainTextFileLogger)agent).LogFile == ((PlainTextFileLogger)logger).LogFile))
+            {
+                throw new Exception($"A \"PlainTextFileLogger\" agent with the same log file already exists on the agent list.({((PlainTextFileLogger)logger).LogFile})");
+            }
+
+
             _loggerAgents.Add(logger);
         }
 

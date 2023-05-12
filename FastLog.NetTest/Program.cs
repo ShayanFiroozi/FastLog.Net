@@ -29,6 +29,7 @@ namespace TrendSoft.LogModuleTest
             Logger = new Logger("D:\\Logs\\LoggerInternalException.txt", LogMachineName: false);
 
             Logger.AddLoggingAgent(new PlainTextFileLogger("D:\\Logs\\PlainTextLogs.log"));
+            
 
             // Add agent(s) to the Logger
 
