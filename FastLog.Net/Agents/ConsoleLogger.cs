@@ -32,8 +32,11 @@ namespace TrendSoft.FastLog.Agents
                 case LogEventModel.LogTypeEnum.WARNING:
                     Console.ForegroundColor = ConsoleColor.Yellow;
                     break;
-                case LogEventModel.LogTypeEnum.ERROR:
+                case LogEventModel.LogTypeEnum.ALERT :
                     Console.ForegroundColor = ConsoleColor.Red;
+                    break;
+                case LogEventModel.LogTypeEnum.ERROR:
+                    Console.ForegroundColor = ConsoleColor.DarkRed;
                     break;
                 case LogEventModel.LogTypeEnum.EXCEPTION:
                     Console.ForegroundColor = ConsoleColor.Red;

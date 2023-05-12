@@ -46,11 +46,11 @@ namespace TrendSoft.FastLog.Models
         public enum LogTypeEnum : byte
         {
             INFO = 0,
-            WARNING = 1,
-            ERROR = 2,
-            EXCEPTION = 3,
-            DEBUG = 4
-
+            DEBUG = 1,
+            WARNING = 2,
+            ALERT = 3,
+            ERROR = 4,
+            EXCEPTION = 5,
         }
 
         #endregion

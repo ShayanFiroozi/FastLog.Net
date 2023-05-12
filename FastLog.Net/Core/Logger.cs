@@ -188,6 +188,14 @@ namespace TrendSoft.FastLog.Core
         }
 
 
+        public ValueTask LogAlert(string LogText,
+                                string ExtraInfo = "",
+                                string Source = "")
+        {
+            return LogEventHelper(LogEventModel.LogTypeEnum.ALERT, LogText, ExtraInfo, Source);
+        }
+
+
         public ValueTask LogError(string LogText,
                                   string ExtraInfo = "",
                                   string Source = "")
