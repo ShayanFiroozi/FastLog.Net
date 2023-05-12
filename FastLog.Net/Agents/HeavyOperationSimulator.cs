@@ -1,5 +1,4 @@
-﻿using FastLog.Net.Enums;
-using System;
+﻿using System;
 using System.Threading;
 using System.Threading.Tasks;
 using TrendSoft.FastLog.Interfaces;
@@ -11,6 +10,9 @@ namespace TrendSoft.FastLog.Agents
 
 #if DEBUG
 
+    /// <summary>
+    /// This class will be used when debugging (testing) the FastLog.Net to simulate a heavy CPU or IO bound operation.
+    /// </summary>
     public class HeavyOperationSimulator : ILoggerAgent
     {
 
@@ -24,7 +26,7 @@ namespace TrendSoft.FastLog.Agents
 
         public Task LogEvent(LogEventModel LogModel, CancellationToken cancellationToken = default)
         {
-            // Simulate some heavy CPU or IO operation
+            // Simulate some heavy CPU or IO bound operation.
             return Task.Delay(OperationTimeSpan, cancellationToken);
 
         }
