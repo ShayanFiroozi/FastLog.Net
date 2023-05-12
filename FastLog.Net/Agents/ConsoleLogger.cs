@@ -26,7 +26,7 @@ namespace TrendSoft.FastLog.Agents
 
         private ConsoleLogger()
         {
-            //Keep it private just make it non accessible from the outside of the class !!
+            //Keep it private to make it non accessible from the outside of the class !!
 
 
             ReflectAllEventTypeToConsole();

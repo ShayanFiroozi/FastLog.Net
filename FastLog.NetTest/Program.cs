@@ -39,7 +39,8 @@ namespace TrendSoft.LogModuleTest
                                                 .ReflectEventTypeToConsole(LogEventTypes.WARNING));
 
 
-            //Logger.AddLoggingAgent(new DebugWindowLogger());
+            Logger.AddLoggingAgent(DebugWindowLogger.Create().DoNotReflectAnyEventTypeToDebugWindow()
+                                                             .ReflectEventTypeToDebugWindow(LogEventTypes.WARNING));
 
 
             loggerTask = Logger.StartLogger();
