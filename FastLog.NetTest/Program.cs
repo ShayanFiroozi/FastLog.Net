@@ -28,20 +28,21 @@ namespace TrendSoft.LogModuleTest
         {
             Logger = new Logger("D:\\Logs\\LoggerInternalException.txt", LogMachineName: false);
 
-            Logger.AddLoggingAgent(new PlainTextFileLogger("D:\\Logs\\PlainTextLogs.log"));
-            
+            Logger.AddLoggingAgent(new PlainTextFileLogger("D:\\Logs\\PlainTextLogsA.log"));
+            Logger.AddLoggingAgent(new PlainTextFileLogger("D:\\Logs\\PlainTextLogsB.log"));
+            Logger.AddLoggingAgent(new PlainTextFileLogger("D:\\Logs\\PlainTextLogsC.log"));
+            Logger.AddLoggingAgent(new PlainTextFileLogger("D:\\Logs\\PlainTextLogsD.log"));
+
 
             // Add agent(s) to the Logger
 
 
             Logger.AddLoggingAgent(ConsoleLogger.Create());
 
-
 #if DEBUG
-            Logger.AddLoggingAgent(DebugWindowLogger.Create()
-                                                    .UnRegisterAllEventsFromDebugWindow()
-                                                    .RegisterEventToDebugWindow(LogEventTypes.WARNING));
+            Logger.AddLoggingAgent(new HeavyOperationSimulator(TimeSpan.FromSeconds(5)));
 #endif
+
 
             loggerTask = Logger.StartLogger();
 
@@ -57,7 +58,7 @@ namespace TrendSoft.LogModuleTest
                         Task.Run(()=>
                       {
 
-                          for (int i = 0; i < 5_000; i++)
+                          for (int i = 0; i < 1_000; i++)
                           {
                               _= Logger.LogInfo($"This is the \"INFO\" message number {i:N0} from the \"LoggerWriteTest\"");
                               _= Logger.LogError($"This is the \"ERROR\" message number {i:N0} from the \"LoggerWriteTest\"");
@@ -75,7 +76,7 @@ namespace TrendSoft.LogModuleTest
                         Task.Run(() =>
                         {
 
-                            for (int i = 0; i < 5_000; i++)
+                            for (int i = 0; i < 1_000; i++)
                             {
                                _= Logger.LogException(new Exception($"This is a \"Test Exception\" number {i:N0} from \"LoggerWriteTest\""));
                             }

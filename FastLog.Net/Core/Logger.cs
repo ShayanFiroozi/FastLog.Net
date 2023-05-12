@@ -260,8 +260,11 @@ namespace TrendSoft.FastLog.Core
 
         public Task StartLogger()
         {
+            // Logger engine ->
+
             return Task.Run(async () =>
             {
+                
 
                 while (!LoggerChannelReader.Completion.IsCompleted && !_cts.IsCancellationRequested)
                 {
@@ -299,9 +302,13 @@ namespace TrendSoft.FastLog.Core
 
                         }
 
+
+
                     }
 
                 }
+
+
 
             });
         }
