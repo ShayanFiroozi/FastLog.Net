@@ -12,13 +12,15 @@ namespace TrendSoft.FastLog.Agents
 {
 
     // Note : DebugWindowLogger class uses fluent "Builder" pattern.
+    // Note : DebugWindowLogger only available in "Debug" mode.
 
+#if DEBUG
     public class DebugWindowLogger : ILoggerAgent
     {
 
-        private readonly List<LogEventTypes> _logEventTypesToReflect = new List<LogEventTypes>();
+        private readonly List<LogEventTypes> _registeredEvents = new List<LogEventTypes>();
 
-        public IEnumerable<LogEventTypes> LogEventTypesToReflect => _logEventTypesToReflect;
+        public IEnumerable<LogEventTypes> RegisteredEvents => _registeredEvents;
 
 
 
@@ -28,7 +30,7 @@ namespace TrendSoft.FastLog.Agents
             //Keep it private to make it non accessible from the outside of the class !!
 
 
-            ReflectAllEventTypeToDebugWindow();
+            RegisterAllEventsToDebugWindow();
         }
 
         public static DebugWindowLogger Create()
@@ -40,41 +42,41 @@ namespace TrendSoft.FastLog.Agents
 
 
 
-        public DebugWindowLogger ReflectEventTypeToDebugWindow(LogEventTypes logEventType)
+        public DebugWindowLogger RegisterEventToDebugWindow(LogEventTypes logEventType)
         {
-            if (!_logEventTypesToReflect.Any(type => type == logEventType))
+            if (!_registeredEvents.Any(type => type == logEventType))
             {
-                _logEventTypesToReflect.Add(logEventType);
+                _registeredEvents.Add(logEventType);
             }
 
             return this;
         }
 
-        public DebugWindowLogger DoNotReflectEventTypeToDebugWindow(LogEventTypes logEventType)
+        public DebugWindowLogger UnRegisterEventFromDebugWindow(LogEventTypes logEventType)
         {
-            if (_logEventTypesToReflect.Any(type => type == logEventType))
+            if (_registeredEvents.Any(type => type == logEventType))
             {
-                _logEventTypesToReflect.Remove(logEventType);
+                _registeredEvents.Remove(logEventType);
             }
 
             return this;
         }
 
-        public DebugWindowLogger ReflectAllEventTypeToDebugWindow()
+        public DebugWindowLogger RegisterAllEventsToDebugWindow()
         {
-            _logEventTypesToReflect.Clear();
+            _registeredEvents.Clear();
 
             foreach (LogEventTypes eventType in Enum.GetValues(typeof(LogEventTypes)))
             {
-                _logEventTypesToReflect.Add(eventType);
+                _registeredEvents.Add(eventType);
             }
 
             return this;
         }
 
-        public DebugWindowLogger DoNotReflectAnyEventTypeToDebugWindow()
+        public DebugWindowLogger UnRegisterAllEventsFromDebugWindow()
         {
-            _logEventTypesToReflect.Clear();
+            _registeredEvents.Clear();
 
             return this;
         }
@@ -89,11 +91,11 @@ namespace TrendSoft.FastLog.Agents
             }
 
             // Check if any "Event Type" exists to show on Debug Window ?
-            if (!_logEventTypesToReflect.Any()) return Task.CompletedTask;
+            if (!_registeredEvents.Any()) return Task.CompletedTask;
 
 
             // Check if current log "Event Type" should be reflected onthe Debug Window or not.
-            if (!_logEventTypesToReflect.Any(type => LogModel.LogEventType == type)) return Task.CompletedTask;
+            if (!_registeredEvents.Any(type => LogModel.LogEventType == type)) return Task.CompletedTask;
 
 
             Debug.WriteLine(LogModel.GetLogMessage(false));
@@ -106,6 +108,8 @@ namespace TrendSoft.FastLog.Agents
 
 
     }
+
+#endif
 
 }
 

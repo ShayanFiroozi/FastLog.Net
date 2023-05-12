@@ -83,16 +83,18 @@ namespace TrendSoft.FastLog.Core
 
         public void AddLoggingAgent(ILoggerAgent logger)
         {
-            if(logger is ConsoleLogger && _loggerAgents.Any(agent=> agent is ConsoleLogger))
+            if (logger is ConsoleLogger && _loggerAgents.Any(agent => agent is ConsoleLogger))
             {
                 throw new Exception("A \"ConsoleLogger\" agent already exists on the agent list.");
             }
 
 
+#if DEBUG
             if (logger is DebugWindowLogger && _loggerAgents.Any(agent => agent is DebugWindowLogger))
             {
                 throw new Exception("A \"DebugWindowLogger\" agent already exists on the agent list.");
             }
+#endif
 
             _loggerAgents.Add(logger);
         }

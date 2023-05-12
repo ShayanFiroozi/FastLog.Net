@@ -17,9 +17,9 @@ namespace TrendSoft.FastLog.Agents
 
         private ConsoleColor DateTimeFontColor = ConsoleColor.Green;
 
-        private readonly List<LogEventTypes> _logEventTypesToReflect = new List<LogEventTypes>();
+        private readonly List<LogEventTypes> _registeredEvents = new List<LogEventTypes>();
 
-        public IEnumerable<LogEventTypes> LogEventTypesToReflect => _logEventTypesToReflect;
+        public IEnumerable<LogEventTypes> RegisteredEvents => _registeredEvents;
 
 
 
@@ -29,7 +29,7 @@ namespace TrendSoft.FastLog.Agents
             //Keep it private to make it non accessible from the outside of the class !!
 
 
-            ReflectAllEventsToConsole();
+            RegisterAllEventsToConsole();
         }
 
         public static ConsoleLogger Create()
@@ -41,41 +41,41 @@ namespace TrendSoft.FastLog.Agents
 
 
 
-        public ConsoleLogger ReflectOnConsole(LogEventTypes logEventType)
+        public ConsoleLogger RegisterEventToConsole(LogEventTypes logEventType)
         {
-            if (!_logEventTypesToReflect.Any(type => type == logEventType))
+            if (!_registeredEvents.Any(type => type == logEventType))
             {
-                _logEventTypesToReflect.Add(logEventType);
+                _registeredEvents.Add(logEventType);
             }
 
             return this;
         }
 
-        public ConsoleLogger DoNotReflectOnConsole(LogEventTypes logEventType)
+        public ConsoleLogger UnRegisterEventFromConsole(LogEventTypes logEventType)
         {
-            if (_logEventTypesToReflect.Any(type => type == logEventType))
+            if (_registeredEvents.Any(type => type == logEventType))
             {
-                _logEventTypesToReflect.Remove(logEventType);
+                _registeredEvents.Remove(logEventType);
             }
 
             return this;
         }
 
-        public ConsoleLogger ReflectAllEventsToConsole()
+        public ConsoleLogger RegisterAllEventsToConsole()
         {
-            _logEventTypesToReflect.Clear();
+            _registeredEvents.Clear();
 
             foreach (LogEventTypes eventType in Enum.GetValues(typeof(LogEventTypes)))
             {
-                _logEventTypesToReflect.Add(eventType);
+                _registeredEvents.Add(eventType);
             }
 
             return this;
         }
 
-        public ConsoleLogger DoNotReflectAllEventsToConsole()
+        public ConsoleLogger UnRegisterAllEventsFromConsole()
         {
-            _logEventTypesToReflect.Clear();
+            _registeredEvents.Clear();
 
             return this;
         }
@@ -97,11 +97,11 @@ namespace TrendSoft.FastLog.Agents
             }
 
             // Check if any "Event Type" exists to show on console ?
-            if (!_logEventTypesToReflect.Any()) return Task.CompletedTask;
+            if (!_registeredEvents.Any()) return Task.CompletedTask;
 
 
             // Check if current log "Event Type" should be reflected onthe Console or not.
-            if (!_logEventTypesToReflect.Any(type => LogModel.LogEventType == type)) return Task.CompletedTask;
+            if (!_registeredEvents.Any(type => LogModel.LogEventType == type)) return Task.CompletedTask;
 
 
             Console.ForegroundColor = DateTimeFontColor;
