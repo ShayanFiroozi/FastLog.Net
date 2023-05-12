@@ -1,7 +1,7 @@
 ﻿using System;
 using System.Text;
 
-namespace TrendSoft.LogModule.Models
+namespace TrendSoft.FastLog.Models
 {
     public class LogEventModel
     {

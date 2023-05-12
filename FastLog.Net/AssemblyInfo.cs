@@ -7,11 +7,11 @@ using System.Runtime.InteropServices;
 // General Information about an assembly is controlled through the following
 // set of attributes. Change these attribute values to modify the information
 // associated with an assembly.
-[assembly: AssemblyTitle("Logging Module for .NET Core")]
-[assembly: AssemblyDescription("High performance logger for .NET Core")]
+[assembly: AssemblyTitle("High performance logger for .NET")]
+[assembly: AssemblyDescription("High performance logger for .NET")]
 [assembly: AssemblyConfiguration("")]
 [assembly: AssemblyCompany("TrendSoft® , Bandar Abbas , Iran")]
-[assembly: AssemblyProduct("Logging Module for .NET Core")]
+[assembly: AssemblyProduct("TrendSoft® FastLog.Net")]
 [assembly: AssemblyCopyright("Copyright © 2023 TrendSoft® (MIT License)")]
 [assembly: AssemblyTrademark("Shayan Firoozi")]
 [assembly: AssemblyCulture("")]

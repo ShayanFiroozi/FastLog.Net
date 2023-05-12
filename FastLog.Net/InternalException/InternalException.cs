@@ -1,8 +1,8 @@
 ﻿using System;
 using System.IO;
-using TrendSoft.LogModule.Models;
+using TrendSoft.FastLog.Models;
 
-namespace TrendSoft.LogModule.InternalException
+namespace TrendSoft.FastLog.InternalException
 {
     public static class InternalExceptionLogger
     {

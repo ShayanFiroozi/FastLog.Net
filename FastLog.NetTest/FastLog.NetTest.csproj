@@ -7,7 +7,8 @@
   </PropertyGroup>
 
   <ItemGroup>
-    <ProjectReference Include="..\LogModule\LogModule.csproj" />
+    <ProjectReference Include="..\FastLog.Net\FastLog.Net.csproj" />
+    <ProjectReference Include="..\LogModule\FastLog.Net.csproj" />
   </ItemGroup>
 
 </Project>

@@ -1,8 +1,8 @@
 ﻿using System.Threading;
 using System.Threading.Tasks;
-using TrendSoft.LogModule.Models;
+using TrendSoft.FastLog.Models;
 
-namespace TrendSoft.LogModule.Interfaces
+namespace TrendSoft.FastLog.Interfaces
 {
     public interface ILoggerAgent
     {

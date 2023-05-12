@@ -5,12 +5,12 @@ using System.Linq;
 using System.Threading;
 using System.Threading.Channels;
 using System.Threading.Tasks;
-using TrendSoft.LogModule.Agents;
-using TrendSoft.LogModule.Interfaces;
-using TrendSoft.LogModule.InternalException;
-using TrendSoft.LogModule.Models;
+using TrendSoft.FastLog.Agents;
+using TrendSoft.FastLog.Interfaces;
+using TrendSoft.FastLog.InternalException;
+using TrendSoft.FastLog.Models;
 
-namespace TrendSoft.LogModule.Core
+namespace TrendSoft.FastLog.Core
 {
 
     public class Logger : IDisposable

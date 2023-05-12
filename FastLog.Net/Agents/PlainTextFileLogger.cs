@@ -2,11 +2,11 @@
 using System.IO;
 using System.Threading;
 using System.Threading.Tasks;
-using TrendSoft.LogModule.Interfaces;
-using TrendSoft.LogModule.InternalException;
-using TrendSoft.LogModule.Models;
+using TrendSoft.FastLog.Interfaces;
+using TrendSoft.FastLog.InternalException;
+using TrendSoft.FastLog.Models;
 
-namespace TrendSoft.LogModule.Agents
+namespace TrendSoft.FastLog.Agents
 {
     public class PlainTextFileLogger : ILoggerAgent
     {
