@@ -30,7 +30,7 @@ namespace TrendSoft.FastLog.InternalException
 
             if (!Directory.Exists(Path.GetDirectoryName(internalExceptionsLogFile)))
             {
-                _ = Directory.CreateDirectory(internalExceptionsLogFile);
+                _ = Directory.CreateDirectory(Path.GetDirectoryName(internalExceptionsLogFile));
             }
 
 

@@ -34,6 +34,11 @@ namespace TrendSoft.FastLog.Agents
 
             LogFile = logFile;
             MaxLogFileSizeMB = maxLogFileSizeMB;
+
+            if (!Directory.Exists(Path.GetDirectoryName(LogFile)))
+            {
+                _ = Directory.CreateDirectory(Path.GetDirectoryName(LogFile));
+            }
         }
 
 
