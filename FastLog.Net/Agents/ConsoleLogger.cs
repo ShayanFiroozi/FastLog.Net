@@ -1,4 +1,5 @@
-﻿using System;
+﻿using FastLog.Net.Enums;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading;
@@ -9,31 +10,83 @@ using TrendSoft.FastLog.Models;
 namespace TrendSoft.FastLog.Agents
 {
 
+    // Note : ConsoleLogger class uses fluent "Builder" pattern.
+
     public class ConsoleLogger : ILoggerAgent
     {
 
-        private readonly List<LogEventModel.LogEventTypeEnum> _logEventTypesToReflect = new List<LogEventModel.LogEventTypeEnum>();
-        public IEnumerable<LogEventModel.LogEventTypeEnum> LogEventTypesToReflect => _logEventTypesToReflect;
-        
-        public void RegisterEventTypeToReflect(LogEventModel.LogEventTypeEnum logEventType) 
+        private ConsoleColor DateTimeFontColor = ConsoleColor.Green;
+
+        private readonly List<LogEventTypes> _logEventTypesToReflect = new List<LogEventTypes>();
+
+        public IEnumerable<LogEventTypes> LogEventTypesToReflect => _logEventTypesToReflect;
+
+
+
+
+        private ConsoleLogger()
         {
-            if(!_logEventTypesToReflect.Any(type=>type == logEventType))
+            //Keep it private just make it non accessible from the outside of the class !!
+
+
+            ReflectAllEventTypeToConsole();
+        }
+
+        public static ConsoleLogger Create()
+
+        {
+
+            return new ConsoleLogger();
+        }
+
+
+
+        public ConsoleLogger ReflectEventTypeToConsole(LogEventTypes logEventType)
+        {
+            if (!_logEventTypesToReflect.Any(type => type == logEventType))
             {
                 _logEventTypesToReflect.Add(logEventType);
             }
+
+            return this;
         }
 
-        public bool UnregisterEventTypeFromReflecting(LogEventModel.LogEventTypeEnum logEventType)
+        public ConsoleLogger DoNotReflectEventTypeToConsole(LogEventTypes logEventType)
         {
             if (_logEventTypesToReflect.Any(type => type == logEventType))
             {
-               return _logEventTypesToReflect.Remove(logEventType);
+                _logEventTypesToReflect.Remove(logEventType);
             }
 
-            return false;
+            return this;
         }
 
-        public void RegisterAllEventToReflect() => _logEventTypesToReflect.Clear();
+        public ConsoleLogger ReflectAllEventTypeToConsole()
+        {
+            _logEventTypesToReflect.Clear();
+
+            foreach (LogEventTypes eventType in Enum.GetValues(typeof(LogEventTypes)))
+            {
+                _logEventTypesToReflect.Add(eventType);
+            }
+
+            return this;
+        }
+
+        public ConsoleLogger DoNotReflectAnyEventTypeToConsole()
+        {
+            _logEventTypesToReflect.Clear();
+
+            return this;
+        }
+
+        public ConsoleLogger WithDateTimeFontColor(ConsoleColor color)
+        {
+            DateTimeFontColor = color;
+            return this;
+        }
+
+
 
 
         public Task LogEvent(LogEventModel LogModel, CancellationToken cancellationToken = default)
@@ -43,36 +96,38 @@ namespace TrendSoft.FastLog.Agents
                 return Task.CompletedTask;
             }
 
-            // Check if current log event type should be reflected onthe Console or not.
-            if(_logEventTypesToReflect.Any())
-            {
-                if (!_logEventTypesToReflect.Any(type => LogModel.LogType == type)) return Task.CompletedTask;
-            }
+            // Check if any "Event Type" exists to show on console ?
+            if (!_logEventTypesToReflect.Any()) return Task.CompletedTask;
 
-            Console.ForegroundColor = ConsoleColor.Green;
+
+            // Check if current log "Event Type" should be reflected onthe Console or not.
+            if (!_logEventTypesToReflect.Any(type => LogModel.LogEventType == type)) return Task.CompletedTask;
+            
+
+            Console.ForegroundColor = DateTimeFontColor;
             Console.Write($"{DateTime.Now}");
             Console.ForegroundColor = ConsoleColor.White;
 
 
             // Set the proper console forecolor
-            switch (LogModel.LogType)
+            switch (LogModel.LogEventType)
             {
-                case LogEventModel.LogEventTypeEnum.INFO:
+                case LogEventTypes.INFO:
                     Console.ForegroundColor = ConsoleColor.White;
                     break;
-                case LogEventModel.LogEventTypeEnum.WARNING:
+                case LogEventTypes.WARNING:
                     Console.ForegroundColor = ConsoleColor.Yellow;
                     break;
-                case LogEventModel.LogEventTypeEnum.ALERT :
+                case LogEventTypes.ALERT:
                     Console.ForegroundColor = ConsoleColor.Red;
                     break;
-                case LogEventModel.LogEventTypeEnum.ERROR:
+                case LogEventTypes.ERROR:
                     Console.ForegroundColor = ConsoleColor.DarkRed;
                     break;
-                case LogEventModel.LogEventTypeEnum.EXCEPTION:
+                case LogEventTypes.EXCEPTION:
                     Console.ForegroundColor = ConsoleColor.Red;
                     break;
-                case LogEventModel.LogEventTypeEnum.DEBUG:
+                case LogEventTypes.DEBUG:
                     Console.ForegroundColor = ConsoleColor.Gray;
                     break;
                 default:

@@ -1,4 +1,5 @@
-﻿using System;
+﻿using FastLog.Net.Enums;
+using System;
 using System.Collections.Generic;
 using System.Threading.Tasks;
 using TrendSoft.FastLog.Agents;
@@ -25,20 +26,19 @@ namespace TrendSoft.LogModuleTest
 
         private static void InitializeLogger()
         {
-            Logger = new Logger("D:\\LoggerInternalException.txt",LogMachineName:false);
+            Logger = new Logger("D:\\LoggerInternalException.txt", LogMachineName: false);
 
             Logger.AddLoggingAgent(new PlainTextFileLogger("D:\\PlainTextLogs.log"));
 
             // Add agent(s) to the Logger
 
-            ConsoleLogger consoleLogger = new ConsoleLogger();
 
-            consoleLogger.RegisterEventTypeToReflect(LogEventModel.LogEventTypeEnum.INFO);
-            consoleLogger.RegisterEventTypeToReflect(LogEventModel.LogEventTypeEnum.DEBUG);
+            Logger.AddLoggingAgent(ConsoleLogger.Create()
+                                                .DoNotReflectAnyEventTypeToConsole()
+                                                .ReflectEventTypeToConsole(LogEventTypes.DEBUG)
+                                                .ReflectEventTypeToConsole(LogEventTypes.WARNING));
 
 
-
-            Logger.AddLoggingAgent(consoleLogger);
             //Logger.AddLoggingAgent(new DebugWindowLogger());
 
 

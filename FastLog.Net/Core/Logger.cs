@@ -1,4 +1,5 @@
 ﻿
+using FastLog.Net.Enums;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -108,7 +109,7 @@ namespace TrendSoft.FastLog.Core
         #region Logging Functions
 
 
-        private ValueTask LogEventHelper(LogEventModel.LogEventTypeEnum LogType,
+        private ValueTask LogEventHelper(LogEventTypes LogType,
                                          string LogText,
                                          string ExtraInfo = "",
                                          string Source = "")
@@ -184,7 +185,7 @@ namespace TrendSoft.FastLog.Core
                                  string ExtraInfo = "",
                                  string Source = "")
         {
-            return LogEventHelper(LogEventModel.LogEventTypeEnum.INFO, LogText, ExtraInfo, Source);
+            return LogEventHelper(LogEventTypes.INFO, LogText, ExtraInfo, Source);
         }
 
 
@@ -193,7 +194,7 @@ namespace TrendSoft.FastLog.Core
                                     string ExtraInfo = "",
                                     string Source = "")
         {
-            return LogEventHelper(LogEventModel.LogEventTypeEnum.WARNING, LogText, ExtraInfo, Source);
+            return LogEventHelper(LogEventTypes.WARNING, LogText, ExtraInfo, Source);
         }
 
 
@@ -201,7 +202,7 @@ namespace TrendSoft.FastLog.Core
                                 string ExtraInfo = "",
                                 string Source = "")
         {
-            return LogEventHelper(LogEventModel.LogEventTypeEnum.ALERT, LogText, ExtraInfo, Source);
+            return LogEventHelper(LogEventTypes.ALERT, LogText, ExtraInfo, Source);
         }
 
 
@@ -209,7 +210,7 @@ namespace TrendSoft.FastLog.Core
                                   string ExtraInfo = "",
                                   string Source = "")
         {
-            return LogEventHelper(LogEventModel.LogEventTypeEnum.ERROR, LogText, ExtraInfo, Source);
+            return LogEventHelper(LogEventTypes.ERROR, LogText, ExtraInfo, Source);
         }
 
 
@@ -218,7 +219,7 @@ namespace TrendSoft.FastLog.Core
                                   string ExtraInfo = "",
                                   string Source = "")
         {
-            return LogEventHelper(LogEventModel.LogEventTypeEnum.DEBUG, LogText, ExtraInfo, Source);
+            return LogEventHelper(LogEventTypes.DEBUG, LogText, ExtraInfo, Source);
         }
 
 

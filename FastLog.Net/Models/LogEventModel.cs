@@ -1,4 +1,5 @@
-﻿using System;
+﻿using FastLog.Net.Enums;
+using System;
 using System.Text;
 
 namespace TrendSoft.FastLog.Models
@@ -8,14 +9,14 @@ namespace TrendSoft.FastLog.Models
 
         #region Constructors
 
-        public LogEventModel(LogEventTypeEnum LogType,
+        public LogEventModel(LogEventTypes LogEventType,
                           string LogText,
                           string ExtraInfo = "",
                           string Source = "",
                           bool LogMachineName = false)
         {
             DateTime = DateTime.Now;
-            this.LogType = LogType;
+            this.LogEventType = LogEventType;
             this.LogText = LogText;
             this.ExtraInfo = ExtraInfo;
             this.Source = Source;
@@ -24,7 +25,7 @@ namespace TrendSoft.FastLog.Models
 
 
         public LogEventModel(Exception exception, bool LogMachineName = false)
-            : this(LogEventTypeEnum.EXCEPTION,
+            : this(LogEventTypes.EXCEPTION,
                    " Message : " + exception.Message ?? "-",
                    " InnerMessage : " + (exception.InnerException?.Message ?? "-") +
                    " , " +
@@ -44,20 +45,7 @@ namespace TrendSoft.FastLog.Models
         #endregion
 
 
-        #region Enumerations
-
-        public enum LogEventTypeEnum : byte
-        {
-            INFO = 0,
-            DEBUG = 1,
-            WARNING = 2,
-            ALERT = 3,
-            ERROR = 4,
-            EXCEPTION = 5,
-        }
-
-        #endregion
-
+     
 
 
         #region Properties
@@ -65,7 +53,7 @@ namespace TrendSoft.FastLog.Models
         public DateTime DateTime { get; private set; }
 
 
-        public LogEventTypeEnum LogType { get; private set; }
+        public LogEventTypes LogEventType { get; private set; }
 
 
 
@@ -101,7 +89,7 @@ namespace TrendSoft.FastLog.Models
 
             _ = finalMessage.Append(' ')
                             .Append('[')
-                            .Append(LogType.ToString())
+                            .Append(LogEventType.ToString())
                             .Append(']')
                             .Append(" -> ")
                             .Append(LogText);
@@ -109,7 +97,7 @@ namespace TrendSoft.FastLog.Models
 
             if (!string.IsNullOrWhiteSpace(ExtraInfo))
             {
-                if (LogType != LogEventTypeEnum.EXCEPTION)
+                if (LogEventType != LogEventTypes.EXCEPTION)
                 {
                     _ = finalMessage.Append(" , Details : ");
                 }

@@ -1,4 +1,5 @@
-﻿using System;
+﻿using FastLog.Net.Enums;
+using System;
 using System.Threading;
 using System.Threading.Tasks;
 using TrendSoft.FastLog.Interfaces;
@@ -24,24 +25,24 @@ namespace TrendSoft.FastLog.Agents
 
 
             // Set the proper console forecolor
-            switch (LogModel.LogType)
+            switch (LogModel.LogEventType)
             {
-                case LogEventModel.LogEventTypeEnum.INFO:
+                case LogEventTypes.INFO:
                     Console.ForegroundColor = ConsoleColor.White;
                     break;
-                case LogEventModel.LogEventTypeEnum.WARNING:
+                case LogEventTypes.WARNING:
                     Console.ForegroundColor = ConsoleColor.Yellow;
                     break;
-                case LogEventModel.LogEventTypeEnum.ALERT :
+                case LogEventTypes.ALERT :
                     Console.ForegroundColor = ConsoleColor.Red;
                     break;
-                case LogEventModel.LogEventTypeEnum.ERROR:
+                case LogEventTypes.ERROR:
                     Console.ForegroundColor = ConsoleColor.DarkRed;
                     break;
-                case LogEventModel.LogEventTypeEnum.EXCEPTION:
+                case LogEventTypes.EXCEPTION:
                     Console.ForegroundColor = ConsoleColor.Red;
                     break;
-                case LogEventModel.LogEventTypeEnum.DEBUG:
+                case LogEventTypes.DEBUG:
                     Console.ForegroundColor = ConsoleColor.Gray;
                     break;
                 default:
