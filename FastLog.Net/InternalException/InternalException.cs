@@ -89,7 +89,7 @@ namespace TrendSoft.FastLog.InternalException
                 }
                 catch { }
 
-                LogEventModel LogToSave = new LogEventModel(LogEventModel.LogTypeEnum.EXCEPTION,
+                LogEventModel LogToSave = new LogEventModel(LogEventModel.LogEventTypeEnum.EXCEPTION,
                                                             " message : " + exception.Message ?? "-",
                                                             " innermessage : " + (exception.InnerException?.Message ?? "-") +
                                                             " , " +

@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Threading.Tasks;
 using TrendSoft.FastLog.Agents;
 using TrendSoft.FastLog.Core;
+using TrendSoft.FastLog.Models;
 
 namespace TrendSoft.LogModuleTest
 {
@@ -27,7 +28,17 @@ namespace TrendSoft.LogModuleTest
             Logger = new Logger("D:\\LoggerInternalException.txt",LogMachineName:false);
 
             Logger.AddLoggingAgent(new PlainTextFileLogger("D:\\PlainTextLogs.log"));
-            //Logger.AddLoggingAgent(new ConsoleLogger());
+
+            // Add agent(s) to the Logger
+
+            ConsoleLogger consoleLogger = new ConsoleLogger();
+
+            consoleLogger.RegisterEventTypeToReflect(LogEventModel.LogEventTypeEnum.INFO);
+            consoleLogger.RegisterEventTypeToReflect(LogEventModel.LogEventTypeEnum.DEBUG);
+
+
+
+            Logger.AddLoggingAgent(consoleLogger);
             //Logger.AddLoggingAgent(new DebugWindowLogger());
 
 

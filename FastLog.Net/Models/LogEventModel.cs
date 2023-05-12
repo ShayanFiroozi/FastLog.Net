@@ -8,7 +8,7 @@ namespace TrendSoft.FastLog.Models
 
         #region Constructors
 
-        public LogEventModel(LogTypeEnum LogType,
+        public LogEventModel(LogEventTypeEnum LogType,
                           string LogText,
                           string ExtraInfo = "",
                           string Source = "",
@@ -24,7 +24,7 @@ namespace TrendSoft.FastLog.Models
 
 
         public LogEventModel(Exception exception, bool LogMachineName = false)
-            : this(LogTypeEnum.EXCEPTION,
+            : this(LogEventTypeEnum.EXCEPTION,
                    " Message : " + exception.Message ?? "-",
                    " InnerMessage : " + (exception.InnerException?.Message ?? "-") +
                    " , " +
@@ -46,7 +46,7 @@ namespace TrendSoft.FastLog.Models
 
         #region Enumerations
 
-        public enum LogTypeEnum : byte
+        public enum LogEventTypeEnum : byte
         {
             INFO = 0,
             DEBUG = 1,
@@ -65,7 +65,7 @@ namespace TrendSoft.FastLog.Models
         public DateTime DateTime { get; private set; }
 
 
-        public LogTypeEnum LogType { get; private set; }
+        public LogEventTypeEnum LogType { get; private set; }
 
 
 
@@ -109,7 +109,7 @@ namespace TrendSoft.FastLog.Models
 
             if (!string.IsNullOrWhiteSpace(ExtraInfo))
             {
-                if (LogType != LogTypeEnum.EXCEPTION)
+                if (LogType != LogEventTypeEnum.EXCEPTION)
                 {
                     _ = finalMessage.Append(" , Details : ");
                 }

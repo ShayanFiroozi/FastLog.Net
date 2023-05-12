@@ -108,7 +108,7 @@ namespace TrendSoft.FastLog.Core
         #region Logging Functions
 
 
-        private ValueTask LogEventHelper(LogEventModel.LogTypeEnum LogType,
+        private ValueTask LogEventHelper(LogEventModel.LogEventTypeEnum LogType,
                                          string LogText,
                                          string ExtraInfo = "",
                                          string Source = "")
@@ -184,7 +184,7 @@ namespace TrendSoft.FastLog.Core
                                  string ExtraInfo = "",
                                  string Source = "")
         {
-            return LogEventHelper(LogEventModel.LogTypeEnum.INFO, LogText, ExtraInfo, Source);
+            return LogEventHelper(LogEventModel.LogEventTypeEnum.INFO, LogText, ExtraInfo, Source);
         }
 
 
@@ -193,7 +193,7 @@ namespace TrendSoft.FastLog.Core
                                     string ExtraInfo = "",
                                     string Source = "")
         {
-            return LogEventHelper(LogEventModel.LogTypeEnum.WARNING, LogText, ExtraInfo, Source);
+            return LogEventHelper(LogEventModel.LogEventTypeEnum.WARNING, LogText, ExtraInfo, Source);
         }
 
 
@@ -201,7 +201,7 @@ namespace TrendSoft.FastLog.Core
                                 string ExtraInfo = "",
                                 string Source = "")
         {
-            return LogEventHelper(LogEventModel.LogTypeEnum.ALERT, LogText, ExtraInfo, Source);
+            return LogEventHelper(LogEventModel.LogEventTypeEnum.ALERT, LogText, ExtraInfo, Source);
         }
 
 
@@ -209,7 +209,7 @@ namespace TrendSoft.FastLog.Core
                                   string ExtraInfo = "",
                                   string Source = "")
         {
-            return LogEventHelper(LogEventModel.LogTypeEnum.ERROR, LogText, ExtraInfo, Source);
+            return LogEventHelper(LogEventModel.LogEventTypeEnum.ERROR, LogText, ExtraInfo, Source);
         }
 
 
@@ -218,7 +218,7 @@ namespace TrendSoft.FastLog.Core
                                   string ExtraInfo = "",
                                   string Source = "")
         {
-            return LogEventHelper(LogEventModel.LogTypeEnum.DEBUG, LogText, ExtraInfo, Source);
+            return LogEventHelper(LogEventModel.LogEventTypeEnum.DEBUG, LogText, ExtraInfo, Source);
         }
 
 
