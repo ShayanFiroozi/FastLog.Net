@@ -36,8 +36,9 @@ namespace TrendSoft.FastLog.Core
 
         public string InternalExceptionsLogFile { get; private set; }
 
-
         public bool LogMachineName { get; private set; } = false;
+
+        public bool RunAgentParallel { get; private set; } = true;
 
         #endregion
 
@@ -47,7 +48,8 @@ namespace TrendSoft.FastLog.Core
 
         public Logger(string internalExceptionsLogFile,
                       short internalExceptionsLogFileMaxSizeMB = 100,
-                      bool LogMachineName = false)
+                      bool LogMachineName = false,
+                      bool RunAgentParallel = true)
         {
             if (internalExceptionsLogFileMaxSizeMB <= 0)
             {
@@ -64,6 +66,8 @@ namespace TrendSoft.FastLog.Core
             this.LogMachineName = LogMachineName;
 
             InternalExceptionsLogFile = internalExceptionsLogFile;
+
+            this.RunAgentParallel = RunAgentParallel;
 
 
             // Initialize "Internal Logger Exceptions" logger.
@@ -260,6 +264,10 @@ namespace TrendSoft.FastLog.Core
 
         public Task StartLogger()
         {
+            List<Task> tasksList = null ;
+
+            if (RunAgentParallel) tasksList = new List<Task>();
+
             // Logger engine ->
 
             return Task.Run(async () =>
@@ -286,13 +294,19 @@ namespace TrendSoft.FastLog.Core
                             {
                                 if (!string.IsNullOrWhiteSpace(EventModelFromChannel.LogText))
                                 {
-                                    await logger.LogEvent(EventModelFromChannel, _cts.Token).ConfigureAwait(false);
+                                    if (RunAgentParallel)
+                                    {
+                                        tasksList.Add(logger.LogEvent(EventModelFromChannel, _cts.Token));
+                                    }
+                                    else
+                                    {
+                                        await logger.LogEvent(EventModelFromChannel, _cts.Token).ConfigureAwait(false);
+                                    }
                                 }
                                 else
                                 {
                                     continue;
                                 }
-
 
                             }
                             catch (Exception ex)
@@ -302,7 +316,10 @@ namespace TrendSoft.FastLog.Core
 
                         }
 
-
+                        if(RunAgentParallel)
+                        {
+                            await Task.WhenAll(tasksList).ConfigureAwait(false);
+                        }
 
                     }
 
