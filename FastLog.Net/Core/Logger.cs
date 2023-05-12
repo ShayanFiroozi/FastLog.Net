@@ -232,6 +232,15 @@ namespace TrendSoft.FastLog.Core
 
 
 
+        public ValueTask LogSystem(string LogText,
+                              string ExtraInfo = "",
+                              string Source = "")
+        {
+            return LogEventHelper(LogEventTypes.SYSTEM, LogText, ExtraInfo, Source);
+        }
+
+
+
         #endregion
 
 

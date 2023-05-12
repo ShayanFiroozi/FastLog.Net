@@ -29,7 +29,7 @@ namespace TrendSoft.FastLog.Agents
             //Keep it private to make it non accessible from the outside of the class !!
 
 
-            ReflectAllEventTypeToConsole();
+            ReflectAllEventsToConsole();
         }
 
         public static ConsoleLogger Create()
@@ -41,7 +41,7 @@ namespace TrendSoft.FastLog.Agents
 
 
 
-        public ConsoleLogger ReflectEventTypeToConsole(LogEventTypes logEventType)
+        public ConsoleLogger ReflectOnConsole(LogEventTypes logEventType)
         {
             if (!_logEventTypesToReflect.Any(type => type == logEventType))
             {
@@ -51,7 +51,7 @@ namespace TrendSoft.FastLog.Agents
             return this;
         }
 
-        public ConsoleLogger DoNotReflectEventTypeToConsole(LogEventTypes logEventType)
+        public ConsoleLogger DoNotReflectOnConsole(LogEventTypes logEventType)
         {
             if (_logEventTypesToReflect.Any(type => type == logEventType))
             {
@@ -61,7 +61,7 @@ namespace TrendSoft.FastLog.Agents
             return this;
         }
 
-        public ConsoleLogger ReflectAllEventTypeToConsole()
+        public ConsoleLogger ReflectAllEventsToConsole()
         {
             _logEventTypesToReflect.Clear();
 
@@ -73,7 +73,7 @@ namespace TrendSoft.FastLog.Agents
             return this;
         }
 
-        public ConsoleLogger DoNotReflectAnyEventTypeToConsole()
+        public ConsoleLogger DoNotReflectAllEventsToConsole()
         {
             _logEventTypesToReflect.Clear();
 
@@ -102,7 +102,7 @@ namespace TrendSoft.FastLog.Agents
 
             // Check if current log "Event Type" should be reflected onthe Console or not.
             if (!_logEventTypesToReflect.Any(type => LogModel.LogEventType == type)) return Task.CompletedTask;
-            
+
 
             Console.ForegroundColor = DateTimeFontColor;
             Console.Write($"{DateTime.Now}");
@@ -110,28 +110,31 @@ namespace TrendSoft.FastLog.Agents
 
 
             // Set the proper console forecolor
+
             switch (LogModel.LogEventType)
             {
                 case LogEventTypes.INFO:
                     Console.ForegroundColor = ConsoleColor.White;
                     break;
                 case LogEventTypes.WARNING:
-                    Console.ForegroundColor = ConsoleColor.Yellow;
+                    Console.ForegroundColor = ConsoleColor.DarkYellow;
                     break;
                 case LogEventTypes.ALERT:
-                    Console.ForegroundColor = ConsoleColor.Red;
-                    break;
-                case LogEventTypes.ERROR:
                     Console.ForegroundColor = ConsoleColor.DarkRed;
                     break;
-                case LogEventTypes.EXCEPTION:
+                case LogEventTypes.DEBUG:
+                    Console.ForegroundColor = ConsoleColor.DarkGray;
+                    break;
+                case LogEventTypes.ERROR:
                     Console.ForegroundColor = ConsoleColor.Red;
                     break;
-                case LogEventTypes.DEBUG:
-                    Console.ForegroundColor = ConsoleColor.Gray;
+                case LogEventTypes.EXCEPTION:
+                    Console.ForegroundColor = ConsoleColor.Yellow;
+                    break;
+                case LogEventTypes.SYSTEM:
+                    Console.ForegroundColor = ConsoleColor.Magenta;
                     break;
                 default:
-                    Console.ForegroundColor = ConsoleColor.White;
                     break;
             }
 

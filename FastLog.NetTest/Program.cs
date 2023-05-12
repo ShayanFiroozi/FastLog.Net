@@ -33,14 +33,12 @@ namespace TrendSoft.LogModuleTest
             // Add agent(s) to the Logger
 
 
-            Logger.AddLoggingAgent(ConsoleLogger.Create()
-                                                .DoNotReflectAnyEventTypeToConsole()
-                                                .ReflectEventTypeToConsole(LogEventTypes.DEBUG)
-                                                .ReflectEventTypeToConsole(LogEventTypes.WARNING));
+            Logger.AddLoggingAgent(ConsoleLogger.Create());
 
 
-            Logger.AddLoggingAgent(DebugWindowLogger.Create().DoNotReflectAnyEventTypeToDebugWindow()
-                                                             .ReflectEventTypeToDebugWindow(LogEventTypes.WARNING));
+            //Logger.AddLoggingAgent(DebugWindowLogger.Create()
+            //                                        .DoNotReflectAnyEventTypeToDebugWindow()
+            //                                        .ReflectEventTypeToDebugWindow(LogEventTypes.WARNING));
 
 
             loggerTask = Logger.StartLogger();
@@ -63,6 +61,9 @@ namespace TrendSoft.LogModuleTest
                               _= Logger.LogError($"This is the \"ERROR\" message number {i:N0} from the \"LoggerWriteTest\"");
                               _= Logger.LogDebug($"This is the \"DEBUG\" message number {i:N0} from the \"LoggerWriteTest\"");
                               _= Logger.LogWarning($"This is the \"WARNING\" message number {i:N0} from the \"LoggerWriteTest\"");
+                              _= Logger.LogAlert($"This is the \"ALERT\" message number {i:N0} from the \"LoggerWriteTest\"");
+                              _= Logger.LogSystem($"This is the \"SYSTEM\" message number {i:N0} from the \"LoggerWriteTest\"");
+                              _= Logger.LogSystem($"This is the \"EXCEPTION\" message number {i:N0} from the \"LoggerWriteTest\"");
                           }
 
 
