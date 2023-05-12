@@ -24,12 +24,11 @@ namespace TrendSoft.LogModuleTest
 
         private static void InitializeLogger()
         {
-            Logger = new Logger("D:\\LoggerInternalException.txt");
+            Logger = new Logger("D:\\LoggerInternalException.txt",LogMachineName:false);
 
             Logger.AddLoggingAgent(new PlainTextFileLogger("D:\\PlainTextLogs.log"));
-            Logger.AddLoggingAgent(new PlainTextFileLogger("D:\\PlainTextLogs_Backup.log"));
-            Logger.AddLoggingAgent(new ConsoleLogger());
-            Logger.AddLoggingAgent(new DebugWindowLogger());
+            //Logger.AddLoggingAgent(new ConsoleLogger());
+            //Logger.AddLoggingAgent(new DebugWindowLogger());
 
 
             loggerTask = Logger.StartLogger();

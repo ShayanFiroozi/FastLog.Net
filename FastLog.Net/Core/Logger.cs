@@ -35,6 +35,9 @@ namespace TrendSoft.FastLog.Core
 
         public string InternalExceptionsLogFile { get; private set; }
 
+
+        public bool LogMachineName { get; private set; } = false;
+
         #endregion
 
 
@@ -42,7 +45,8 @@ namespace TrendSoft.FastLog.Core
         #region Constructors
 
         public Logger(string internalExceptionsLogFile,
-                      short internalExceptionsLogFileMaxSizeMB = 100)
+                      short internalExceptionsLogFileMaxSizeMB = 100,
+                      bool LogMachineName = false)
         {
             if (internalExceptionsLogFileMaxSizeMB <= 0)
             {
@@ -54,6 +58,9 @@ namespace TrendSoft.FastLog.Core
             {
                 throw new ArgumentException($"'{nameof(internalExceptionsLogFile)}' cannot be null or whitespace.", nameof(internalExceptionsLogFile));
             }
+
+
+            this.LogMachineName = LogMachineName;
 
             InternalExceptionsLogFile = internalExceptionsLogFile;
 
@@ -122,7 +129,8 @@ namespace TrendSoft.FastLog.Core
                 LogEventModel LogEvent = new LogEventModel(LogType,
                                              LogText,
                                              ExtraInfo,
-                                             Source);
+                                             Source,
+                                             LogMachineName);
 
                 return LoggerChannelWriter.WriteAsync(LogEvent);
             }
@@ -152,7 +160,8 @@ namespace TrendSoft.FastLog.Core
 
             try
             {
-                LogEventModel LogEvent = new LogEventModel(exception);
+                LogEventModel LogEvent = new LogEventModel(exception,
+                                                           LogMachineName);
 
                 return LoggerChannelWriter.WriteAsync(LogEvent);
             }

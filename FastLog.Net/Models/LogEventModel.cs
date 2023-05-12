@@ -11,23 +11,26 @@ namespace TrendSoft.FastLog.Models
         public LogEventModel(LogTypeEnum LogType,
                           string LogText,
                           string ExtraInfo = "",
-                          string Source = "")
+                          string Source = "",
+                          bool LogMachineName = false)
         {
             DateTime = DateTime.Now;
             this.LogType = LogType;
             this.LogText = LogText;
             this.ExtraInfo = ExtraInfo;
             this.Source = Source;
+            this.LogMachineName = LogMachineName;
         }
 
 
-        public LogEventModel(Exception exception)
+        public LogEventModel(Exception exception, bool LogMachineName = false)
             : this(LogTypeEnum.EXCEPTION,
                    " Message : " + exception.Message ?? "-",
                    " InnerMessage : " + (exception.InnerException?.Message ?? "-") +
                    " , " +
                    " StackTrace : " + (exception.StackTrace ?? "-"),
-                   exception.Source ?? "-")
+                   exception.Source ?? "-",
+                   LogMachineName)
         {
         }
 
@@ -77,6 +80,9 @@ namespace TrendSoft.FastLog.Models
         public string ExtraInfo { get; private set; }
 
 
+        public bool LogMachineName { get; private set; }
+
+
 
 
 
@@ -88,7 +94,7 @@ namespace TrendSoft.FastLog.Models
         {
             StringBuilder finalMessage = new StringBuilder();
 
-            if(DateTimeIncluded)
+            if (DateTimeIncluded)
             {
                 _ = finalMessage.Append(DateTime.ToString("yyyy/MM/dd HH:mm:ss"));
             }
@@ -99,7 +105,7 @@ namespace TrendSoft.FastLog.Models
                             .Append(']')
                             .Append(" -> ")
                             .Append(LogText);
-   
+
 
             if (!string.IsNullOrWhiteSpace(ExtraInfo))
             {
@@ -117,6 +123,10 @@ namespace TrendSoft.FastLog.Models
                                 .Append(Source);
             }
 
+            if (LogMachineName)
+            {
+                _ = finalMessage.Append($" , MachineName : {Environment.MachineName}");
+            }
 
             _ = finalMessage.Append(Environment.NewLine);
 
