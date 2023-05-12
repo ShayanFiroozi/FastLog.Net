@@ -1,7 +1,7 @@
 ﻿<Project Sdk="Microsoft.NET.Sdk">
 
   <PropertyGroup>
-    <TargetFrameworks>net7.0;net7.0-windows;net6.0;net6.0-windows;net5.0;net5.0-windows;netcoreapp3.1</TargetFrameworks>
+    <TargetFrameworks>net7.0;net7.0-windows;net6.0;net6.0-windows;net5.0;net5.0-windows;netcoreapp3.1;netstandard2.1;netstandard2.0;net48;net481</TargetFrameworks>
     <GenerateAssemblyInfo>false</GenerateAssemblyInfo>
     <Deterministic>false</Deterministic>
     <PlatformTarget>AnyCPU</PlatformTarget>
@@ -23,6 +23,8 @@
 
   <ItemGroup>
     <PackageReference Include="LiteDB" Version="5.0.16" />
+    <PackageReference Include="System.Threading.Channels" Version="7.0.0" />
   </ItemGroup>
+  
 
 </Project>

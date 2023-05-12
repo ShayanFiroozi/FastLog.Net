@@ -181,8 +181,8 @@ namespace TrendSoft.LogModule.Core
 
 
         public ValueTask LogWarning(string LogText,
-                                   string ExtraInfo = "",
-                                   string Source = "")
+                                    string ExtraInfo = "",
+                                    string Source = "")
         {
             return LogEventHelper(LogEventModel.LogTypeEnum.WARNING, LogText, ExtraInfo, Source);
         }

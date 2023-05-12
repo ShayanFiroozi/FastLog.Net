@@ -22,16 +22,31 @@ namespace TrendSoft.LogModule.Agents
             Console.Write($"{DateTime.Now}");
             Console.ForegroundColor = ConsoleColor.White;
 
+
             // Set the proper console forecolor
-            Console.ForegroundColor = LogModel.LogType switch
+            switch (LogModel.LogType)
             {
-                LogEventModel.LogTypeEnum.INFO => ConsoleColor.White,
-                LogEventModel.LogTypeEnum.WARNING => ConsoleColor.Yellow,
-                LogEventModel.LogTypeEnum.ERROR => ConsoleColor.Red,
-                LogEventModel.LogTypeEnum.EXCEPTION => ConsoleColor.Red,
-                LogEventModel.LogTypeEnum.DEBUG => ConsoleColor.DarkGray,
-                _ => ConsoleColor.White,
-            };
+                case LogEventModel.LogTypeEnum.INFO:
+                    Console.ForegroundColor = ConsoleColor.White;
+                    break;
+                case LogEventModel.LogTypeEnum.WARNING:
+                    Console.ForegroundColor = ConsoleColor.Yellow;
+                    break;
+                case LogEventModel.LogTypeEnum.ERROR:
+                    Console.ForegroundColor = ConsoleColor.Red;
+                    break;
+                case LogEventModel.LogTypeEnum.EXCEPTION:
+                    Console.ForegroundColor = ConsoleColor.Red;
+                    break;
+                case LogEventModel.LogTypeEnum.DEBUG:
+                    Console.ForegroundColor = ConsoleColor.Gray;
+                    break;
+                default:
+                    Console.ForegroundColor = ConsoleColor.White;
+                    break;
+            }
+
+
             Console.WriteLine(LogModel.GetLogMessage(false));
 
             Console.ForegroundColor = ConsoleColor.White;

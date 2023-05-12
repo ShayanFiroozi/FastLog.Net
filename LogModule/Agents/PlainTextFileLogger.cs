@@ -51,7 +51,14 @@ namespace TrendSoft.LogModule.Agents
 
                 CheckLogFileSize();
 
+
+#if NETFRAMEWORK || NETSTANDARD2_0
+                return Task.Run(() => File.AppendAllText(LogFile, LogModel.GetLogMessage(true)), cancellationToken);
+#else
                 return File.AppendAllTextAsync(LogFile, LogModel.GetLogMessage(true), cancellationToken);
+#endif
+
+
 
             }
             catch (Exception ex)
