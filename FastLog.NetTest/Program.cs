@@ -43,6 +43,7 @@ namespace TrendSoft.LogModuleTest
             Logger.AddLoggingAgent(new HeavyOperationSimulator(TimeSpan.FromSeconds(5)));
 #endif
 
+            Logger.AddLoggingAgent(new WindowsEventLogger("Shayan"));
 
             loggerTask = Logger.StartLogger();
 
