@@ -12,6 +12,7 @@ namespace TrendSoft.FastLog.Agents
 
     public class WindowsEventLogger : ILoggerAgent
     {
+        private InternalExceptionLogger InternalLogger = null;
 
         public string ApplicationName { get; set; }
 
@@ -40,6 +41,8 @@ namespace TrendSoft.FastLog.Agents
                     switch (LogModel.LogEventType)
                     {
                         case LogEventTypes.INFO:
+                        case LogEventTypes.NOTE:
+                        case LogEventTypes.TODO:
                         case LogEventTypes.DEBUG:
                         case LogEventTypes.SYSTEM:
                         default:
@@ -63,7 +66,7 @@ namespace TrendSoft.FastLog.Agents
 
             catch (Exception ex)
             {
-                InternalExceptionLogger.LogInternalException(ex);
+                InternalLogger?.LogInternalException(ex);
             }
 
             return Task.CompletedTask;
@@ -99,7 +102,7 @@ namespace TrendSoft.FastLog.Agents
             }
             catch (Exception ex)
             {
-                InternalExceptionLogger.LogInternalException(ex);
+                InternalLogger?.LogInternalException(ex);
             }
 
 

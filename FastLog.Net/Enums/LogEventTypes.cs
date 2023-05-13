@@ -10,13 +10,15 @@ namespace FastLog.Net.Enums
     public enum LogEventTypes : byte
     {
         INFO = 0,
-        WARNING = 1,
-        ALERT = 2,
-        DEBUG = 3,
-        ERROR = 4,
-        EXCEPTION = 5,
-        SYSTEM = 6,
-        SECURITY = 7
+        NOTE = 1,
+        TODO = 2,
+        WARNING = 3,
+        ALERT = 4,
+        DEBUG = 5,
+        ERROR = 6,
+        EXCEPTION = 7,
+        SYSTEM = 8,
+        SECURITY = 9
     }
 
 

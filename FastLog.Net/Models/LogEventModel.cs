@@ -26,14 +26,18 @@ namespace TrendSoft.FastLog.Models
 
         public LogEventModel(Exception exception, bool LogMachineName = false)
             : this(LogEventTypes.EXCEPTION,
-                   " Message : " + exception.Message ?? "-",
-                   " InnerMessage : " + (exception.InnerException?.Message ?? "-") +
-                   " , " +
-                   " StackTrace : " + (exception.StackTrace ?? "-"),
-                   exception.Source ?? "-",
+
+                   $"\nId : {exception.HResult}\n" +
+                   $"Message : {exception.Message ?? "N/A"}\n",
+
+                   $"InnerException : {exception.InnerException?.Message ?? "N/A"}\n" +
+                   $"StackTrace : {exception.StackTrace ?? "N/A"}\n",
+
+                   $"Source : {exception.Source ?? "N/A"}\n" +
+                   $"Target Site : {(exception.TargetSite != null ? exception.TargetSite.Name : "N/A")}",
+
                    LogMachineName)
-        {
-        }
+        { }
 
 
 
@@ -45,7 +49,7 @@ namespace TrendSoft.FastLog.Models
         #endregion
 
 
-     
+
 
 
         #region Properties
@@ -107,15 +111,29 @@ namespace TrendSoft.FastLog.Models
 
             if (!string.IsNullOrWhiteSpace(Source))
             {
-                _ = finalMessage.Append(" , Source : ")
-                                .Append(Source);
+
+                if (LogEventType != LogEventTypes.EXCEPTION)
+                {
+                    _ = finalMessage.Append(" , Source : ");
+
+                }
+
+                  _= finalMessage.Append(Source);
             }
 
             if (LogMachineName)
             {
-                _ = finalMessage.Append($" , MachineName : {Environment.MachineName}");
+                if (LogEventType != LogEventTypes.EXCEPTION)
+                {
+                    _ = finalMessage.Append($" , MachineName : {Environment.MachineName}");
+                }
+                else
+                {
+                    _ = finalMessage.Append($"\nMachineName : {Environment.MachineName}");
+                }
             }
 
+            _ = finalMessage.Append(Environment.NewLine);
             _ = finalMessage.Append(Environment.NewLine);
 
 

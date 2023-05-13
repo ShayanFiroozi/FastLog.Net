@@ -1,56 +1,117 @@
 ﻿using FastLog.Net.Enums;
+using FastLog.Net.Helpers;
 using System;
+using System.Diagnostics;
 using System.IO;
+using System.Runtime.InteropServices;
 using TrendSoft.FastLog.Models;
 
 namespace TrendSoft.FastLog.InternalException
 {
-    public static class InternalExceptionLogger
+    // Note : This class uses "fluent builder" pattern.
+
+
+    public class InternalExceptionLogger
     {
 
 
         #region Properties
-        private static string InternalExceptionsLogFile { get; set; } = string.Empty;
-        private static short InternalExceptionsMaxLogFileSizeMB { get; set; } = 0;
+        private string InternalExceptionsLogFile { get; set; } = string.Empty;
+        private short InternalExceptionsMaxLogFileSizeMB { get; set; } = 0;
+
+        private bool _LogOnConsole { get; set; } = false;
+        private bool _LogOnDebugWindow { get; set; } = false;
+
+        private bool _Beep { get; set; } = false;
 
         #endregion
 
 
-
-        public static void SetLogFile(string internalExceptionsLogFile)
+        #region Fluent Builder functions
+        private InternalExceptionLogger()
         {
-            if (string.IsNullOrWhiteSpace(internalExceptionsLogFile))
+            //Keep it private to make it non accessible from the outside of the class !!
+        }
+
+        public static InternalExceptionLogger Create() => new InternalExceptionLogger();
+
+
+        public InternalExceptionLogger SaveExceptionsLogToFile(string filename)
+        {
+            if (string.IsNullOrWhiteSpace(filename))
             {
-                throw new ArgumentException($"'{nameof(internalExceptionsLogFile)}' cannot be null or whitespace.", nameof(internalExceptionsLogFile));
+                throw new ArgumentException($"'{nameof(filename)}' cannot be null or whitespace.", nameof(filename));
             }
 
 
-            InternalExceptionsLogFile = internalExceptionsLogFile;
+            InternalExceptionsLogFile = filename;
 
 
-            if (!Directory.Exists(Path.GetDirectoryName(internalExceptionsLogFile)))
+            if (!Directory.Exists(Path.GetDirectoryName(InternalExceptionsLogFile)))
             {
-                _ = Directory.CreateDirectory(Path.GetDirectoryName(internalExceptionsLogFile));
+                _ = Directory.CreateDirectory(Path.GetDirectoryName(InternalExceptionsLogFile));
             }
+
+
+            return this;
 
 
         }
 
-        public static void SetLogFileMaxSizeMB(short internalExceptionsMaxLogFileMB)
+        public InternalExceptionLogger NotBiggerThan(short logFileMaxSize)
         {
 
-            if (internalExceptionsMaxLogFileMB <= 0)
+            if (logFileMaxSize <= 0)
             {
-                throw new ArgumentException($"'{nameof(internalExceptionsMaxLogFileMB)}' must be greater then zero.", nameof(internalExceptionsMaxLogFileMB));
+                throw new ArgumentException($"'{nameof(logFileMaxSize)}' must be greater then zero.", nameof(logFileMaxSize));
             }
 
-            InternalExceptionsMaxLogFileSizeMB = internalExceptionsMaxLogFileMB;
+            InternalExceptionsMaxLogFileSizeMB = logFileMaxSize;
 
+            return this;
 
         }
 
 
-        public static void LogInternalException(Exception exception)
+        public InternalExceptionLogger PrintOnConsole()
+        {
+            _LogOnConsole = true;
+            return this;
+        }
+        public InternalExceptionLogger DoNotPrintOnConsole()
+        {
+            _LogOnConsole = false;
+            return this;
+        }
+
+        public InternalExceptionLogger Beep()
+        {
+            _Beep = true;
+            return this;
+        }
+        public InternalExceptionLogger DoNotBeep()
+        {
+            _Beep = false;
+            return this;
+        }
+
+        public InternalExceptionLogger PrintOnDebugWindow()
+        {
+            _LogOnDebugWindow = true;
+            return this;
+        }
+        public InternalExceptionLogger DoNotPrintOnDebugWindow()
+        {
+            _LogOnDebugWindow = false;
+            return this;
+        }
+        #endregion
+
+
+
+
+
+        public void LogInternalException(Exception exception)
         {
             if (string.IsNullOrWhiteSpace(InternalExceptionsLogFile))
             {
@@ -62,20 +123,6 @@ namespace TrendSoft.FastLog.InternalException
                 throw new ArgumentException($"'{nameof(InternalExceptionsMaxLogFileSizeMB)}' must be greater then zero.", nameof(InternalExceptionsMaxLogFileSizeMB));
             }
 
-
-
-            /* Unmerged change from project 'LogModule (net6.0)'
-            Before:
-                        if (exception is null) return;
-
-
-                        try
-            After:
-                        if (exception is null) return;
-                        }
-
-                        try
-            */
             if (exception is null)
             {
                 return;
@@ -90,32 +137,79 @@ namespace TrendSoft.FastLog.InternalException
                 }
                 catch { }
 
+
                 LogEventModel LogToSave = new LogEventModel(LogEventTypes.EXCEPTION,
-                                                            " message : " + exception.Message ?? "-",
-                                                            " innermessage : " + (exception.InnerException?.Message ?? "-") +
-                                                            " , " +
-                                                            " stacktrace : " + (exception.StackTrace ?? "-"),
-                                                             exception.Source ?? "-");
+
+                   $"\nId : {exception.HResult}\n" +
+                   $"Message : {exception.Message ?? "N/A"}\n",
+
+                   $"InnerException : {exception.InnerException?.Message ?? "N/A"}\n" +
+                   $"StackTrace : {exception.StackTrace ?? "N/A"}",
+
+                   $"Source : {exception.Source ?? "N/A"}\n" +
+                   $"Target Site : {(exception.TargetSite != null ? exception.TargetSite.Name : "N/A")}");
 
 
-                File.AppendAllText(InternalExceptionsLogFile, $"{LogToSave.GetLogMessage(true)}\n");
+
+                if (_LogOnConsole)
+                {
+                    Console.WriteLine();
+                    Console.BackgroundColor = ConsoleColor.Red;
+                    Console.Write($"Logger \"Internal Exception\" has been occured :");
+                    Console.ResetColor();
+                    Console.ForegroundColor = ConsoleColor.DarkRed;
+
+                    Console.WriteLine($"{LogToSave.GetLogMessage(true)}\n");
+                }
+
+
+                if (_LogOnDebugWindow)
+                {
+                    Debug.WriteLine($"\nLogger \"Internal Exception\" has been occured :");
+                    Debug.WriteLine($"{LogToSave.GetLogMessage(true)}\n");
+                }
+
+
+
+                // ATTENTION : there's a chance of "HostProtectionException" exception.
+
+                // For more info please visit : https://learn.microsoft.com/en-us/dotnet/api/system.console.beep?view=net-7.0
+
+                try
+                {
+                    if (_Beep)
+                    {
+                        // Note : "Beep" will work only on Windows® OS.
+                        if (RuntimeInformation.IsOSPlatform(OSPlatform.Windows)) Console.Beep();
+                    }
+                }
+                catch { }
+
+
+
+
+                ThreadSafeFileHelper.AppendAllText(InternalExceptionsLogFile,
+                                                $"{LogToSave.GetLogMessage(true)}\n");
+
+
+                // May be NOT "Thread-Safe"
+                //File.AppendAllText(InternalExceptionsLogFile, $"{LogToSave.GetLogMessage(true)}\n");
 
             }
             catch
             {
-                return;
             }
 
-            finally
-            {
-            }
+
 
         }
 
 
 
 
-        private static short GetLogFileSizeMB()
+
+        #region Private Functions
+        private short GetLogFileSizeMB()
         {
             try
             {
@@ -128,7 +222,7 @@ namespace TrendSoft.FastLog.InternalException
             }
         }
 
-        private static void CheckInternalExceptionsLogFileSize()
+        private void CheckInternalExceptionsLogFileSize()
         {
             try
             {
@@ -144,7 +238,10 @@ namespace TrendSoft.FastLog.InternalException
 
                 if (GetLogFileSizeMB() >= InternalExceptionsMaxLogFileSizeMB)
                 {
-                    File.Delete(InternalExceptionsLogFile);
+                    ThreadSafeFileHelper.DeleteFile(InternalExceptionsLogFile);
+
+                    // May be NOT "Thread-Safe"
+                    //File.Delete(InternalExceptionsLogFile);
                 }
             }
             catch
@@ -153,6 +250,7 @@ namespace TrendSoft.FastLog.InternalException
             }
 
         }
+        #endregion
 
 
 

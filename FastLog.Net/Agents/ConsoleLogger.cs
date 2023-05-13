@@ -5,6 +5,7 @@ using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
 using TrendSoft.FastLog.Interfaces;
+using TrendSoft.FastLog.InternalException;
 using TrendSoft.FastLog.Models;
 
 namespace TrendSoft.FastLog.Agents
@@ -18,6 +19,7 @@ namespace TrendSoft.FastLog.Agents
         private ConsoleColor DateTimeFontColor = ConsoleColor.Green;
 
         private readonly List<LogEventTypes> _registeredEvents = new List<LogEventTypes>();
+        private InternalExceptionLogger InternalLogger = null;
 
         public IEnumerable<LogEventTypes> RegisteredEvents => _registeredEvents;
 
@@ -35,10 +37,14 @@ namespace TrendSoft.FastLog.Agents
         public static ConsoleLogger Create()
 
         {
-
             return new ConsoleLogger();
         }
 
+        public ConsoleLogger AddInternalExceptionLogger(InternalExceptionLogger internalExceptionLogger)
+        {
+            InternalLogger = internalExceptionLogger;
+            return this;
+        }
 
 
         public ConsoleLogger RegisterEventToConsole(LogEventTypes logEventType)
@@ -96,56 +102,74 @@ namespace TrendSoft.FastLog.Agents
                 return Task.CompletedTask;
             }
 
-            // Check if any "Event Type" exists to show on console ?
-            if (!_registeredEvents.Any()) return Task.CompletedTask;
-
-
-            // Check if current log "Event Type" should be reflected onthe Console or not.
-            if (!_registeredEvents.Any(type => LogModel.LogEventType == type)) return Task.CompletedTask;
-
-
-            Console.ForegroundColor = DateTimeFontColor;
-            Console.Write($"{DateTime.Now}");
-            Console.ForegroundColor = ConsoleColor.White;
-
-
-            // Set the proper console forecolor
-
-            switch (LogModel.LogEventType)
+            try
             {
-                case LogEventTypes.INFO:
-                    Console.ForegroundColor = ConsoleColor.White;
-                    break;
-                case LogEventTypes.WARNING:
-                    Console.ForegroundColor = ConsoleColor.DarkYellow;
-                    break;
-                case LogEventTypes.ALERT:
-                    Console.ForegroundColor = ConsoleColor.DarkRed;
-                    break;
-                case LogEventTypes.DEBUG:
-                    Console.ForegroundColor = ConsoleColor.DarkGray;
-                    break;
-                case LogEventTypes.ERROR:
-                    Console.ForegroundColor = ConsoleColor.Red;
-                    break;
-                case LogEventTypes.EXCEPTION:
-                    Console.ForegroundColor = ConsoleColor.Yellow;
-                    break;
-                case LogEventTypes.SYSTEM:
-                    Console.ForegroundColor = ConsoleColor.Magenta;
-                    break;
-                case LogEventTypes.SECURITY:
-                    Console.ForegroundColor = ConsoleColor.DarkCyan;
-                    break;
-                default:
-                    break;
+
+                // Check if any "Event Type" exists to show on console ?
+                if (!_registeredEvents.Any()) return Task.CompletedTask;
+
+
+                // Check if current log "Event Type" should be reflected onthe Console or not.
+                if (!_registeredEvents.Any(type => LogModel.LogEventType == type)) return Task.CompletedTask;
+
+
+                Console.ForegroundColor = DateTimeFontColor;
+                Console.Write($"{DateTime.Now}");
+                Console.ForegroundColor = ConsoleColor.White;
+
+
+                // Set the proper console forecolor
+
+                switch (LogModel.LogEventType)
+                {
+                    case LogEventTypes.INFO:
+                    case LogEventTypes.NOTE:
+                    case LogEventTypes.TODO:
+                        Console.ForegroundColor = ConsoleColor.White;
+                        break;
+
+                    case LogEventTypes.WARNING:
+                        Console.ForegroundColor = ConsoleColor.DarkYellow;
+                        break;
+
+                    case LogEventTypes.ALERT:
+                        Console.ForegroundColor = ConsoleColor.DarkRed;
+                        break;
+
+                    case LogEventTypes.DEBUG:
+                        Console.ForegroundColor = ConsoleColor.DarkGray;
+                        break;
+
+                    case LogEventTypes.ERROR:
+                        Console.ForegroundColor = ConsoleColor.Red;
+                        break;
+
+                    case LogEventTypes.EXCEPTION:
+                        Console.ForegroundColor = ConsoleColor.Yellow;
+                        break;
+
+                    case LogEventTypes.SYSTEM:
+                        Console.ForegroundColor = ConsoleColor.Magenta;
+                        break;
+
+                    case LogEventTypes.SECURITY:
+                        Console.ForegroundColor = ConsoleColor.DarkCyan;
+                        break;
+
+                    default:
+                        break;
+                }
+
+
+                Console.WriteLine(LogModel.GetLogMessage(false));
+
+                Console.ForegroundColor = ConsoleColor.White;
+
             }
-
-
-            Console.WriteLine(LogModel.GetLogMessage(false));
-
-            Console.ForegroundColor = ConsoleColor.White;
-
+            catch (Exception ex)
+            {
+                InternalLogger?.LogInternalException(ex);
+            }
 
             return Task.CompletedTask;
 

@@ -11,6 +11,8 @@ namespace TrendSoft.FastLog.Agents
     public class PlainTextFileLogger : ILoggerAgent
     {
 
+        private InternalExceptionLogger InternalLogger = null;
+
         #region Properties
 
         public string LogFile { get; private set; } = string.Empty;
@@ -68,7 +70,7 @@ namespace TrendSoft.FastLog.Agents
             }
             catch (Exception ex)
             {
-                InternalExceptionLogger.LogInternalException(ex);
+                InternalLogger?.LogInternalException(ex);
             }
 
             return Task.CompletedTask;
@@ -111,7 +113,7 @@ namespace TrendSoft.FastLog.Agents
             }
             catch (Exception ex)
             {
-                InternalExceptionLogger.LogInternalException(ex);
+                InternalLogger?.LogInternalException(ex);
             }
 
         }

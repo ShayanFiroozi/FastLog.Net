@@ -1,9 +1,11 @@
 ﻿using FastLog.Net.Enums;
+using FastLog.NetTest;
 using System;
 using System.Collections.Generic;
 using System.Threading.Tasks;
 using TrendSoft.FastLog.Agents;
 using TrendSoft.FastLog.Core;
+using TrendSoft.FastLog.InternalException;
 using TrendSoft.FastLog.Models;
 
 namespace TrendSoft.LogModuleTest
@@ -21,12 +23,24 @@ namespace TrendSoft.LogModuleTest
             _ = LoggerWriteTest();
 
             await loggerTask;
+
         }
+
 
 
         private static void InitializeLogger()
         {
-            Logger = new Logger("D:\\Logs\\LoggerInternalException.txt", LogMachineName: false);
+
+            InternalExceptionLogger InternalExceptionLogger = InternalExceptionLogger
+                                                              .Create()
+                                                              .SaveExceptionsLogToFile("D:\\Logs\\InternalExceptionsTest.LOG")
+                                                              .NotBiggerThan(10)
+                                                              .Beep()
+                                                              .PrintOnConsole()
+                                                              .PrintOnDebugWindow();
+
+
+            Logger = new Logger(InternalExceptionLogger, LogMachineName: true);
 
             Logger.AddLoggingAgent(new PlainTextFileLogger("D:\\Logs\\PlainTextLogsA.log"));
             Logger.AddLoggingAgent(new PlainTextFileLogger("D:\\Logs\\PlainTextLogsB.log"));
@@ -37,13 +51,13 @@ namespace TrendSoft.LogModuleTest
             // Add agent(s) to the Logger
 
 
-            Logger.AddLoggingAgent(ConsoleLogger.Create());
+         //   Logger.AddLoggingAgent(ConsoleLogger.Create());
 
 #if DEBUG
-            Logger.AddLoggingAgent(new HeavyOperationSimulator(TimeSpan.FromSeconds(5)));
+            Logger.AddLoggingAgent(new HeavyOperationSimulator(TimeSpan.FromSeconds(1)));
 #endif
 
-            Logger.AddLoggingAgent(new WindowsEventLogger("Shayan"));
+            //  Logger.AddLoggingAgent(new WindowsEventLogger("Shayan"));
 
             loggerTask = Logger.StartLogger();
 
@@ -74,14 +88,15 @@ namespace TrendSoft.LogModuleTest
                       }),
 
 
-                        Task.Run(() =>
-                        {
+                        //Task.Run(() =>
+                        //{
 
-                            for (int i = 0; i < 1_000; i++)
-                            {
-                               _= Logger.LogException(new Exception($"This is a \"Test Exception\" number {i:N0} from \"LoggerWriteTest\""));
-                            }
-                        })
+                        //    for (int i = 0; i < 1_000; i++)
+                        //    {
+                        //        _= Logger.LogException(new Exception($"This is a \"Test Exception\" number {i:N0} from \"LoggerWriteTest\""));
+
+                        //    }
+                        //})
 
 
 

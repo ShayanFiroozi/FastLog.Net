@@ -17,6 +17,7 @@ namespace TrendSoft.FastLog.Core
     public class Logger : IDisposable
     {
         private readonly CancellationTokenSource _cts = new CancellationTokenSource();
+        private readonly InternalExceptionLogger InternalLogger = null;
 
         #region Channel Definitions
 
@@ -34,8 +35,6 @@ namespace TrendSoft.FastLog.Core
 
         private List<ILoggerAgent> _loggerAgents = new List<ILoggerAgent>();
 
-        public string InternalExceptionsLogFile { get; private set; }
-
         public bool LogMachineName { get; private set; } = false;
 
         public bool RunAgentParallel { get; private set; } = true;
@@ -46,33 +45,18 @@ namespace TrendSoft.FastLog.Core
 
         #region Constructors
 
-        public Logger(string internalExceptionsLogFile,
-                      short internalExceptionsLogFileMaxSizeMB = 100,
+        public Logger(InternalExceptionLogger InternalLogger,
                       bool LogMachineName = false,
                       bool RunAgentParallel = true)
         {
-            if (internalExceptionsLogFileMaxSizeMB <= 0)
-            {
-                throw new ArgumentException($"'{nameof(internalExceptionsLogFileMaxSizeMB)}' must be greater than zero.", nameof(internalExceptionsLogFileMaxSizeMB));
-            }
 
+            this.InternalLogger = InternalLogger;
 
-            if (string.IsNullOrWhiteSpace(internalExceptionsLogFile))
-            {
-                throw new ArgumentException($"'{nameof(internalExceptionsLogFile)}' cannot be null or whitespace.", nameof(internalExceptionsLogFile));
-            }
-
+           
 
             this.LogMachineName = LogMachineName;
-
-            InternalExceptionsLogFile = internalExceptionsLogFile;
-
             this.RunAgentParallel = RunAgentParallel;
 
-
-            // Initialize "Internal Logger Exceptions" logger.
-            InternalExceptionLogger.SetLogFile(InternalExceptionsLogFile);
-            InternalExceptionLogger.SetLogFileMaxSizeMB(internalExceptionsLogFileMaxSizeMB);
 
             // Initialize Channels Reader/Writer
             LoggerChannelReader = LoggerChannel.Reader;
@@ -151,13 +135,13 @@ namespace TrendSoft.FastLog.Core
             }
             catch (Exception ex)
             {
-                InternalExceptionLogger.LogInternalException(ex);
+                InternalLogger?.LogInternalException(ex);
             }
 
 #if NET5_0_OR_GREATER
             return ValueTask.CompletedTask;
 #else
-                return default;
+            return default;
 #endif
         }
 
@@ -182,13 +166,13 @@ namespace TrendSoft.FastLog.Core
             }
             catch (Exception ex)
             {
-                InternalExceptionLogger.LogInternalException(ex);
+                InternalLogger?.LogInternalException(ex);
             }
 
 #if NET5_0_OR_GREATER
             return ValueTask.CompletedTask;
 #else
-                return default;
+            return default;
 #endif
         }
 
@@ -200,6 +184,22 @@ namespace TrendSoft.FastLog.Core
                                  string Source = "")
         {
             return LogEventHelper(LogEventTypes.INFO, LogText, ExtraInfo, Source);
+        }
+
+
+        public ValueTask LogNote(string LogText,
+                             string ExtraInfo = "",
+                             string Source = "")
+        {
+            return LogEventHelper(LogEventTypes.NOTE, LogText, ExtraInfo, Source);
+        }
+
+
+        public ValueTask LogTodo(string LogText,
+                             string ExtraInfo = "",
+                             string Source = "")
+        {
+            return LogEventHelper(LogEventTypes.TODO, LogText, ExtraInfo, Source);
         }
 
 
@@ -272,7 +272,7 @@ namespace TrendSoft.FastLog.Core
 
         public Task StartLogger()
         {
-            List<Task> tasksList = null ;
+            List<Task> tasksList = null;
 
             if (RunAgentParallel) tasksList = new List<Task>();
 
@@ -280,7 +280,7 @@ namespace TrendSoft.FastLog.Core
 
             return Task.Run(async () =>
             {
-                
+
 
                 while (!LoggerChannelReader.Completion.IsCompleted && !_cts.IsCancellationRequested)
                 {
@@ -319,12 +319,12 @@ namespace TrendSoft.FastLog.Core
                             }
                             catch (Exception ex)
                             {
-                                InternalExceptionLogger.LogInternalException(ex);
+                                InternalLogger?.LogInternalException(ex);
                             }
 
                         }
 
-                        if(RunAgentParallel)
+                        if (RunAgentParallel)
                         {
                             await Task.WhenAll(tasksList).ConfigureAwait(false);
                         }
@@ -371,7 +371,7 @@ namespace TrendSoft.FastLog.Core
 
                 catch (Exception ex)
                 {
-                    InternalExceptionLogger.LogInternalException(ex);
+                    InternalLogger?.LogInternalException(ex);
                 }
             }
 
