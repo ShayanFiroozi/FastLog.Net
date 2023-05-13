@@ -47,6 +47,7 @@ namespace TrendSoft.FastLog.Agents
 
                         case LogEventTypes.WARNING:
                         case LogEventTypes.ALERT:
+                        case LogEventTypes.SECURITY:
                             return WriteEventLogEntry(LogModel, EventLogEntryType.Warning);
 
                         case LogEventTypes.ERROR:

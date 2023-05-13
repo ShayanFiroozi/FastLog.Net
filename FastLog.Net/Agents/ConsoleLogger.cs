@@ -134,6 +134,9 @@ namespace TrendSoft.FastLog.Agents
                 case LogEventTypes.SYSTEM:
                     Console.ForegroundColor = ConsoleColor.Magenta;
                     break;
+                case LogEventTypes.SECURITY:
+                    Console.ForegroundColor = ConsoleColor.DarkCyan;
+                    break;
                 default:
                     break;
             }

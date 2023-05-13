@@ -15,7 +15,8 @@ namespace FastLog.Net.Enums
         DEBUG = 3,
         ERROR = 4,
         EXCEPTION = 5,
-        SYSTEM = 6
+        SYSTEM = 6,
+        SECURITY = 7
     }
 
 

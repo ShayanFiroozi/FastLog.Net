@@ -247,10 +247,18 @@ namespace TrendSoft.FastLog.Core
 
 
         public ValueTask LogSystem(string LogText,
-                              string ExtraInfo = "",
-                              string Source = "")
+                                   string ExtraInfo = "",
+                                   string Source = "")
         {
             return LogEventHelper(LogEventTypes.SYSTEM, LogText, ExtraInfo, Source);
+        }
+
+
+        public ValueTask LogSecurity(string LogText,
+                                     string ExtraInfo = "",
+                                     string Source = "")
+        {
+            return LogEventHelper(LogEventTypes.SECURITY, LogText, ExtraInfo, Source);
         }
 
 
