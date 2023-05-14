@@ -79,17 +79,24 @@ namespace TrendSoft.FastLog.Agents
 
                 CheckAndDeleteLogFileSize();
 
+                //Note :  In approach below we will lose exceptions from "ThreadSafeFileHelper.AppendAllText" due to use a "Fire and forget" approach here.
+                // Please note that it is not recomended to use "ReaderWriterLockSlim" in asyn/await methods.
+                //For more info please visit -> https://stackoverflow.com/questions/19659387/readerwriterlockslim-and-async-await
 
                 return Task.Run(() => ThreadSafeFileHelper.AppendAllText(LogFile, LogModel.GetLogMessage(true)), cancellationToken);
 
-//#if NETFRAMEWORK || NETSTANDARD2_0
-//            // May be not "Thread-Safe"
-//                //return Task.Run(() => File.AppendAllText(LogFile, LogModel.GetLogMessage(true)), cancellationToken);
-//#else
-//                // May be not "Thread-Safe"
-//                //return File.AppendAllTextAsync(LogFile, LogModel.GetLogMessage(true), cancellationToken);
 
-//#endif
+                // Note : This approach below (when using File.AppendAllTextAsync) is not thread-safe and has some issues ,
+                // - specially when two or more loggers are logging to the same file.
+
+                //#if NETFRAMEWORK || NETSTANDARD2_0
+
+                //                await Task.Run(() => ThreadSafeFileHelper.AppendAllText(LogFile, LogModel.GetLogMessage(true)), cancellationToken);
+                //#else
+
+                //                await File.AppendAllTextAsync(LogFile, LogModel.GetLogMessage(true), cancellationToken);
+
+                //#endif
 
 
 
@@ -102,21 +109,6 @@ namespace TrendSoft.FastLog.Agents
             return Task.CompletedTask;
         }
 
-
-        private short GetLogFileSizeMB()
-        {
-            try
-            {
-                return string.IsNullOrWhiteSpace(LogFile)
-                    ? (short)0
-                    : !File.Exists(LogFile) ? (short)0 : (short)(new FileInfo(LogFile).Length / 1024 / 1024);
-            }
-            catch(Exception ex)
-            {
-                InternalLogger?.LogInternalException(ex);
-                return 0;
-            }
-        }
 
         private void CheckAndDeleteLogFileSize()
         {
@@ -132,10 +124,10 @@ namespace TrendSoft.FastLog.Agents
                     return;
                 }
 
-                if (GetLogFileSizeMB() >= MaxLogFileSizeMB)
+                if (ThreadSafeFileHelper.GetFileSize(LogFile) >= MaxLogFileSizeMB)
                 {
                     // May be not "Thread-Safe"
-                       //File.Delete(LogFile);
+                    //File.Delete(LogFile);
 
                     ThreadSafeFileHelper.DeleteFile(LogFile);
 

@@ -134,7 +134,7 @@ namespace TrendSoft.FastLog.Models
             }
 
             _ = finalMessage.Append(Environment.NewLine);
-            _ = finalMessage.Append(Environment.NewLine);
+            //_ = finalMessage.Append(Environment.NewLine);
 
 
 

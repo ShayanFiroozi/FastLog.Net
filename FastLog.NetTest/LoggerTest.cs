@@ -19,7 +19,7 @@ namespace FastLog.NetTest
         private static InternalExceptionLogger InternalExceptionLogger = InternalExceptionLogger
                                                             .Create()
                                                             .SaveExceptionsLogToFile("D:\\Logs\\InternalExceptionsTest.LOG")
-                                                            .NotBiggerThan(50)
+                                                            .NotBiggerThan(1)
                                                             .Beep()
                                                             .PrintOnConsole()
                                                             .PrintOnDebugWindow();
@@ -36,7 +36,7 @@ namespace FastLog.NetTest
            
 
 
-            Parallel.For(0, 50, async (y) =>
+            Parallel.For(0, 2, async (y) =>
             {
                 _ = loggerA.LogException(new InvalidCastException());
                 _ = loggerB.LogException(new InvalidOperationException());
@@ -108,9 +108,9 @@ namespace FastLog.NetTest
 
             loggerA.AddLoggingAgent(PlainTextFileLogger.Create(InternalExceptionLogger)
                                                           .SaveLogToFile("D:\\Logs\\ThreadSafePlainText.txt")
-                                                          .NotBiggerThan(200));
+                                                          .NotBiggerThan(5));
 
-          //  loggerA.AddLoggingAgent(ConsoleLogger.Create());
+            loggerA.AddLoggingAgent(ConsoleLogger.Create());
 
 
 
@@ -123,9 +123,9 @@ namespace FastLog.NetTest
 
             loggerB.AddLoggingAgent(PlainTextFileLogger.Create(InternalExceptionLogger)
                                                           .SaveLogToFile("D:\\Logs\\ThreadSafePlainText.txt")
-                                                          .NotBiggerThan(200));
+                                                          .NotBiggerThan(5));
 
-            //loggerB.AddLoggingAgent(ConsoleLogger.Create());
+            loggerB.AddLoggingAgent(ConsoleLogger.Create());
 
 
             loggerB.StartLogger();

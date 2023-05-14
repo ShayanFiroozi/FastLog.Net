@@ -160,6 +160,8 @@ namespace TrendSoft.FastLog.InternalException
                     Console.ForegroundColor = ConsoleColor.DarkRed;
 
                     Console.WriteLine($"{LogToSave.GetLogMessage(true)}\n");
+
+                    Console.ResetColor();
                 }
 
 
@@ -208,20 +210,6 @@ namespace TrendSoft.FastLog.InternalException
 
 
 
-        #region Private Functions
-        private short GetLogFileSizeMB()
-        {
-            try
-            {
-                return string.IsNullOrWhiteSpace(InternalExceptionsLogFile) ? (short)0 : !File.Exists(InternalExceptionsLogFile) ? (short)0 :
-                (short)(new FileInfo(InternalExceptionsLogFile).Length / 1024 / 1024);
-            }
-            catch
-            {
-                return 0;
-            }
-        }
-
         private void CheckInternalExceptionsLogFileSize()
         {
             try
@@ -236,7 +224,7 @@ namespace TrendSoft.FastLog.InternalException
                     return;
                 }
 
-                if (GetLogFileSizeMB() >= InternalExceptionsMaxLogFileSizeMB)
+                if (ThreadSafeFileHelper.GetFileSize(InternalExceptionsLogFile) >= InternalExceptionsMaxLogFileSizeMB)
                 {
                     ThreadSafeFileHelper.DeleteFile(InternalExceptionsLogFile);
 
@@ -250,7 +238,7 @@ namespace TrendSoft.FastLog.InternalException
             }
 
         }
-        #endregion
+
 
 
 
