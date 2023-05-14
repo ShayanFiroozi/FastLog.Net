@@ -11,7 +11,13 @@ namespace TrendSoft.FastLog.Agents
 
     public class BeepAgent : ILoggerAgent
     {
-        private InternalExceptionLogger InternalLogger = null;
+
+        private readonly InternalExceptionLogger InternalLogger = null;
+
+
+        public BeepAgent(InternalExceptionLogger internalLogger = null) => InternalLogger = internalLogger;
+
+
 
         public Task LogEvent(LogEventModel LogModel, CancellationToken cancellationToken = default)
         {
@@ -22,7 +28,7 @@ namespace TrendSoft.FastLog.Agents
             try
             {
 
-                // Note : "Beep" will work only on Windows® OS.
+                // Note : "Beep" works only on Windows® OS.
                 if (RuntimeInformation.IsOSPlatform(OSPlatform.Windows)) Console.Beep();
 
             }
@@ -37,8 +43,10 @@ namespace TrendSoft.FastLog.Agents
 
 
 
+    
     }
 
-
 }
+
+
 

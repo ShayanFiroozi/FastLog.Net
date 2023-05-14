@@ -1,4 +1,5 @@
-﻿using System;
+﻿using FastLog.Net.Helpers;
+using System;
 using System.IO;
 using System.Threading;
 using System.Threading.Tasks;
@@ -11,38 +12,58 @@ namespace TrendSoft.FastLog.Agents
     public class PlainTextFileLogger : ILoggerAgent
     {
 
-        private InternalExceptionLogger InternalLogger = null;
+        private readonly InternalExceptionLogger InternalLogger = null;
 
         #region Properties
 
         public string LogFile { get; private set; } = string.Empty;
-        public short MaxLogFileSizeMB { get; private set; } = 0;
+        private short MaxLogFileSizeMB { get; set; } = 0;
 
         #endregion
 
 
+        //Keep it private to make it non accessible from the outside of the class !!
+        private PlainTextFileLogger(InternalExceptionLogger internalLogger = null) => InternalLogger = internalLogger;
 
-        public PlainTextFileLogger(string logFile, short maxLogFileSizeMB = 100)
+
+        public static PlainTextFileLogger Create(InternalExceptionLogger internalLogger = null) => new PlainTextFileLogger(internalLogger);
+
+
+        public PlainTextFileLogger SaveLogToFile(string filename)
         {
-            if (string.IsNullOrWhiteSpace(logFile))
+            if (string.IsNullOrWhiteSpace(filename))
             {
-                throw new ArgumentException($"'{nameof(logFile)}' cannot be null or whitespace.", nameof(logFile));
+                throw new ArgumentException($"'{nameof(filename)}' cannot be null or whitespace.", nameof(filename));
             }
 
-            if (maxLogFileSizeMB <= 0)
-            {
-                throw new ArgumentException($"'{nameof(maxLogFileSizeMB)}' must be greater then zero.", nameof(maxLogFileSizeMB));
-            }
 
-            LogFile = logFile;
-            MaxLogFileSizeMB = maxLogFileSizeMB;
+            LogFile = filename;
+
 
             if (!Directory.Exists(Path.GetDirectoryName(LogFile)))
             {
                 _ = Directory.CreateDirectory(Path.GetDirectoryName(LogFile));
             }
+
+
+            return this;
+
+
         }
 
+        public PlainTextFileLogger NotBiggerThan(short logFileMaxSize)
+        {
+
+            if (logFileMaxSize <= 0)
+            {
+                throw new ArgumentException($"'{nameof(logFileMaxSize)}' must be greater then zero.", nameof(logFileMaxSize));
+            }
+
+            MaxLogFileSizeMB = logFileMaxSize;
+
+            return this;
+
+        }
 
 
         public Task LogEvent(LogEventModel LogModel, CancellationToken cancellationToken = default)
@@ -56,14 +77,19 @@ namespace TrendSoft.FastLog.Agents
             try
             {
 
-                CheckLogFileSize();
+                CheckAndDeleteLogFileSize();
 
 
-#if NETFRAMEWORK || NETSTANDARD2_0
-                return Task.Run(() => File.AppendAllText(LogFile, LogModel.GetLogMessage(true)), cancellationToken);
-#else
-                return File.AppendAllTextAsync(LogFile, LogModel.GetLogMessage(true), cancellationToken);
-#endif
+                return Task.Run(() => ThreadSafeFileHelper.AppendAllText(LogFile, LogModel.GetLogMessage(true)), cancellationToken);
+
+//#if NETFRAMEWORK || NETSTANDARD2_0
+//            // May be not "Thread-Safe"
+//                //return Task.Run(() => File.AppendAllText(LogFile, LogModel.GetLogMessage(true)), cancellationToken);
+//#else
+//                // May be not "Thread-Safe"
+//                //return File.AppendAllTextAsync(LogFile, LogModel.GetLogMessage(true), cancellationToken);
+
+//#endif
 
 
 
@@ -85,14 +111,14 @@ namespace TrendSoft.FastLog.Agents
                     ? (short)0
                     : !File.Exists(LogFile) ? (short)0 : (short)(new FileInfo(LogFile).Length / 1024 / 1024);
             }
-            catch
+            catch(Exception ex)
             {
+                InternalLogger?.LogInternalException(ex);
                 return 0;
             }
         }
 
-
-        private void CheckLogFileSize()
+        private void CheckAndDeleteLogFileSize()
         {
             try
             {
@@ -108,7 +134,11 @@ namespace TrendSoft.FastLog.Agents
 
                 if (GetLogFileSizeMB() >= MaxLogFileSizeMB)
                 {
-                    File.Delete(LogFile);
+                    // May be not "Thread-Safe"
+                       //File.Delete(LogFile);
+
+                    ThreadSafeFileHelper.DeleteFile(LogFile);
+
                 }
             }
             catch (Exception ex)
@@ -117,8 +147,6 @@ namespace TrendSoft.FastLog.Agents
             }
 
         }
-
-
 
 
 

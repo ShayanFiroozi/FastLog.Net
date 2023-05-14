@@ -179,7 +179,7 @@ namespace TrendSoft.FastLog.InternalException
                 {
                     if (_Beep)
                     {
-                        // Note : "Beep" will work only on Windows® OS.
+                        // Note : "Beep" works only on Windows® OS.
                         if (RuntimeInformation.IsOSPlatform(OSPlatform.Windows)) Console.Beep();
                     }
                 }
