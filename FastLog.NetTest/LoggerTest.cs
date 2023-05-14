@@ -13,10 +13,8 @@ namespace FastLog.NetTest
     internal static class LoggerTest
     {
         private static Logger loggerA;
-        private static Logger loggerB
-            ;
-        private static Task loggerATask;
-        private static Task loggerBTask;
+        private static Logger loggerB;
+
 
         private static InternalExceptionLogger InternalExceptionLogger = InternalExceptionLogger
                                                             .Create()

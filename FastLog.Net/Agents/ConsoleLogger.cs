@@ -30,13 +30,13 @@ namespace TrendSoft.FastLog.Agents
         {
             //Keep it private to make it non accessible from the outside of the class !!
             InternalLogger = internalLogger;
-            RegisterAllEventsToConsole();
+            RegisterAllEventTypesToConsole();
         }
 
         public static ConsoleLogger Create(InternalExceptionLogger internalLogger = null) => new ConsoleLogger(internalLogger);
 
 
-        public ConsoleLogger RegisterEventToConsole(LogEventTypes logEventType)
+        public ConsoleLogger RegisterEventTypeToConsole(LogEventTypes logEventType)
         {
             if (!_registeredEvents.Any(type => type == logEventType))
             {
@@ -46,7 +46,7 @@ namespace TrendSoft.FastLog.Agents
             return this;
         }
 
-        public ConsoleLogger UnRegisterEventFromConsole(LogEventTypes logEventType)
+        public ConsoleLogger UnRegisterEventTypeFromConsole(LogEventTypes logEventType)
         {
             if (_registeredEvents.Any(type => type == logEventType))
             {
@@ -56,7 +56,7 @@ namespace TrendSoft.FastLog.Agents
             return this;
         }
 
-        public ConsoleLogger RegisterAllEventsToConsole()
+        public ConsoleLogger RegisterAllEventTypesToConsole()
         {
             _registeredEvents.Clear();
 
@@ -68,7 +68,7 @@ namespace TrendSoft.FastLog.Agents
             return this;
         }
 
-        public ConsoleLogger UnRegisterAllEventsFromConsole()
+        public ConsoleLogger UnRegisterAllEventTypesFromConsole()
         {
             _registeredEvents.Clear();
 

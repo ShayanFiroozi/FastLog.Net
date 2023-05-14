@@ -9,19 +9,23 @@ using TrendSoft.FastLog.Models;
 namespace TrendSoft.FastLog.Agents
 {
 
+ 
     public class BeepAgent : ILoggerAgent
     {
 
         private readonly InternalExceptionLogger InternalLogger = null;
 
 
-        public BeepAgent(InternalExceptionLogger internalLogger = null) => InternalLogger = internalLogger;
+        //Keep it private to make it non accessible from the outside of the class !!
+        private BeepAgent(InternalExceptionLogger internalLogger = null) => InternalLogger = internalLogger;
 
+
+        public static BeepAgent Create(InternalExceptionLogger internalLogger = null) => new BeepAgent(internalLogger);
 
 
         public Task LogEvent(LogEventModel LogModel, CancellationToken cancellationToken = default)
         {
-            // ATTENTION : there's a chance of "HostProtectionException" exception.
+            // ATTENTION : there's a chance of "HostProtectionException" or "PlatformNotSupportedException" exception.
 
             // For more info please visit : https://learn.microsoft.com/en-us/dotnet/api/system.console.beep?view=net-7.0
 

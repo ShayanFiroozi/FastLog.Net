@@ -18,6 +18,12 @@ namespace TrendSoft.FastLog.Agents
 
         public TimeSpan OperationTimeSpan { get; set; }
 
+
+        //Keep it private to make it non accessible from the outside of the class !!
+        private HeavyOperationSimulator() {}
+
+        public static HeavyOperationSimulator Create() => new HeavyOperationSimulator();
+
         public HeavyOperationSimulator(TimeSpan operationTimeSpan)
         {
             OperationTimeSpan = operationTimeSpan;
