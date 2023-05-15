@@ -9,6 +9,8 @@ using TrendSoft.FastLog.Models;
 
 namespace TrendSoft.FastLog.Agents
 {
+    // Note : DebugWindowLogger class uses fluent "Builder" pattern.
+
     public class PlainTextFileLogger : ILoggerAgent
     {
 

@@ -13,7 +13,7 @@ namespace TrendSoft.FastLog.Agents
 {
 
     // Note : DebugWindowLogger class uses fluent "Builder" pattern.
-    // Note : DebugWindowLogger only available in "Debug" mode.
+    // Note : DebugWindowLogger is only available in "Debug" mode.
 
 #if DEBUG
 

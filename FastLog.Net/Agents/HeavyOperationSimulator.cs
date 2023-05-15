@@ -8,6 +8,9 @@ namespace TrendSoft.FastLog.Agents
 {
 
 
+    // Note : HeavyOperationSimulator class uses fluent "Builder" pattern.
+    // Note : HeavyOperationSimulator is only available in "Debug" mode.
+
 #if DEBUG
 
     /// <summary>

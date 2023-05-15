@@ -12,6 +12,7 @@ using TrendSoft.FastLog.Models;
 namespace TrendSoft.FastLog.Agents
 {
 
+    // Note : BeepAgent class uses fluent "Builder" pattern.
 
     public class BeepAgent : ILoggerAgent
     {
