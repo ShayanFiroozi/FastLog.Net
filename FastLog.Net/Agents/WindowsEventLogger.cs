@@ -1,6 +1,8 @@
 ﻿using FastLog.Net.Enums;
 using System;
+using System.Collections.Generic;
 using System.Diagnostics;
+using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
 using TrendSoft.FastLog.Interfaces;
@@ -10,23 +12,72 @@ using TrendSoft.FastLog.Models;
 namespace TrendSoft.FastLog.Agents
 {
 
+    // Note : BeepAgent class uses fluent "Builder" pattern.
+
     public class WindowsEventLogger : ILoggerAgent
     {
-        private InternalExceptionLogger InternalLogger = null;
+        private readonly InternalExceptionLogger InternalLogger = null;
+        private readonly List<LogEventTypes> _registeredEvents = new List<LogEventTypes>();
 
         public string ApplicationName { get; set; }
 
-        public WindowsEventLogger(string applicationName)
+
+        private WindowsEventLogger(string applicationName, InternalExceptionLogger internalLogger = null)
         {
             if (string.IsNullOrWhiteSpace(applicationName))
             {
                 throw new ArgumentException($"'{nameof(applicationName)}' cannot be null or whitespace.", nameof(applicationName));
             }
-
+            
             ApplicationName = applicationName;
+            InternalLogger = internalLogger;
 
+            IncludeAllEventTypes();
         }
 
+
+        public static WindowsEventLogger Create(string applicationName, InternalExceptionLogger internalLogger = null) =>
+                                                                        new WindowsEventLogger(applicationName, internalLogger);
+
+      
+        public WindowsEventLogger IncludeEventType(LogEventTypes logEventType)
+        {
+            if (!_registeredEvents.Any(type => type == logEventType))
+            {
+                _registeredEvents.Add(logEventType);
+            }
+
+            return this;
+        }
+
+        public WindowsEventLogger ExcludeEventType(LogEventTypes logEventType)
+        {
+            if (_registeredEvents.Any(type => type == logEventType))
+            {
+                _registeredEvents.Remove(logEventType);
+            }
+
+            return this;
+        }
+
+        public WindowsEventLogger IncludeAllEventTypes()
+        {
+            _registeredEvents.Clear();
+
+            foreach (LogEventTypes eventType in Enum.GetValues(typeof(LogEventTypes)))
+            {
+                _registeredEvents.Add(eventType);
+            }
+
+            return this;
+        }
+
+        public WindowsEventLogger ExcludeAllEventTypes()
+        {
+            _registeredEvents.Clear();
+
+            return this;
+        }
 
         public Task LogEvent(LogEventModel LogModel, CancellationToken cancellationToken = default)
         {
