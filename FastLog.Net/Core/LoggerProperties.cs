@@ -12,9 +12,15 @@ namespace TrendSoft.FastLog.Core
     public partial class Logger : IDisposable
     {
         private readonly CancellationTokenSource _cts = new CancellationTokenSource();
-        private readonly InternalLogger InternalLogger = null;
+        private InternalLogger _internalLogger = null;
         private List<ILoggerAgent> _loggerAgents = new List<ILoggerAgent>();
         private bool _IsLoggerRunning = false;
+
+        private string _applicationName { get; set; } = string.Empty;
+        private bool _logMachineName { get; set; } = false;
+        private bool _runAgentsInParallel { get; set; } = true;
+
+
 
         // Channel properties
         private readonly Channel<LogEventModel> LoggerChannel = Channel.CreateUnbounded<LogEventModel>(new UnboundedChannelOptions());
@@ -26,8 +32,6 @@ namespace TrendSoft.FastLog.Core
 
 
 
-        public bool LogMachineName { get; private set; } = false;
-        public bool RunAgentParallel { get; private set; } = true;
 
 
     }

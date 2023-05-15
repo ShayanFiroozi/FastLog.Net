@@ -13,7 +13,8 @@ namespace TrendSoft.FastLog.Models
                           string LogText,
                           string ExtraInfo = "",
                           string Source = "",
-                          bool LogMachineName = false)
+                          bool LogMachineName = false,
+                          string ApplicationName = "")
         {
             DateTime = DateTime.Now;
             this.LogEventType = LogEventType;
@@ -21,10 +22,11 @@ namespace TrendSoft.FastLog.Models
             this.ExtraInfo = ExtraInfo;
             this.Source = Source;
             this.LogMachineName = LogMachineName;
+            this.ApplicationName = ApplicationName;
         }
 
 
-        public LogEventModel(Exception exception, bool LogMachineName = false)
+        public LogEventModel(Exception exception, bool LogMachineName = false, string ApplicationName = "")
             : this(LogEventTypes.EXCEPTION,
 
                    $"\nId : {exception.HResult}\n" +
@@ -36,7 +38,8 @@ namespace TrendSoft.FastLog.Models
                    $"Source : {exception.Source ?? "N/A"}\n" +
                    $"Target Site : {(exception.TargetSite != null ? exception.TargetSite.Name : "N/A")}",
 
-                   LogMachineName)
+                   LogMachineName
+                  ,ApplicationName)
         { }
 
 
@@ -74,7 +77,7 @@ namespace TrendSoft.FastLog.Models
 
         public bool LogMachineName { get; private set; }
 
-
+        public string ApplicationName { get; private set; }
 
 
 
@@ -131,6 +134,20 @@ namespace TrendSoft.FastLog.Models
                 {
                     _ = finalMessage.Append($"\nMachineName : {Environment.MachineName}");
                 }
+            }
+
+
+            if(!string.IsNullOrWhiteSpace(ApplicationName))
+            {
+                if (LogEventType != LogEventTypes.EXCEPTION)
+                {
+                    _ = finalMessage.Append($" , App Name : {ApplicationName}");
+                }
+                else
+                {
+                    _ = finalMessage.Append($"\nApp Name : {ApplicationName}");
+                }
+                
             }
 
             _ = finalMessage.Append(Environment.NewLine);

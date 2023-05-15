@@ -21,7 +21,7 @@ namespace TrendSoft.FastLog.Agents
 
         #region Properties
 
-        public string LogFile { get; private set; } = string.Empty;
+        private string LogFile { get;  set; } = string.Empty;
         private short MaxLogFileSizeMB { get; set; } = 0;
 
         #endregion
@@ -36,7 +36,7 @@ namespace TrendSoft.FastLog.Agents
 
         public PlainTextFileLogger WithInternalLogger(InternalLogger internalLogger)
         {
-            InternalLogger = internalLogger ?? throw new ArgumentNullException(nameof(internalLogger));
+            InternalLogger = internalLogger;
 
             return this;
         }

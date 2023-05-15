@@ -13,16 +13,94 @@ namespace FastLog.NetTest
         private static Logger loggerA;
         private static Logger loggerB;
 
+        public static void StartLoggers()
+        {
 
-        private static readonly InternalLogger InternalLogger = InternalLogger
-                                                            .Create()
-                                                            .SaveEventLogToFile("D:\\Logs\\InternalExceptionsTest.LOG")
-                                                            .NotBiggerThan(1)
-                                                            .Beep()
-                                                            .PrintOnConsole()
-                                                            .PrintOnDebugWindow();
+            loggerA = Logger.Create()
+
+                             .WithInternalLogger(InternalLogger.Create()
+                                                   .SaveEventLogToFile("D:\\Logs\\InternalExceptionsTest.LOG")
+                                                   .NotBiggerThan(10)
+                                                   .Beep()
+                                                   .PrintOnConsole()
+                                                   .PrintOnDebugWindow())
 
 
+                          //  .WithBeep(BeepAgent.Create())
+
+                         //   .WithPrintOnConsole(ConsoleLogger.Create())
+
+                          //  .WithPrintOnDebugWindow(DebugWindowLogger.Create())
+
+                            .AddPlaintTextFileLogger(PlainTextFileLogger.Create()
+                                                                        .SaveLogToFile("D:\\Logs\\TestLogA.log")
+                                                                        .NotBiggerThan(50)
+                                                                        .IncludeAllEventTypes())
+
+
+                              .AddPlaintTextFileLogger(PlainTextFileLogger.Create()
+                                                                        .SaveLogToFile("D:\\Logs\\TestLogB.log")
+                                                                        .NotBiggerThan(50)
+                                                                        .IncludeAllEventTypes())
+
+
+                                 .AddPlaintTextFileLogger(PlainTextFileLogger.Create()
+                                                                        .SaveLogToFile("D:\\Logs\\TestLogA.log")
+                                                                        .NotBiggerThan(50)
+                                                                        .IncludeAllEventTypes())
+
+
+                             .LogMachineName()
+                             .LogApplicationName("Shayan-Test-AppA")
+                             .RunAgentsInParallel();
+
+
+
+
+
+
+
+
+            loggerB = Logger.Create()
+
+                          .WithInternalLogger(InternalLogger.Create()
+                                            .SaveEventLogToFile("D:\\Logs\\InternalExceptionsTest.LOG")
+                                            .NotBiggerThan(10)
+                                            .Beep()
+                                            .PrintOnConsole()
+                                            .PrintOnDebugWindow())
+
+                     // .WithBeep(BeepAgent.Create())
+
+                  //   .WithPrintOnConsole(ConsoleLogger.Create())
+
+                  //   .WithPrintOnDebugWindow(DebugWindowLogger.Create())
+
+                     .AddPlaintTextFileLogger(PlainTextFileLogger.Create()
+                                                                 .SaveLogToFile("D:\\Logs\\TestLogB.log")
+                                                                 .NotBiggerThan(50)
+                                                                 .IncludeAllEventTypes())
+
+                       .AddPlaintTextFileLogger(PlainTextFileLogger.Create()
+                                                                 .SaveLogToFile("D:\\Logs\\TestLogA.log")
+                                                                 .NotBiggerThan(50)
+                                                                 .IncludeAllEventTypes())
+
+                         .AddPlaintTextFileLogger(PlainTextFileLogger.Create()
+                                                                 .SaveLogToFile("D:\\Logs\\TestLogB.log")
+                                                                 .NotBiggerThan(50)
+                                                                 .IncludeAllEventTypes())
+
+            
+
+                      .LogMachineName()
+                      .LogApplicationName("Shayan-Test-AppB")
+                      .RunAgentsInParallel();
+
+            loggerA.StartLogger();
+            loggerB.StartLogger();
+
+        }
 
 
 
@@ -99,36 +177,7 @@ namespace FastLog.NetTest
         }
 
 
-        public static void InitLoggers()
-        {
 
-            loggerA = new Logger(InternalLogger, LogMachineName: true);
-
-            loggerA.AddLoggingAgent(PlainTextFileLogger.Create().WithInternalLogger(InternalLogger)
-                                                          .SaveLogToFile("D:\\Logs\\ThreadSafePlainText.txt")
-                                                          .NotBiggerThan(5));
-
-            loggerA.AddLoggingAgent(ConsoleLogger.Create());
-
-
-
-            loggerA.StartLogger();
-
-
-
-
-            loggerB = new Logger(InternalLogger, LogMachineName: true);
-
-            loggerB.AddLoggingAgent(PlainTextFileLogger.Create().WithInternalLogger(InternalLogger)
-                                                          .SaveLogToFile("D:\\Logs\\ThreadSafePlainText.txt")
-                                                          .NotBiggerThan(5));
-
-            loggerB.AddLoggingAgent(ConsoleLogger.Create());
-
-
-            loggerB.StartLogger();
-
-        }
 
     }
 }

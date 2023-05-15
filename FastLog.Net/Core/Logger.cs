@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Linq;
+using System.Threading.Tasks;
 using TrendSoft.FastLog.Agents;
 using TrendSoft.FastLog.Interfaces;
 using TrendSoft.FastLog.Internal;
@@ -11,62 +12,116 @@ namespace TrendSoft.FastLog.Core
     {
 
 
-        #region Constructors
+        #region Fluent Builder Methods
 
-        public Logger(InternalLogger InternalLogger,
-                      bool LogMachineName = false,
-                      bool RunAgentParallel = true)
+        //Keep it private to make it non accessible from the outside of the class !!
+        private Logger()
         {
-
-            this.InternalLogger = InternalLogger;
-
-
-
-            this.LogMachineName = LogMachineName;
-            this.RunAgentParallel = RunAgentParallel;
-
-
             // Initialize Channels Reader/Writer
             LoggerChannelReader = LoggerChannel.Reader;
             LoggerChannelWriter = LoggerChannel.Writer;
         }
 
+        public static Logger Create() => new Logger();
+
+
+        public Logger WithInternalLogger(InternalLogger internalLogger)
+        {
+            _internalLogger = internalLogger;
+            return this;
+        }
+
+
+        public Logger WithBeep(BeepAgent beepAgent)
+        {
+            AddLoggingAgent(beepAgent.WithInternalLogger(_internalLogger));
+            return this;
+        }
+
+
+        public Logger WithPrintOnConsole(ConsoleLogger consoleLogger)
+        {
+            AddLoggingAgent(consoleLogger.WithInternalLogger(_internalLogger));
+            return this;
+        }
+
+
+        public Logger WithPrintOnDebugWindow(DebugWindowLogger debugWindowLogger)
+        {
+            AddLoggingAgent(debugWindowLogger.WithInternalLogger(_internalLogger));
+            return this;
+        }
+
+
+        public Logger AddWindowsEventLogger(WindowsEventLogger windowsEventLogger)
+        {
+            AddLoggingAgent(windowsEventLogger.WithInternalLogger(_internalLogger));
+            return this;
+        }
+
+        public Logger AddHeavyOperationSimulator(HeavyOperationSimulator heavyOperationSimulator)
+        {
+            AddLoggingAgent(heavyOperationSimulator);
+            return this;
+        }
+
+
+        public Logger AddPlaintTextFileLogger(PlainTextFileLogger plainTextFileLogger)
+        {
+            AddLoggingAgent(plainTextFileLogger.WithInternalLogger(_internalLogger));
+            return this;
+        }
+
+
+        public Logger LogMachineName()
+        {
+            this._logMachineName = true;
+            return this;
+        }
+
+
+        public Logger LogApplicationName(string applicationName)
+        {
+            this._applicationName = applicationName;
+            return this;
+        }
+
+        public Logger RunAgentsInParallel()
+        {
+            this._runAgentsInParallel = true;
+            return this;
+        }
+
         #endregion
 
-
+    
 
         #region "Logger Agents" management functions
 
-        public void AddLoggingAgent(ILoggerAgent logger)
+        private void AddLoggingAgent(ILoggerAgent agent)
         {
-            if (logger is ConsoleLogger && _loggerAgents.Any(agent => agent is ConsoleLogger))
+            if (agent is ConsoleLogger && _loggerAgents.Any(a => a is ConsoleLogger))
             {
                 throw new Exception("A \"ConsoleLogger\" agent already exists on the agent list.");
             }
 
 
 #if DEBUG
-            if (logger is DebugWindowLogger && _loggerAgents.Any(agent => agent is DebugWindowLogger))
+            if (agent is DebugWindowLogger && _loggerAgents.Any(a => a is DebugWindowLogger))
             {
                 throw new Exception("A \"DebugWindowLogger\" agent already exists on the agent list.");
             }
 #endif
 
-
-            // Prevent multi File Logger with same log file !
-            if (logger is PlainTextFileLogger && _loggerAgents.Any(agent => ((PlainTextFileLogger)agent).LogFile == ((PlainTextFileLogger)logger).LogFile))
+            if (agent is BeepAgent && _loggerAgents.Any(a => a is BeepAgent))
             {
-                throw new Exception($"A \"PlainTextFileLogger\" agent with the same log file already exists on the agent list.({((PlainTextFileLogger)logger).LogFile})");
+                throw new Exception("A \"BeepAgent\" agent already exists on the agent list.");
             }
 
 
-            _loggerAgents.Add(logger);
+            _loggerAgents.Add(agent);
         }
 
-        public void ClearLoggingAgents()
-        {
-            _loggerAgents.Clear();
-        }
 
         #endregion
 
@@ -90,13 +145,13 @@ namespace TrendSoft.FastLog.Core
                     StopLogger();
 
                     //logDB?.Dispose();
-                    ClearLoggingAgents();
+                    _loggerAgents.Clear();
                     _loggerAgents = null;
                 }
 
                 catch (Exception ex)
                 {
-                    InternalLogger?.LogInternalException(ex);
+                    this._internalLogger?.LogInternalException(ex);
                 }
             }
 

@@ -33,7 +33,7 @@ namespace TrendSoft.FastLog.Agents
 
         public ConsoleLogger WithInternalLogger(InternalLogger internalLogger)
         {
-            InternalLogger = internalLogger ?? throw new ArgumentNullException(nameof(internalLogger));
+            InternalLogger = internalLogger;
 
             return this;
         }

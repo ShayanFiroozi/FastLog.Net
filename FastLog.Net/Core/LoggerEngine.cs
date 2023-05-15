@@ -12,13 +12,15 @@ namespace TrendSoft.FastLog.Core
 
         public Task StartLogger()
         {
+      
+
             List<Task> tasksList = null;
 
-            if (RunAgentParallel) tasksList = new List<Task>();
+            if (this._runAgentsInParallel) tasksList = new List<Task>();
 
             // Logger engine ->
 
-            return Task.Run(async () =>
+            return Task.Run((Func<Task>)(async () =>
             {
 
 
@@ -44,7 +46,7 @@ namespace TrendSoft.FastLog.Core
                             {
                                 if (!string.IsNullOrWhiteSpace(EventModelFromChannel.LogText))
                                 {
-                                    if (RunAgentParallel)
+                                    if (this._runAgentsInParallel)
                                     {
                                         tasksList.Add(logger.LogEvent(EventModelFromChannel, _cts.Token));
                                     }
@@ -61,12 +63,12 @@ namespace TrendSoft.FastLog.Core
                             }
                             catch (Exception ex)
                             {
-                                InternalLogger?.LogInternalException(ex);
+                                _internalLogger?.LogInternalException(ex);
                             }
 
                         }
 
-                        if (RunAgentParallel)
+                        if (this._runAgentsInParallel)
                         {
                             await Task.WhenAll(tasksList).ConfigureAwait(false);
                         }
@@ -77,7 +79,7 @@ namespace TrendSoft.FastLog.Core
 
 
 
-            });
+            }));
         }
 
 

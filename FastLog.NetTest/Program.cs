@@ -9,7 +9,7 @@ namespace TrendSoft.LogModuleTest
         static void Main(string[] args)
         {
 
-            LoggerTest.InitLoggers();
+            LoggerTest.StartLoggers();
 
             LoggerTest.CrazyTestWithMultiThreadMultiTask();
 
