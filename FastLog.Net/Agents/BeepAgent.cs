@@ -93,7 +93,7 @@ namespace TrendSoft.FastLog.Agents
 
 
                 // Note : "Beep" works only on Windows® OS.
-                // ATTENTION : there's a chance of "HostProtectionException" or "PlatformNotSupportedException" exception.
+                // ATTENTION : There's a chance of "HostProtectionException" or "PlatformNotSupportedException" exception.
                 // For more info please visit : https://learn.microsoft.com/en-us/dotnet/api/system.console.beep?view=net-7.0
 
                 if (RuntimeInformation.IsOSPlatform(OSPlatform.Windows)) Console.Beep();
@@ -107,9 +107,6 @@ namespace TrendSoft.FastLog.Agents
             return Task.CompletedTask;
 
         }
-
-
-
 
     }
 

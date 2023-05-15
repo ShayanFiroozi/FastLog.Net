@@ -173,7 +173,7 @@ namespace TrendSoft.FastLog.InternalException
 
 
 
-                // ATTENTION : there's a chance of "HostProtectionException" or "PlatformNotSupportedException" exception.
+                // ATTENTION : There's a chance of "HostProtectionException" or "PlatformNotSupportedException" exception.
 
                 // For more info please visit : https://learn.microsoft.com/en-us/dotnet/api/system.console.beep?view=net-7.0
 
@@ -186,8 +186,6 @@ namespace TrendSoft.FastLog.InternalException
                     }
                 }
                 catch { }
-
-
 
 
                 ThreadSafeFileHelper.AppendAllText(InternalExceptionsLogFile,
@@ -238,9 +236,6 @@ namespace TrendSoft.FastLog.InternalException
             }
 
         }
-
-
-
 
 
 

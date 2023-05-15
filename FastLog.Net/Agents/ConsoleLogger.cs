@@ -102,7 +102,7 @@ namespace TrendSoft.FastLog.Agents
 
                 Console.ForegroundColor = DateTimeFontColor;
                 Console.Write($"{DateTime.Now}");
-                Console.ForegroundColor = ConsoleColor.White;
+                Console.ResetColor();
 
 
                 // Set the proper console forecolor
@@ -150,7 +150,7 @@ namespace TrendSoft.FastLog.Agents
 
                 Console.WriteLine(LogModel.GetLogMessage(false));
 
-                Console.ForegroundColor = ConsoleColor.White;
+                Console.ResetColor();
 
             }
             catch (Exception ex)
