@@ -1,6 +1,9 @@
-﻿using FastLog.Net.Helpers;
+﻿using FastLog.Net.Enums;
+using FastLog.Net.Helpers;
 using System;
+using System.Collections.Generic;
 using System.IO;
+using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
 using TrendSoft.FastLog.Interfaces;
@@ -13,7 +16,7 @@ namespace TrendSoft.FastLog.Agents
 
     public class PlainTextFileLogger : ILoggerAgent
     {
-
+        private readonly List<LogEventTypes> _registeredEvents = new List<LogEventTypes>();
         private readonly InternalExceptionLogger InternalLogger = null;
 
         #region Properties
@@ -29,6 +32,46 @@ namespace TrendSoft.FastLog.Agents
 
 
         public static PlainTextFileLogger Create(InternalExceptionLogger internalLogger = null) => new PlainTextFileLogger(internalLogger);
+
+
+        public PlainTextFileLogger IncludeEventType(LogEventTypes logEventType)
+        {
+            if (!_registeredEvents.Any(type => type == logEventType))
+            {
+                _registeredEvents.Add(logEventType);
+            }
+
+            return this;
+        }
+
+        public PlainTextFileLogger ExcludeEventType(LogEventTypes logEventType)
+        {
+            if (_registeredEvents.Any(type => type == logEventType))
+            {
+                _registeredEvents.Remove(logEventType);
+            }
+
+            return this;
+        }
+
+        public PlainTextFileLogger IncludeAllEventTypes()
+        {
+            _registeredEvents.Clear();
+
+            foreach (LogEventTypes eventType in Enum.GetValues(typeof(LogEventTypes)))
+            {
+                _registeredEvents.Add(eventType);
+            }
+
+            return this;
+        }
+
+        public PlainTextFileLogger ExcludeAllEventTypes()
+        {
+            _registeredEvents.Clear();
+
+            return this;
+        }
 
 
         public PlainTextFileLogger SaveLogToFile(string filename)
@@ -79,16 +122,26 @@ namespace TrendSoft.FastLog.Agents
             try
             {
 
+
+                // Check if any "Event Type" exists to show on Debug Window ?
+                if (!_registeredEvents.Any()) return Task.CompletedTask;
+
+
+                // Check if current log "Event Type" should be reflected onthe Debug Window or not.
+                if (!_registeredEvents.Any(type => LogModel.LogEventType == type)) return Task.CompletedTask;
+
+
                 CheckAndDeleteLogFileSize();
 
-                //Note :  In approach below we will lose exceptions from "ThreadSafeFileHelper.AppendAllText" due to use a "Fire and forget" approach here.
-                // Please note that it is not recomended to use "ReaderWriterLockSlim" in asyn/await methods.
+                //Note :  In code below we will lose exceptions from "ThreadSafeFileHelper.AppendAllText" due to use a "Fire and forget" approach here.
+                // Please note that it is not recomended to use "ReaderWriterLockSlim" in async/await methods.
                 //For more info please visit -> https://stackoverflow.com/questions/19659387/readerwriterlockslim-and-async-await
 
+                // #Refactor Requied. ( goal : use an approach to be able to catch exceptions properly and not using "Fire and Forget" )
                 return Task.Run(() => ThreadSafeFileHelper.AppendAllText(LogFile, LogModel.GetLogMessage(true)), cancellationToken);
 
 
-                // Note : This approach below (when using File.AppendAllTextAsync) is not thread-safe and has some issues ,
+                // Note : The approach below (when using File.AppendAllTextAsync) is not thread-safe and has some issues ,
                 // - specially when two or more loggers are logging to the same file.
 
                 //#if NETFRAMEWORK || NETSTANDARD2_0
