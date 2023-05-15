@@ -1,12 +1,10 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.IO;
-using System.Linq;
-using System.Text;
 using System.Threading.Tasks;
 using TrendSoft.FastLog.Agents;
 using TrendSoft.FastLog.Core;
-using TrendSoft.FastLog.InternalException;
+using TrendSoft.FastLog.Internal;
 
 namespace FastLog.NetTest
 {
@@ -16,7 +14,7 @@ namespace FastLog.NetTest
         private static Logger loggerB;
 
 
-        private static InternalExceptionLogger InternalExceptionLogger = InternalExceptionLogger
+        private static readonly InternalLogger InternalLogger = InternalLogger
                                                             .Create()
                                                             .SaveExceptionsLogToFile("D:\\Logs\\InternalExceptionsTest.LOG")
                                                             .NotBiggerThan(1)
@@ -33,7 +31,7 @@ namespace FastLog.NetTest
         {
 
 
-           
+
 
 
             Parallel.For(0, 2, async (y) =>
@@ -104,9 +102,9 @@ namespace FastLog.NetTest
         public static void InitLoggers()
         {
 
-            loggerA = new Logger(InternalExceptionLogger, LogMachineName: true);
+            loggerA = new Logger(InternalLogger, LogMachineName: true);
 
-            loggerA.AddLoggingAgent(PlainTextFileLogger.Create().WithInternalLogger(InternalExceptionLogger)
+            loggerA.AddLoggingAgent(PlainTextFileLogger.Create().WithInternalLogger(InternalLogger)
                                                           .SaveLogToFile("D:\\Logs\\ThreadSafePlainText.txt")
                                                           .NotBiggerThan(5));
 
@@ -119,9 +117,9 @@ namespace FastLog.NetTest
 
 
 
-            loggerB = new Logger(InternalExceptionLogger, LogMachineName: true);
+            loggerB = new Logger(InternalLogger, LogMachineName: true);
 
-            loggerB.AddLoggingAgent(PlainTextFileLogger.Create().WithInternalLogger(InternalExceptionLogger)
+            loggerB.AddLoggingAgent(PlainTextFileLogger.Create().WithInternalLogger(InternalLogger)
                                                           .SaveLogToFile("D:\\Logs\\ThreadSafePlainText.txt")
                                                           .NotBiggerThan(5));
 

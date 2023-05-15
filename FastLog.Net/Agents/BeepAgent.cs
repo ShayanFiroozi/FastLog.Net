@@ -6,7 +6,7 @@ using System.Runtime.InteropServices;
 using System.Threading;
 using System.Threading.Tasks;
 using TrendSoft.FastLog.Interfaces;
-using TrendSoft.FastLog.InternalException;
+using TrendSoft.FastLog.Internal;
 using TrendSoft.FastLog.Models;
 
 namespace TrendSoft.FastLog.Agents
@@ -17,7 +17,7 @@ namespace TrendSoft.FastLog.Agents
     public class BeepAgent : ILoggerAgent
     {
         private readonly List<LogEventTypes> _registeredEvents = new List<LogEventTypes>();
-        private InternalExceptionLogger InternalLogger = null;
+        private InternalLogger InternalLogger = null;
 
 
         #region Fluent Builder Methods
@@ -27,7 +27,7 @@ namespace TrendSoft.FastLog.Agents
 
         public static BeepAgent Create() => new BeepAgent();
 
-        public BeepAgent WithInternalLogger(InternalExceptionLogger internalLogger)
+        public BeepAgent WithInternalLogger(InternalLogger internalLogger)
         {
             InternalLogger = internalLogger ?? throw new ArgumentNullException(nameof(internalLogger));
 
@@ -71,7 +71,7 @@ namespace TrendSoft.FastLog.Agents
             _registeredEvents.Clear();
 
             return this;
-        } 
+        }
 
         #endregion
 

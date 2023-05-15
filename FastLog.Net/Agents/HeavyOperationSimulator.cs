@@ -27,7 +27,7 @@ namespace TrendSoft.FastLog.Agents
 
         public static HeavyOperationSimulator Create(TimeSpan operationTimeSpan) => new HeavyOperationSimulator(operationTimeSpan);
 
-     
+
 
         public Task LogEvent(LogEventModel LogModel, CancellationToken cancellationToken = default)
         {

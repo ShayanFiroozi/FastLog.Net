@@ -1,14 +1,7 @@
 ﻿
 using FastLog.Net.Enums;
 using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Threading;
-using System.Threading.Channels;
 using System.Threading.Tasks;
-using TrendSoft.FastLog.Agents;
-using TrendSoft.FastLog.Interfaces;
-using TrendSoft.FastLog.InternalException;
 using TrendSoft.FastLog.Models;
 
 namespace TrendSoft.FastLog.Core
@@ -17,7 +10,7 @@ namespace TrendSoft.FastLog.Core
     public partial class Logger : IDisposable
     {
 
-             
+
         #region Logging Functions
 
 
@@ -27,10 +20,10 @@ namespace TrendSoft.FastLog.Core
                                          string Source = "")
         {
 
-            if(!_IsLoggerRunning)
+            if (!_IsLoggerRunning)
             {
                 throw new Exception("The logger is not running , please call \"StartLogger\" to start the logger.");
-               
+
             }
 
             if (string.IsNullOrWhiteSpace(LogText))

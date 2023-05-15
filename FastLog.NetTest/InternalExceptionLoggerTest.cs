@@ -1,23 +1,20 @@
 ﻿using System;
-using System.Collections.Generic;
 using System.IO;
-using System.Linq;
-using System.Text;
 using System.Threading.Tasks;
-using TrendSoft.FastLog.InternalException;
+using TrendSoft.FastLog.Internal;
 
 namespace FastLog.NetTest
 {
     internal static class InternalExceptionLoggerTest
     {
-        private static InternalExceptionLogger InternalExceptionLoggerA = InternalExceptionLogger
+        private static readonly InternalLogger InternalExceptionLoggerA = InternalLogger
                                                            .Create()
                                                            .SaveExceptionsLogToFile("D:\\Logs\\InternalExceptionsTest.LOG")
                                                            .NotBiggerThan(100);
 
 
 
-        private static InternalExceptionLogger InternalExceptionLoggerB = InternalExceptionLogger
+        private static readonly InternalLogger InternalExceptionLoggerB = InternalLogger
                                                           .Create()
                                                           .SaveExceptionsLogToFile("D:\\Logs\\InternalExceptionsTest.LOG")
                                                           .NotBiggerThan(100);

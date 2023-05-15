@@ -1,14 +1,9 @@
-﻿
-using FastLog.Net.Enums;
-using System;
+﻿using System;
 using System.Collections.Generic;
-using System.Linq;
 using System.Threading;
 using System.Threading.Channels;
-using System.Threading.Tasks;
-using TrendSoft.FastLog.Agents;
 using TrendSoft.FastLog.Interfaces;
-using TrendSoft.FastLog.InternalException;
+using TrendSoft.FastLog.Internal;
 using TrendSoft.FastLog.Models;
 
 namespace TrendSoft.FastLog.Core
@@ -17,7 +12,7 @@ namespace TrendSoft.FastLog.Core
     public partial class Logger : IDisposable
     {
         private readonly CancellationTokenSource _cts = new CancellationTokenSource();
-        private readonly InternalExceptionLogger InternalLogger = null;
+        private readonly InternalLogger InternalLogger = null;
         private List<ILoggerAgent> _loggerAgents = new List<ILoggerAgent>();
         private bool _IsLoggerRunning = false;
 
@@ -29,7 +24,7 @@ namespace TrendSoft.FastLog.Core
 
         public IEnumerable<ILoggerAgent> Agents => _loggerAgents;
 
-        
+
 
         public bool LogMachineName { get; private set; } = false;
         public bool RunAgentParallel { get; private set; } = true;

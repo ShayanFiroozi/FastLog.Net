@@ -7,7 +7,7 @@ using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
 using TrendSoft.FastLog.Interfaces;
-using TrendSoft.FastLog.InternalException;
+using TrendSoft.FastLog.Internal;
 using TrendSoft.FastLog.Models;
 
 namespace TrendSoft.FastLog.Agents
@@ -17,7 +17,7 @@ namespace TrendSoft.FastLog.Agents
     public class PlainTextFileLogger : ILoggerAgent
     {
         private readonly List<LogEventTypes> _registeredEvents = new List<LogEventTypes>();
-        private InternalExceptionLogger InternalLogger = null;
+        private InternalLogger InternalLogger = null;
 
         #region Properties
 
@@ -34,7 +34,7 @@ namespace TrendSoft.FastLog.Agents
 
         public static PlainTextFileLogger Create() => new PlainTextFileLogger();
 
-        public PlainTextFileLogger WithInternalLogger(InternalExceptionLogger internalLogger)
+        public PlainTextFileLogger WithInternalLogger(InternalLogger internalLogger)
         {
             InternalLogger = internalLogger ?? throw new ArgumentNullException(nameof(internalLogger));
 
@@ -115,7 +115,7 @@ namespace TrendSoft.FastLog.Agents
 
             return this;
 
-        } 
+        }
 
         #endregion
 

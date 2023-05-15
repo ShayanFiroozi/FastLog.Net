@@ -5,7 +5,7 @@ using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
 using TrendSoft.FastLog.Interfaces;
-using TrendSoft.FastLog.InternalException;
+using TrendSoft.FastLog.Internal;
 using TrendSoft.FastLog.Models;
 
 namespace TrendSoft.FastLog.Agents
@@ -19,7 +19,7 @@ namespace TrendSoft.FastLog.Agents
         private ConsoleColor DateTimeFontColor = ConsoleColor.Green;
 
         private readonly List<LogEventTypes> _registeredEvents = new List<LogEventTypes>();
-        private  InternalExceptionLogger InternalLogger = null;
+        private InternalLogger InternalLogger = null;
 
 
         #region Fluent Builder Methods
@@ -31,7 +31,7 @@ namespace TrendSoft.FastLog.Agents
         public static ConsoleLogger Create() => new ConsoleLogger();
 
 
-        public ConsoleLogger WithInternalLogger(InternalExceptionLogger internalLogger)
+        public ConsoleLogger WithInternalLogger(InternalLogger internalLogger)
         {
             InternalLogger = internalLogger ?? throw new ArgumentNullException(nameof(internalLogger));
 
@@ -81,7 +81,7 @@ namespace TrendSoft.FastLog.Agents
         {
             DateTimeFontColor = color;
             return this;
-        } 
+        }
 
         #endregion
 

@@ -118,7 +118,7 @@ namespace TrendSoft.FastLog.Models
 
                 }
 
-                  _= finalMessage.Append(Source);
+                _ = finalMessage.Append(Source);
             }
 
             if (LogMachineName)

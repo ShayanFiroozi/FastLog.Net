@@ -6,12 +6,12 @@ using System.IO;
 using System.Runtime.InteropServices;
 using TrendSoft.FastLog.Models;
 
-namespace TrendSoft.FastLog.InternalException
+namespace TrendSoft.FastLog.Internal
 {
     // Note : This class uses "fluent builder" pattern.
 
 
-    public class InternalExceptionLogger
+    public class InternalLogger
     {
 
 
@@ -28,15 +28,15 @@ namespace TrendSoft.FastLog.InternalException
 
 
         #region Fluent Builder functions
-        private InternalExceptionLogger()
+        private InternalLogger()
         {
             //Keep it private to make it non accessible from the outside of the class !!
         }
 
-        public static InternalExceptionLogger Create() => new InternalExceptionLogger();
+        public static InternalLogger Create() => new InternalLogger();
 
 
-        public InternalExceptionLogger SaveExceptionsLogToFile(string filename)
+        public InternalLogger SaveExceptionsLogToFile(string filename)
         {
             if (string.IsNullOrWhiteSpace(filename))
             {
@@ -58,7 +58,7 @@ namespace TrendSoft.FastLog.InternalException
 
         }
 
-        public InternalExceptionLogger NotBiggerThan(short logFileMaxSize)
+        public InternalLogger NotBiggerThan(short logFileMaxSize)
         {
 
             if (logFileMaxSize <= 0)
@@ -73,34 +73,34 @@ namespace TrendSoft.FastLog.InternalException
         }
 
 
-        public InternalExceptionLogger PrintOnConsole()
+        public InternalLogger PrintOnConsole()
         {
             _LogOnConsole = true;
             return this;
         }
-        public InternalExceptionLogger DoNotPrintOnConsole()
+        public InternalLogger DoNotPrintOnConsole()
         {
             _LogOnConsole = false;
             return this;
         }
 
-        public InternalExceptionLogger Beep()
+        public InternalLogger Beep()
         {
             _Beep = true;
             return this;
         }
-        public InternalExceptionLogger DoNotBeep()
+        public InternalLogger DoNotBeep()
         {
             _Beep = false;
             return this;
         }
 
-        public InternalExceptionLogger PrintOnDebugWindow()
+        public InternalLogger PrintOnDebugWindow()
         {
             _LogOnDebugWindow = true;
             return this;
         }
-        public InternalExceptionLogger DoNotPrintOnDebugWindow()
+        public InternalLogger DoNotPrintOnDebugWindow()
         {
             _LogOnDebugWindow = false;
             return this;

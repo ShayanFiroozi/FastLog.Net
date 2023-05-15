@@ -6,7 +6,7 @@ using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
 using TrendSoft.FastLog.Interfaces;
-using TrendSoft.FastLog.InternalException;
+using TrendSoft.FastLog.Internal;
 using TrendSoft.FastLog.Models;
 
 namespace TrendSoft.FastLog.Agents
@@ -16,7 +16,7 @@ namespace TrendSoft.FastLog.Agents
 
     public class WindowsEventLogger : ILoggerAgent
     {
-        private InternalExceptionLogger InternalLogger = null;
+        private InternalLogger InternalLogger = null;
         private readonly List<LogEventTypes> _registeredEvents = new List<LogEventTypes>();
 
         public string ApplicationName { get; set; }
@@ -30,7 +30,7 @@ namespace TrendSoft.FastLog.Agents
 
         public static WindowsEventLogger Create() => new WindowsEventLogger();
 
-        public WindowsEventLogger WithInternalLogger(InternalExceptionLogger internalLogger)
+        public WindowsEventLogger WithInternalLogger(InternalLogger internalLogger)
         {
             InternalLogger = internalLogger ?? throw new ArgumentNullException(nameof(internalLogger));
 
@@ -86,7 +86,7 @@ namespace TrendSoft.FastLog.Agents
             _registeredEvents.Clear();
 
             return this;
-        } 
+        }
 
         #endregion
 

@@ -2,25 +2,25 @@
 using System.Linq;
 using TrendSoft.FastLog.Agents;
 using TrendSoft.FastLog.Interfaces;
-using TrendSoft.FastLog.InternalException;
+using TrendSoft.FastLog.Internal;
 
 namespace TrendSoft.FastLog.Core
 {
 
     public partial class Logger : IDisposable
     {
-     
+
 
         #region Constructors
 
-        public Logger(InternalExceptionLogger InternalLogger,
+        public Logger(InternalLogger InternalLogger,
                       bool LogMachineName = false,
                       bool RunAgentParallel = true)
         {
 
             this.InternalLogger = InternalLogger;
 
-           
+
 
             this.LogMachineName = LogMachineName;
             this.RunAgentParallel = RunAgentParallel;
