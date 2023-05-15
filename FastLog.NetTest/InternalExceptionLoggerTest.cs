@@ -9,14 +9,14 @@ namespace FastLog.NetTest
     {
         private static readonly InternalLogger InternalExceptionLoggerA = InternalLogger
                                                            .Create()
-                                                           .SaveExceptionsLogToFile("D:\\Logs\\InternalExceptionsTest.LOG")
+                                                           .SaveEventLogToFile("D:\\Logs\\InternalExceptionsTest.LOG")
                                                            .NotBiggerThan(100);
 
 
 
         private static readonly InternalLogger InternalExceptionLoggerB = InternalLogger
                                                           .Create()
-                                                          .SaveExceptionsLogToFile("D:\\Logs\\InternalExceptionsTest.LOG")
+                                                          .SaveEventLogToFile("D:\\Logs\\InternalExceptionsTest.LOG")
                                                           .NotBiggerThan(100);
 
 

@@ -16,7 +16,7 @@ namespace FastLog.NetTest
 
         private static readonly InternalLogger InternalLogger = InternalLogger
                                                             .Create()
-                                                            .SaveExceptionsLogToFile("D:\\Logs\\InternalExceptionsTest.LOG")
+                                                            .SaveEventLogToFile("D:\\Logs\\InternalExceptionsTest.LOG")
                                                             .NotBiggerThan(1)
                                                             .Beep()
                                                             .PrintOnConsole()

@@ -36,7 +36,7 @@ namespace TrendSoft.FastLog.Internal
         public static InternalLogger Create() => new InternalLogger();
 
 
-        public InternalLogger SaveExceptionsLogToFile(string filename)
+        public InternalLogger SaveEventLogToFile(string filename)
         {
             if (string.IsNullOrWhiteSpace(filename))
             {
