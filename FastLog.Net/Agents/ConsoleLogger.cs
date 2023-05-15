@@ -24,19 +24,19 @@ namespace TrendSoft.FastLog.Agents
         public IEnumerable<LogEventTypes> RegisteredEvents => _registeredEvents;
 
 
-
-
         private ConsoleLogger(InternalExceptionLogger internalLogger = null)
         {
             //Keep it private to make it non accessible from the outside of the class !!
+
             InternalLogger = internalLogger;
-            RegisterAllEventTypesToConsole();
+            IncludeAllEventTypes();
         }
+
 
         public static ConsoleLogger Create(InternalExceptionLogger internalLogger = null) => new ConsoleLogger(internalLogger);
 
 
-        public ConsoleLogger RegisterEventTypeToConsole(LogEventTypes logEventType)
+        public ConsoleLogger IncludeEventType(LogEventTypes logEventType)
         {
             if (!_registeredEvents.Any(type => type == logEventType))
             {
@@ -46,7 +46,7 @@ namespace TrendSoft.FastLog.Agents
             return this;
         }
 
-        public ConsoleLogger UnRegisterEventTypeFromConsole(LogEventTypes logEventType)
+        public ConsoleLogger ExcludeEventType(LogEventTypes logEventType)
         {
             if (_registeredEvents.Any(type => type == logEventType))
             {
@@ -56,7 +56,7 @@ namespace TrendSoft.FastLog.Agents
             return this;
         }
 
-        public ConsoleLogger RegisterAllEventTypesToConsole()
+        public ConsoleLogger IncludeAllEventTypes()
         {
             _registeredEvents.Clear();
 
@@ -68,7 +68,7 @@ namespace TrendSoft.FastLog.Agents
             return this;
         }
 
-        public ConsoleLogger UnRegisterAllEventTypesFromConsole()
+        public ConsoleLogger ExcludeAllEventTypes()
         {
             _registeredEvents.Clear();
 
@@ -80,8 +80,6 @@ namespace TrendSoft.FastLog.Agents
             DateTimeFontColor = color;
             return this;
         }
-
-
 
 
         public Task LogEvent(LogEventModel LogModel, CancellationToken cancellationToken = default)
@@ -164,8 +162,6 @@ namespace TrendSoft.FastLog.Agents
 
 
         }
-
-
 
 
     }
