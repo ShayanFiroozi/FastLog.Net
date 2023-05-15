@@ -23,8 +23,8 @@ namespace TrendSoft.FastLog.Agents
         //Keep it private to make it non accessible from the outside of the class !!
         private BeepAgent(InternalExceptionLogger internalLogger = null)
         {
-            IncludeAllEventTypes();
             InternalLogger = internalLogger;
+            IncludeAllEventTypes();
         }
 
         public static BeepAgent Create(InternalExceptionLogger internalLogger = null) => new BeepAgent(internalLogger);

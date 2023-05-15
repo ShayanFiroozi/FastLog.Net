@@ -31,8 +31,9 @@ namespace TrendSoft.FastLog.Agents
         private DebugWindowLogger(InternalExceptionLogger internalLogger = null)
         {
             //Keep it private to make it non accessible from the outside of the class !!
-
+            
             InternalLogger = internalLogger;
+
             IncludeAllEventTypes();
         }
 

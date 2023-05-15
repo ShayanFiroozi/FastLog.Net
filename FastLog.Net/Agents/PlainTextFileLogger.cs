@@ -28,8 +28,11 @@ namespace TrendSoft.FastLog.Agents
 
 
         //Keep it private to make it non accessible from the outside of the class !!
-        private PlainTextFileLogger(InternalExceptionLogger internalLogger = null) => InternalLogger = internalLogger;
-
+        private PlainTextFileLogger(InternalExceptionLogger internalLogger = null)
+        {
+            InternalLogger = internalLogger;
+            IncludeAllEventTypes();
+        }
 
         public static PlainTextFileLogger Create(InternalExceptionLogger internalLogger = null) => new PlainTextFileLogger(internalLogger);
 
