@@ -16,7 +16,7 @@ namespace TrendSoft.FastLog.Internal
 
 
         #region Properties
-        private string InternalExceptionsLogFile { get; set; } = string.Empty;
+        private string InternalLogFile { get; set; } = string.Empty;
         private short InternalExceptionsMaxLogFileSizeMB { get; set; } = 0;
 
         private bool _LogOnConsole { get; set; } = false;
@@ -38,18 +38,23 @@ namespace TrendSoft.FastLog.Internal
 
         public InternalLogger SaveEventLogToFile(string filename)
         {
+            if(!string.IsNullOrWhiteSpace(InternalLogFile)) 
+            {
+                throw new ArgumentException($"'{nameof(filename)}' cannot add two or more file.", nameof(filename));
+            }
+
             if (string.IsNullOrWhiteSpace(filename))
             {
                 throw new ArgumentException($"'{nameof(filename)}' cannot be null or whitespace.", nameof(filename));
             }
 
 
-            InternalExceptionsLogFile = filename;
+            InternalLogFile = filename;
 
 
-            if (!Directory.Exists(Path.GetDirectoryName(InternalExceptionsLogFile)))
+            if (!Directory.Exists(Path.GetDirectoryName(InternalLogFile)))
             {
-                _ = Directory.CreateDirectory(Path.GetDirectoryName(InternalExceptionsLogFile));
+                _ = Directory.CreateDirectory(Path.GetDirectoryName(InternalLogFile));
             }
 
 
@@ -57,6 +62,7 @@ namespace TrendSoft.FastLog.Internal
 
 
         }
+
 
         public InternalLogger NotBiggerThan(short logFileMaxSize)
         {
@@ -113,9 +119,9 @@ namespace TrendSoft.FastLog.Internal
 
         public void LogInternalException(Exception exception)
         {
-            if (string.IsNullOrWhiteSpace(InternalExceptionsLogFile))
+            if (string.IsNullOrWhiteSpace(InternalLogFile))
             {
-                throw new ArgumentException($"'{nameof(InternalExceptionsLogFile)}' cannot be null or whitespace.", nameof(InternalExceptionsLogFile));
+                throw new ArgumentException($"'{nameof(InternalLogFile)}' cannot be null or whitespace.", nameof(InternalLogFile));
             }
 
             if (InternalExceptionsMaxLogFileSizeMB <= 0)
@@ -188,7 +194,7 @@ namespace TrendSoft.FastLog.Internal
                 catch { }
 
 
-                ThreadSafeFileHelper.AppendAllText(InternalExceptionsLogFile,
+                ThreadSafeFileHelper.AppendAllText(InternalLogFile,
                                                 $"{LogToSave.GetLogMessage(true)}\n");
 
 
@@ -212,19 +218,19 @@ namespace TrendSoft.FastLog.Internal
         {
             try
             {
-                if (string.IsNullOrWhiteSpace(InternalExceptionsLogFile))
+                if (string.IsNullOrWhiteSpace(InternalLogFile))
                 {
                     return;
                 }
 
-                if (!File.Exists(InternalExceptionsLogFile))
+                if (!File.Exists(InternalLogFile))
                 {
                     return;
                 }
 
-                if (ThreadSafeFileHelper.GetFileSize(InternalExceptionsLogFile) >= InternalExceptionsMaxLogFileSizeMB)
+                if (ThreadSafeFileHelper.GetFileSize(InternalLogFile) >= InternalExceptionsMaxLogFileSizeMB)
                 {
-                    ThreadSafeFileHelper.DeleteFile(InternalExceptionsLogFile);
+                    ThreadSafeFileHelper.DeleteFile(InternalLogFile);
 
                     // May be NOT "Thread-Safe"
                     //File.Delete(InternalExceptionsLogFile);
