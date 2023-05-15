@@ -33,7 +33,7 @@ namespace TrendSoft.FastLog.Agents
             //Keep it private to make it non accessible from the outside of the class !!
 
             InternalLogger = internalLogger;
-            RegisterAllEventsToDebugWindow();
+            IncludeAllEventTypes();
         }
 
 
@@ -41,7 +41,7 @@ namespace TrendSoft.FastLog.Agents
 
 
 
-        public DebugWindowLogger RegisterEventToDebugWindow(LogEventTypes logEventType)
+        public DebugWindowLogger IncludeEventType(LogEventTypes logEventType)
         {
             if (!_registeredEvents.Any(type => type == logEventType))
             {
@@ -51,7 +51,7 @@ namespace TrendSoft.FastLog.Agents
             return this;
         }
 
-        public DebugWindowLogger UnRegisterEventFromDebugWindow(LogEventTypes logEventType)
+        public DebugWindowLogger ExcludeEventType(LogEventTypes logEventType)
         {
             if (_registeredEvents.Any(type => type == logEventType))
             {
@@ -61,7 +61,7 @@ namespace TrendSoft.FastLog.Agents
             return this;
         }
 
-        public DebugWindowLogger RegisterAllEventsToDebugWindow()
+        public DebugWindowLogger IncludeAllEventTypes()
         {
             _registeredEvents.Clear();
 
@@ -73,14 +73,12 @@ namespace TrendSoft.FastLog.Agents
             return this;
         }
 
-        public DebugWindowLogger UnRegisterAllEventsFromDebugWindow()
+        public DebugWindowLogger ExcludeAllEventTypes()
         {
             _registeredEvents.Clear();
 
             return this;
         }
-
-
 
         public Task LogEvent(LogEventModel LogModel, CancellationToken cancellationToken = default)
         {
