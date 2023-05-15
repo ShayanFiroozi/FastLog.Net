@@ -17,17 +17,22 @@ namespace TrendSoft.FastLog.Agents
     public class BeepAgent : ILoggerAgent
     {
         private readonly List<LogEventTypes> _registeredEvents = new List<LogEventTypes>();
-        private readonly InternalExceptionLogger InternalLogger = null;
+        private InternalExceptionLogger InternalLogger = null;
 
+
+        #region Fluent Builder Methods
 
         //Keep it private to make it non accessible from the outside of the class !!
-        private BeepAgent(InternalExceptionLogger internalLogger = null)
-        {
-            InternalLogger = internalLogger;
-            IncludeAllEventTypes();
-        }
+        private BeepAgent() => IncludeAllEventTypes();
 
-        public static BeepAgent Create(InternalExceptionLogger internalLogger = null) => new BeepAgent(internalLogger);
+        public static BeepAgent Create() => new BeepAgent();
+
+        public BeepAgent WithInternalLogger(InternalExceptionLogger internalLogger)
+        {
+            InternalLogger = internalLogger ?? throw new ArgumentNullException(nameof(internalLogger));
+
+            return this;
+        }
 
         public BeepAgent IncludeEventType(LogEventTypes logEventType)
         {
@@ -66,7 +71,10 @@ namespace TrendSoft.FastLog.Agents
             _registeredEvents.Clear();
 
             return this;
-        }
+        } 
+
+        #endregion
+
 
         public Task LogEvent(LogEventModel LogModel, CancellationToken cancellationToken = default)
         {

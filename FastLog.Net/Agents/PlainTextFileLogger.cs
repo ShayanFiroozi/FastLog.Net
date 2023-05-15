@@ -17,7 +17,7 @@ namespace TrendSoft.FastLog.Agents
     public class PlainTextFileLogger : ILoggerAgent
     {
         private readonly List<LogEventTypes> _registeredEvents = new List<LogEventTypes>();
-        private readonly InternalExceptionLogger InternalLogger = null;
+        private InternalExceptionLogger InternalLogger = null;
 
         #region Properties
 
@@ -27,15 +27,19 @@ namespace TrendSoft.FastLog.Agents
         #endregion
 
 
+        #region Fluent Builder Methods
+
         //Keep it private to make it non accessible from the outside of the class !!
-        private PlainTextFileLogger(InternalExceptionLogger internalLogger = null)
+        private PlainTextFileLogger() => IncludeAllEventTypes();
+
+        public static PlainTextFileLogger Create() => new PlainTextFileLogger();
+
+        public PlainTextFileLogger WithInternalLogger(InternalExceptionLogger internalLogger)
         {
-            InternalLogger = internalLogger;
-            IncludeAllEventTypes();
+            InternalLogger = internalLogger ?? throw new ArgumentNullException(nameof(internalLogger));
+
+            return this;
         }
-
-        public static PlainTextFileLogger Create(InternalExceptionLogger internalLogger = null) => new PlainTextFileLogger(internalLogger);
-
 
         public PlainTextFileLogger IncludeEventType(LogEventTypes logEventType)
         {
@@ -111,7 +115,9 @@ namespace TrendSoft.FastLog.Agents
 
             return this;
 
-        }
+        } 
+
+        #endregion
 
 
         public Task LogEvent(LogEventModel LogModel, CancellationToken cancellationToken = default)
@@ -140,7 +146,8 @@ namespace TrendSoft.FastLog.Agents
                 // Please note that it is not recomended to use "ReaderWriterLockSlim" in async/await methods.
                 //For more info please visit -> https://stackoverflow.com/questions/19659387/readerwriterlockslim-and-async-await
 
-                // #Refactor Requied. ( goal : use an approach to be able to catch exceptions properly and not using "Fire and Forget" )
+
+                // #Refactor Required. ( Goal : use an approach to be able to catch exceptions properly and not using "Fire and Forget" style )
                 return Task.Run(() => ThreadSafeFileHelper.AppendAllText(LogFile, LogModel.GetLogMessage(true)), cancellationToken);
 
 

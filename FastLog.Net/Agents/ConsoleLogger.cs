@@ -19,22 +19,24 @@ namespace TrendSoft.FastLog.Agents
         private ConsoleColor DateTimeFontColor = ConsoleColor.Green;
 
         private readonly List<LogEventTypes> _registeredEvents = new List<LogEventTypes>();
-        private readonly InternalExceptionLogger InternalLogger = null;
-
-        public IEnumerable<LogEventTypes> RegisteredEvents => _registeredEvents;
+        private  InternalExceptionLogger InternalLogger = null;
 
 
-        private ConsoleLogger(InternalExceptionLogger internalLogger = null)
+        #region Fluent Builder Methods
+
+        //Keep it private to make it non accessible from the outside of the class !!
+        private ConsoleLogger() => IncludeAllEventTypes();
+
+
+        public static ConsoleLogger Create() => new ConsoleLogger();
+
+
+        public ConsoleLogger WithInternalLogger(InternalExceptionLogger internalLogger)
         {
-            //Keep it private to make it non accessible from the outside of the class !!
+            InternalLogger = internalLogger ?? throw new ArgumentNullException(nameof(internalLogger));
 
-            InternalLogger = internalLogger;
-            IncludeAllEventTypes();
+            return this;
         }
-
-
-        public static ConsoleLogger Create(InternalExceptionLogger internalLogger = null) => new ConsoleLogger(internalLogger);
-
 
         public ConsoleLogger IncludeEventType(LogEventTypes logEventType)
         {
@@ -79,7 +81,9 @@ namespace TrendSoft.FastLog.Agents
         {
             DateTimeFontColor = color;
             return this;
-        }
+        } 
+
+        #endregion
 
 
         public Task LogEvent(LogEventModel LogModel, CancellationToken cancellationToken = default)

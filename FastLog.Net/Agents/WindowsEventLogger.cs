@@ -16,30 +16,39 @@ namespace TrendSoft.FastLog.Agents
 
     public class WindowsEventLogger : ILoggerAgent
     {
-        private readonly InternalExceptionLogger InternalLogger = null;
+        private InternalExceptionLogger InternalLogger = null;
         private readonly List<LogEventTypes> _registeredEvents = new List<LogEventTypes>();
 
         public string ApplicationName { get; set; }
 
 
-        private WindowsEventLogger(string applicationName, InternalExceptionLogger internalLogger = null)
+
+        #region Fluent Builder Methods
+
+        //Keep it private to make it non accessible from the outside of the class !!
+        private WindowsEventLogger() => IncludeAllEventTypes();
+
+        public static WindowsEventLogger Create() => new WindowsEventLogger();
+
+        public WindowsEventLogger WithInternalLogger(InternalExceptionLogger internalLogger)
+        {
+            InternalLogger = internalLogger ?? throw new ArgumentNullException(nameof(internalLogger));
+
+            return this;
+        }
+
+        public WindowsEventLogger WithApplicationName(string applicationName)
         {
             if (string.IsNullOrWhiteSpace(applicationName))
             {
                 throw new ArgumentException($"'{nameof(applicationName)}' cannot be null or whitespace.", nameof(applicationName));
             }
-            
-            ApplicationName = applicationName;
-            InternalLogger = internalLogger;
 
-            IncludeAllEventTypes();
+            ApplicationName = applicationName;
+
+            return this;
         }
 
-
-        public static WindowsEventLogger Create(string applicationName, InternalExceptionLogger internalLogger = null) =>
-                                                                        new WindowsEventLogger(applicationName, internalLogger);
-
-      
         public WindowsEventLogger IncludeEventType(LogEventTypes logEventType)
         {
             if (!_registeredEvents.Any(type => type == logEventType))
@@ -77,7 +86,12 @@ namespace TrendSoft.FastLog.Agents
             _registeredEvents.Clear();
 
             return this;
-        }
+        } 
+
+        #endregion
+
+
+
 
         public Task LogEvent(LogEventModel LogModel, CancellationToken cancellationToken = default)
         {

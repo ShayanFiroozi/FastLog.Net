@@ -106,7 +106,7 @@ namespace FastLog.NetTest
 
             loggerA = new Logger(InternalExceptionLogger, LogMachineName: true);
 
-            loggerA.AddLoggingAgent(PlainTextFileLogger.Create(InternalExceptionLogger)
+            loggerA.AddLoggingAgent(PlainTextFileLogger.Create().WithInternalLogger(InternalExceptionLogger)
                                                           .SaveLogToFile("D:\\Logs\\ThreadSafePlainText.txt")
                                                           .NotBiggerThan(5));
 
@@ -121,7 +121,7 @@ namespace FastLog.NetTest
 
             loggerB = new Logger(InternalExceptionLogger, LogMachineName: true);
 
-            loggerB.AddLoggingAgent(PlainTextFileLogger.Create(InternalExceptionLogger)
+            loggerB.AddLoggingAgent(PlainTextFileLogger.Create().WithInternalLogger(InternalExceptionLogger)
                                                           .SaveLogToFile("D:\\Logs\\ThreadSafePlainText.txt")
                                                           .NotBiggerThan(5));
 

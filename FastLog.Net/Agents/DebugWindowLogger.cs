@@ -21,26 +21,23 @@ namespace TrendSoft.FastLog.Agents
     {
 
         private readonly List<LogEventTypes> _registeredEvents = new List<LogEventTypes>();
-        private readonly InternalExceptionLogger InternalLogger = null;
-
-        public IEnumerable<LogEventTypes> RegisteredEvents => _registeredEvents;
+        private  InternalExceptionLogger InternalLogger = null;
 
 
+        #region Fluent Builder Methods
+
+        //Keep it private to make it non accessible from the outside of the class !!
+        private DebugWindowLogger() => IncludeAllEventTypes();
 
 
-        private DebugWindowLogger(InternalExceptionLogger internalLogger = null)
+        public static DebugWindowLogger Create() => new DebugWindowLogger();
+
+        public DebugWindowLogger WithInternalLogger(InternalExceptionLogger internalLogger)
         {
-            //Keep it private to make it non accessible from the outside of the class !!
-            
-            InternalLogger = internalLogger;
+            InternalLogger = internalLogger ?? throw new ArgumentNullException(nameof(internalLogger));
 
-            IncludeAllEventTypes();
+            return this;
         }
-
-
-        public static DebugWindowLogger Create(InternalExceptionLogger internalLogger = null) => new DebugWindowLogger(internalLogger);
-
-
 
         public DebugWindowLogger IncludeEventType(LogEventTypes logEventType)
         {
@@ -79,7 +76,10 @@ namespace TrendSoft.FastLog.Agents
             _registeredEvents.Clear();
 
             return this;
-        }
+        } 
+
+        #endregion
+
 
         public Task LogEvent(LogEventModel LogModel, CancellationToken cancellationToken = default)
         {
