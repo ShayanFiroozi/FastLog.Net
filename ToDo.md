@@ -6,6 +6,7 @@ ToDo List :
 3- Add LiteDB agent.
 4- Add SQL Server agent.
 5- Implement fluent builder pattern.
+6- Try to Prepend the data to the log file.
 
 
 
