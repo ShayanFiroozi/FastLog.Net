@@ -15,21 +15,16 @@ namespace TrendSoft.FastLog.Core
         #region Fluent Builder Methods
 
         //Keep it private to make it non accessible from the outside of the class !!
-        private Logger()
+        private Logger(InternalLogger internalLogger = null)
         {
             // Initialize Channels Reader/Writer
             LoggerChannelReader = LoggerChannel.Reader;
             LoggerChannelWriter = LoggerChannel.Writer;
-        }
 
-        public static Logger Create() => new Logger();
-
-
-        public Logger WithInternalLogger(InternalLogger internalLogger)
-        {
             _internalLogger = internalLogger;
-            return this;
         }
+
+        public static Logger Create(InternalLogger internalLogger = null) => new Logger(internalLogger);
 
 
         public Logger WithBeep(BeepAgent beepAgent)

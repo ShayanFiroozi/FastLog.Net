@@ -16,10 +16,8 @@ namespace FastLog.NetTest
         public static void StartLoggers()
         {
 
-            loggerA = Logger.Create()
-
-                             .WithInternalLogger(InternalLogger.Create()
-                                                   .SaveEventLogToFile("D:\\Logs\\InternalExceptionsTest.LOG")
+            loggerA = Logger.Create(InternalLogger.Create()
+                                                   .SaveInternalEventsToFile("D:\\Logs\\InternalExceptionsTest.LOG")
                                                    .NotBiggerThan(10)
                                                    .Beep()
                                                    .PrintOnConsole()
@@ -45,7 +43,7 @@ namespace FastLog.NetTest
 
 
                                  .AddPlaintTextFileLogger(PlainTextFileLogger.Create()
-                                                                        .SaveLogToFile("D:\\Logs\\TestLogA.log")
+                                                                        .SaveLogToFile("D:\\Logs\\TestLogC.log")
                                                                         .NotBiggerThan(50)
                                                                         .IncludeAllEventTypes())
 
@@ -62,13 +60,6 @@ namespace FastLog.NetTest
 
 
             loggerB = Logger.Create()
-
-                          .WithInternalLogger(InternalLogger.Create()
-                                            .SaveEventLogToFile("D:\\Logs\\InternalExceptionsTest.LOG")
-                                            .NotBiggerThan(10)
-                                            .Beep()
-                                            .PrintOnConsole()
-                                            .PrintOnDebugWindow())
 
                      // .WithBeep(BeepAgent.Create())
 
@@ -87,7 +78,7 @@ namespace FastLog.NetTest
                                                                  .IncludeAllEventTypes())
 
                          .AddPlaintTextFileLogger(PlainTextFileLogger.Create()
-                                                                 .SaveLogToFile("D:\\Logs\\TestLogB.log")
+                                                                 .SaveLogToFile("D:\\Logs\\TestLogC.log")
                                                                  .NotBiggerThan(50)
                                                                  .IncludeAllEventTypes())
 
