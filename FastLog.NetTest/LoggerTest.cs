@@ -63,30 +63,39 @@ namespace FastLog.NetTest
         public static void CrazyTestWithMultiThreadMultiTask()
         {
 
-
-            Parallel.For(0, 100, async (y) =>
+            while (true)
             {
-                _ = loggerA.LogException(new InvalidCastException());
-                _ = loggerA.LogException(new InvalidOperationException());
-                _ = loggerA.LogException(new DivideByZeroException());
-                _ = loggerA.LogException(new FileNotFoundException());
+
+                Task.Delay(5_000).GetAwaiter().GetResult();
+
+                Parallel.For(0, 100, async (y) =>
+                {
+                    _ = loggerA.LogException(new InvalidCastException());
+                    _ = loggerA.LogException(new InvalidOperationException());
+                    _ = loggerA.LogException(new DivideByZeroException());
+                    _ = loggerA.LogException(new FileNotFoundException());
+
+                    _ = loggerA.LogInfo($"This is the \"INFO\" a message from the \"LoggerWriteTest\"");
+                    _ = loggerA.LogAlert($"This is the \"ALERT\" a message from the \"LoggerWriteTest\"");
+                    _ = loggerA.LogSystem($"This is the \"SYSTEM\" a message number the \"LoggerWriteTest\"");
+                    _ = loggerA.LogSystem($"This is the \"EXCEPTION\" a message from the \"LoggerWriteTest\"");
 
 
 
-                List<Task> taskList = new List<Task>()
+
+                    List<Task> taskList = new List<Task>()
                     {
 
 
                         Task.Run(()=>
                       {
 
-                          for (int i = 0; i < 1_000; i++)
-                          {
-                              _= loggerA.LogInfo($"This is the \"INFO\" message number {i:N0} from the \"LoggerWriteTest\"");
-                              _= loggerA.LogAlert($"This is the \"ALERT\" message number {i:N0} from the \"LoggerWriteTest\"");
-                              _= loggerA.LogSystem($"This is the \"SYSTEM\" message number {i:N0} from the \"LoggerWriteTest\"");
-                              _= loggerA.LogSystem($"This is the \"EXCEPTION\" message number {i:N0} from the \"LoggerWriteTest\"");
-                          }
+                        
+                              _= loggerA.LogInfo($"This is the \"INFO\" message number  from the \"LoggerWriteTest\"");
+                              _= loggerA.LogAlert($"This is the \"ALERT\" message number  from the \"LoggerWriteTest\"");
+                              _= loggerA.LogSystem($"This is the \"SYSTEM\" message number  from the \"LoggerWriteTest\"");
+                              _= loggerA.LogSystem($"This is the \"EXCEPTION\" message number from the \"LoggerWriteTest\"");
+                          
 
 
                       }),
@@ -95,16 +104,15 @@ namespace FastLog.NetTest
                         Task.Run(() =>
                         {
 
-                            for (int j = 0; j < 1_000; j++)
-                            {
-                                _= loggerA.LogException(new Exception($"This is a \"Test Exception\" number {j:N0} from \"LoggerWriteTest\""));
-                                _= loggerA.LogException(new Exception($"This is a \"Test Exception\" number {j:N0} from \"LoggerWriteTest\""));
-                                _= loggerA.LogSecurity($"This is a \"Test Security\" number {j:N0} from \"LoggerWriteTest\"");
-                                _= loggerA.LogSystem($"This is a \"Test SYSTEM\" number {j:N0} from \"LoggerWriteTest\"");
-                                _= loggerA.LogSecurity($"This is a \"Test Security\" number {j:N0} from \"LoggerWriteTest\"");
-                                _= loggerA.LogSystem($"This is a \"Test SYSTEM\" number {j:N0} from \"LoggerWriteTest\"");
+                           
+                                _= loggerA.LogException(new Exception($"This is a \"Test Exception\" from \"LoggerWriteTest\""));
+                                _= loggerA.LogException(new Exception($"This is a \"Test Exception\" from \"LoggerWriteTest\""));
+                                _= loggerA.LogSecurity($"This is a \"Test Security\" number  from \"LoggerWriteTest\"");
+                                _= loggerA.LogSystem($"This is a \"Test SYSTEM\" number  from \"LoggerWriteTest\"");
+                                _= loggerA.LogSecurity($"This is a \"Test Security\"  from \"LoggerWriteTest\"");
+                                _= loggerA.LogSystem($"This is a \"Test SYSTEM\"  from \"LoggerWriteTest\"");
 
-                            }
+                            
                         }),
 
 
@@ -112,62 +120,48 @@ namespace FastLog.NetTest
                         Task.Run(() =>
                         {
 
-                            for (int z = 0; z < 1_000; z++)
-                            {
-                               _= loggerA.LogError($"This is the \"ERROR\" message number {z:N0} from the \"LoggerWriteTest\"");
-                               _= loggerA.LogDebug($"This is the \"DEBUG\" message number {z:N0} from the \"LoggerWriteTest\"");
-                                    _= loggerA.LogException(new Exception($"This is a \"Test Exception\" number {z:N0} from \"LoggerWriteTest\""));
-                                _= loggerA.LogException(new Exception($"This is a \"Test Exception\" number {z:N0} from \"LoggerWriteTest\""));
-                                _= loggerA.LogSecurity($"This is a \"Test Security\" number {z:N0} from \"LoggerWriteTest\"");
-                                _= loggerA.LogSystem($"This is a \"Test SYSTEM\" number {z:N0} from \"LoggerWriteTest\"");
-                                _= loggerA.LogSecurity($"This is a \"Test Security\" number {z:N0} from \"LoggerWriteTest\"");
-                                _= loggerA.LogSystem($"This is a \"Test SYSTEM\" number {z:N0} from \"LoggerWriteTest\"");
 
-                            }
+                                                         _= loggerA.LogError($"This is the \"ERROR\" message from the \"LoggerWriteTest\"");
+                               _= loggerA.LogDebug($"This is the \"DEBUG\" message from the \"LoggerWriteTest\"");
+                               _= loggerA.LogInfo($"This is the \"INFO\" message from the \"LoggerWriteTest\"");
+                               _= loggerA.LogNote($"This is the \"NOTE\" message from the \"LoggerWriteTest\"");
+
+
                         }),
 
 
                    Task.Run(() =>
                         {
 
-                            for (int h = 0; h < 1_000; h++)
-                            {
-                               _= loggerA.LogError($"This is the \"ERROR\" message number {h:N0} from the \"LoggerWriteTest\"");
-                               _= loggerA.LogDebug($"This is the \"DEBUG\" message number {h:N0} from the \"LoggerWriteTest\"");
-                                    _= loggerA.LogException(new Exception($"This is a \"Test Exception\" number {h:N0} from \"LoggerWriteTest\""));
-                                _= loggerA.LogException(new Exception($"This is a \"Test Exception\" number {h:N0} from \"LoggerWriteTest\""));
-                                _= loggerA.LogSecurity($"This is a \"Test Security\" number {h:N0} from \"LoggerWriteTest\"");
-                                _= loggerA.LogSystem($"This is a \"Test SYSTEM\" number {h:N0} from \"LoggerWriteTest\"");
-                                _= loggerA.LogSecurity($"This is a \"Test Security\" number {h:N0} from \"LoggerWriteTest\"");
-                                _= loggerA.LogSystem($"This is a \"Test SYSTEM\" number {h:N0} from \"LoggerWriteTest\"");
+                           
+                               _= loggerA.LogError($"This is the \"ERROR\" message from the \"LoggerWriteTest\"");
+                               _= loggerA.LogDebug($"This is the \"DEBUG\" message from the \"LoggerWriteTest\"");
+                               _= loggerA.LogInfo($"This is the \"INFO\" message from the \"LoggerWriteTest\"");
+                               _= loggerA.LogNote($"This is the \"NOTE\" message from the \"LoggerWriteTest\"");
 
-                            }
                         }),
 
                       Task.Run(() =>
                         {
 
-                            for (int m = 0; m < 1_000; m++)
-                            {
-                               _= loggerA.LogError($"This is the \"ERROR\" message number {m:N0} from the \"LoggerWriteTest\"");
-                               _= loggerA.LogDebug($"This is the \"DEBUG\" message number {m:N0} from the \"LoggerWriteTest\"");
-                                    _= loggerA.LogException(new Exception($"This is a \"Test Exception\" number {m:N0} from \"LoggerWriteTest\""));
-                                _= loggerA.LogException(new Exception($"This is a \"Test Exception\" number {m:N0} from \"LoggerWriteTest\""));
-                                _= loggerA.LogSecurity($"This is a \"Test Security\" number {m:N0} from \"LoggerWriteTest\"");
-                                _= loggerA.LogSystem($"This is a \"Test SYSTEM\" number {m:N0} from \"LoggerWriteTest\"");
-                                _= loggerA.LogSecurity($"This is a \"Test Security\" number {m:N0} from \"LoggerWriteTest\"");
-                                _= loggerA.LogSystem($"This is a \"Test SYSTEM\" number {m:N0} from \"LoggerWriteTest\"");
+                          
+                               _= loggerA.LogError($"This is the \"ERROR\" message from the \"LoggerWriteTest\"");
+                               _= loggerA.LogDebug($"This is the \"DEBUG\" message from the \"LoggerWriteTest\"");
+                               _= loggerA.LogInfo($"This is the \"INFO\" message from the \"LoggerWriteTest\"");
+                               _= loggerA.LogNote($"This is the \"NOTE\" message from the \"LoggerWriteTest\"");
 
-                            }
+                            
                         })
 
                     };
 
 
-             //   await Task.WhenAll(taskList);
+                    await Task.WhenAll(taskList);
 
-            });
+                });
 
+
+            }
 
 
         }
