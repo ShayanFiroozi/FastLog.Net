@@ -34,7 +34,7 @@ namespace TrendSoft.FastLog.Core
         }
 
 
-        public Logger WithPrintOnConsole(ConsoleLogger consoleLogger)
+        public Logger WithPrintOnConsole(ConsoleLoggerAgent consoleLogger)
         {
             AddLoggingAgent(consoleLogger);
             return this;
@@ -43,29 +43,36 @@ namespace TrendSoft.FastLog.Core
 
 
 
-        public Logger WithPrintOnDebugWindow(DebugWindowLogger debugWindowLogger)
+        public Logger WithPrintOnDebugWindow(DebugWindowLoggerAgent debugWindowLogger)
         {
             AddLoggingAgent(debugWindowLogger);
             return this;
         }
 
 
-        public Logger AddWindowsEventLogger(WindowsEventLogger windowsEventLogger)
+        public Logger AddWindowsEventLoggerAgent(WindowsEventLoggerAgent windowsEventLogger)
         {
             AddLoggingAgent(windowsEventLogger);
             return this;
         }
 
-        public Logger AddHeavyOperationSimulator(HeavyOperationSimulator heavyOperationSimulator)
+        public Logger AddHeavyOperationSimulatorAgent(HeavyOperationSimulatorAgent heavyOperationSimulator)
         {
             AddLoggingAgent(heavyOperationSimulator);
             return this;
         }
 
 
-        public Logger AddPlaintTextFileLogger(PlainTextFileLogger plainTextFileLogger)
+        public Logger AddPlaintTextFileLoggerAgent(PlainTextFileLoggerAgent plainTextFileLogger)
         {
             AddLoggingAgent(plainTextFileLogger);
+            return this;
+        }
+
+
+        public Logger AddRunProcessAgent(RunProcessAgent runProcessAgent)
+        {
+            AddLoggingAgent(runProcessAgent);
             return this;
         }
 
@@ -100,7 +107,7 @@ namespace TrendSoft.FastLog.Core
 
         private void AddLoggingAgent(ILoggerAgent agent)
         {
-            if (agent is ConsoleLogger && _loggerAgents.Any(a => a is ConsoleLogger))
+            if (agent is ConsoleLoggerAgent && _loggerAgents.Any(a => a is ConsoleLoggerAgent))
             {
                 throw new Exception("A \"ConsoleLogger\" agent already exists on the agent list.");
             }

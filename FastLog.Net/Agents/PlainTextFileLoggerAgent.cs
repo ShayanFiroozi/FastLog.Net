@@ -14,7 +14,7 @@ namespace TrendSoft.FastLog.Agents
 {
     // Note : DebugWindowLogger class uses fluent "Builder" pattern.
 
-    public class PlainTextFileLogger : ILoggerAgent
+    public class PlainTextFileLoggerAgent : ILoggerAgent
     {
         private readonly List<LogEventTypes> _registeredEvents = new List<LogEventTypes>();
         private InternalLogger InternalLogger = null;
@@ -30,16 +30,16 @@ namespace TrendSoft.FastLog.Agents
         #region Fluent Builder Methods
 
         //Keep it private to make it non accessible from the outside of the class !!
-        private PlainTextFileLogger(InternalLogger internalLogger = null)
+        private PlainTextFileLoggerAgent(InternalLogger internalLogger = null)
         {
             IncludeAllEventTypes();
             InternalLogger = internalLogger;
         }
 
-        public static PlainTextFileLogger Create(InternalLogger internalLogger = null) => new PlainTextFileLogger(internalLogger);
+        public static PlainTextFileLoggerAgent Create(InternalLogger internalLogger = null) => new PlainTextFileLoggerAgent(internalLogger);
 
    
-        public PlainTextFileLogger IncludeEventType(LogEventTypes logEventType)
+        public PlainTextFileLoggerAgent IncludeEventType(LogEventTypes logEventType)
         {
             if (!_registeredEvents.Any(type => type == logEventType))
             {
@@ -49,7 +49,7 @@ namespace TrendSoft.FastLog.Agents
             return this;
         }
 
-        public PlainTextFileLogger ExcludeEventType(LogEventTypes logEventType)
+        public PlainTextFileLoggerAgent ExcludeEventType(LogEventTypes logEventType)
         {
             if (_registeredEvents.Any(type => type == logEventType))
             {
@@ -59,7 +59,7 @@ namespace TrendSoft.FastLog.Agents
             return this;
         }
 
-        public PlainTextFileLogger IncludeAllEventTypes()
+        public PlainTextFileLoggerAgent IncludeAllEventTypes()
         {
             _registeredEvents.Clear();
 
@@ -71,7 +71,7 @@ namespace TrendSoft.FastLog.Agents
             return this;
         }
 
-        public PlainTextFileLogger ExcludeAllEventTypes()
+        public PlainTextFileLoggerAgent ExcludeAllEventTypes()
         {
             _registeredEvents.Clear();
 
@@ -79,7 +79,7 @@ namespace TrendSoft.FastLog.Agents
         }
 
 
-        public PlainTextFileLogger SaveLogToFile(string filename)
+        public PlainTextFileLoggerAgent SaveLogToFile(string filename)
         {
             if (string.IsNullOrWhiteSpace(filename))
             {
@@ -109,7 +109,7 @@ namespace TrendSoft.FastLog.Agents
 
         }
 
-        public PlainTextFileLogger DeleteTheLogFileWhenExceededTheMaximumSizeOf(short logFileMaxSizeMB)
+        public PlainTextFileLoggerAgent DeleteTheLogFileWhenExceededTheMaximumSizeOf(short logFileMaxSizeMB)
         {
 
             if (logFileMaxSizeMB <= 0)
@@ -128,7 +128,7 @@ namespace TrendSoft.FastLog.Agents
         #endregion
 
 
-        public Task LogEvent(LogEventModel LogModel, CancellationToken cancellationToken = default)
+        public Task ExecuteAgent(LogEventModel LogModel, CancellationToken cancellationToken = default)
         {
 
             if (LogModel is null)

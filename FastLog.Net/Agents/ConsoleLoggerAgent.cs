@@ -13,7 +13,7 @@ namespace TrendSoft.FastLog.Agents
 
     // Note : ConsoleLogger class uses fluent "Builder" pattern.
 
-    public class ConsoleLogger : ILoggerAgent
+    public class ConsoleLoggerAgent : ILoggerAgent
     {
 
         private ConsoleColor DateTimeFontColor = ConsoleColor.Green;
@@ -26,24 +26,24 @@ namespace TrendSoft.FastLog.Agents
         #region Fluent Builder Methods
 
         //Keep it private to make it non accessible from the outside of the class !!
-        private ConsoleLogger(InternalLogger internalLogger)
+        private ConsoleLoggerAgent(InternalLogger internalLogger)
         {
             InternalLogger = internalLogger;
             IncludeAllEventTypes();
         }
 
 
-        public static ConsoleLogger Create(InternalLogger internalLogger = null) => new ConsoleLogger(internalLogger);
+        public static ConsoleLoggerAgent Create(InternalLogger internalLogger = null) => new ConsoleLoggerAgent(internalLogger);
 
 
-        public ConsoleLogger PrintOnConsoleOnlyOnDebugMode()
+        public ConsoleLoggerAgent PrintOnConsoleOnlyOnDebugMode()
         {
             _PrintOnConsoleOnlyOnDebugMode = true;
             return this;
         }
 
 
-        public ConsoleLogger IncludeEventType(LogEventTypes logEventType)
+        public ConsoleLoggerAgent IncludeEventType(LogEventTypes logEventType)
         {
             if (!_registeredEvents.Any(type => type == logEventType))
             {
@@ -53,7 +53,7 @@ namespace TrendSoft.FastLog.Agents
             return this;
         }
 
-        public ConsoleLogger ExcludeEventType(LogEventTypes logEventType)
+        public ConsoleLoggerAgent ExcludeEventType(LogEventTypes logEventType)
         {
             if (_registeredEvents.Any(type => type == logEventType))
             {
@@ -63,7 +63,7 @@ namespace TrendSoft.FastLog.Agents
             return this;
         }
 
-        public ConsoleLogger IncludeAllEventTypes()
+        public ConsoleLoggerAgent IncludeAllEventTypes()
         {
             _registeredEvents.Clear();
 
@@ -75,14 +75,14 @@ namespace TrendSoft.FastLog.Agents
             return this;
         }
 
-        public ConsoleLogger ExcludeAllEventTypes()
+        public ConsoleLoggerAgent ExcludeAllEventTypes()
         {
             _registeredEvents.Clear();
 
             return this;
         }
 
-        public ConsoleLogger WithDateTimeFontColor(ConsoleColor color)
+        public ConsoleLoggerAgent WithDateTimeFontColor(ConsoleColor color)
         {
             DateTimeFontColor = color;
             return this;
@@ -91,7 +91,7 @@ namespace TrendSoft.FastLog.Agents
         #endregion
 
 
-        public Task LogEvent(LogEventModel LogModel, CancellationToken cancellationToken = default)
+        public Task ExecuteAgent(LogEventModel LogModel, CancellationToken cancellationToken = default)
         {
 
 #if !DEBUG

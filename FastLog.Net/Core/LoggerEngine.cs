@@ -48,11 +48,11 @@ namespace TrendSoft.FastLog.Core
                                 {
                                     if (runAgentsInParallel)
                                     {
-                                        tasksList.Add(logger.LogEvent(EventModelFromChannel, _cts.Token));
+                                        tasksList.Add(logger.ExecuteAgent(EventModelFromChannel, _cts.Token));
                                     }
                                     else
                                     {
-                                        await logger.LogEvent(EventModelFromChannel, _cts.Token).ConfigureAwait(false);
+                                        await logger.ExecuteAgent(EventModelFromChannel, _cts.Token).ConfigureAwait(false);
                                     }
                                 }
                                 else
@@ -66,6 +66,7 @@ namespace TrendSoft.FastLog.Core
                                 InternalLogger?.LogInternalException(ex);
                             }
 
+                            //Console.WriteLine($"{LoggerChannelReader.Count:N0} item(s) left in channel.");
                         }
 
                         if (runAgentsInParallel)

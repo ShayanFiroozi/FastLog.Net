@@ -8,9 +8,9 @@ namespace TrendSoft.FastLog.Interfaces
     {
 
 #if NETFRAMEWORK || NETSTANDARD2_0
-        Task LogEvent(LogEventModel logMessage, CancellationToken cancellationToken = default);
+        Task ExecuteAgent(LogEventModel logMessage, CancellationToken cancellationToken = default);
 #else
-        public Task LogEvent(LogEventModel logMessage, CancellationToken cancellationToken = default);
+        public Task ExecuteAgent(LogEventModel logMessage, CancellationToken cancellationToken = default);
 #endif
 
 

@@ -17,7 +17,7 @@ namespace TrendSoft.FastLog.Agents
 
 
 
-    public class DebugWindowLogger : ILoggerAgent
+    public class DebugWindowLoggerAgent : ILoggerAgent
     {
 
         private readonly List<LogEventTypes> _registeredEvents = new List<LogEventTypes>();
@@ -27,17 +27,17 @@ namespace TrendSoft.FastLog.Agents
         #region Fluent Builder Methods
 
         //Keep it private to make it non accessible from the outside of the class !!
-        private DebugWindowLogger(InternalLogger internalLogger)
+        private DebugWindowLoggerAgent(InternalLogger internalLogger)
         {
             InternalLogger = internalLogger;
             IncludeAllEventTypes();
         }
 
 
-        public static DebugWindowLogger Create(InternalLogger internalLogger = null) => new DebugWindowLogger(internalLogger);
+        public static DebugWindowLoggerAgent Create(InternalLogger internalLogger = null) => new DebugWindowLoggerAgent(internalLogger);
 
 
-        public DebugWindowLogger IncludeEventType(LogEventTypes logEventType)
+        public DebugWindowLoggerAgent IncludeEventType(LogEventTypes logEventType)
         {
             if (!_registeredEvents.Any(type => type == logEventType))
             {
@@ -47,7 +47,7 @@ namespace TrendSoft.FastLog.Agents
             return this;
         }
 
-        public DebugWindowLogger ExcludeEventType(LogEventTypes logEventType)
+        public DebugWindowLoggerAgent ExcludeEventType(LogEventTypes logEventType)
         {
             if (_registeredEvents.Any(type => type == logEventType))
             {
@@ -57,7 +57,7 @@ namespace TrendSoft.FastLog.Agents
             return this;
         }
 
-        public DebugWindowLogger IncludeAllEventTypes()
+        public DebugWindowLoggerAgent IncludeAllEventTypes()
         {
             _registeredEvents.Clear();
 
@@ -69,7 +69,7 @@ namespace TrendSoft.FastLog.Agents
             return this;
         }
 
-        public DebugWindowLogger ExcludeAllEventTypes()
+        public DebugWindowLoggerAgent ExcludeAllEventTypes()
         {
             _registeredEvents.Clear();
 
@@ -79,7 +79,7 @@ namespace TrendSoft.FastLog.Agents
         #endregion
 
 
-        public Task LogEvent(LogEventModel LogModel, CancellationToken cancellationToken = default)
+        public Task ExecuteAgent(LogEventModel LogModel, CancellationToken cancellationToken = default)
         {
 #if !DEBUG
 #warning "DebugWindowLogger.LogEvent" only works on the "Debug" mode and has no effect in the "Relase" mode !

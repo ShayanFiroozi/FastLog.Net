@@ -11,7 +11,7 @@ namespace FastLog.NetTest
 {
     internal static class LoggerTest
     {
-        private static Logger loggerA;
+        public static Logger loggerA;
 
 
         public static void StartLoggers()
@@ -43,9 +43,9 @@ namespace FastLog.NetTest
                             //     .WithPrintOnDebugWindow(DebugWindowLogger.Create(internalLogger)
 
                             //.AddHeavyOperationSimulator(HeavyOperationSimulator.Create(TimeSpan.FromSeconds(5)))
-                            .AddPlaintTextFileLogger(PlainTextFileLogger.Create(internalLogger)
+                            .AddPlaintTextFileLoggerAgent(PlainTextFileLoggerAgent.Create(internalLogger)
                                                                         .SaveLogToFile("D:\\Logs\\TestLog.log")
-                                                                        .DeleteTheLogFileWhenExceededTheMaximumSizeOf(10))
+                                                                        .DeleteTheLogFileWhenExceededTheMaximumSizeOf(1000))
 
 
                              .LogMachineName()
@@ -63,12 +63,12 @@ namespace FastLog.NetTest
         public static void CrazyTestWithMultiThreadMultiTask()
         {
 
-            while (true)
-            {
+            //while (true)
+            //{
 
-                Task.Delay(5_000).GetAwaiter().GetResult();
+                //Task.Delay(1_500).GetAwaiter().GetResult();
 
-                Parallel.For(0, 100, async (y) =>
+                Parallel.For(0, 10_000, (y) =>
                 {
                     _ = loggerA.LogException(new InvalidCastException());
                     _ = loggerA.LogException(new InvalidOperationException());
@@ -90,12 +90,12 @@ namespace FastLog.NetTest
                         Task.Run(()=>
                       {
 
-                        
+
                               _= loggerA.LogInfo($"This is the \"INFO\" message number  from the \"LoggerWriteTest\"");
                               _= loggerA.LogAlert($"This is the \"ALERT\" message number  from the \"LoggerWriteTest\"");
                               _= loggerA.LogSystem($"This is the \"SYSTEM\" message number  from the \"LoggerWriteTest\"");
                               _= loggerA.LogSystem($"This is the \"EXCEPTION\" message number from the \"LoggerWriteTest\"");
-                          
+
 
 
                       }),
@@ -104,7 +104,7 @@ namespace FastLog.NetTest
                         Task.Run(() =>
                         {
 
-                           
+
                                 _= loggerA.LogException(new Exception($"This is a \"Test Exception\" from \"LoggerWriteTest\""));
                                 _= loggerA.LogException(new Exception($"This is a \"Test Exception\" from \"LoggerWriteTest\""));
                                 _= loggerA.LogSecurity($"This is a \"Test Security\" number  from \"LoggerWriteTest\"");
@@ -112,7 +112,7 @@ namespace FastLog.NetTest
                                 _= loggerA.LogSecurity($"This is a \"Test Security\"  from \"LoggerWriteTest\"");
                                 _= loggerA.LogSystem($"This is a \"Test SYSTEM\"  from \"LoggerWriteTest\"");
 
-                            
+
                         }),
 
 
@@ -121,7 +121,7 @@ namespace FastLog.NetTest
                         {
 
 
-                                                         _= loggerA.LogError($"This is the \"ERROR\" message from the \"LoggerWriteTest\"");
+                               _= loggerA.LogError($"This is the \"ERROR\" message from the \"LoggerWriteTest\"");
                                _= loggerA.LogDebug($"This is the \"DEBUG\" message from the \"LoggerWriteTest\"");
                                _= loggerA.LogInfo($"This is the \"INFO\" message from the \"LoggerWriteTest\"");
                                _= loggerA.LogNote($"This is the \"NOTE\" message from the \"LoggerWriteTest\"");
@@ -133,7 +133,7 @@ namespace FastLog.NetTest
                    Task.Run(() =>
                         {
 
-                           
+
                                _= loggerA.LogError($"This is the \"ERROR\" message from the \"LoggerWriteTest\"");
                                _= loggerA.LogDebug($"This is the \"DEBUG\" message from the \"LoggerWriteTest\"");
                                _= loggerA.LogInfo($"This is the \"INFO\" message from the \"LoggerWriteTest\"");
@@ -144,24 +144,24 @@ namespace FastLog.NetTest
                       Task.Run(() =>
                         {
 
-                          
+
                                _= loggerA.LogError($"This is the \"ERROR\" message from the \"LoggerWriteTest\"");
                                _= loggerA.LogDebug($"This is the \"DEBUG\" message from the \"LoggerWriteTest\"");
                                _= loggerA.LogInfo($"This is the \"INFO\" message from the \"LoggerWriteTest\"");
                                _= loggerA.LogNote($"This is the \"NOTE\" message from the \"LoggerWriteTest\"");
 
-                            
+
                         })
 
                     };
 
 
-                    await Task.WhenAll(taskList);
+                    // await Task.WhenAll(taskList);
 
                 });
 
 
-            }
+           // }
 
 
         }

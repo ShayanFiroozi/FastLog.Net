@@ -80,7 +80,7 @@ namespace TrendSoft.FastLog.Agents
         #endregion
 
 
-        public Task LogEvent(LogEventModel LogModel, CancellationToken cancellationToken = default)
+        public Task ExecuteAgent(LogEventModel LogModel, CancellationToken cancellationToken = default)
         {
 
 

@@ -1,6 +1,7 @@
 ﻿using FastLog.NetTest;
 using System;
 using System.Threading.Tasks;
+using TrendSoft.FastLog.Agents;
 
 namespace TrendSoft.LogModuleTest
 {
@@ -12,7 +13,8 @@ namespace TrendSoft.LogModuleTest
 
             LoggerTest.StartLoggers();
 
-            Task.Delay(500).GetAwaiter().GetResult();
+            Task.Delay(5_000).GetAwaiter().GetResult();
+
 
             LoggerTest.CrazyTestWithMultiThreadMultiTask();
 
