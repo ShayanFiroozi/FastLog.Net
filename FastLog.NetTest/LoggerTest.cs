@@ -24,11 +24,11 @@ namespace FastLog.NetTest
                                                    .PrintOnDebugWindow())
 
 
-                          //  .WithBeep(BeepAgent.Create())
+                            //  .WithBeep(BeepAgent.Create())
 
-                         //   .WithPrintOnConsole(ConsoleLogger.Create())
+                            //   .WithPrintOnConsole(ConsoleLogger.Create())
 
-                          //  .WithPrintOnDebugWindow(DebugWindowLogger.Create())
+                            //  .WithPrintOnDebugWindow(DebugWindowLogger.Create())
 
                             .AddPlaintTextFileLogger(PlainTextFileLogger.Create()
                                                                         .SaveLogToFile("D:\\Logs\\TestLogA.log")
@@ -63,9 +63,9 @@ namespace FastLog.NetTest
 
                      // .WithBeep(BeepAgent.Create())
 
-                  //   .WithPrintOnConsole(ConsoleLogger.Create())
+                     //   .WithPrintOnConsole(ConsoleLogger.Create())
 
-                  //   .WithPrintOnDebugWindow(DebugWindowLogger.Create())
+                     //   .WithPrintOnDebugWindow(DebugWindowLogger.Create())
 
                      .AddPlaintTextFileLogger(PlainTextFileLogger.Create()
                                                                  .SaveLogToFile("D:\\Logs\\TestLogB.log")
@@ -82,7 +82,7 @@ namespace FastLog.NetTest
                                                                  .NotBiggerThan(50)
                                                                  .IncludeAllEventTypes())
 
-            
+
 
                       .LogMachineName()
                       .LogApplicationName("Shayan-Test-AppB")
@@ -100,10 +100,7 @@ namespace FastLog.NetTest
         {
 
 
-
-
-
-            Parallel.For(0, 2, async (y) =>
+            Parallel.For(0, 10, async (y) =>
             {
                 _ = loggerA.LogException(new InvalidCastException());
                 _ = loggerB.LogException(new InvalidOperationException());
@@ -138,6 +135,10 @@ namespace FastLog.NetTest
                             {
                                 _= loggerA.LogException(new Exception($"This is a \"Test Exception\" number {j:N0} from \"LoggerWriteTest\""));
                                 _= loggerB.LogException(new Exception($"This is a \"Test Exception\" number {j:N0} from \"LoggerWriteTest\""));
+                                _= loggerB.LogSecurity($"This is a \"Test Security\" number {j:N0} from \"LoggerWriteTest\"");
+                                _= loggerB.LogSystem($"This is a \"Test SYSTEM\" number {j:N0} from \"LoggerWriteTest\"");
+                                _= loggerA.LogSecurity($"This is a \"Test Security\" number {j:N0} from \"LoggerWriteTest\"");
+                                _= loggerA.LogSystem($"This is a \"Test SYSTEM\" number {j:N0} from \"LoggerWriteTest\"");
 
                             }
                         }),
