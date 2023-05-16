@@ -195,7 +195,7 @@ namespace TrendSoft.FastLog.Internal
 
 
                 ThreadSafeFileHelper.AppendAllText(InternalLogFile,
-                                                $"{LogToSave.GetLogMessage(true)}\n");
+                                                $"{LogToSave.GetLogMessage(true)}");
 
 
                 // May be NOT "Thread-Safe"
@@ -211,6 +211,62 @@ namespace TrendSoft.FastLog.Internal
         }
 
 
+        public void LogInternalSystemEvent(LogEventModel logEventModel)
+        {
+
+            try
+            {
+
+                if (_LogOnConsole)
+                {
+                    Console.WriteLine();
+                    Console.ForegroundColor = ConsoleColor.Yellow;
+                    Console.Write($"Logger \"Internal System Event\" has been occured :\n");
+                    Console.ResetColor();
+                    Console.ForegroundColor = ConsoleColor.DarkGray;
+
+                    Console.WriteLine($"{logEventModel.GetLogMessage(true)}");
+
+                    Console.ResetColor();
+                }
+
+
+                if (_LogOnDebugWindow)
+                {
+                    Debug.Write($"Logger \"Internal System Event\" has been occured :\n");
+                    Debug.WriteLine($"{logEventModel.GetLogMessage(true)}");
+                }
+
+                // ATTENTION : There's a chance of "HostProtectionException" or "PlatformNotSupportedException" exception.
+
+                // For more info please visit : https://learn.microsoft.com/en-us/dotnet/api/system.console.beep?view=net-7.0
+
+                try
+                {
+                    if (_Beep)
+                    {
+                        // Note : "Beep" works only on Windows® OS.
+                        if (RuntimeInformation.IsOSPlatform(OSPlatform.Windows)) Console.Beep();
+                    }
+                }
+                catch { }
+
+
+                ThreadSafeFileHelper.AppendAllText(InternalLogFile,
+                                                $"{logEventModel.GetLogMessage(true)}");
+
+
+                // May be NOT "Thread-Safe"
+                //File.AppendAllText(InternalExceptionsLogFile, $"{LogToSave.GetLogMessage(true)}\n");
+
+            }
+            catch
+            {
+            }
+
+
+
+        }
 
 
 

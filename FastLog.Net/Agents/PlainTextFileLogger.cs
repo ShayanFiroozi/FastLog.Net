@@ -196,6 +196,15 @@ namespace TrendSoft.FastLog.Agents
 
                     ThreadSafeFileHelper.DeleteFile(LogFile);
 
+                    // Save the detele operation log with Internal Logger agen (if it was not null)
+                       InternalLogger?.LogInternalSystemEvent(new LogEventModel(LogEventTypes.SYSTEM,
+                                      $"The log file {LogFile} exceeded the maximum permitted size of {MaxLogFileSizeMB:N0} MB."));
+
+                       InternalLogger?.LogInternalSystemEvent(new LogEventModel(LogEventTypes.SYSTEM,
+                                      $"The log file {LogFile} has been deleted."));
+
+
+            
                 }
             }
             catch (Exception ex)

@@ -31,20 +31,8 @@ namespace FastLog.NetTest
                             //  .WithPrintOnDebugWindow(DebugWindowLogger.Create())
 
                             .AddPlaintTextFileLogger(PlainTextFileLogger.Create()
-                                                                        .SaveLogToFile("D:\\Logs\\TestLogA.log")
-                                                                        .NotBiggerThan(50)
-                                                                        .IncludeAllEventTypes())
-
-
-                              .AddPlaintTextFileLogger(PlainTextFileLogger.Create()
-                                                                        .SaveLogToFile("D:\\Logs\\TestLogB.log")
-                                                                        .NotBiggerThan(50)
-                                                                        .IncludeAllEventTypes())
-
-
-                                 .AddPlaintTextFileLogger(PlainTextFileLogger.Create()
-                                                                        .SaveLogToFile("D:\\Logs\\TestLogC.log")
-                                                                        .NotBiggerThan(50)
+                                                                        .SaveLogToFile("D:\\Logs\\TestLog.log")
+                                                                        .NotBiggerThan(2)
                                                                         .IncludeAllEventTypes())
 
 
@@ -68,21 +56,9 @@ namespace FastLog.NetTest
                      //   .WithPrintOnDebugWindow(DebugWindowLogger.Create())
 
                      .AddPlaintTextFileLogger(PlainTextFileLogger.Create()
-                                                                 .SaveLogToFile("D:\\Logs\\TestLogB.log")
-                                                                 .NotBiggerThan(50)
+                                                                 .SaveLogToFile("D:\\Logs\\TestLog.log")
+                                                                 .NotBiggerThan(2)
                                                                  .IncludeAllEventTypes())
-
-                       .AddPlaintTextFileLogger(PlainTextFileLogger.Create()
-                                                                 .SaveLogToFile("D:\\Logs\\TestLogA.log")
-                                                                 .NotBiggerThan(50)
-                                                                 .IncludeAllEventTypes())
-
-                         .AddPlaintTextFileLogger(PlainTextFileLogger.Create()
-                                                                 .SaveLogToFile("D:\\Logs\\TestLogC.log")
-                                                                 .NotBiggerThan(50)
-                                                                 .IncludeAllEventTypes())
-
-
 
                       .LogMachineName()
                       .LogApplicationName("Shayan-Test-AppB")
