@@ -30,17 +30,15 @@ namespace TrendSoft.FastLog.Agents
         #region Fluent Builder Methods
 
         //Keep it private to make it non accessible from the outside of the class !!
-        private PlainTextFileLogger() => IncludeAllEventTypes();
-
-        public static PlainTextFileLogger Create() => new PlainTextFileLogger();
-
-        public PlainTextFileLogger WithInternalLogger(InternalLogger internalLogger)
+        private PlainTextFileLogger(InternalLogger internalLogger = null)
         {
+            IncludeAllEventTypes();
             InternalLogger = internalLogger;
-
-            return this;
         }
 
+        public static PlainTextFileLogger Create(InternalLogger internalLogger = null) => new PlainTextFileLogger(internalLogger);
+
+   
         public PlainTextFileLogger IncludeEventType(LogEventTypes logEventType)
         {
             if (!_registeredEvents.Any(type => type == logEventType))
@@ -91,19 +89,27 @@ namespace TrendSoft.FastLog.Agents
 
             LogFile = filename;
 
-
-            if (!Directory.Exists(Path.GetDirectoryName(LogFile)))
+            try
             {
-                _ = Directory.CreateDirectory(Path.GetDirectoryName(LogFile));
+
+                if (!Directory.Exists(Path.GetDirectoryName(LogFile)))
+                {
+                    _ = Directory.CreateDirectory(Path.GetDirectoryName(LogFile));
+                }
+
             }
 
+            catch (Exception ex)
+            {
+                InternalLogger?.LogInternalException(ex);
+            }
 
             return this;
 
 
         }
 
-        public PlainTextFileLogger DeleteTheLogFileIfExceededTheMaximumSizeOf(short logFileMaxSizeMB)
+        public PlainTextFileLogger DeleteTheLogFileWhenExceededTheMaximumSizeOf(short logFileMaxSizeMB)
         {
 
             if (logFileMaxSizeMB <= 0)
@@ -133,7 +139,13 @@ namespace TrendSoft.FastLog.Agents
             try
             {
 
+                if (!Directory.Exists(Path.GetDirectoryName(LogFile)))
+                {
+                    return Task.CompletedTask;
+                }
 
+
+ 
                 // Check if any "Event Type" exists to show on Debug Window ?
                 if (!_registeredEvents.Any()) return Task.CompletedTask;
 
@@ -200,10 +212,10 @@ namespace TrendSoft.FastLog.Agents
 
                     // Save the detele operation log with Internal Logger agen (if it was not null)
                     InternalLogger?.LogInternalSystemEvent(new LogEventModel(LogEventTypes.SYSTEM,
-                                   $"The log file {LogFile} exceeded the maximum permitted size of {MaxLogFileSizeMB:N0} MB."));
+                                   $"The log file \"{LogFile}\" exceeded the maximum permitted size of \"{MaxLogFileSizeMB:N0} MB\"."));
 
                     InternalLogger?.LogInternalSystemEvent(new LogEventModel(LogEventTypes.SYSTEM,
-                                   $"The log file {LogFile} has been deleted."));
+                                   $"The log file \"{LogFile}\" has been deleted."));
 
 
 

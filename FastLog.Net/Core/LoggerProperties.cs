@@ -12,13 +12,13 @@ namespace TrendSoft.FastLog.Core
     public partial class Logger : IDisposable
     {
         private readonly CancellationTokenSource _cts = new CancellationTokenSource();
-        private readonly InternalLogger _internalLogger = null;
+        private readonly InternalLogger InternalLogger = null;
         private List<ILoggerAgent> _loggerAgents = new List<ILoggerAgent>();
         private bool _IsLoggerRunning = false;
 
-        private string _applicationName { get; set; } = string.Empty;
-        private bool _logMachineName { get; set; } = false;
-        private bool _runAgentsInParallel { get; set; } = true;
+        private string applicationName { get; set; } = string.Empty;
+        private bool saveMachineName { get; set; } = false;
+        private bool runAgentsInParallel { get; set; } = false;
 
 
 

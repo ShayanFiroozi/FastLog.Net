@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Diagnostics;
 using System.Linq;
 using TrendSoft.FastLog.Agents;
 using TrendSoft.FastLog.Interfaces;
@@ -20,7 +21,7 @@ namespace TrendSoft.FastLog.Core
             LoggerChannelReader = LoggerChannel.Reader;
             LoggerChannelWriter = LoggerChannel.Writer;
 
-            _internalLogger = internalLogger;
+            InternalLogger = internalLogger;
         }
 
         public static Logger Create(InternalLogger internalLogger = null) => new Logger(internalLogger);
@@ -28,28 +29,30 @@ namespace TrendSoft.FastLog.Core
 
         public Logger WithBeep(BeepAgent beepAgent)
         {
-            AddLoggingAgent(beepAgent.WithInternalLogger(_internalLogger));
+            AddLoggingAgent(beepAgent);
             return this;
         }
 
 
         public Logger WithPrintOnConsole(ConsoleLogger consoleLogger)
         {
-            AddLoggingAgent(consoleLogger.WithInternalLogger(_internalLogger));
+            AddLoggingAgent(consoleLogger);
             return this;
         }
 
 
+
+
         public Logger WithPrintOnDebugWindow(DebugWindowLogger debugWindowLogger)
         {
-            AddLoggingAgent(debugWindowLogger.WithInternalLogger(_internalLogger));
+            AddLoggingAgent(debugWindowLogger);
             return this;
         }
 
 
         public Logger AddWindowsEventLogger(WindowsEventLogger windowsEventLogger)
         {
-            AddLoggingAgent(windowsEventLogger.WithInternalLogger(_internalLogger));
+            AddLoggingAgent(windowsEventLogger);
             return this;
         }
 
@@ -62,31 +65,34 @@ namespace TrendSoft.FastLog.Core
 
         public Logger AddPlaintTextFileLogger(PlainTextFileLogger plainTextFileLogger)
         {
-            AddLoggingAgent(plainTextFileLogger.WithInternalLogger(_internalLogger));
+            AddLoggingAgent(plainTextFileLogger);
             return this;
         }
 
 
         public Logger LogMachineName()
         {
-            _logMachineName = true;
+            saveMachineName = true;
             return this;
         }
 
 
         public Logger LogApplicationName(string applicationName)
         {
-            _applicationName = applicationName;
+            this.applicationName = applicationName;
             return this;
         }
 
+        /// <summary>
+        /// WARNING : Run "Logger Agents" in parallel may impact the performance.
+        /// </summary>
         public Logger RunAgentsInParallel()
         {
-            _runAgentsInParallel = true;
+            runAgentsInParallel = true;
             return this;
         }
 
-        #endregion
+#endregion
 
 
 
@@ -145,7 +151,7 @@ namespace TrendSoft.FastLog.Core
 
                 catch (Exception ex)
                 {
-                    this._internalLogger?.LogInternalException(ex);
+                    this.InternalLogger?.LogInternalException(ex);
                 }
             }
 

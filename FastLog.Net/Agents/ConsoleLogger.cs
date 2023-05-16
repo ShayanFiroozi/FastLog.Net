@@ -20,23 +20,28 @@ namespace TrendSoft.FastLog.Agents
 
         private readonly List<LogEventTypes> _registeredEvents = new List<LogEventTypes>();
         private InternalLogger InternalLogger = null;
+        private bool _PrintOnConsoleOnlyOnDebugMode { get; set; } = false;
 
 
         #region Fluent Builder Methods
 
         //Keep it private to make it non accessible from the outside of the class !!
-        private ConsoleLogger() => IncludeAllEventTypes();
-
-
-        public static ConsoleLogger Create() => new ConsoleLogger();
-
-
-        public ConsoleLogger WithInternalLogger(InternalLogger internalLogger)
+        private ConsoleLogger(InternalLogger internalLogger)
         {
             InternalLogger = internalLogger;
+            IncludeAllEventTypes();
+        }
 
+
+        public static ConsoleLogger Create(InternalLogger internalLogger = null) => new ConsoleLogger(internalLogger);
+
+
+        public ConsoleLogger PrintOnConsoleOnlyOnDebugMode()
+        {
+            _PrintOnConsoleOnlyOnDebugMode = true;
             return this;
         }
+
 
         public ConsoleLogger IncludeEventType(LogEventTypes logEventType)
         {
@@ -88,6 +93,12 @@ namespace TrendSoft.FastLog.Agents
 
         public Task LogEvent(LogEventModel LogModel, CancellationToken cancellationToken = default)
         {
+
+#if !DEBUG
+            if (_PrintOnConsoleOnlyOnDebugMode) return Task.CompletedTask;
+
+#endif
+
             if (LogModel is null)
             {
                 return Task.CompletedTask;

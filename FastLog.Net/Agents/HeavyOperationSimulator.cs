@@ -11,13 +11,15 @@ namespace TrendSoft.FastLog.Agents
     // Note : HeavyOperationSimulator class uses fluent "Builder" pattern.
     // Note : HeavyOperationSimulator is only available in "Debug" mode.
 
-#if DEBUG
+
 
     /// <summary>
     /// This class will be used when debugging (testing) the FastLog.Net to simulate a heavy CPU or IO bound operation.
     /// </summary>
     public class HeavyOperationSimulator : ILoggerAgent
     {
+
+
 
         public TimeSpan OperationTimeSpan { get; set; }
 
@@ -31,8 +33,15 @@ namespace TrendSoft.FastLog.Agents
 
         public Task LogEvent(LogEventModel LogModel, CancellationToken cancellationToken = default)
         {
+#if !DEBUG
+#warning "HeavyOperationSimulator.LogEvent" only works on the "Debug" mode and has no effect in the "Relase" mode !
+            return Task.CompletedTask;
+
+#else
             // Simulate some heavy CPU or IO bound operation.
             return Task.Delay(OperationTimeSpan, cancellationToken);
+
+#endif
 
         }
 
@@ -40,7 +49,7 @@ namespace TrendSoft.FastLog.Agents
 
     }
 
-#endif
+
 
 }
 

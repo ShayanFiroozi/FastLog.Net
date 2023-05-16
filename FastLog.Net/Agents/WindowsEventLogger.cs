@@ -26,16 +26,15 @@ namespace TrendSoft.FastLog.Agents
         #region Fluent Builder Methods
 
         //Keep it private to make it non accessible from the outside of the class !!
-        private WindowsEventLogger() => IncludeAllEventTypes();
-
-        public static WindowsEventLogger Create() => new WindowsEventLogger();
-
-        public WindowsEventLogger WithInternalLogger(InternalLogger internalLogger)
+        private WindowsEventLogger(InternalLogger internalLogger = null)
         {
             InternalLogger = internalLogger;
-
-            return this;
+            IncludeAllEventTypes();
         }
+
+        public static WindowsEventLogger Create(InternalLogger internalLogger = null) => new WindowsEventLogger(internalLogger);
+
+     
 
         public WindowsEventLogger WithApplicationName(string applicationName)
         {

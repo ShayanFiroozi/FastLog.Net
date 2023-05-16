@@ -18,21 +18,25 @@ namespace TrendSoft.FastLog.Agents
     {
         private readonly List<LogEventTypes> _registeredEvents = new List<LogEventTypes>();
         private InternalLogger InternalLogger = null;
-
+        private bool _BeepOnlyOnDebugMode { get; set; } = false;
 
         #region Fluent Builder Methods
 
         //Keep it private to make it non accessible from the outside of the class !!
-        private BeepAgent() => IncludeAllEventTypes();
-
-        public static BeepAgent Create() => new BeepAgent();
-
-        public BeepAgent WithInternalLogger(InternalLogger internalLogger)
+        private BeepAgent(InternalLogger internalLogger)
         {
             InternalLogger = internalLogger;
+            IncludeAllEventTypes();
+        }
 
+        public static BeepAgent Create(InternalLogger internalLogger = null) => new BeepAgent(internalLogger);
+
+        public BeepAgent BeepOnlyOnDebugMode()
+        {
+            _BeepOnlyOnDebugMode = true;
             return this;
         }
+
 
         public BeepAgent IncludeEventType(LogEventTypes logEventType)
         {
@@ -80,11 +84,16 @@ namespace TrendSoft.FastLog.Agents
         {
 
 
+#if !DEBUG
+            if (_BeepOnlyOnDebugMode) return Task.CompletedTask;
+
+#endif
+
+
             if (LogModel is null)
             {
                 return Task.CompletedTask;
             }
-
 
 
 
@@ -105,6 +114,7 @@ namespace TrendSoft.FastLog.Agents
                 // For more info please visit : https://learn.microsoft.com/en-us/dotnet/api/system.console.beep?view=net-7.0
 
                 if (RuntimeInformation.IsOSPlatform(OSPlatform.Windows)) Console.Beep();
+
 
             }
             catch (Exception ex)

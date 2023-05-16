@@ -43,14 +43,14 @@ namespace TrendSoft.FastLog.Core
                                              LogText,
                                              ExtraInfo,
                                              Source,
-                                             _logMachineName
-                                             , _applicationName);
+                                             saveMachineName,
+                                             applicationName);
 
                 return LoggerChannelWriter.WriteAsync(LogEvent);
             }
             catch (Exception ex)
             {
-                this._internalLogger?.LogInternalException(ex);
+                this.InternalLogger?.LogInternalException(ex);
             }
 
 #if NET5_0_OR_GREATER
@@ -80,14 +80,14 @@ namespace TrendSoft.FastLog.Core
             try
             {
                 LogEventModel LogEvent = new LogEventModel(exception,
-                                                           _logMachineName,
-                                                           _applicationName);
+                                                           saveMachineName,
+                                                           this.applicationName);
 
                 return LoggerChannelWriter.WriteAsync(LogEvent);
             }
             catch (Exception ex)
             {
-                this._internalLogger?.LogInternalException(ex);
+                this.InternalLogger?.LogInternalException(ex);
             }
 
 #if NET5_0_OR_GREATER

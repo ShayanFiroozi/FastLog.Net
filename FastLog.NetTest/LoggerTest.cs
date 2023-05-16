@@ -1,4 +1,5 @@
-﻿using System;
+﻿using FastLog.Net.Enums;
+using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Threading.Tasks;
@@ -18,29 +19,38 @@ namespace FastLog.NetTest
 
             InternalLogger internalLogger = InternalLogger.Create()
                                                    .SaveInternalEventsToFile("D:\\Logs\\InternalEventsLog.LOG")
-                                                   .DeleteTheLogFileIfExceededTheMaximumSizeOf(10)
+                                                   .DeleteTheLogFileWhenExceededTheMaximumSizeOf(10)
                                                    .Beep()
+                                                     .BeepOnlyOnDebugMode()
                                                    .PrintOnConsole()
+                                                     .PrintOnConsoleOnlyOnDebugMode()
                                                    .PrintOnDebugWindow();
+
+
 
             loggerA = Logger.Create(internalLogger)
 
 
-                            //  .WithBeep(BeepAgent.Create())
+                               //.WithBeep(BeepAgent.Create()
+                               //                   .BeepOnlyOnDebugMode())
 
-                            //   .WithPrintOnConsole(ConsoleLogger.Create())
+                               .WithPrintOnConsole(ConsoleLogger.Create(internalLogger)
+                                                                 .PrintOnConsoleOnlyOnDebugMode()
+                                                                 .ExcludeAllEventTypes()
+                                                                 .IncludeEventType(LogEventTypes.INFO))
+                                 
 
-                            //  .WithPrintOnDebugWindow(DebugWindowLogger.Create())
+                         //     .WithPrintOnDebugWindow(DebugWindowLogger.Create(internalLogger)
 
-                            .AddPlaintTextFileLogger(PlainTextFileLogger.Create()
+                            //.AddHeavyOperationSimulator(HeavyOperationSimulator.Create(TimeSpan.FromSeconds(5)))
+                            .AddPlaintTextFileLogger(PlainTextFileLogger.Create(internalLogger)
                                                                         .SaveLogToFile("D:\\Logs\\TestLogA.log")
-                                                                        .DeleteTheLogFileIfExceededTheMaximumSizeOf(5)
-                                                                        .IncludeAllEventTypes())
+                                                                        .DeleteTheLogFileWhenExceededTheMaximumSizeOf(50))
 
 
                              .LogMachineName()
-                             .LogApplicationName("Shayan-Test-AppA")
-                             .RunAgentsInParallel();
+                             .LogApplicationName("Shayan-Test-AppA");
+            //.RunAgentsInParallel();
 
 
 
@@ -51,20 +61,29 @@ namespace FastLog.NetTest
 
             loggerB = Logger.Create(internalLogger)
 
-                     // .WithBeep(BeepAgent.Create())
+                    //.WithBeep(BeepAgent.Create()
+                    //                   .BeepOnlyOnDebugMode())
 
-                     //   .WithPrintOnConsole(ConsoleLogger.Create())
+                   .WithPrintOnConsole(ConsoleLogger.Create(internalLogger)
+                                                    .PrintOnConsoleOnlyOnDebugMode()
+                                                    .ExcludeAllEventTypes()
+                                                    .IncludeEventType(LogEventTypes.SYSTEM))
 
-                     //   .WithPrintOnDebugWindow(DebugWindowLogger.Create())
+                       // .WithPrintOnDebugWindow(DebugWindowLogger.Create(internalLogger))
 
-                     .AddPlaintTextFileLogger(PlainTextFileLogger.Create()
+                     // .AddHeavyOperationSimulator(HeavyOperationSimulator.Create(TimeSpan.FromSeconds(5)))
+                     .AddPlaintTextFileLogger(PlainTextFileLogger.Create(internalLogger)
                                                                  .SaveLogToFile("D:\\Logs\\TestLogB.log")
-                                                                 .DeleteTheLogFileIfExceededTheMaximumSizeOf(5)
-                                                                 .IncludeAllEventTypes())
+                                                                 .DeleteTheLogFileWhenExceededTheMaximumSizeOf(50)
+                                                                 .ExcludeAllEventTypes().IncludeEventType(LogEventTypes.SYSTEM))
+
+                    .AddPlaintTextFileLogger(PlainTextFileLogger.Create(internalLogger)
+                                                                 .SaveLogToFile("D:\\Logs\\TestLogC.log")
+                                                                 .DeleteTheLogFileWhenExceededTheMaximumSizeOf(50))
 
                       .LogMachineName()
-                      .LogApplicationName("Shayan-Test-AppB")
-                      .RunAgentsInParallel();
+                      .LogApplicationName("Shayan-Test-AppB");
+                      //.RunAgentsInParallel();
 
             loggerA.StartLogger();
             loggerB.StartLogger();
@@ -78,7 +97,7 @@ namespace FastLog.NetTest
         {
 
 
-            Parallel.For(0, 20, async (y) =>
+            Parallel.For(0, 100, async (y) =>
             {
                 _ = loggerA.LogException(new InvalidCastException());
                 _ = loggerB.LogException(new InvalidOperationException());

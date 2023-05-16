@@ -19,10 +19,16 @@ namespace TrendSoft.FastLog.Internal
         private string InternalLogFile { get; set; } = string.Empty;
         private short InternalExceptionsMaxLogFileSizeMB { get; set; } = 0;
 
-        private bool _LogOnConsole { get; set; } = false;
+        private bool _PrintOnConsole { get; set; } = false;
         private bool _LogOnDebugWindow { get; set; } = false;
 
         private bool _Beep { get; set; } = false;
+
+        private bool _BeepOnlyOnDebugMode { get; set; } = false;
+
+        private bool _PrintOnConsoleOnlyOnDebugMode { get; set; } = false;
+
+
 
         #endregion
 
@@ -64,7 +70,7 @@ namespace TrendSoft.FastLog.Internal
         }
 
 
-        public InternalLogger DeleteTheLogFileIfExceededTheMaximumSizeOf(short logFileMaxSizeMB)
+        public InternalLogger DeleteTheLogFileWhenExceededTheMaximumSizeOf(short logFileMaxSizeMB)
         {
 
             if (logFileMaxSizeMB <= 0)
@@ -81,18 +87,43 @@ namespace TrendSoft.FastLog.Internal
 
         public InternalLogger PrintOnConsole()
         {
-            _LogOnConsole = true;
+            _PrintOnConsole = true;
             return this;
         }
+
+
+        public InternalLogger PrintOnConsoleOnlyOnDebugMode()
+        {
+            if (!_PrintOnConsole)
+            {
+                throw new ArgumentException($"Console Print is not active. call \"PrintOnConsole\" first.");
+            }
+
+            _PrintOnConsoleOnlyOnDebugMode = true;
+            return this;
+        }
+
         public InternalLogger DoNotPrintOnConsole()
         {
-            _LogOnConsole = false;
+            _PrintOnConsole = false;
             return this;
         }
 
         public InternalLogger Beep()
         {
+
             _Beep = true;
+            return this;
+        }
+
+        public InternalLogger BeepOnlyOnDebugMode()
+        {
+            if (!_Beep)
+            {
+                throw new ArgumentException($"Beep is not active. call \"Beep\" first.");
+            }
+
+            _BeepOnlyOnDebugMode = true;
             return this;
         }
         public InternalLogger DoNotBeep()
@@ -157,17 +188,34 @@ namespace TrendSoft.FastLog.Internal
 
 
 
-                if (_LogOnConsole)
+                if (_PrintOnConsole)
                 {
-                    Console.WriteLine();
-                    Console.BackgroundColor = ConsoleColor.Red;
-                    Console.Write($"Logger \"Internal Exception\" has been occured :");
-                    Console.ResetColor();
-                    Console.ForegroundColor = ConsoleColor.DarkRed;
+                    if (_PrintOnConsoleOnlyOnDebugMode)
+                    {
+#if DEBUG
+                        Console.WriteLine();
+                        Console.BackgroundColor = ConsoleColor.Red;
+                        Console.Write($"Logger \"Internal Exception\" has been occured :");
+                        Console.ResetColor();
+                        Console.ForegroundColor = ConsoleColor.DarkRed;
 
-                    Console.WriteLine($"{LogToSave.GetLogMessage(true)}\n");
+                        Console.WriteLine($"{LogToSave.GetLogMessage(true)}\n");
 
-                    Console.ResetColor();
+                        Console.ResetColor();
+#endif
+                    }
+                    else
+                    {
+                        Console.WriteLine();
+                        Console.BackgroundColor = ConsoleColor.Red;
+                        Console.Write($"Logger \"Internal Exception\" has been occured :");
+                        Console.ResetColor();
+                        Console.ForegroundColor = ConsoleColor.DarkRed;
+
+                        Console.WriteLine($"{LogToSave.GetLogMessage(true)}\n");
+
+                        Console.ResetColor();
+                    }
                 }
 
 
@@ -187,8 +235,18 @@ namespace TrendSoft.FastLog.Internal
                 {
                     if (_Beep)
                     {
-                        // Note : "Beep" works only on Windows® OS.
-                        if (RuntimeInformation.IsOSPlatform(OSPlatform.Windows)) Console.Beep();
+                        if (_BeepOnlyOnDebugMode)
+                        {
+#if DEBUG
+                            // Note : "Beep" works only on Windows® OS.
+                            if (RuntimeInformation.IsOSPlatform(OSPlatform.Windows)) Console.Beep();
+#endif
+                        }
+                        else
+                        {
+                            // Note : "Beep" works only on Windows® OS.
+                            if (RuntimeInformation.IsOSPlatform(OSPlatform.Windows)) Console.Beep();
+                        }
                     }
                 }
                 catch { }
@@ -217,7 +275,7 @@ namespace TrendSoft.FastLog.Internal
             try
             {
 
-                if (_LogOnConsole)
+                if (_PrintOnConsole)
                 {
                     Console.WriteLine();
                     Console.ForegroundColor = ConsoleColor.Yellow;

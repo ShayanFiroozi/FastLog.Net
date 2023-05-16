@@ -15,7 +15,7 @@ namespace TrendSoft.FastLog.Agents
     // Note : DebugWindowLogger class uses fluent "Builder" pattern.
     // Note : DebugWindowLogger is only available in "Debug" mode.
 
-#if DEBUG
+
 
     public class DebugWindowLogger : ILoggerAgent
     {
@@ -27,17 +27,15 @@ namespace TrendSoft.FastLog.Agents
         #region Fluent Builder Methods
 
         //Keep it private to make it non accessible from the outside of the class !!
-        private DebugWindowLogger() => IncludeAllEventTypes();
-
-
-        public static DebugWindowLogger Create() => new DebugWindowLogger();
-
-        public DebugWindowLogger WithInternalLogger(InternalLogger internalLogger)
+        private DebugWindowLogger(InternalLogger internalLogger)
         {
             InternalLogger = internalLogger;
-
-            return this;
+            IncludeAllEventTypes();
         }
+
+
+        public static DebugWindowLogger Create(InternalLogger internalLogger = null) => new DebugWindowLogger(internalLogger);
+
 
         public DebugWindowLogger IncludeEventType(LogEventTypes logEventType)
         {
@@ -83,6 +81,11 @@ namespace TrendSoft.FastLog.Agents
 
         public Task LogEvent(LogEventModel LogModel, CancellationToken cancellationToken = default)
         {
+#if !DEBUG
+#warning "DebugWindowLogger.LogEvent" only works on the "Debug" mode and has no effect in the "Relase" mode !
+            return Task.CompletedTask;
+#else
+
             if (LogModel is null)
             {
                 return Task.CompletedTask;
@@ -106,14 +109,14 @@ namespace TrendSoft.FastLog.Agents
             }
 
             return Task.CompletedTask;
-
+#endif
 
         }
 
 
     }
 
-#endif
+
 
 }
 

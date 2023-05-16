@@ -5,19 +5,19 @@ using TrendSoft.FastLog.Internal;
 
 namespace FastLog.NetTest
 {
-    internal static class InternalExceptionLoggerTest
+    internal static class InternalLoggerTest
     {
         private static readonly InternalLogger InternalExceptionLoggerA = InternalLogger
                                                            .Create()
                                                            .SaveInternalEventsToFile("D:\\Logs\\InternalExceptionsTest.LOG")
-                                                           .DeleteTheLogFileIfExceededTheMaximumSizeOf(100);
+                                                           .DeleteTheLogFileWhenExceededTheMaximumSizeOf(100);
 
 
 
         private static readonly InternalLogger InternalExceptionLoggerB = InternalLogger
                                                           .Create()
                                                           .SaveInternalEventsToFile("D:\\Logs\\InternalExceptionsTest.LOG")
-                                                          .DeleteTheLogFileIfExceededTheMaximumSizeOf(100);
+                                                          .DeleteTheLogFileWhenExceededTheMaximumSizeOf(100);
 
 
         public static void CrazyTestWithSameLogFile()

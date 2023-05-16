@@ -9,6 +9,7 @@ namespace TrendSoft.FastLog.Core
 
     public partial class Logger : IDisposable
     {
+        // Channel Producer/Consumer pattern
 
         public Task StartLogger()
         {
@@ -16,13 +17,12 @@ namespace TrendSoft.FastLog.Core
 
             List<Task> tasksList = null;
 
-            if (this._runAgentsInParallel) tasksList = new List<Task>();
+            if (runAgentsInParallel) tasksList = new List<Task>();
 
             // Logger engine ->
 
             return Task.Run(async () =>
             {
-
 
                 while (!LoggerChannelReader.Completion.IsCompleted && !_cts.IsCancellationRequested)
                 {
@@ -46,7 +46,7 @@ namespace TrendSoft.FastLog.Core
                             {
                                 if (!string.IsNullOrWhiteSpace(EventModelFromChannel.LogText))
                                 {
-                                    if (this._runAgentsInParallel)
+                                    if (runAgentsInParallel)
                                     {
                                         tasksList.Add(logger.LogEvent(EventModelFromChannel, _cts.Token));
                                     }
@@ -63,12 +63,12 @@ namespace TrendSoft.FastLog.Core
                             }
                             catch (Exception ex)
                             {
-                                _internalLogger?.LogInternalException(ex);
+                                InternalLogger?.LogInternalException(ex);
                             }
 
                         }
 
-                        if (this._runAgentsInParallel)
+                        if (runAgentsInParallel)
                         {
                             await Task.WhenAll(tasksList).ConfigureAwait(false);
                         }
