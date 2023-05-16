@@ -39,7 +39,7 @@ namespace TrendSoft.FastLog.Models
                    $"Target Site : {(exception.TargetSite != null ? exception.TargetSite.Name : "N/A")}",
 
                    LogMachineName
-                  ,ApplicationName)
+                  , ApplicationName)
         { }
 
 
@@ -128,26 +128,26 @@ namespace TrendSoft.FastLog.Models
             {
                 if (LogEventType != LogEventTypes.EXCEPTION)
                 {
-                    _ = finalMessage.Append($" , MachineName : {Environment.MachineName}");
+                    _ = finalMessage.Append($" , MachineName : \"{Environment.MachineName}\"");
                 }
                 else
                 {
-                    _ = finalMessage.Append($"\nMachineName : {Environment.MachineName}");
+                    _ = finalMessage.Append($"\nMachineName : \"{Environment.MachineName}\"");
                 }
             }
 
 
-            if(!string.IsNullOrWhiteSpace(ApplicationName))
+            if (!string.IsNullOrWhiteSpace(ApplicationName))
             {
                 if (LogEventType != LogEventTypes.EXCEPTION)
                 {
-                    _ = finalMessage.Append($" , App Name : {ApplicationName}");
+                    _ = finalMessage.Append($" , App Name : \"{ApplicationName}\"");
                 }
                 else
                 {
-                    _ = finalMessage.Append($"\nApp Name : {ApplicationName}");
+                    _ = finalMessage.Append($"\nApp Name : \"{ApplicationName}\"");
                 }
-                
+
             }
 
             _ = finalMessage.Append(Environment.NewLine);

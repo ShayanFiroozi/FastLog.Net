@@ -44,7 +44,7 @@ namespace TrendSoft.FastLog.Core
                                              ExtraInfo,
                                              Source,
                                              _logMachineName
-                                             ,_applicationName);
+                                             , _applicationName);
 
                 return LoggerChannelWriter.WriteAsync(LogEvent);
             }

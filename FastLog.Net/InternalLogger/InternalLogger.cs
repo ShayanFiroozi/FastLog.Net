@@ -38,7 +38,7 @@ namespace TrendSoft.FastLog.Internal
 
         public InternalLogger SaveInternalEventsToFile(string filename)
         {
-            if(!string.IsNullOrWhiteSpace(InternalLogFile)) 
+            if (!string.IsNullOrWhiteSpace(InternalLogFile))
             {
                 throw new ArgumentException($"'{nameof(filename)}' cannot add two or more file.", nameof(filename));
             }
@@ -64,15 +64,15 @@ namespace TrendSoft.FastLog.Internal
         }
 
 
-        public InternalLogger NotBiggerThan(short logFileMaxSize)
+        public InternalLogger DeleteTheLogFileIfExceededTheMaximumSizeOf(short logFileMaxSizeMB)
         {
 
-            if (logFileMaxSize <= 0)
+            if (logFileMaxSizeMB <= 0)
             {
-                throw new ArgumentException($"'{nameof(logFileMaxSize)}' must be greater then zero.", nameof(logFileMaxSize));
+                throw new ArgumentException($"'{nameof(logFileMaxSizeMB)}' must be greater then zero.", nameof(logFileMaxSizeMB));
             }
 
-            InternalExceptionsMaxLogFileSizeMB = logFileMaxSize;
+            InternalExceptionsMaxLogFileSizeMB = logFileMaxSizeMB;
 
             return this;
 

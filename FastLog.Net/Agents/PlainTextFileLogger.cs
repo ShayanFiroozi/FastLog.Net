@@ -21,7 +21,7 @@ namespace TrendSoft.FastLog.Agents
 
         #region Properties
 
-        private string LogFile { get;  set; } = string.Empty;
+        private string LogFile { get; set; } = string.Empty;
         private short MaxLogFileSizeMB { get; set; } = 0;
 
         #endregion
@@ -103,19 +103,21 @@ namespace TrendSoft.FastLog.Agents
 
         }
 
-        public PlainTextFileLogger NotBiggerThan(short logFileMaxSize)
+        public PlainTextFileLogger DeleteTheLogFileIfExceededTheMaximumSizeOf(short logFileMaxSizeMB)
         {
 
-            if (logFileMaxSize <= 0)
+            if (logFileMaxSizeMB <= 0)
             {
-                throw new ArgumentException($"'{nameof(logFileMaxSize)}' must be greater then zero.", nameof(logFileMaxSize));
+                throw new ArgumentException($"'{nameof(logFileMaxSizeMB)}' must be greater then zero.", nameof(logFileMaxSizeMB));
             }
 
-            MaxLogFileSizeMB = logFileMaxSize;
+            MaxLogFileSizeMB = logFileMaxSizeMB;
 
             return this;
 
         }
+
+
 
         #endregion
 
@@ -197,14 +199,14 @@ namespace TrendSoft.FastLog.Agents
                     ThreadSafeFileHelper.DeleteFile(LogFile);
 
                     // Save the detele operation log with Internal Logger agen (if it was not null)
-                       InternalLogger?.LogInternalSystemEvent(new LogEventModel(LogEventTypes.SYSTEM,
-                                      $"The log file {LogFile} exceeded the maximum permitted size of {MaxLogFileSizeMB:N0} MB."));
+                    InternalLogger?.LogInternalSystemEvent(new LogEventModel(LogEventTypes.SYSTEM,
+                                   $"The log file {LogFile} exceeded the maximum permitted size of {MaxLogFileSizeMB:N0} MB."));
 
-                       InternalLogger?.LogInternalSystemEvent(new LogEventModel(LogEventTypes.SYSTEM,
-                                      $"The log file {LogFile} has been deleted."));
+                    InternalLogger?.LogInternalSystemEvent(new LogEventModel(LogEventTypes.SYSTEM,
+                                   $"The log file {LogFile} has been deleted."));
 
 
-            
+
                 }
             }
             catch (Exception ex)

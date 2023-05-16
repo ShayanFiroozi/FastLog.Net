@@ -16,12 +16,14 @@ namespace FastLog.NetTest
         public static void StartLoggers()
         {
 
-            loggerA = Logger.Create(InternalLogger.Create()
-                                                   .SaveInternalEventsToFile("D:\\Logs\\InternalExceptionsTest.LOG")
-                                                   .NotBiggerThan(10)
+            InternalLogger internalLogger = InternalLogger.Create()
+                                                   .SaveInternalEventsToFile("D:\\Logs\\InternalEventsLog.LOG")
+                                                   .DeleteTheLogFileIfExceededTheMaximumSizeOf(10)
                                                    .Beep()
                                                    .PrintOnConsole()
-                                                   .PrintOnDebugWindow())
+                                                   .PrintOnDebugWindow();
+
+            loggerA = Logger.Create(internalLogger)
 
 
                             //  .WithBeep(BeepAgent.Create())
@@ -31,8 +33,8 @@ namespace FastLog.NetTest
                             //  .WithPrintOnDebugWindow(DebugWindowLogger.Create())
 
                             .AddPlaintTextFileLogger(PlainTextFileLogger.Create()
-                                                                        .SaveLogToFile("D:\\Logs\\TestLog.log")
-                                                                        .NotBiggerThan(2)
+                                                                        .SaveLogToFile("D:\\Logs\\TestLogA.log")
+                                                                        .DeleteTheLogFileIfExceededTheMaximumSizeOf(5)
                                                                         .IncludeAllEventTypes())
 
 
@@ -47,7 +49,7 @@ namespace FastLog.NetTest
 
 
 
-            loggerB = Logger.Create()
+            loggerB = Logger.Create(internalLogger)
 
                      // .WithBeep(BeepAgent.Create())
 
@@ -56,8 +58,8 @@ namespace FastLog.NetTest
                      //   .WithPrintOnDebugWindow(DebugWindowLogger.Create())
 
                      .AddPlaintTextFileLogger(PlainTextFileLogger.Create()
-                                                                 .SaveLogToFile("D:\\Logs\\TestLog.log")
-                                                                 .NotBiggerThan(2)
+                                                                 .SaveLogToFile("D:\\Logs\\TestLogB.log")
+                                                                 .DeleteTheLogFileIfExceededTheMaximumSizeOf(5)
                                                                  .IncludeAllEventTypes())
 
                       .LogMachineName()
@@ -76,7 +78,7 @@ namespace FastLog.NetTest
         {
 
 
-            Parallel.For(0, 10, async (y) =>
+            Parallel.For(0, 20, async (y) =>
             {
                 _ = loggerA.LogException(new InvalidCastException());
                 _ = loggerB.LogException(new InvalidOperationException());
@@ -111,10 +113,10 @@ namespace FastLog.NetTest
                             {
                                 _= loggerA.LogException(new Exception($"This is a \"Test Exception\" number {j:N0} from \"LoggerWriteTest\""));
                                 _= loggerB.LogException(new Exception($"This is a \"Test Exception\" number {j:N0} from \"LoggerWriteTest\""));
-                                _= loggerB.LogSecurity($"This is a \"Test Security\" number {j:N0} from \"LoggerWriteTest\"");
+                                _= loggerA.LogSecurity($"This is a \"Test Security\" number {j:N0} from \"LoggerWriteTest\"");
                                 _= loggerB.LogSystem($"This is a \"Test SYSTEM\" number {j:N0} from \"LoggerWriteTest\"");
                                 _= loggerA.LogSecurity($"This is a \"Test Security\" number {j:N0} from \"LoggerWriteTest\"");
-                                _= loggerA.LogSystem($"This is a \"Test SYSTEM\" number {j:N0} from \"LoggerWriteTest\"");
+                                _= loggerB.LogSystem($"This is a \"Test SYSTEM\" number {j:N0} from \"LoggerWriteTest\"");
 
                             }
                         }),

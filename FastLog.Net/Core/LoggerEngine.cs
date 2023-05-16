@@ -12,7 +12,7 @@ namespace TrendSoft.FastLog.Core
 
         public Task StartLogger()
         {
-      
+
 
             List<Task> tasksList = null;
 
@@ -20,7 +20,7 @@ namespace TrendSoft.FastLog.Core
 
             // Logger engine ->
 
-            return Task.Run((Func<Task>)(async () =>
+            return Task.Run(async () =>
             {
 
 
@@ -79,13 +79,13 @@ namespace TrendSoft.FastLog.Core
 
 
 
-            }));
+            });
         }
 
 
         public void StopLogger()
         {
-            _IsLoggerRunning = true;
+            _IsLoggerRunning = false;
             _cts.Cancel();
         }
 

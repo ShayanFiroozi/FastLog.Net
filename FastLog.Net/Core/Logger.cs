@@ -1,6 +1,5 @@
 ﻿using System;
 using System.Linq;
-using System.Threading.Tasks;
 using TrendSoft.FastLog.Agents;
 using TrendSoft.FastLog.Interfaces;
 using TrendSoft.FastLog.Internal;
@@ -70,26 +69,26 @@ namespace TrendSoft.FastLog.Core
 
         public Logger LogMachineName()
         {
-            this._logMachineName = true;
+            _logMachineName = true;
             return this;
         }
 
 
         public Logger LogApplicationName(string applicationName)
         {
-            this._applicationName = applicationName;
+            _applicationName = applicationName;
             return this;
         }
 
         public Logger RunAgentsInParallel()
         {
-            this._runAgentsInParallel = true;
+            _runAgentsInParallel = true;
             return this;
         }
 
         #endregion
 
-    
+
 
         #region "Logger Agents" management functions
 

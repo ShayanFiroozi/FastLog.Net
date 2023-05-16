@@ -10,14 +10,14 @@ namespace FastLog.NetTest
         private static readonly InternalLogger InternalExceptionLoggerA = InternalLogger
                                                            .Create()
                                                            .SaveInternalEventsToFile("D:\\Logs\\InternalExceptionsTest.LOG")
-                                                           .NotBiggerThan(100);
+                                                           .DeleteTheLogFileIfExceededTheMaximumSizeOf(100);
 
 
 
         private static readonly InternalLogger InternalExceptionLoggerB = InternalLogger
                                                           .Create()
                                                           .SaveInternalEventsToFile("D:\\Logs\\InternalExceptionsTest.LOG")
-                                                          .NotBiggerThan(100);
+                                                          .DeleteTheLogFileIfExceededTheMaximumSizeOf(100);
 
 
         public static void CrazyTestWithSameLogFile()
