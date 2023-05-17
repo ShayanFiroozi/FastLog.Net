@@ -35,12 +35,14 @@ namespace TrendSoft.FastLog.Core
 
                         // Consume the LogEventModel on channel one by one with each logger agent in the agent list !
 
-                        foreach (ILoggerAgent logger in agentsManager.AgentsList)
+                        foreach (ILoggerAgent logger in agentsManager.AgentList)
                         {
                             if (logger is null)
                             {
                                 continue;
                             }
+                            
+                            if (!_IsLoggerRunning) return;
 
                             try
                             {

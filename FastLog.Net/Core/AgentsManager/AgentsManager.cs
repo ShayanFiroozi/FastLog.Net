@@ -8,8 +8,8 @@ namespace FastLog.Net.Core
 {
     public class AgentsManager
     {
-        private readonly List<ILoggerAgent> _loggerAgents = new List<ILoggerAgent>();
-        public IEnumerable<ILoggerAgent> AgentsList => _loggerAgents;
+        private readonly List<ILoggerAgent> loggerAgents = new List<ILoggerAgent>();
+        public IEnumerable<ILoggerAgent> AgentList => loggerAgents;
 
 
 
@@ -69,28 +69,28 @@ namespace FastLog.Net.Core
 
 
 
-        private void AddAgent(ILoggerAgent agent)
+        public void AddAgent(ILoggerAgent agent)
         {
-            if (agent is ConsoleAgent && _loggerAgents.Any(a => a is ConsoleAgent))
+            if (agent is ConsoleAgent && loggerAgents.Any(a => a is ConsoleAgent))
             {
                 throw new Exception("A \"ConsoleLogger\" agent already exists on the agent list.");
             }
 
 
 #if DEBUG
-            if (agent is DebugWindowAgent && _loggerAgents.Any(a => a is DebugWindowAgent))
+            if (agent is DebugWindowAgent && loggerAgents.Any(a => a is DebugWindowAgent))
             {
                 throw new Exception("A \"DebugWindowLogger\" agent already exists on the agent list.");
             }
 #endif
 
-            if (agent is BeepAgent && _loggerAgents.Any(a => a is BeepAgent))
+            if (agent is BeepAgent && loggerAgents.Any(a => a is BeepAgent))
             {
                 throw new Exception("A \"BeepAgent\" agent already exists on the agent list.");
             }
 
 
-            _loggerAgents.Add(agent);
+            loggerAgents.Add(agent);
         }
 
     }

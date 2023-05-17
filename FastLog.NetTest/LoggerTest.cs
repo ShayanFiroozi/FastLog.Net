@@ -46,6 +46,7 @@ namespace FastLog.NetTest
 
 
             loggerA.StartLogger();
+            
 
 
         }
