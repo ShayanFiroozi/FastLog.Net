@@ -21,6 +21,7 @@ namespace TrendSoft.FastLog.Agents
         private InternalLogger InternalLogger = null;
 
         private bool executeOnlyOnDebugMode { get; set; } = false;
+        private bool executeOnlyOnReleaseMode { get; set; } = false;
 
         #region Properties
 
@@ -44,6 +45,12 @@ namespace TrendSoft.FastLog.Agents
         public PlainTextFileAgent ExecuteOnlyOnDebugMode()
         {
             executeOnlyOnDebugMode = true;
+            return this;
+        }
+
+        public PlainTextFileAgent ExecuteOnlyOnReleaseMode()
+        {
+            executeOnlyOnReleaseMode = true;
             return this;
         }
 
@@ -143,6 +150,12 @@ namespace TrendSoft.FastLog.Agents
 
         public Task ExecuteAgent(LogEventModel LogModel, CancellationToken cancellationToken = default)
         {
+#if !RELEASE
+
+            if (executeOnlyOnReleaseMode) return Task.CompletedTask;
+
+#endif
+
 #if !DEBUG
             if (executeOnlyOnDebugMode) return Task.CompletedTask;
 

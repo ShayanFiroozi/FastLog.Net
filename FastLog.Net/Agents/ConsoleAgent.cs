@@ -20,6 +20,7 @@ namespace TrendSoft.FastLog.Agents
         private readonly List<LogEventTypes> _registeredEvents = new List<LogEventTypes>();
         private InternalLogger InternalLogger = null;
         private bool executeOnlyOnDebugMode { get; set; } = false;
+        private bool executeOnlyOnReleaseMode { get; set; } = false;
 
 
         #region Fluent Builder Methods
@@ -41,6 +42,11 @@ namespace TrendSoft.FastLog.Agents
             return this;
         }
 
+        public ConsoleAgent ExecuteOnlyOnReleaseMode()
+        {
+            executeOnlyOnReleaseMode = true;
+            return this;
+        }
 
         public ConsoleAgent IncludeEventType(LogEventTypes logEventType)
         {
@@ -88,10 +94,16 @@ namespace TrendSoft.FastLog.Agents
         public Task ExecuteAgent(LogEventModel LogModel, CancellationToken cancellationToken = default)
         {
 
-#if !DEBUG
-            if (executeOnlyOnDebugMode) return Task.CompletedTask;
+#if !RELEASE
+
+            if (executeOnlyOnReleaseMode) return Task.CompletedTask;
+
 #endif
 
+#if !DEBUG
+            if (executeOnlyOnDebugMode) return Task.CompletedTask;
+
+#endif
             if (LogModel is null)
             {
                 return Task.CompletedTask;

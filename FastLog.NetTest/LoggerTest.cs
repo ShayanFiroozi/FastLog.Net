@@ -36,8 +36,8 @@ namespace FastLog.NetTest
                                                                                                 .SaveLogToFile("D:\\Logs\\TestLog.log")
                                                                                                 .DeleteTheLogFileWhenExceededTheMaximumSizeOf(1000))
 
-                                                      .AddMethodExecutionAgent(MethodExecutionAgent.Create(internalLogger).MethodToExecute(MethodA))
-                                                      .AddMethodExecutionAgent(MethodExecutionAgent.Create(internalLogger).MethodToExecute(MethodB)))
+                                                      .AddMethodExecutionAgent(MethodExecutionAgent.Create(internalLogger).MethodToExecute(MethodA).ExecuteOnlyOnReleaseMode())
+                                                      .AddMethodExecutionAgent(MethodExecutionAgent.Create(internalLogger).MethodToExecute(MethodB).ExecuteOnlyOnReleaseMode()))
 
 
                              .ApplyConfig(ConfigManager.Create()
