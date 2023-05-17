@@ -13,7 +13,6 @@ namespace TrendSoft.FastLog.Core
 
         public ValueTask LogInfo(string LogText,
                                  string Details = "",
-                                 string Source = "",
                                  int EventId = 0)
         {
             return LogEventHelper(LogEventTypes.INFO, LogText, Details,EventId);
@@ -22,7 +21,6 @@ namespace TrendSoft.FastLog.Core
 
         public ValueTask LogNote(string LogText,
                              string Details = "",
-                             string Source = "",
                              int EventId = 0)
         {
             return LogEventHelper(LogEventTypes.NOTE, LogText, Details,EventId);
@@ -31,7 +29,6 @@ namespace TrendSoft.FastLog.Core
 
         public ValueTask LogTodo(string LogText,
                              string Details = "",
-                             string Source = "",
                              int EventId = 0)
         {
             return LogEventHelper(LogEventTypes.TODO, LogText, Details,EventId);
@@ -41,7 +38,6 @@ namespace TrendSoft.FastLog.Core
 
         public ValueTask LogWarning(string LogText,
                                     string Details = "",
-                                    string Source = "",
                                     int EventId = 0)
         {
             return LogEventHelper(LogEventTypes.WARNING, LogText, Details,EventId);
@@ -50,7 +46,6 @@ namespace TrendSoft.FastLog.Core
 
         public ValueTask LogAlert(string LogText,
                                 string Details = "",
-                                string Source = "",
                                 int EventId = 0)
         {
             return LogEventHelper(LogEventTypes.ALERT, LogText, Details,EventId);
@@ -59,7 +54,6 @@ namespace TrendSoft.FastLog.Core
 
         public ValueTask LogError(string LogText,
                                   string Details = "",
-                                  string Source = "",
                                   int EventId = 0)
         {
             return LogEventHelper(LogEventTypes.ERROR, LogText, Details,EventId);
@@ -69,7 +63,6 @@ namespace TrendSoft.FastLog.Core
 
         public ValueTask LogDebug(string LogText,
                                   string Details = "",
-                                  string Source = "",
                                   int EventId = 0)
         {
             return LogEventHelper(LogEventTypes.DEBUG, LogText, Details,EventId);
@@ -87,7 +80,6 @@ namespace TrendSoft.FastLog.Core
 
         public ValueTask LogSystem(string LogText,
                                    string Details = "",
-                                   string Source = "", 
                                    int EventId = 0)
         {
             return LogEventHelper(LogEventTypes.SYSTEM, LogText, Details,EventId);
@@ -96,7 +88,6 @@ namespace TrendSoft.FastLog.Core
 
         public ValueTask LogSecurity(string LogText,
                                      string Details = "",
-                                     string Source = "",
                                      int EventId = 0)
         {
             return LogEventHelper(LogEventTypes.SECURITY, LogText, Details,EventId);

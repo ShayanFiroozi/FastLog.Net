@@ -83,7 +83,7 @@ namespace FastLog.NetTest
 
 
                               _= loggerA.LogInfo($"This is the \"INFO\" message number  from the \"LoggerWriteTest\"",EventId:1);
-                              _= loggerA.LogAlert($"This is the \"ALERT\" message number  from the \"LoggerWriteTest\"","From ANPR Engine","ANPR",2);
+                              _= loggerA.LogAlert($"This is the \"ALERT\" message number  from the \"LoggerWriteTest\"","ANPR",2);
                               _= loggerA.LogSystem($"This is the \"SYSTEM\" message number  from the \"LoggerWriteTest\"");
                               _= loggerA.LogSystem($"This is the \"EXCEPTION\" message number from the \"LoggerWriteTest\"");
 
