@@ -19,7 +19,7 @@ namespace TrendSoft.FastLog.Agents
 
         private readonly List<LogEventTypes> _registeredEvents = new List<LogEventTypes>();
         private InternalLogger InternalLogger = null;
-        private bool _PrintOnConsoleOnlyOnDebugMode { get; set; } = false;
+        private bool executeOnlyOnDebugMode { get; set; } = false;
 
 
         #region Fluent Builder Methods
@@ -35,9 +35,9 @@ namespace TrendSoft.FastLog.Agents
         public static ConsoleAgent Create(InternalLogger internalLogger = null) => new ConsoleAgent(internalLogger);
 
 
-        public ConsoleAgent PrintOnConsoleOnlyOnDebugMode()
+        public ConsoleAgent ExecuteOnlyOnDebugMode()
         {
-            _PrintOnConsoleOnlyOnDebugMode = true;
+            executeOnlyOnDebugMode = true;
             return this;
         }
 
@@ -89,8 +89,7 @@ namespace TrendSoft.FastLog.Agents
         {
 
 #if !DEBUG
-            if (_PrintOnConsoleOnlyOnDebugMode) return Task.CompletedTask;
-
+            if (executeOnlyOnDebugMode) return Task.CompletedTask;
 #endif
 
             if (LogModel is null)

@@ -19,6 +19,7 @@ namespace TrendSoft.FastLog.Agents
     {
         private readonly List<LogEventTypes> _registeredEvents = new List<LogEventTypes>();
         private InternalLogger InternalLogger = null;
+        private bool executeOnlyOnDebugMode { get; set; } = false;
 
         #region Properties
 
@@ -39,7 +40,11 @@ namespace TrendSoft.FastLog.Agents
 
         public static JSONFileAgent Create(InternalLogger internalLogger = null) => new JSONFileAgent(internalLogger);
 
-   
+        public JSONFileAgent ExecuteOnlyOnDebugMode()
+        {
+            executeOnlyOnDebugMode = true;
+            return this;
+        }
         public JSONFileAgent IncludeEventType(LogEventTypes logEventType)
         {
             if (!_registeredEvents.Any(type => type == logEventType))
@@ -131,6 +136,11 @@ namespace TrendSoft.FastLog.Agents
 
         public Task ExecuteAgent(LogEventModel LogModel, CancellationToken cancellationToken = default)
         {
+
+#if !DEBUG
+            if (executeOnlyOnDebugMode) return Task.CompletedTask;
+
+#endif
 
             if (LogModel is null)
             {

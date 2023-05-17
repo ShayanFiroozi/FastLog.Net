@@ -18,7 +18,7 @@ namespace TrendSoft.FastLog.Agents
     {
         private readonly List<LogEventTypes> _registeredEvents = new List<LogEventTypes>();
         private InternalLogger InternalLogger = null;
-        private bool beepOnlyOnDebugMode { get; set; } = false;
+        private bool executeOnlyOnDebugMode { get; set; } = false;
 
         #region Fluent Builder Methods
 
@@ -31,9 +31,9 @@ namespace TrendSoft.FastLog.Agents
 
         public static BeepAgent Create(InternalLogger internalLogger = null) => new BeepAgent(internalLogger);
 
-        public BeepAgent BeepOnlyOnDebugMode()
+        public BeepAgent ExecuteOnlyOnDebugMode()
         {
-            beepOnlyOnDebugMode = true;
+            executeOnlyOnDebugMode = true;
             return this;
         }
 
@@ -85,7 +85,7 @@ namespace TrendSoft.FastLog.Agents
 
 
 #if !DEBUG
-            if (beepOnlyOnDebugMode) return Task.CompletedTask;
+            if (executeOnlyOnDebugMode) return Task.CompletedTask;
 
 #endif
 

@@ -19,7 +19,7 @@ namespace TrendSoft.FastLog.Agents
     {
         private readonly List<LogEventTypes> _registeredEvents = new List<LogEventTypes>();
         private InternalLogger InternalLogger = null;
-        private bool _RunOnlyOnDebugMode { get; set; } = false;
+        private bool executeOnlyOnDebugMode { get; set; } = false;
 
         private string WorkingDirectory { get; set; } = string.Empty;
         private string ProcessToExecute { get; set; } = string.Empty;
@@ -37,13 +37,11 @@ namespace TrendSoft.FastLog.Agents
         }
 
         public static RunProcessAgent Create(InternalLogger internalLogger = null) => new RunProcessAgent(internalLogger);
-
-        public RunProcessAgent RunOnlyOnDebugMode()
+        public RunProcessAgent ExecuteOnlyOnDebugMode()
         {
-            _RunOnlyOnDebugMode = true;
+            executeOnlyOnDebugMode = true;
             return this;
         }
-
 
         public RunProcessAgent ExecuteProcess(string commandToExecute)
         {
@@ -136,18 +134,23 @@ namespace TrendSoft.FastLog.Agents
             return this;
         }
 
+
+     
         #endregion
 
 
         public Task ExecuteAgent(LogEventModel LogModel, CancellationToken cancellationToken = default)
         {
 
-            if(string.IsNullOrWhiteSpace(ProcessToExecute)) return Task.CompletedTask;
-
 #if !DEBUG
-            if (_RunOnlyOnDebugMode) return Task.CompletedTask;
+            if (executeOnlyOnDebugMode) return Task.CompletedTask;
 
 #endif
+
+            if (string.IsNullOrWhiteSpace(ProcessToExecute)) return Task.CompletedTask;
+
+
+
 
 
             if (LogModel is null)

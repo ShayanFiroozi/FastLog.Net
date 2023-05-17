@@ -20,6 +20,8 @@ namespace TrendSoft.FastLog.Agents
         private readonly List<LogEventTypes> _registeredEvents = new List<LogEventTypes>();
         private InternalLogger InternalLogger = null;
 
+        private bool executeOnlyOnDebugMode { get; set; } = false;
+
         #region Properties
 
         private string LogFile { get; set; } = string.Empty;
@@ -39,7 +41,13 @@ namespace TrendSoft.FastLog.Agents
 
         public static PlainTextFileAgent Create(InternalLogger internalLogger = null) => new PlainTextFileAgent(internalLogger);
 
-   
+        public PlainTextFileAgent ExecuteOnlyOnDebugMode()
+        {
+            executeOnlyOnDebugMode = true;
+            return this;
+        }
+
+
         public PlainTextFileAgent IncludeEventType(LogEventTypes logEventType)
         {
             if (!_registeredEvents.Any(type => type == logEventType))
@@ -50,6 +58,7 @@ namespace TrendSoft.FastLog.Agents
             return this;
         }
 
+
         public PlainTextFileAgent ExcludeEventType(LogEventTypes logEventType)
         {
             if (_registeredEvents.Any(type => type == logEventType))
@@ -59,6 +68,7 @@ namespace TrendSoft.FastLog.Agents
 
             return this;
         }
+
 
         public PlainTextFileAgent IncludeAllEventTypes()
         {
@@ -71,6 +81,7 @@ namespace TrendSoft.FastLog.Agents
 
             return this;
         }
+
 
         public PlainTextFileAgent ExcludeAllEventTypes()
         {
@@ -110,6 +121,7 @@ namespace TrendSoft.FastLog.Agents
 
         }
 
+
         public PlainTextFileAgent DeleteTheLogFileWhenExceededTheMaximumSizeOf(short logFileMaxSizeMB)
         {
 
@@ -124,13 +136,18 @@ namespace TrendSoft.FastLog.Agents
 
         }
 
-
+     
 
         #endregion
 
 
         public Task ExecuteAgent(LogEventModel LogModel, CancellationToken cancellationToken = default)
         {
+#if !DEBUG
+            if (executeOnlyOnDebugMode) return Task.CompletedTask;
+
+#endif
+
 
             if (LogModel is null)
             {
@@ -139,6 +156,8 @@ namespace TrendSoft.FastLog.Agents
 
             try
             {
+
+
 
                 if (!Directory.Exists(Path.GetDirectoryName(LogFile)))
                 {
