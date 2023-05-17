@@ -1,4 +1,5 @@
-﻿using System;
+﻿using FastLog.Net.Core;
+using System;
 using System.Collections.Generic;
 using System.Threading;
 using System.Threading.Channels;
@@ -13,8 +14,11 @@ namespace TrendSoft.FastLog.Core
     {
         private readonly CancellationTokenSource _cts = new CancellationTokenSource();
         private readonly InternalLogger InternalLogger = null;
-        private List<ILoggerAgent> _loggerAgents = new List<ILoggerAgent>();
+     
         private bool _IsLoggerRunning = false;
+
+
+        public AgentsManager Agents { get; private set; } = new AgentsManager();
 
         private string applicationName { get; set; } = string.Empty;
         private bool saveMachineName { get; set; } = false;
@@ -28,7 +32,7 @@ namespace TrendSoft.FastLog.Core
         private readonly ChannelWriter<LogEventModel> LoggerChannelWriter;
 
 
-        public IEnumerable<ILoggerAgent> Agents => _loggerAgents;
+    
 
 
 

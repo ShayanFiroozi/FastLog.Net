@@ -28,18 +28,9 @@ namespace FastLog.NetTest
 
 
             loggerA = Logger.Create(internalLogger)
-
-
-                            //.WithBeep(BeepAgent.Create()
-                            //                   .BeepOnlyOnDebugMode())
-
-                            .WithPrintOnConsole(ConsoleAgent.Create(internalLogger))
-
-
-                            //     .WithPrintOnDebugWindow(DebugWindowLogger.Create(internalLogger)
-
-                            //.AddHeavyOperationSimulator(HeavyOperationSimulator.Create(TimeSpan.FromSeconds(5)))
-                            .AddPlaintTextFileLoggerAgent(PlainTextFileAgent.Create(internalLogger)
+                            .Agents
+                            .AddConsoleAgent(ConsoleAgent.Create(internalLogger))
+                            .AddPlaintTextFileAgent(PlainTextFileAgent.Create(internalLogger)
                                                                         .SaveLogToFile("D:\\Logs\\TestLog.log")
                                                                         .DeleteTheLogFileWhenExceededTheMaximumSizeOf(1000))
 

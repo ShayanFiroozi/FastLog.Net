@@ -26,48 +26,7 @@ namespace TrendSoft.FastLog.Core
         public static Logger Create(InternalLogger internalLogger = null) => new Logger(internalLogger);
 
 
-        public Logger WithBeep(BeepAgent beepAgent)
-        {
-            AddLoggingAgent(beepAgent);
-            return this;
-        }
-
-
-        public Logger WithPrintOnConsole(ConsoleAgent consoleLogger)
-        {
-            AddLoggingAgent(consoleLogger);
-            return this;
-        }
-
-
-
-
-        public Logger WithPrintOnDebugWindow(DebugWindowAgent debugWindowLogger)
-        {
-            AddLoggingAgent(debugWindowLogger);
-            return this;
-        }
-
-
-        public Logger AddHeavyOperationSimulatorAgent(HeavyOperationSimulatorAgent heavyOperationSimulator)
-        {
-            AddLoggingAgent(heavyOperationSimulator);
-            return this;
-        }
-
-
-        public Logger AddPlaintTextFileLoggerAgent(PlainTextFileAgent plainTextFileLogger)
-        {
-            AddLoggingAgent(plainTextFileLogger);
-            return this;
-        }
-
-
-        public Logger AddRunProcessAgent(RunProcessAgent runProcessAgent)
-        {
-            AddLoggingAgent(runProcessAgent);
-            return this;
-        }
+     
 
 
         public Logger WithMachineName()
@@ -96,36 +55,6 @@ namespace TrendSoft.FastLog.Core
 
 
 
-        #region "Logger Agents" management functions
-
-        private void AddLoggingAgent(ILoggerAgent agent)
-        {
-            if (agent is ConsoleAgent && _loggerAgents.Any(a => a is ConsoleAgent))
-            {
-                throw new Exception("A \"ConsoleLogger\" agent already exists on the agent list.");
-            }
-
-
-#if DEBUG
-            if (agent is DebugWindowAgent && _loggerAgents.Any(a => a is DebugWindowAgent))
-            {
-                throw new Exception("A \"DebugWindowLogger\" agent already exists on the agent list.");
-            }
-#endif
-
-            if (agent is BeepAgent && _loggerAgents.Any(a => a is BeepAgent))
-            {
-                throw new Exception("A \"BeepAgent\" agent already exists on the agent list.");
-            }
-
-
-            _loggerAgents.Add(agent);
-        }
-
-
-        #endregion
-
-
 
         #region DisposeMethods
 
@@ -144,9 +73,6 @@ namespace TrendSoft.FastLog.Core
                 {
                     StopLogger();
 
-                    //logDB?.Dispose();
-                    _loggerAgents.Clear();
-                    _loggerAgents = null;
                 }
 
                 catch (Exception ex)
