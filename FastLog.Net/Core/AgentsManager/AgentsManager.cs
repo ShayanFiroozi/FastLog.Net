@@ -15,9 +15,11 @@ namespace FastLog.Net.Core
 
 
 
-        internal AgentsManager()
+        private AgentsManager() { }
+
+        public static AgentsManager Create()
         {
-            
+            return new AgentsManager();
         }
 
         public AgentsManager AddBeepAgent(BeepAgent beepAgent)

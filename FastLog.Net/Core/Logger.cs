@@ -1,4 +1,5 @@
-﻿using System;
+﻿using FastLog.Net.Core;
+using System;
 using System.Linq;
 using TrendSoft.FastLog.Agents;
 using TrendSoft.FastLog.Interfaces;
@@ -26,7 +27,11 @@ namespace TrendSoft.FastLog.Core
         public static Logger Create(InternalLogger internalLogger = null) => new Logger(internalLogger);
 
 
-     
+         public Logger ApplyAgents(AgentsManager agentsManager) 
+        {
+            this.agentsManager = agentsManager;
+            return this;
+        }
 
 
         public Logger WithMachineName()

@@ -1,4 +1,5 @@
-﻿using System;
+﻿using FastLog.Net.Core;
+using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Threading.Tasks;
@@ -27,12 +28,13 @@ namespace FastLog.NetTest
 
 
 
+
             loggerA = Logger.Create(internalLogger)
-                            .Agents
+                            .ApplyAgents(AgentsManager.Create()
                             .AddConsoleAgent(ConsoleAgent.Create(internalLogger))
                             .AddPlaintTextFileAgent(PlainTextFileAgent.Create(internalLogger)
                                                                         .SaveLogToFile("D:\\Logs\\TestLog.log")
-                                                                        .DeleteTheLogFileWhenExceededTheMaximumSizeOf(1000))
+                                                                        .DeleteTheLogFileWhenExceededTheMaximumSizeOf(1000)))
 
 
                              .WithMachineName()
