@@ -16,13 +16,9 @@ namespace TrendSoft.FastLog.Core
         private readonly InternalLogger InternalLogger = null;
      
         private bool _IsLoggerRunning = false;
+
         private AgentsManager agentsManager;
-
-      
-        private string applicationName { get; set; } = string.Empty;
-        private bool saveMachineName { get; set; } = false;
-        private bool runAgentsInParallel { get; set; } = false;
-
+        private ConfigManager ConfigManager;
 
 
         // Channel properties

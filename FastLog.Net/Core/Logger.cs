@@ -22,6 +22,10 @@ namespace TrendSoft.FastLog.Core
             LoggerChannelWriter = LoggerChannel.Writer;
 
             InternalLogger = internalLogger;
+
+            // Init properties below to prevent null exception if user did not set them later !
+            agentsManager = AgentsManager.Create();
+            ConfigManager = ConfigManager.Create();
         }
 
         public static Logger Create(InternalLogger internalLogger = null) => new Logger(internalLogger);
@@ -34,29 +38,16 @@ namespace TrendSoft.FastLog.Core
         }
 
 
-        public Logger WithMachineName()
+        public Logger ApplyConfig(ConfigManager configManager)
         {
-            saveMachineName = true;
+            this.ConfigManager = configManager;
             return this;
         }
 
 
-        public Logger WithApplicationName(string applicationName)
-        {
-            this.applicationName = applicationName;
-            return this;
-        }
 
-        /// <summary>
-        /// WARNING : Run "Logger Agents" in parallel may impact the performance.
-        /// </summary>
-        public Logger RunAgentsInParallel()
-        {
-            runAgentsInParallel = true;
-            return this;
-        }
 
-#endregion
+        #endregion
 
 
 

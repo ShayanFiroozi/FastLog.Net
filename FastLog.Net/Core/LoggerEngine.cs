@@ -17,7 +17,7 @@ namespace TrendSoft.FastLog.Core
 
             List<Task> tasksList = null;
 
-            if (runAgentsInParallel) tasksList = new List<Task>();
+            if (ConfigManager.runAgentsInParallel) tasksList = new List<Task>();
 
             // Logger engine ->
 
@@ -46,7 +46,7 @@ namespace TrendSoft.FastLog.Core
                             {
                                 if (!string.IsNullOrWhiteSpace(EventModelFromChannel.EventText))
                                 {
-                                    if (runAgentsInParallel)
+                                    if (ConfigManager.runAgentsInParallel)
                                     {
                                         tasksList.Add(logger.ExecuteAgent(EventModelFromChannel, _cts.Token));
                                     }
@@ -69,7 +69,7 @@ namespace TrendSoft.FastLog.Core
                             //Console.WriteLine($"{LoggerChannelReader.Count:N0} item(s) left in channel.");
                         }
 
-                        if (runAgentsInParallel)
+                        if (ConfigManager.runAgentsInParallel)
                         {
                             await Task.WhenAll(tasksList).ConfigureAwait(false);
                         }

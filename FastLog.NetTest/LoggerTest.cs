@@ -28,18 +28,20 @@ namespace FastLog.NetTest
 
 
 
-
             loggerA = Logger.Create(internalLogger)
                             .ApplyAgents(AgentsManager.Create()
-                            .AddConsoleAgent(ConsoleAgent.Create(internalLogger))
-                            .AddPlaintTextFileAgent(PlainTextFileAgent.Create(internalLogger)
-                                                                        .SaveLogToFile("D:\\Logs\\TestLog.log")
-                                                                        .DeleteTheLogFileWhenExceededTheMaximumSizeOf(1000)))
+                                                      .AddBeepAgent(BeepAgent.Create(internalLogger))
+                                                      .AddConsoleAgent(ConsoleAgent.Create(internalLogger))
+                                                      .AddPlaintTextFileAgent(PlainTextFileAgent.Create(internalLogger)
+                                                                                                .SaveLogToFile("D:\\Logs\\TestLog.log")
+                                                                                                .DeleteTheLogFileWhenExceededTheMaximumSizeOf(1000)))
 
 
-                             .WithMachineName()
-                             .WithApplicationName("Shayan-Test-AppA");
-            //.RunAgentsInParallel();
+                             .ApplyConfig(ConfigManager.Create()
+                                                       .IncludeMachineName()
+                                                       .IncludeApplicationName("Shayan-TestApp")
+                                                       .RunAgentsInParallel());
+
 
             loggerA.StartLogger();
 
@@ -161,7 +163,7 @@ namespace FastLog.NetTest
         {
             while (true)
             {
-                
+
                 _ = loggerA.LogException(new InvalidCastException(), 1364);
                 Task.Delay(2_000).GetAwaiter().GetResult();
 

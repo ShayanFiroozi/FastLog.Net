@@ -134,8 +134,8 @@ namespace TrendSoft.FastLog.Core
                 LogEventModel LogEvent = new LogEventModel(LogType,
                                              LogText,
                                              Details,
-                                             saveMachineName,
-                                             applicationName,
+                                             ConfigManager.SaveMachineName,
+                                             ConfigManager.ApplicationName,
                                              EventId);
 
                 return LoggerChannelWriter.WriteAsync(LogEvent);
@@ -173,8 +173,8 @@ namespace TrendSoft.FastLog.Core
             try
             {
                 LogEventModel LogEvent = new LogEventModel(exception,
-                                                           saveMachineName,
-                                                           this.applicationName,
+                                                           ConfigManager.SaveMachineName,
+                                                           ConfigManager.ApplicationName,
                                                            EventId);
 
                 return LoggerChannelWriter.WriteAsync(LogEvent);
