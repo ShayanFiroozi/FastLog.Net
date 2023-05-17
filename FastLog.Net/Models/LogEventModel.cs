@@ -10,36 +10,36 @@ namespace TrendSoft.FastLog.Models
         #region Constructors
 
         public LogEventModel(LogEventTypes LogEventType,
-                          string LogText,
-                          string ExtraInfo = "",
-                          string Source = "",
-                          bool LogMachineName = false,
-                          string ApplicationName = "")
+                             string EventText,
+                             string Details = "",
+                             bool LogMachineName = false,
+                             string ApplicationName = "",
+                             int EventId = 0)
         {
             DateTime = DateTime.Now;
             this.LogEventType = LogEventType;
-            this.LogText = LogText;
-            this.ExtraInfo = ExtraInfo;
-            this.Source = Source;
+            this.EventText = EventText;
+            this.Details = Details;
             this.LogMachineName = LogMachineName;
             this.ApplicationName = ApplicationName;
+            this.EventId = EventId;
         }
 
 
-        public LogEventModel(Exception exception, bool LogMachineName = false, string ApplicationName = "")
+        public LogEventModel(Exception exception, bool LogMachineName = false, string ApplicationName = "", int EventId = 0)
             : this(LogEventTypes.EXCEPTION,
 
                    $"\nId : {exception.HResult}\n" +
                    $"Message : {exception.Message ?? "N/A"}\n",
 
                    $"InnerException : {exception.InnerException?.Message ?? "N/A"}\n" +
-                   $"StackTrace : {exception.StackTrace ?? "N/A"}\n",
-
+                   $"StackTrace : {exception.StackTrace ?? "N/A"}\n" +
                    $"Source : {exception.Source ?? "N/A"}\n" +
                    $"Target Site : {(exception.TargetSite != null ? exception.TargetSite.Name : "N/A")}",
 
-                   LogMachineName
-                  , ApplicationName)
+                   LogMachineName,
+                   ApplicationName,
+                   EventId)
         { }
 
 
@@ -52,33 +52,22 @@ namespace TrendSoft.FastLog.Models
         #endregion
 
 
-
-
-
         #region Properties
+
+
+        public int EventId { get; private set; } = 0;
 
         public DateTime DateTime { get; private set; }
 
-
         public LogEventTypes LogEventType { get; private set; }
 
+        public string EventText { get; private set; }
 
-
-        public string Source { get; private set; }
-
-
-
-        public string LogText { get; private set; }
-
-
-
-        public string ExtraInfo { get; private set; }
-
+        public string Details { get; private set; }
 
         public bool LogMachineName { get; private set; }
 
         public string ApplicationName { get; private set; }
-
 
 
         #endregion
@@ -89,50 +78,34 @@ namespace TrendSoft.FastLog.Models
         {
             StringBuilder finalMessage = new StringBuilder();
 
-            if (DateTimeIncluded)
-            {
-                _ = finalMessage.Append(DateTime.ToString("yyyy/MM/dd HH:mm:ss"));
-            }
-
-            _ = finalMessage.Append(' ')
-                            .Append('[')
+            _ = finalMessage.Append('[')
                             .Append(LogEventType.ToString())
                             .Append(']')
+                            .Append(EventId != 0 ? $" [{EventId}]":string.Empty)
                             .Append(" -> ")
-                            .Append(LogText);
+                            .Append(EventText);
 
 
-            if (!string.IsNullOrWhiteSpace(ExtraInfo))
+            if (!string.IsNullOrWhiteSpace(Details))
             {
                 if (LogEventType != LogEventTypes.EXCEPTION)
                 {
-                    _ = finalMessage.Append(" , Details : ");
+                    _ = finalMessage.Append(" , Details: ");
                 }
 
-                _ = finalMessage.Append(ExtraInfo);
+                _ = finalMessage.Append(Details);
             }
 
-            if (!string.IsNullOrWhiteSpace(Source))
-            {
-
-                if (LogEventType != LogEventTypes.EXCEPTION)
-                {
-                    _ = finalMessage.Append(" , Source : ");
-
-                }
-
-                _ = finalMessage.Append(Source);
-            }
 
             if (LogMachineName)
             {
                 if (LogEventType != LogEventTypes.EXCEPTION)
                 {
-                    _ = finalMessage.Append($" , MachineName : \"{Environment.MachineName}\"");
+                    _ = finalMessage.Append($" , MachineName: \"{Environment.MachineName}\"");
                 }
                 else
                 {
-                    _ = finalMessage.Append($"\nMachineName : \"{Environment.MachineName}\"");
+                    _ = finalMessage.Append($"\nMachineName: \"{Environment.MachineName}\"");
                 }
             }
 
@@ -141,13 +114,26 @@ namespace TrendSoft.FastLog.Models
             {
                 if (LogEventType != LogEventTypes.EXCEPTION)
                 {
-                    _ = finalMessage.Append($" , App Name : \"{ApplicationName}\"");
+                    _ = finalMessage.Append($" , App Name: \"{ApplicationName}\"");
                 }
                 else
                 {
-                    _ = finalMessage.Append($"\nApp Name : \"{ApplicationName}\"");
+                    _ = finalMessage.Append($"\nApp Name: \"{ApplicationName}\"");
                 }
 
+            }
+
+
+            if (DateTimeIncluded)
+            {
+                if (LogEventType != LogEventTypes.EXCEPTION)
+                {
+                    _ = finalMessage.Append($" , DateTime: \"{DateTime.ToString("yyyy/MM/dd HH:mm:ss")}\"");
+                }
+                else
+                {
+                    _ = finalMessage.Append($"\nDateTime: \"{DateTime.ToString("yyyy/MM/dd HH:mm:ss")}\"");
+                }
             }
 
             _ = finalMessage.Append(Environment.NewLine);

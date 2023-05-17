@@ -70,10 +70,10 @@ namespace FastLog.NetTest
 
                 Parallel.For(0, 10_000, (y) =>
                 {
-                    _ = loggerA.LogException(new InvalidCastException());
-                    _ = loggerA.LogException(new InvalidOperationException());
-                    _ = loggerA.LogException(new DivideByZeroException());
-                    _ = loggerA.LogException(new FileNotFoundException());
+                    _ = loggerA.LogException(new InvalidCastException(),1364);
+                    _ = loggerA.LogException(new InvalidOperationException(),1365);
+                    _ = loggerA.LogException(new DivideByZeroException(),0);
+                    _ = loggerA.LogException(new FileNotFoundException(),-1);
 
                     _ = loggerA.LogInfo($"This is the \"INFO\" a message from the \"LoggerWriteTest\"");
                     _ = loggerA.LogAlert($"This is the \"ALERT\" a message from the \"LoggerWriteTest\"");
@@ -91,8 +91,8 @@ namespace FastLog.NetTest
                       {
 
 
-                              _= loggerA.LogInfo($"This is the \"INFO\" message number  from the \"LoggerWriteTest\"");
-                              _= loggerA.LogAlert($"This is the \"ALERT\" message number  from the \"LoggerWriteTest\"");
+                              _= loggerA.LogInfo($"This is the \"INFO\" message number  from the \"LoggerWriteTest\"",EventId:1);
+                              _= loggerA.LogAlert($"This is the \"ALERT\" message number  from the \"LoggerWriteTest\"","From ANPR Engine","ANPR",2);
                               _= loggerA.LogSystem($"This is the \"SYSTEM\" message number  from the \"LoggerWriteTest\"");
                               _= loggerA.LogSystem($"This is the \"EXCEPTION\" message number from the \"LoggerWriteTest\"");
 

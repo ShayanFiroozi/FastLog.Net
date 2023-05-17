@@ -44,7 +44,7 @@ namespace TrendSoft.FastLog.Core
 
                             try
                             {
-                                if (!string.IsNullOrWhiteSpace(EventModelFromChannel.LogText))
+                                if (!string.IsNullOrWhiteSpace(EventModelFromChannel.EventText))
                                 {
                                     if (runAgentsInParallel)
                                     {

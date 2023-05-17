@@ -11,13 +11,106 @@ namespace TrendSoft.FastLog.Core
     {
 
 
-        #region Logging Functions
+
+        public ValueTask LogInfo(string LogText,
+                                 string Details = "",
+                                 string Source = "",
+                                 int EventId = 0)
+        {
+            return LogEventHelper(LogEventTypes.INFO, LogText, Details,EventId);
+        }
 
 
+        public ValueTask LogNote(string LogText,
+                             string Details = "",
+                             string Source = "",
+                             int EventId = 0)
+        {
+            return LogEventHelper(LogEventTypes.NOTE, LogText, Details,EventId);
+        }
+
+
+        public ValueTask LogTodo(string LogText,
+                             string Details = "",
+                             string Source = "",
+                             int EventId = 0)
+        {
+            return LogEventHelper(LogEventTypes.TODO, LogText, Details,EventId);
+        }
+
+
+
+        public ValueTask LogWarning(string LogText,
+                                    string Details = "",
+                                    string Source = "",
+                                    int EventId = 0)
+        {
+            return LogEventHelper(LogEventTypes.WARNING, LogText, Details,EventId);
+        }
+
+
+        public ValueTask LogAlert(string LogText,
+                                string Details = "",
+                                string Source = "",
+                                int EventId = 0)
+        {
+            return LogEventHelper(LogEventTypes.ALERT, LogText, Details,EventId);
+        }
+
+
+        public ValueTask LogError(string LogText,
+                                  string Details = "",
+                                  string Source = "",
+                                  int EventId = 0)
+        {
+            return LogEventHelper(LogEventTypes.ERROR, LogText, Details,EventId);
+        }
+
+
+
+        public ValueTask LogDebug(string LogText,
+                                  string Details = "",
+                                  string Source = "",
+                                  int EventId = 0)
+        {
+            return LogEventHelper(LogEventTypes.DEBUG, LogText, Details,EventId);
+        }
+
+
+        public ValueTask LogException(Exception exception, int EventId = 0)
+        {
+
+            return LogEventHelper(exception,EventId);
+
+        }
+
+
+
+        public ValueTask LogSystem(string LogText,
+                                   string Details = "",
+                                   string Source = "", 
+                                   int EventId = 0)
+        {
+            return LogEventHelper(LogEventTypes.SYSTEM, LogText, Details,EventId);
+        }
+
+
+        public ValueTask LogSecurity(string LogText,
+                                     string Details = "",
+                                     string Source = "",
+                                     int EventId = 0)
+        {
+            return LogEventHelper(LogEventTypes.SECURITY, LogText, Details,EventId);
+        }
+
+
+
+
+        #region Helpers
         private ValueTask LogEventHelper(LogEventTypes LogType,
-                                         string LogText,
-                                         string ExtraInfo = "",
-                                         string Source = "")
+                                  string LogText,
+                                  string Details = "",
+                                  int EventId = 0)
         {
 
             if (!_IsLoggerRunning)
@@ -41,10 +134,10 @@ namespace TrendSoft.FastLog.Core
             {
                 LogEventModel LogEvent = new LogEventModel(LogType,
                                              LogText,
-                                             ExtraInfo,
-                                             Source,
+                                             Details,
                                              saveMachineName,
-                                             applicationName);
+                                             applicationName,
+                                             EventId);
 
                 return LoggerChannelWriter.WriteAsync(LogEvent);
             }
@@ -61,7 +154,8 @@ namespace TrendSoft.FastLog.Core
         }
 
 
-        private ValueTask LogEventHelper(Exception exception)
+        private ValueTask LogEventHelper(Exception exception,
+                                         int EventId = 0)
         {
             if (!_IsLoggerRunning)
             {
@@ -81,7 +175,8 @@ namespace TrendSoft.FastLog.Core
             {
                 LogEventModel LogEvent = new LogEventModel(exception,
                                                            saveMachineName,
-                                                           this.applicationName);
+                                                           this.applicationName,
+                                                           EventId);
 
                 return LoggerChannelWriter.WriteAsync(LogEvent);
             }
@@ -95,97 +190,8 @@ namespace TrendSoft.FastLog.Core
 #else
             return default;
 #endif
-        }
-
-
-
-
-        public ValueTask LogInfo(string LogText,
-                                 string ExtraInfo = "",
-                                 string Source = "")
-        {
-            return LogEventHelper(LogEventTypes.INFO, LogText, ExtraInfo, Source);
-        }
-
-
-        public ValueTask LogNote(string LogText,
-                             string ExtraInfo = "",
-                             string Source = "")
-        {
-            return LogEventHelper(LogEventTypes.NOTE, LogText, ExtraInfo, Source);
-        }
-
-
-        public ValueTask LogTodo(string LogText,
-                             string ExtraInfo = "",
-                             string Source = "")
-        {
-            return LogEventHelper(LogEventTypes.TODO, LogText, ExtraInfo, Source);
-        }
-
-
-
-        public ValueTask LogWarning(string LogText,
-                                    string ExtraInfo = "",
-                                    string Source = "")
-        {
-            return LogEventHelper(LogEventTypes.WARNING, LogText, ExtraInfo, Source);
-        }
-
-
-        public ValueTask LogAlert(string LogText,
-                                string ExtraInfo = "",
-                                string Source = "")
-        {
-            return LogEventHelper(LogEventTypes.ALERT, LogText, ExtraInfo, Source);
-        }
-
-
-        public ValueTask LogError(string LogText,
-                                  string ExtraInfo = "",
-                                  string Source = "")
-        {
-            return LogEventHelper(LogEventTypes.ERROR, LogText, ExtraInfo, Source);
-        }
-
-
-
-        public ValueTask LogDebug(string LogText,
-                                  string ExtraInfo = "",
-                                  string Source = "")
-        {
-            return LogEventHelper(LogEventTypes.DEBUG, LogText, ExtraInfo, Source);
-        }
-
-
-        public ValueTask LogException(Exception exception)
-        {
-
-            return LogEventHelper(exception);
-
-        }
-
-
-
-        public ValueTask LogSystem(string LogText,
-                                   string ExtraInfo = "",
-                                   string Source = "")
-        {
-            return LogEventHelper(LogEventTypes.SYSTEM, LogText, ExtraInfo, Source);
-        }
-
-
-        public ValueTask LogSecurity(string LogText,
-                                     string ExtraInfo = "",
-                                     string Source = "")
-        {
-            return LogEventHelper(LogEventTypes.SECURITY, LogText, ExtraInfo, Source);
-        }
-
-
-
+        } 
         #endregion
-
 
 
     }
