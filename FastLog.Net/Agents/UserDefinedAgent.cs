@@ -2,7 +2,6 @@
 using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Runtime.InteropServices;
 using System.Threading;
 using System.Threading.Tasks;
 using TrendSoft.FastLog.Interfaces;
@@ -17,7 +16,7 @@ namespace TrendSoft.FastLog.Agents
     public class MethodExecutionAgent : ILoggerAgent
     {
         private readonly List<LogEventTypes> _registeredEvents = new List<LogEventTypes>();
-        private InternalLogger InternalLogger = null;
+        private readonly InternalLogger InternalLogger = null;
         private bool executeOnlyOnDebugMode { get; set; } = false;
         private bool executeOnlyOnReleaseMode { get; set; } = false;
         private Action methodToExecute { get; set; }
@@ -116,7 +115,7 @@ namespace TrendSoft.FastLog.Agents
             }
 
 
-            if(methodToExecute != null) 
+            if (methodToExecute != null)
             {
                 return Task.Run(methodToExecute, cancellationToken);
             }

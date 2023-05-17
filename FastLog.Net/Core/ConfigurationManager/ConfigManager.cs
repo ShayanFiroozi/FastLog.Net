@@ -1,12 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using TrendSoft.FastLog.Agents;
-using TrendSoft.FastLog.Interfaces;
-
-namespace FastLog.Net.Core
+﻿namespace FastLog.Net.Core
 {
     public class ConfigManager
     {

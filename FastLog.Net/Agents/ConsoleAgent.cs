@@ -18,7 +18,7 @@ namespace TrendSoft.FastLog.Agents
     {
 
         private readonly List<LogEventTypes> _registeredEvents = new List<LogEventTypes>();
-        private InternalLogger InternalLogger = null;
+        private readonly InternalLogger InternalLogger = null;
         private bool executeOnlyOnDebugMode { get; set; } = false;
         private bool executeOnlyOnReleaseMode { get; set; } = false;
 
@@ -87,7 +87,7 @@ namespace TrendSoft.FastLog.Agents
             return this;
         }
 
- 
+
         #endregion
 
 

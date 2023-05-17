@@ -18,7 +18,7 @@ namespace TrendSoft.FastLog.Agents
     public class RunProcessAgent : ILoggerAgent
     {
         private readonly List<LogEventTypes> _registeredEvents = new List<LogEventTypes>();
-        private InternalLogger InternalLogger = null;
+        private readonly InternalLogger InternalLogger = null;
         private bool executeOnlyOnDebugMode { get; set; } = false;
         private bool executeOnlyOnReleaseMode { get; set; } = false;
 
@@ -69,7 +69,7 @@ namespace TrendSoft.FastLog.Agents
                 throw new ArgumentException($"'{nameof(ProcessToExecute)}' cannot be null or whitespace.", nameof(ProcessToExecute));
             }
 
-      
+
             ExecutionArgument = commandArgument;
 
             return this;
@@ -78,7 +78,7 @@ namespace TrendSoft.FastLog.Agents
 
         public RunProcessAgent RunAsAdministrator()
         {
-          runAsAdministrator = true;
+            runAsAdministrator = true;
 
             return this;
         }
@@ -142,7 +142,7 @@ namespace TrendSoft.FastLog.Agents
         }
 
 
-     
+
         #endregion
 
 

@@ -1,17 +1,14 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 using TrendSoft.FastLog.Agents;
 using TrendSoft.FastLog.Interfaces;
-using TrendSoft.FastLog.Internal;
 
 namespace FastLog.Net.Core
 {
     public class AgentsManager
     {
-        private List<ILoggerAgent> _loggerAgents = new List<ILoggerAgent>();
+        private readonly List<ILoggerAgent> _loggerAgents = new List<ILoggerAgent>();
         public IEnumerable<ILoggerAgent> AgentsList => _loggerAgents;
 
 

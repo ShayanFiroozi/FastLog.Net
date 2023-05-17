@@ -53,7 +53,7 @@ namespace FastLog.NetTest
         static void MethodA()
         {
             Console.WriteLine("MethodA");
-            
+
         }
 
         static void MethodB()

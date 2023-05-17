@@ -1,8 +1,6 @@
 ﻿
 using FastLog.Enums;
-using FastLog.Net.Helpers.ExtendedMethods;
 using System;
-using System.Text;
 
 namespace TrendSoft.FastLog.Models
 {
@@ -79,5 +77,5 @@ namespace TrendSoft.FastLog.Models
     }
 
 
-   
+
 }

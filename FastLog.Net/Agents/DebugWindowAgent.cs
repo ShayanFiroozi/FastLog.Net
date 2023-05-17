@@ -22,7 +22,7 @@ namespace TrendSoft.FastLog.Agents
     {
 
         private readonly List<LogEventTypes> _registeredEvents = new List<LogEventTypes>();
-        private InternalLogger InternalLogger = null;
+        private readonly InternalLogger InternalLogger = null;
 
 
         #region Fluent Builder Methods

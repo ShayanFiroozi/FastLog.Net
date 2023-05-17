@@ -7,7 +7,7 @@ namespace FastLog.NetTest
 {
     internal static class InternalLoggerTest
     {
-      
+
 
         public static readonly InternalLogger InternalLoggerAgent = InternalLogger
                                                           .Create()

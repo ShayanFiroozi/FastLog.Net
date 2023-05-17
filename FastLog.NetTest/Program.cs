@@ -1,7 +1,6 @@
 ﻿using FastLog.NetTest;
 using System;
 using System.Threading.Tasks;
-using TrendSoft.FastLog.Agents;
 
 namespace TrendSoft.LogModuleTest
 {
@@ -17,7 +16,7 @@ namespace TrendSoft.LogModuleTest
 
 
             LoggerTest.CrazyTestWithMultiThreadMultiTask();
-           // LoggerTest.NormalTest();
+            // LoggerTest.NormalTest();
 
             Console.Beep();
 

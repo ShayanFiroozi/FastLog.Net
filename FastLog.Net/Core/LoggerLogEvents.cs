@@ -15,7 +15,7 @@ namespace TrendSoft.FastLog.Core
                                  string Details = "",
                                  int EventId = 0)
         {
-            return LogEventHelper(LogEventTypes.INFO, LogText, Details,EventId);
+            return LogEventHelper(LogEventTypes.INFO, LogText, Details, EventId);
         }
 
 
@@ -23,7 +23,7 @@ namespace TrendSoft.FastLog.Core
                              string Details = "",
                              int EventId = 0)
         {
-            return LogEventHelper(LogEventTypes.NOTE, LogText, Details,EventId);
+            return LogEventHelper(LogEventTypes.NOTE, LogText, Details, EventId);
         }
 
 
@@ -31,7 +31,7 @@ namespace TrendSoft.FastLog.Core
                              string Details = "",
                              int EventId = 0)
         {
-            return LogEventHelper(LogEventTypes.TODO, LogText, Details,EventId);
+            return LogEventHelper(LogEventTypes.TODO, LogText, Details, EventId);
         }
 
 
@@ -40,7 +40,7 @@ namespace TrendSoft.FastLog.Core
                                     string Details = "",
                                     int EventId = 0)
         {
-            return LogEventHelper(LogEventTypes.WARNING, LogText, Details,EventId);
+            return LogEventHelper(LogEventTypes.WARNING, LogText, Details, EventId);
         }
 
 
@@ -48,7 +48,7 @@ namespace TrendSoft.FastLog.Core
                                 string Details = "",
                                 int EventId = 0)
         {
-            return LogEventHelper(LogEventTypes.ALERT, LogText, Details,EventId);
+            return LogEventHelper(LogEventTypes.ALERT, LogText, Details, EventId);
         }
 
 
@@ -56,7 +56,7 @@ namespace TrendSoft.FastLog.Core
                                   string Details = "",
                                   int EventId = 0)
         {
-            return LogEventHelper(LogEventTypes.ERROR, LogText, Details,EventId);
+            return LogEventHelper(LogEventTypes.ERROR, LogText, Details, EventId);
         }
 
 
@@ -65,14 +65,14 @@ namespace TrendSoft.FastLog.Core
                                   string Details = "",
                                   int EventId = 0)
         {
-            return LogEventHelper(LogEventTypes.DEBUG, LogText, Details,EventId);
+            return LogEventHelper(LogEventTypes.DEBUG, LogText, Details, EventId);
         }
 
 
         public ValueTask LogException(Exception exception, int EventId = 0)
         {
 
-            return LogEventHelper(exception,EventId);
+            return LogEventHelper(exception, EventId);
 
         }
 
@@ -82,7 +82,7 @@ namespace TrendSoft.FastLog.Core
                                    string Details = "",
                                    int EventId = 0)
         {
-            return LogEventHelper(LogEventTypes.SYSTEM, LogText, Details,EventId);
+            return LogEventHelper(LogEventTypes.SYSTEM, LogText, Details, EventId);
         }
 
 
@@ -90,7 +90,7 @@ namespace TrendSoft.FastLog.Core
                                      string Details = "",
                                      int EventId = 0)
         {
-            return LogEventHelper(LogEventTypes.SECURITY, LogText, Details,EventId);
+            return LogEventHelper(LogEventTypes.SECURITY, LogText, Details, EventId);
         }
 
 
@@ -180,7 +180,7 @@ namespace TrendSoft.FastLog.Core
 #else
             return default;
 #endif
-        } 
+        }
         #endregion
 
 
