@@ -1,4 +1,4 @@
-﻿namespace FastLog.Net.Enums
+﻿namespace FastLog.Enums
 {
 
     public enum LogEventTypes : byte

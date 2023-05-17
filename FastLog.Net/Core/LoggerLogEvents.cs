@@ -1,5 +1,4 @@
-﻿
-using FastLog.Net.Enums;
+﻿using FastLog.Enums;
 using System;
 using System.Threading.Tasks;
 using TrendSoft.FastLog.Models;

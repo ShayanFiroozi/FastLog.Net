@@ -1,5 +1,5 @@
-﻿using FastLog.Net.Enums;
-using FastLog.Net.Helpers;
+﻿using FastLog.Enums;
+using FastLog.Helpers;
 using System;
 using System.Collections.Generic;
 using System.IO;

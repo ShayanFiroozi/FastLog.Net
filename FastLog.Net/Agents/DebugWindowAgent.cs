@@ -1,4 +1,4 @@
-﻿using FastLog.Net.Enums;
+﻿using FastLog.Enums;
 using System;
 using System.Collections.Generic;
 using System.Diagnostics;

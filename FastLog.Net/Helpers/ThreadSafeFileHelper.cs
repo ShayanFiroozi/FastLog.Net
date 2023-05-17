@@ -1,7 +1,7 @@
 ﻿using System.IO;
 using System.Threading;
 
-namespace FastLog.Net.Helpers
+namespace FastLog.Helpers
 {
     internal static class ThreadSafeFileHelper
     {
