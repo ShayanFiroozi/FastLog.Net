@@ -50,12 +50,6 @@ namespace TrendSoft.FastLog.Core
         }
 
 
-        public Logger AddWindowsEventLoggerAgent(WindowsEventAgent windowsEventLogger)
-        {
-            AddLoggingAgent(windowsEventLogger);
-            return this;
-        }
-
         public Logger AddHeavyOperationSimulatorAgent(HeavyOperationSimulatorAgent heavyOperationSimulator)
         {
             AddLoggingAgent(heavyOperationSimulator);

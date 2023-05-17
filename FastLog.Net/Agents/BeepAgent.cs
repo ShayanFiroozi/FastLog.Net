@@ -101,11 +101,8 @@ namespace TrendSoft.FastLog.Agents
             try
             {
 
-                // Check if any "Event Type" exists to show on console ?
+                // Check if current log "Event Type" should be execute or not.
                 if (!_registeredEvents.Any()) return Task.CompletedTask;
-
-
-                // Check if current log "Event Type" should be reflected onthe Console or not.
                 if (!_registeredEvents.Any(type => LogModel.LogEventType == type)) return Task.CompletedTask;
 
 

@@ -7,27 +7,22 @@ namespace FastLog.NetTest
 {
     internal static class InternalLoggerTest
     {
-        private static readonly InternalLogger InternalExceptionLoggerA = InternalLogger
-                                                           .Create()
-                                                           .SaveInternalEventsToFile("D:\\Logs\\InternalExceptionsTest.LOG")
-                                                           .DeleteTheLogFileWhenExceededTheMaximumSizeOf(100);
+      
 
-
-
-        private static readonly InternalLogger InternalExceptionLoggerB = InternalLogger
+        public static readonly InternalLogger InternalLoggerAgent = InternalLogger
                                                           .Create()
-                                                          .SaveInternalEventsToFile("D:\\Logs\\InternalExceptionsTest.LOG")
+                                                          .SaveInternalEventsToFile("D:\\Logs\\InternalLogger.LOG")
                                                           .DeleteTheLogFileWhenExceededTheMaximumSizeOf(100);
 
 
-        public static void CrazyTestWithSameLogFile()
+        public static void CrazyTestMultiThreadWithSameLogFile()
         {
             Parallel.For(0, 50_000, (i) =>
             {
-                InternalExceptionLoggerA.LogInternalException(new InvalidCastException());
-                InternalExceptionLoggerB.LogInternalException(new InvalidOperationException());
-                InternalExceptionLoggerA.LogInternalException(new DivideByZeroException());
-                InternalExceptionLoggerB.LogInternalException(new FileNotFoundException());
+                InternalLoggerAgent.LogInternalException(new InvalidCastException());
+                InternalLoggerAgent.LogInternalException(new InvalidOperationException());
+                InternalLoggerAgent.LogInternalException(new DivideByZeroException());
+                InternalLoggerAgent.LogInternalException(new FileNotFoundException());
             });
 
 
