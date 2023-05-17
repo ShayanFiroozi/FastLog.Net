@@ -239,13 +239,13 @@ namespace TrendSoft.FastLog.Internal
                         if (_BeepOnlyOnDebugMode)
                         {
 #if DEBUG
-                            // Note : "Beep" works only on Windows® OS.
+                            // Note : "Beep" only works on Windows® OS.
                             if (RuntimeInformation.IsOSPlatform(OSPlatform.Windows)) Console.Beep();
 #endif
                         }
                         else
                         {
-                            // Note : "Beep" works only on Windows® OS.
+                            // Note : "Beep" only works on Windows® OS.
                             if (RuntimeInformation.IsOSPlatform(OSPlatform.Windows)) Console.Beep();
                         }
                     }

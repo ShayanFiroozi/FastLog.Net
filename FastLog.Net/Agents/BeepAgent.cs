@@ -18,7 +18,7 @@ namespace TrendSoft.FastLog.Agents
     {
         private readonly List<LogEventTypes> _registeredEvents = new List<LogEventTypes>();
         private InternalLogger InternalLogger = null;
-        private bool _BeepOnlyOnDebugMode { get; set; } = false;
+        private bool beepOnlyOnDebugMode { get; set; } = false;
 
         #region Fluent Builder Methods
 
@@ -33,7 +33,7 @@ namespace TrendSoft.FastLog.Agents
 
         public BeepAgent BeepOnlyOnDebugMode()
         {
-            _BeepOnlyOnDebugMode = true;
+            beepOnlyOnDebugMode = true;
             return this;
         }
 
@@ -85,7 +85,7 @@ namespace TrendSoft.FastLog.Agents
 
 
 #if !DEBUG
-            if (_BeepOnlyOnDebugMode) return Task.CompletedTask;
+            if (beepOnlyOnDebugMode) return Task.CompletedTask;
 
 #endif
 
@@ -106,7 +106,7 @@ namespace TrendSoft.FastLog.Agents
                 if (!_registeredEvents.Any(type => LogModel.LogEventType == type)) return Task.CompletedTask;
 
 
-                // Note : "Beep" works only on Windows® OS.
+                // Note : "Beep" only works on Windows® OS.
                 // ATTENTION : There's a chance of "HostProtectionException" or "PlatformNotSupportedException" exception.
                 // For more info please visit : https://learn.microsoft.com/en-us/dotnet/api/system.console.beep?view=net-7.0
 
