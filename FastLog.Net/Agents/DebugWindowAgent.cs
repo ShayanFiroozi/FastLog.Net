@@ -17,7 +17,7 @@ namespace TrendSoft.FastLog.Agents
 
 
 
-    public class DebugWindowLoggerAgent : ILoggerAgent
+    public class DebugWindowAgent : ILoggerAgent
     {
 
         private readonly List<LogEventTypes> _registeredEvents = new List<LogEventTypes>();
@@ -27,17 +27,17 @@ namespace TrendSoft.FastLog.Agents
         #region Fluent Builder Methods
 
         //Keep it private to make it non accessible from the outside of the class !!
-        private DebugWindowLoggerAgent(InternalLogger internalLogger)
+        private DebugWindowAgent(InternalLogger internalLogger)
         {
             InternalLogger = internalLogger;
             IncludeAllEventTypes();
         }
 
 
-        public static DebugWindowLoggerAgent Create(InternalLogger internalLogger = null) => new DebugWindowLoggerAgent(internalLogger);
+        public static DebugWindowAgent Create(InternalLogger internalLogger = null) => new DebugWindowAgent(internalLogger);
 
 
-        public DebugWindowLoggerAgent IncludeEventType(LogEventTypes logEventType)
+        public DebugWindowAgent IncludeEventType(LogEventTypes logEventType)
         {
             if (!_registeredEvents.Any(type => type == logEventType))
             {
@@ -47,7 +47,7 @@ namespace TrendSoft.FastLog.Agents
             return this;
         }
 
-        public DebugWindowLoggerAgent ExcludeEventType(LogEventTypes logEventType)
+        public DebugWindowAgent ExcludeEventType(LogEventTypes logEventType)
         {
             if (_registeredEvents.Any(type => type == logEventType))
             {
@@ -57,7 +57,7 @@ namespace TrendSoft.FastLog.Agents
             return this;
         }
 
-        public DebugWindowLoggerAgent IncludeAllEventTypes()
+        public DebugWindowAgent IncludeAllEventTypes()
         {
             _registeredEvents.Clear();
 
@@ -69,7 +69,7 @@ namespace TrendSoft.FastLog.Agents
             return this;
         }
 
-        public DebugWindowLoggerAgent ExcludeAllEventTypes()
+        public DebugWindowAgent ExcludeAllEventTypes()
         {
             _registeredEvents.Clear();
 

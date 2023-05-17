@@ -43,7 +43,7 @@ namespace FastLog.NetTest
                             //     .WithPrintOnDebugWindow(DebugWindowLogger.Create(internalLogger)
 
                             //.AddHeavyOperationSimulator(HeavyOperationSimulator.Create(TimeSpan.FromSeconds(5)))
-                            .AddPlaintTextFileLoggerAgent(PlainTextFileLoggerAgent.Create(internalLogger)
+                            .AddPlaintTextFileLoggerAgent(PlainTextFileAgent.Create(internalLogger)
                                                                         .SaveLogToFile("D:\\Logs\\TestLog.log")
                                                                         .DeleteTheLogFileWhenExceededTheMaximumSizeOf(1000))
 

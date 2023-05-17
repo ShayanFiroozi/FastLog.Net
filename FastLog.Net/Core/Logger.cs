@@ -34,7 +34,7 @@ namespace TrendSoft.FastLog.Core
         }
 
 
-        public Logger WithPrintOnConsole(ConsoleLoggerAgent consoleLogger)
+        public Logger WithPrintOnConsole(ConsoleAgent consoleLogger)
         {
             AddLoggingAgent(consoleLogger);
             return this;
@@ -43,14 +43,14 @@ namespace TrendSoft.FastLog.Core
 
 
 
-        public Logger WithPrintOnDebugWindow(DebugWindowLoggerAgent debugWindowLogger)
+        public Logger WithPrintOnDebugWindow(DebugWindowAgent debugWindowLogger)
         {
             AddLoggingAgent(debugWindowLogger);
             return this;
         }
 
 
-        public Logger AddWindowsEventLoggerAgent(WindowsEventLoggerAgent windowsEventLogger)
+        public Logger AddWindowsEventLoggerAgent(WindowsEventAgent windowsEventLogger)
         {
             AddLoggingAgent(windowsEventLogger);
             return this;
@@ -63,7 +63,7 @@ namespace TrendSoft.FastLog.Core
         }
 
 
-        public Logger AddPlaintTextFileLoggerAgent(PlainTextFileLoggerAgent plainTextFileLogger)
+        public Logger AddPlaintTextFileLoggerAgent(PlainTextFileAgent plainTextFileLogger)
         {
             AddLoggingAgent(plainTextFileLogger);
             return this;
@@ -107,14 +107,14 @@ namespace TrendSoft.FastLog.Core
 
         private void AddLoggingAgent(ILoggerAgent agent)
         {
-            if (agent is ConsoleLoggerAgent && _loggerAgents.Any(a => a is ConsoleLoggerAgent))
+            if (agent is ConsoleAgent && _loggerAgents.Any(a => a is ConsoleAgent))
             {
                 throw new Exception("A \"ConsoleLogger\" agent already exists on the agent list.");
             }
 
 
 #if DEBUG
-            if (agent is DebugWindowLogger && _loggerAgents.Any(a => a is DebugWindowLogger))
+            if (agent is DebugWindowAgent && _loggerAgents.Any(a => a is DebugWindowAgent))
             {
                 throw new Exception("A \"DebugWindowLogger\" agent already exists on the agent list.");
             }

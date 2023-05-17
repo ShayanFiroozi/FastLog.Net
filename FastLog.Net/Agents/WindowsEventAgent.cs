@@ -14,7 +14,7 @@ namespace TrendSoft.FastLog.Agents
 
     // Note : BeepAgent class uses fluent "Builder" pattern.
 
-    public class WindowsEventLoggerAgent : ILoggerAgent
+    public class WindowsEventAgent : ILoggerAgent
     {
         private InternalLogger InternalLogger = null;
         private readonly List<LogEventTypes> _registeredEvents = new List<LogEventTypes>();
@@ -26,17 +26,17 @@ namespace TrendSoft.FastLog.Agents
         #region Fluent Builder Methods
 
         //Keep it private to make it non accessible from the outside of the class !!
-        private WindowsEventLoggerAgent(InternalLogger internalLogger = null)
+        private WindowsEventAgent(InternalLogger internalLogger = null)
         {
             InternalLogger = internalLogger;
             IncludeAllEventTypes();
         }
 
-        public static WindowsEventLoggerAgent Create(InternalLogger internalLogger = null) => new WindowsEventLoggerAgent(internalLogger);
+        public static WindowsEventAgent Create(InternalLogger internalLogger = null) => new WindowsEventAgent(internalLogger);
 
      
 
-        public WindowsEventLoggerAgent WithApplicationName(string applicationName)
+        public WindowsEventAgent WithApplicationName(string applicationName)
         {
             if (string.IsNullOrWhiteSpace(applicationName))
             {
@@ -48,7 +48,7 @@ namespace TrendSoft.FastLog.Agents
             return this;
         }
 
-        public WindowsEventLoggerAgent IncludeEventType(LogEventTypes logEventType)
+        public WindowsEventAgent IncludeEventType(LogEventTypes logEventType)
         {
             if (!_registeredEvents.Any(type => type == logEventType))
             {
@@ -58,7 +58,7 @@ namespace TrendSoft.FastLog.Agents
             return this;
         }
 
-        public WindowsEventLoggerAgent ExcludeEventType(LogEventTypes logEventType)
+        public WindowsEventAgent ExcludeEventType(LogEventTypes logEventType)
         {
             if (_registeredEvents.Any(type => type == logEventType))
             {
@@ -68,7 +68,7 @@ namespace TrendSoft.FastLog.Agents
             return this;
         }
 
-        public WindowsEventLoggerAgent IncludeAllEventTypes()
+        public WindowsEventAgent IncludeAllEventTypes()
         {
             _registeredEvents.Clear();
 
@@ -80,7 +80,7 @@ namespace TrendSoft.FastLog.Agents
             return this;
         }
 
-        public WindowsEventLoggerAgent ExcludeAllEventTypes()
+        public WindowsEventAgent ExcludeAllEventTypes()
         {
             _registeredEvents.Clear();
 
