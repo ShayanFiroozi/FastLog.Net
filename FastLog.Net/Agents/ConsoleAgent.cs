@@ -17,8 +17,6 @@ namespace TrendSoft.FastLog.Agents
     public class ConsoleAgent : ILoggerAgent
     {
 
-        private ConsoleColor DateTimeFontColor = ConsoleColor.Green;
-
         private readonly List<LogEventTypes> _registeredEvents = new List<LogEventTypes>();
         private InternalLogger InternalLogger = null;
         private bool _PrintOnConsoleOnlyOnDebugMode { get; set; } = false;
@@ -83,12 +81,7 @@ namespace TrendSoft.FastLog.Agents
             return this;
         }
 
-        public ConsoleAgent WithDateTimeFontColor(ConsoleColor color)
-        {
-            DateTimeFontColor = color;
-            return this;
-        }
-
+ 
         #endregion
 
 
