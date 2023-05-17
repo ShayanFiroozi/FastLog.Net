@@ -5,6 +5,7 @@ using System.Text;
 using System.Threading.Tasks;
 using TrendSoft.FastLog.Agents;
 using TrendSoft.FastLog.Interfaces;
+using TrendSoft.FastLog.Internal;
 
 namespace FastLog.Net.Core
 {
@@ -24,48 +25,54 @@ namespace FastLog.Net.Core
 
         public AgentsManager AddBeepAgent(BeepAgent beepAgent)
         {
-            AddLoggingAgent(beepAgent);
+            AddAgent(beepAgent);
             return this;
         }
 
         public AgentsManager AddConsoleAgent(ConsoleAgent consoleLogger)
         {
-            AddLoggingAgent(consoleLogger);
+            AddAgent(consoleLogger);
             return this;
         }
 
         public AgentsManager AddDebugWindowAgent(DebugWindowAgent debugWindowLogger)
         {
-            AddLoggingAgent(debugWindowLogger);
+            AddAgent(debugWindowLogger);
             return this;
         }
 
 
         public AgentsManager AddHeavyOperationSimulatorAgent(HeavyOperationSimulatorAgent heavyOperationSimulator)
         {
-            AddLoggingAgent(heavyOperationSimulator);
+            AddAgent(heavyOperationSimulator);
             return this;
         }
 
 
         public AgentsManager AddPlaintTextFileAgent(PlainTextFileAgent plainTextFileLogger)
         {
-            AddLoggingAgent(plainTextFileLogger);
+            AddAgent(plainTextFileLogger);
             return this;
         }
 
 
         public AgentsManager AddRunProcessAgent(RunProcessAgent runProcessAgent)
         {
-            AddLoggingAgent(runProcessAgent);
+            AddAgent(runProcessAgent);
             return this;
         }
 
 
 
+        public AgentsManager AddMethodExecutionAgent(MethodExecutionAgent methodExecutionAgent)
+        {
+            AddAgent(methodExecutionAgent);
+            return this;
+        }
 
 
-        private void AddLoggingAgent(ILoggerAgent agent)
+
+        private void AddAgent(ILoggerAgent agent)
         {
             if (agent is ConsoleAgent && _loggerAgents.Any(a => a is ConsoleAgent))
             {

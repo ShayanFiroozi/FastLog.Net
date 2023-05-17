@@ -34,13 +34,15 @@ namespace FastLog.NetTest
                                                       .AddConsoleAgent(ConsoleAgent.Create(internalLogger))
                                                       .AddPlaintTextFileAgent(PlainTextFileAgent.Create(internalLogger)
                                                                                                 .SaveLogToFile("D:\\Logs\\TestLog.log")
-                                                                                                .DeleteTheLogFileWhenExceededTheMaximumSizeOf(1000)))
+                                                                                                .DeleteTheLogFileWhenExceededTheMaximumSizeOf(1000))
+
+                                                      .AddMethodExecutionAgent(MethodExecutionAgent.Create(internalLogger).MethodToExecute(MethodA))
+                                                      .AddMethodExecutionAgent(MethodExecutionAgent.Create(internalLogger).MethodToExecute(MethodB)))
 
 
                              .ApplyConfig(ConfigManager.Create()
                                                        .IncludeMachineName()
-                                                       .IncludeApplicationName("Shayan-TestApp")
-                                                       .RunAgentsInParallel());
+                                                       .IncludeApplicationName("Shayan-TestApp"));
 
 
             loggerA.StartLogger();
@@ -48,6 +50,17 @@ namespace FastLog.NetTest
 
         }
 
+        static void MethodA()
+        {
+            Console.WriteLine("MethodA");
+            
+        }
+
+        static void MethodB()
+        {
+            Console.WriteLine("MethodB");
+            Task.Delay(2_000).GetAwaiter().GetResult();
+        }
 
 
 
