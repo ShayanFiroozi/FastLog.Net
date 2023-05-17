@@ -30,7 +30,7 @@ namespace FastLog.NetTest
 
             loggerA = Logger.Create(internalLogger)
                             .ApplyAgents(AgentsManager.Create()
-                                                      .AddBeepAgent(BeepAgent.Create(internalLogger))
+                                                      //.AddBeepAgent(BeepAgent.Create(internalLogger))
                                                       .AddConsoleAgent(ConsoleAgent.Create(internalLogger))
                                                       .AddPlaintTextFileAgent(PlainTextFileAgent.Create(internalLogger)
                                                                                                 .SaveLogToFile("D:\\Logs\\TestLog.log")

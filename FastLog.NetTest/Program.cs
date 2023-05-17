@@ -16,8 +16,8 @@ namespace TrendSoft.LogModuleTest
             Task.Delay(1_000).GetAwaiter().GetResult();
 
 
-            // LoggerTest.CrazyTestWithMultiThreadMultiTask();
-            LoggerTest.NormalTest();
+            LoggerTest.CrazyTestWithMultiThreadMultiTask();
+           // LoggerTest.NormalTest();
 
             Console.Beep();
 
