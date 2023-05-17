@@ -31,13 +31,13 @@ namespace TrendSoft.FastLog.Models
         public LogEventModel(Exception exception, bool LogMachineName = false, string ApplicationName = "", int EventId = 0)
             : this(LogEventTypes.EXCEPTION,
 
-                   $"\nId : {exception.HResult}\n" +
-                   $"Message : {exception.Message ?? "N/A"}\n",
+                   $"\nId : {exception?.HResult}\n" +
+                   $"Message : {exception?.Message ?? "N/A"}\n",
 
-                   $"InnerException : {exception.InnerException?.Message ?? "N/A"}\n" +
-                   $"StackTrace : {exception.StackTrace ?? "N/A"}\n" +
-                   $"Source : {exception.Source ?? "N/A"}\n" +
-                   $"Target Site : {(exception.TargetSite != null ? exception.TargetSite.Name : "N/A")}",
+                   $"InnerException : {exception?.InnerException?.Message ?? "N/A"}\n" +
+                   $"StackTrace : {exception?.StackTrace ?? "N/A"}\n" +
+                   $"Source : {exception?.Source ?? "N/A"}\n" +
+                   $"Target Site : {(exception?.TargetSite != null ? exception?.TargetSite?.Name : "N/A")}",
 
                    LogMachineName,
                    ApplicationName,
