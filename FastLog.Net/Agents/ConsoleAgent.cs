@@ -1,4 +1,5 @@
 ﻿using FastLog.Enums;
+using FastLog.Net.Helpers.ExtendedMethods;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -112,11 +113,6 @@ namespace TrendSoft.FastLog.Agents
                 if (!_registeredEvents.Any(type => LogModel.LogEventType == type)) return Task.CompletedTask;
 
 
-                Console.ForegroundColor = DateTimeFontColor;
-                Console.Write($"{DateTime.Now}");
-                Console.ResetColor();
-
-
                 // Set the proper console forecolor
 
                 switch (LogModel.LogEventType)
@@ -128,7 +124,7 @@ namespace TrendSoft.FastLog.Agents
                         break;
 
                     case LogEventTypes.WARNING:
-                        Console.ForegroundColor = ConsoleColor.DarkYellow;
+                        Console.ForegroundColor = ConsoleColor.Yellow;
                         break;
 
                     case LogEventTypes.ALERT:
@@ -140,19 +136,17 @@ namespace TrendSoft.FastLog.Agents
                         break;
 
                     case LogEventTypes.ERROR:
+                    case LogEventTypes.EXCEPTION:
                         Console.ForegroundColor = ConsoleColor.Red;
                         break;
 
-                    case LogEventTypes.EXCEPTION:
-                        Console.ForegroundColor = ConsoleColor.Yellow;
-                        break;
 
                     case LogEventTypes.SYSTEM:
-                        Console.ForegroundColor = ConsoleColor.Magenta;
+                        Console.ForegroundColor = ConsoleColor.Blue;
                         break;
 
                     case LogEventTypes.SECURITY:
-                        Console.ForegroundColor = ConsoleColor.DarkCyan;
+                        Console.ForegroundColor = ConsoleColor.Cyan;
                         break;
 
                     default:
@@ -160,9 +154,8 @@ namespace TrendSoft.FastLog.Agents
                 }
 
 
-                Console.WriteLine(LogModel.GetLogMessage(false));
+                Console.WriteLine(LogModel.ToLogMessage());
 
-                Console.ResetColor();
 
             }
             catch (Exception ex)

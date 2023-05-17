@@ -33,10 +33,7 @@ namespace FastLog.NetTest
                             //.WithBeep(BeepAgent.Create()
                             //                   .BeepOnlyOnDebugMode())
 
-                            //.WithPrintOnConsole(ConsoleLogger.Create(internalLogger)
-                            //                                  .PrintOnConsoleOnlyOnDebugMode()
-                            //                                  .ExcludeAllEventTypes()
-                            //                                  .IncludeEventType(LogEventTypes.INFO))
+                            .WithPrintOnConsole(ConsoleAgent.Create(internalLogger))
 
 
                             //     .WithPrintOnDebugWindow(DebugWindowLogger.Create(internalLogger)
@@ -47,8 +44,8 @@ namespace FastLog.NetTest
                                                                         .DeleteTheLogFileWhenExceededTheMaximumSizeOf(1000))
 
 
-                             .LogMachineName()
-                             .LogApplicationName("Shayan-Test-AppA");
+                             .WithMachineName()
+                             .WithApplicationName("Shayan-Test-AppA");
             //.RunAgentsInParallel();
 
             loggerA.StartLogger();
@@ -65,25 +62,25 @@ namespace FastLog.NetTest
             //while (true)
             //{
 
-                //Task.Delay(1_500).GetAwaiter().GetResult();
+            //Task.Delay(1_500).GetAwaiter().GetResult();
 
-                Parallel.For(0, 10_000, (y) =>
+            Parallel.For(0, 10_000, (y) =>
+            {
+                _ = loggerA.LogException(new InvalidCastException(), 1364);
+                _ = loggerA.LogException(new InvalidOperationException(), 1365);
+                _ = loggerA.LogException(new DivideByZeroException(), 0);
+                _ = loggerA.LogException(new FileNotFoundException(), -1);
+
+                _ = loggerA.LogInfo($"This is the \"INFO\" a message from the \"LoggerWriteTest\"");
+                _ = loggerA.LogAlert($"This is the \"ALERT\" a message from the \"LoggerWriteTest\"");
+                _ = loggerA.LogSystem($"This is the \"SYSTEM\" a message number the \"LoggerWriteTest\"");
+                _ = loggerA.LogSystem($"This is the \"EXCEPTION\" a message from the \"LoggerWriteTest\"");
+
+
+
+
+                List<Task> taskList = new List<Task>()
                 {
-                    _ = loggerA.LogException(new InvalidCastException(),1364);
-                    _ = loggerA.LogException(new InvalidOperationException(),1365);
-                    _ = loggerA.LogException(new DivideByZeroException(),0);
-                    _ = loggerA.LogException(new FileNotFoundException(),-1);
-
-                    _ = loggerA.LogInfo($"This is the \"INFO\" a message from the \"LoggerWriteTest\"");
-                    _ = loggerA.LogAlert($"This is the \"ALERT\" a message from the \"LoggerWriteTest\"");
-                    _ = loggerA.LogSystem($"This is the \"SYSTEM\" a message number the \"LoggerWriteTest\"");
-                    _ = loggerA.LogSystem($"This is the \"EXCEPTION\" a message from the \"LoggerWriteTest\"");
-
-
-
-
-                    List<Task> taskList = new List<Task>()
-                    {
 
 
                         Task.Run(()=>
@@ -152,21 +149,63 @@ namespace FastLog.NetTest
 
                         })
 
-                    };
+                };
 
 
-                    // await Task.WhenAll(taskList);
+                // await Task.WhenAll(taskList);
 
-                });
+            });
 
 
-           // }
+            // }
 
 
         }
 
 
 
+        public static void NormalTest()
+        {
+            while (true)
+            {
+                
+                _ = loggerA.LogException(new InvalidCastException(), 1364);
+                Task.Delay(2_000).GetAwaiter().GetResult();
+
+                _ = loggerA.LogInfo($"This is an \"INFO\" message from the \"LoggerWriteTest\"");
+                Task.Delay(2_000).GetAwaiter().GetResult();
+
+                _ = loggerA.LogAlert($"This is an \"ALERT\" message from the \"LoggerWriteTest\"");
+                Task.Delay(2_000).GetAwaiter().GetResult();
+
+                _ = loggerA.LogError($"This is an \"ERROR\" message from the \"LoggerWriteTest\"");
+
+                Task.Delay(2_000).GetAwaiter().GetResult();
+
+                _ = loggerA.LogDebug($"This is a \"DEBUG\" message from the \"LoggerWriteTest\"");
+
+                Task.Delay(2_000).GetAwaiter().GetResult();
+
+
+                _ = loggerA.LogWarning($"This is a \"WARNING\" message from the \"LoggerWriteTest\"");
+
+                Task.Delay(2_000).GetAwaiter().GetResult();
+
+
+                _ = loggerA.LogSystem($"This is a \"SYSTEM\" message from the \"LoggerWriteTest\"");
+
+                Task.Delay(2_000).GetAwaiter().GetResult();
+
+
+                _ = loggerA.LogSecurity($"This is a \"SECURITY\" message from the \"LoggerWriteTest\"");
+
+                Task.Delay(2_000).GetAwaiter().GetResult();
+            }
+
+        }
+
+
 
     }
+
 }

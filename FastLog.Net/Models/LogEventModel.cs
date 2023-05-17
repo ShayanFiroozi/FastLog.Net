@@ -1,5 +1,6 @@
 ﻿
 using FastLog.Enums;
+using FastLog.Net.Helpers.ExtendedMethods;
 using System;
 using System.Text;
 
@@ -75,79 +76,8 @@ namespace TrendSoft.FastLog.Models
 
 
 
-        public string GetLogMessage(bool DateTimeIncluded)
-        {
-            StringBuilder finalMessage = new StringBuilder();
-
-            _ = finalMessage.Append('[')
-                            .Append(LogEventType.ToString())
-                            .Append(']')
-                            .Append(EventId != 0 ? $" [{EventId}]":string.Empty)
-                            .Append(" -> ")
-                            .Append(EventText);
-
-
-            if (!string.IsNullOrWhiteSpace(Details))
-            {
-                if (LogEventType != LogEventTypes.EXCEPTION)
-                {
-                    _ = finalMessage.Append(" , Details: ");
-                }
-
-                _ = finalMessage.Append(Details);
-            }
-
-
-            if (LogMachineName)
-            {
-                if (LogEventType != LogEventTypes.EXCEPTION)
-                {
-                    _ = finalMessage.Append($" , MachineName: \"{Environment.MachineName}\"");
-                }
-                else
-                {
-                    _ = finalMessage.Append($"\nMachineName: \"{Environment.MachineName}\"");
-                }
-            }
-
-
-            if (!string.IsNullOrWhiteSpace(ApplicationName))
-            {
-                if (LogEventType != LogEventTypes.EXCEPTION)
-                {
-                    _ = finalMessage.Append($" , App Name: \"{ApplicationName}\"");
-                }
-                else
-                {
-                    _ = finalMessage.Append($"\nApp Name: \"{ApplicationName}\"");
-                }
-
-            }
-
-
-            if (DateTimeIncluded)
-            {
-                if (LogEventType != LogEventTypes.EXCEPTION)
-                {
-                    _ = finalMessage.Append($" , DateTime: \"{DateTime.ToString("yyyy/MM/dd HH:mm:ss")}\"");
-                }
-                else
-                {
-                    _ = finalMessage.Append($"\nDateTime: \"{DateTime.ToString("yyyy/MM/dd HH:mm:ss")}\"");
-                }
-            }
-
-            _ = finalMessage.Append(Environment.NewLine);
-            //_ = finalMessage.Append(Environment.NewLine);
-
-
-
-            return finalMessage.ToString();
-
-        }
-
-
-
-
     }
+
+
+   
 }

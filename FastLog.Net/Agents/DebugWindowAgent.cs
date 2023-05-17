@@ -1,4 +1,5 @@
 ﻿using FastLog.Enums;
+using FastLog.Net.Helpers.ExtendedMethods;
 using System;
 using System.Collections.Generic;
 using System.Diagnostics;
@@ -98,7 +99,7 @@ namespace TrendSoft.FastLog.Agents
                 if (!_registeredEvents.Any(type => LogModel.LogEventType == type)) return Task.CompletedTask;
 
 
-                Debug.WriteLine(LogModel.GetLogMessage(false));
+                Debug.WriteLine(LogModel.ToLogMessage());
             }
             catch (Exception ex)
             {

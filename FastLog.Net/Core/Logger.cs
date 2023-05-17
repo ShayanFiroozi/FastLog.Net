@@ -70,14 +70,14 @@ namespace TrendSoft.FastLog.Core
         }
 
 
-        public Logger LogMachineName()
+        public Logger WithMachineName()
         {
             saveMachineName = true;
             return this;
         }
 
 
-        public Logger LogApplicationName(string applicationName)
+        public Logger WithApplicationName(string applicationName)
         {
             this.applicationName = applicationName;
             return this;

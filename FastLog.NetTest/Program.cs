@@ -13,10 +13,11 @@ namespace TrendSoft.LogModuleTest
 
             LoggerTest.StartLoggers();
 
-            Task.Delay(5_000).GetAwaiter().GetResult();
+            Task.Delay(1_000).GetAwaiter().GetResult();
 
 
-            LoggerTest.CrazyTestWithMultiThreadMultiTask();
+            // LoggerTest.CrazyTestWithMultiThreadMultiTask();
+            LoggerTest.NormalTest();
 
             Console.Beep();
 
