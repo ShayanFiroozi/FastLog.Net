@@ -1,6 +1,7 @@
 # FastLog.Net
 ToDo List : 
 
+** Add EventTypeManager<T> for each agent class.
 1- Add TextFile Header.
 2- Add In-Memory log.
 3- Add LiteDB agent.
