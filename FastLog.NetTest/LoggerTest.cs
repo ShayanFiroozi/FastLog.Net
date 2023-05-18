@@ -185,7 +185,7 @@ namespace FastLog.NetTest
             {
 
                 Exception exception = new InvalidCastException("ANPR engine cast is not valid",
-                                        new CannotUnloadAppDomainException("Engine is not loaded"));
+                                        new CannotUnloadAppDomainException("Engine is not loaded",new AccessViolationException("Just kiddin U !")));
 
 
                 _ = loggerA.LogException(exception, 1364);

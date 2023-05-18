@@ -100,7 +100,7 @@ namespace FastLog.Net.Helpers.ExtendedMethods
 
             if (logEventModel.LogEventType == LogEventTypes.EXCEPTION)
             {
-                _ = finalMessage.Append($" \"Message\":\n  {logEventModel.Exception.ToJsonText()}")
+                _ = finalMessage.Append($" \"Message\": \n{logEventModel.Exception.ToJsonText()}")
                                  .Append(',').Append('\n');
             }
             else
@@ -124,13 +124,12 @@ namespace FastLog.Net.Helpers.ExtendedMethods
 
             if (!string.IsNullOrWhiteSpace(logEventModel.ApplicationName))
             {
-                _ = finalMessage.Append($" \"App\": \"{(string.IsNullOrWhiteSpace(logEventModel.ApplicationName) ? "N/A" : logEventModel.ApplicationName)}\"")
+                _ = finalMessage.Append($" \"Application\": \"{(string.IsNullOrWhiteSpace(logEventModel.ApplicationName) ? "N/A" : logEventModel.ApplicationName)}\"")
                     .Append('\n');
             }
 
-            _ = finalMessage.Append("}\n")
-                            .Append('\n')
-                            .Append(',');
+            _ = finalMessage.Append("},")
+                            .Append('\n');
 
   
             return finalMessage.ToString();

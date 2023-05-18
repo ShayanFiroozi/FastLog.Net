@@ -27,7 +27,7 @@ namespace FastLog.Net.Helpers.ExtendedMethods
                             .Append($"{new string(' ', spaceCount + 2)}\"Message\": \"{exception.Message}\"")
                             .Append(',').Append('\n')
 
-                            .Append($"{new string(' ', spaceCount + 2)}\"Inner Exception\": \"{(exception.InnerException == null ? "N/A" : $"\n{exception.InnerException.ToJsonText(SpaceLevel + 1)}\n")}\"")
+                            .Append($"{new string(' ', spaceCount + 2)}\"Inner Exception\": {(exception.InnerException == null ? "\"N/A\"" : $"\n{exception.InnerException.ToJsonText(SpaceLevel + 1)}")}")
                             .Append(',').Append('\n')
 
                             .Append($"{new string(' ', spaceCount + 2)}\"Source\": \"{(string.IsNullOrWhiteSpace(exception.Source) ? "N/A" : exception.Source)}\"")
@@ -37,7 +37,7 @@ namespace FastLog.Net.Helpers.ExtendedMethods
                             .Append(',').Append('\n')
 
                             .Append($"{new string(' ', spaceCount + 2)}\"Target Site\": \"{(exception.TargetSite == null ? "N/A" : exception.TargetSite.Name)}\"")
-                            .Append(',').Append('\n');
+                            .Append($"\n{new string(' ', spaceCount)}}}");
 
             //_ = finalMessage.Append("}\n");
 
