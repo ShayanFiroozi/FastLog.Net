@@ -158,7 +158,7 @@ namespace TrendSoft.FastLog.Agents
                 }
 
 
-                Console.WriteLine(LogModel.ToLogMessage());
+                Console.WriteLine(LogModel.ToPlainText());
 
 
             }

@@ -99,7 +99,7 @@ namespace TrendSoft.FastLog.Agents
                 if (!_registeredEvents.Any(type => LogModel.LogEventType == type)) return Task.CompletedTask;
 
 
-                Debug.WriteLine(LogModel.ToLogMessage());
+                Debug.WriteLine(LogModel.ToPlainText());
             }
             catch (Exception ex)
             {

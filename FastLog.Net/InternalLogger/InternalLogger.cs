@@ -200,7 +200,7 @@ namespace TrendSoft.FastLog.Internal
                         Console.ResetColor();
                         Console.ForegroundColor = ConsoleColor.DarkRed;
 
-                        Console.WriteLine($"{LogToSave.ToLogMessage()}\n");
+                        Console.WriteLine($"{LogToSave.ToPlainText()}\n");
 
                         Console.ResetColor();
 #endif
@@ -213,7 +213,7 @@ namespace TrendSoft.FastLog.Internal
                         Console.ResetColor();
                         Console.ForegroundColor = ConsoleColor.DarkRed;
 
-                        Console.WriteLine($"{LogToSave.ToLogMessage()}\n");
+                        Console.WriteLine($"{LogToSave.ToPlainText()}\n");
 
                         Console.ResetColor();
                     }
@@ -223,7 +223,7 @@ namespace TrendSoft.FastLog.Internal
                 if (_LogOnDebugWindow)
                 {
                     Debug.WriteLine($"\nLogger \"Internal Exception\" has been occured :");
-                    Debug.WriteLine($"{LogToSave.ToLogMessage()}\n");
+                    Debug.WriteLine($"{LogToSave.ToPlainText()}\n");
                 }
 
 
@@ -254,7 +254,7 @@ namespace TrendSoft.FastLog.Internal
 
 
                 ThreadSafeFileHelper.AppendAllText(InternalLogFile,
-                                                $"{LogToSave.ToLogMessage()}");
+                                                $"{LogToSave.ToPlainText()}");
 
 
                 // May be NOT "Thread-Safe"
@@ -284,7 +284,7 @@ namespace TrendSoft.FastLog.Internal
                     Console.ResetColor();
                     Console.ForegroundColor = ConsoleColor.DarkGray;
 
-                    Console.WriteLine($"{logEventModel.ToLogMessage()}");
+                    Console.WriteLine($"{logEventModel.ToPlainText()}");
 
                     Console.ResetColor();
                 }
@@ -293,7 +293,7 @@ namespace TrendSoft.FastLog.Internal
                 if (_LogOnDebugWindow)
                 {
                     Debug.Write($"Logger \"Internal System Event\" has been occured :\n");
-                    Debug.WriteLine($"{logEventModel.ToLogMessage()}");
+                    Debug.WriteLine($"{logEventModel.ToPlainText()}");
                 }
 
                 // ATTENTION : There's a chance of "HostProtectionException" or "PlatformNotSupportedException" exception.
@@ -312,7 +312,7 @@ namespace TrendSoft.FastLog.Internal
 
 
                 ThreadSafeFileHelper.AppendAllText(InternalLogFile,
-                                                $"{logEventModel.ToLogMessage()}");
+                                                $"{logEventModel.ToPlainText()}");
 
 
                 // May be NOT "Thread-Safe"

@@ -32,6 +32,11 @@ namespace FastLog.NetTest
                             .ApplyAgents(AgentsManager.Create()
                                                       //.AddBeepAgent(BeepAgent.Create(internalLogger))
                                                       .AddConsoleAgent(ConsoleAgent.Create(internalLogger))
+
+                                                      .AddJsonFileAgent(JsonFileAgent.Create(internalLogger)
+                                                                                                .SaveLogToFile("D:\\Logs\\TestLog.json")
+                                                                                                .DeleteTheLogFileWhenExceededTheMaximumSizeOf(1000))
+
                                                       .AddPlaintTextFileAgent(PlainTextFileAgent.Create(internalLogger)
                                                                                                 .SaveLogToFile("D:\\Logs\\TestLog.log")
                                                                                                 .DeleteTheLogFileWhenExceededTheMaximumSizeOf(1000))

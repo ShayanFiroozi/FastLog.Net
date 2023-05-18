@@ -15,7 +15,7 @@ namespace TrendSoft.FastLog.Agents
 {
     // Note : DebugWindowLogger class uses fluent "Builder" pattern.
 
-    public class JSONFileAgent : ILoggerAgent
+    public class JsonFileAgent : ILoggerAgent
     {
         private readonly List<LogEventTypes> _registeredEvents = new List<LogEventTypes>();
         private readonly InternalLogger InternalLogger = null;
@@ -33,27 +33,27 @@ namespace TrendSoft.FastLog.Agents
         #region Fluent Builder Methods
 
         //Keep it private to make it non accessible from the outside of the class !!
-        private JSONFileAgent(InternalLogger internalLogger = null)
+        private JsonFileAgent(InternalLogger internalLogger = null)
         {
             IncludeAllEventTypes();
             InternalLogger = internalLogger;
         }
 
-        public static JSONFileAgent Create(InternalLogger internalLogger = null) => new JSONFileAgent(internalLogger);
+        public static JsonFileAgent Create(InternalLogger internalLogger = null) => new JsonFileAgent(internalLogger);
 
-        public JSONFileAgent ExecuteOnlyOnDebugMode()
+        public JsonFileAgent ExecuteOnlyOnDebugMode()
         {
             executeOnlyOnDebugMode = true;
             return this;
         }
 
-        public JSONFileAgent ExecuteOnlyOnReleaseMode()
+        public JsonFileAgent ExecuteOnlyOnReleaseMode()
         {
             executeOnlyOnReleaseMode = true;
             return this;
         }
 
-        public JSONFileAgent IncludeEventType(LogEventTypes logEventType)
+        public JsonFileAgent IncludeEventType(LogEventTypes logEventType)
         {
             if (!_registeredEvents.Any(type => type == logEventType))
             {
@@ -63,7 +63,7 @@ namespace TrendSoft.FastLog.Agents
             return this;
         }
 
-        public JSONFileAgent ExcludeEventType(LogEventTypes logEventType)
+        public JsonFileAgent ExcludeEventType(LogEventTypes logEventType)
         {
             if (_registeredEvents.Any(type => type == logEventType))
             {
@@ -73,7 +73,7 @@ namespace TrendSoft.FastLog.Agents
             return this;
         }
 
-        public JSONFileAgent IncludeAllEventTypes()
+        public JsonFileAgent IncludeAllEventTypes()
         {
             _registeredEvents.Clear();
 
@@ -85,7 +85,7 @@ namespace TrendSoft.FastLog.Agents
             return this;
         }
 
-        public JSONFileAgent ExcludeAllEventTypes()
+        public JsonFileAgent ExcludeAllEventTypes()
         {
             _registeredEvents.Clear();
 
@@ -93,7 +93,7 @@ namespace TrendSoft.FastLog.Agents
         }
 
 
-        public JSONFileAgent SaveLogToFile(string filename)
+        public JsonFileAgent SaveLogToFile(string filename)
         {
             if (string.IsNullOrWhiteSpace(filename))
             {
@@ -123,7 +123,7 @@ namespace TrendSoft.FastLog.Agents
 
         }
 
-        public JSONFileAgent DeleteTheLogFileWhenExceededTheMaximumSizeOf(short logFileMaxSizeMB)
+        public JsonFileAgent DeleteTheLogFileWhenExceededTheMaximumSizeOf(short logFileMaxSizeMB)
         {
 
             if (logFileMaxSizeMB <= 0)
@@ -184,7 +184,7 @@ namespace TrendSoft.FastLog.Agents
 
 
                 // #Refactor Required. ( Goal : use an approach to be able to catch exceptions properly and not using "Fire and Forget" style )
-                return Task.Run(() => ThreadSafeFileHelper.AppendAllText(LogFile, LogModel.ToLogMessage()), cancellationToken);
+                return Task.Run(() => ThreadSafeFileHelper.AppendAllText(LogFile, LogModel.ToJsonText()), cancellationToken);
 
 
                 // Note : The approach below (when using File.AppendAllTextAsync) is not thread-safe and has some issues ,

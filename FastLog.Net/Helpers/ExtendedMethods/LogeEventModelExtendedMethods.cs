@@ -8,7 +8,7 @@ namespace FastLog.Net.Helpers.ExtendedMethods
     internal static class LogeEventModelExtendedMethods
     {
 
-        public static string ToLogMessage(this LogEventModel logEventModel)
+        public static string ToPlainText(this LogEventModel logEventModel)
         {
             StringBuilder finalMessage = new StringBuilder();
 
@@ -17,7 +17,7 @@ namespace FastLog.Net.Helpers.ExtendedMethods
                             .Append(']')
                             .Append(logEventModel.EventId != 0 ? $" [{logEventModel.EventId}]" : string.Empty)
                             .Append(" -> ")
-                            .Append(logEventModel.EventText);
+                            .Append(logEventModel.EventMessage);
 
 
             if (!string.IsNullOrWhiteSpace(logEventModel.Details))
@@ -70,7 +70,71 @@ namespace FastLog.Net.Helpers.ExtendedMethods
 
 
             _ = finalMessage.Append(Environment.NewLine);
-            //_ = finalMessage.Append(Environment.NewLine);
+
+
+
+
+            return finalMessage.ToString();
+
+        }
+
+
+
+
+        public static string ToJsonText(this LogEventModel logEventModel)
+        {
+            StringBuilder finalMessage = new StringBuilder();
+
+            _ = finalMessage.Append("[\n {").Append('\n')
+
+
+                            .Append($" \"DateTime\": \"{logEventModel.DateTime.ToLogFriendlyDateTime()}\"")
+                             .Append(',').Append('\n')
+
+                            .Append($" \"Type\": \"{logEventModel.LogEventType}\"")
+                             .Append(',').Append('\n')
+
+                            .Append($" \"Id\": \"{logEventModel.EventId}\"")
+                             .Append(',').Append('\n');
+
+
+            if (logEventModel.LogEventType == LogEventTypes.EXCEPTION)
+            {
+                _ = finalMessage.Append($" \"Message\":\n  \"{logEventModel.Exception.ToJsonText()}\"")
+                                 .Append(',').Append('\n');
+            }
+            else
+            {
+
+                _ = finalMessage.Append($" \"Message\": \"{(string.IsNullOrWhiteSpace(logEventModel.EventMessage) ? "N/A" : logEventModel.EventMessage)}\"")
+                                 .Append(',').Append('\n');
+
+
+
+                _ = finalMessage.Append($" \"Details\": \"{(string.IsNullOrWhiteSpace(logEventModel.Details) ? "N/A" : logEventModel.Details)}\"")
+                         .Append(',').Append('\n');
+
+            }
+
+            if (logEventModel.LogMachineName)
+            {
+                _ = finalMessage.Append($" \"MachineName\": \"{Environment.MachineName}\"")
+                    .Append(',').Append('\n');
+            }
+
+
+            if (!string.IsNullOrWhiteSpace(logEventModel.ApplicationName))
+            {
+                _ = finalMessage.Append($" \"App\": \"{(string.IsNullOrWhiteSpace(logEventModel.ApplicationName) ? "N/A" : logEventModel.ApplicationName)}\"")
+                    .Append('\n');
+            }
+
+            _ = finalMessage.Append(" }\n]")
+                            .Append('\n')
+                            .Append(',');
+
+            _ = finalMessage.Append(Environment.NewLine);
+
 
 
 

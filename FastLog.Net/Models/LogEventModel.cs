@@ -18,7 +18,7 @@ namespace TrendSoft.FastLog.Models
         {
             DateTime = DateTime.Now;
             this.LogEventType = LogEventType;
-            this.EventText = EventText;
+            this.EventMessage = EventText;
             this.Details = Details;
             this.LogMachineName = LogMachineName;
             this.ApplicationName = ApplicationName;
@@ -40,7 +40,9 @@ namespace TrendSoft.FastLog.Models
                    LogMachineName,
                    ApplicationName,
                    EventId)
-        { }
+        {
+            this.Exception = exception;
+        }
 
 
 
@@ -59,9 +61,11 @@ namespace TrendSoft.FastLog.Models
 
         public DateTime DateTime { get; private set; }
 
+        internal Exception Exception { get; private set; } = null;
+
         public LogEventTypes LogEventType { get; private set; }
 
-        public string EventText { get; private set; }
+        public string EventMessage { get; private set; }
 
         public string Details { get; private set; }
 
