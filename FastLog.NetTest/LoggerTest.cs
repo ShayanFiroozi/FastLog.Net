@@ -33,11 +33,12 @@ namespace FastLog.NetTest
                                                       //.AddBeepAgent(BeepAgent.Create(internalLogger))
                                                       .AddConsoleAgent(ConsoleAgent.Create(internalLogger))
 
-                                                      .AddJsonFileAgent(JsonFileAgent.Create(internalLogger)
-                                                                                                .SaveLogToFile("D:\\Logs\\TestLog.json")
-                                                                                                .DeleteTheLogFileWhenExceededTheMaximumSizeOf(1000))
+                                                      .AddTextFileAgent(TextFileAgent.Create(internalLogger)
+                                                                                     .UseJsonFormat() 
+                                                                                     .SaveLogToFile("D:\\Logs\\TestLog.json")
+                                                                                     .DeleteTheLogFileWhenExceededTheMaximumSizeOf(1000))
 
-                                                      .AddPlaintTextFileAgent(PlainTextFileAgent.Create(internalLogger)
+                                                      .AddTextFileAgent(TextFileAgent.Create(internalLogger)
                                                                                                 .SaveLogToFile("D:\\Logs\\TestLog.log")
                                                                                                 .DeleteTheLogFileWhenExceededTheMaximumSizeOf(1000))
 
@@ -183,7 +184,12 @@ namespace FastLog.NetTest
             while (true)
             {
 
-                _ = loggerA.LogException(new InvalidCastException(), 1364);
+                Exception exception = new InvalidCastException("ANPR engine cast is not valid",
+                                        new CannotUnloadAppDomainException("Engine is not loaded"));
+
+
+                _ = loggerA.LogException(exception, 1364);
+
                 Task.Delay(2_000).GetAwaiter().GetResult();
 
                 _ = loggerA.LogInfo($"This is an \"INFO\" message from the \"LoggerWriteTest\"");

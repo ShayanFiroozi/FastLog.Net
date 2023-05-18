@@ -177,15 +177,18 @@ namespace TrendSoft.FastLog.Internal
                 catch { }
 
 
-                LogEventModel LogToSave = new LogEventModel(LogEventTypes.EXCEPTION,
 
-                   $"\nId : {exception.HResult}\n" +
-                   $"Message : {exception.Message ?? "N/A"}\n",
+                LogEventModel LogToSave = new LogEventModel(exception);
 
-                   $"InnerException : {exception.InnerException?.Message ?? "N/A"}\n" +
-                   $"StackTrace : {exception.StackTrace ?? "N/A"}\n" +
-                   $"Source : {exception.Source ?? "N/A"}\n" +
-                   $"Target Site : {(exception.TargetSite != null ? exception.TargetSite.Name : "N/A")}");
+                //LogEventModel LogToSave = new LogEventModel(LogEventTypes.EXCEPTION,
+
+                //   $"\nId : {exception.HResult}\n" +
+                //   $"Message : {exception.Message ?? "N/A"}\n",
+
+                //   $"InnerException : {exception.InnerException?.Message ?? "N/A"}\n" +
+                //   $"StackTrace : {exception.StackTrace ?? "N/A"}\n" +
+                //   $"Source : {exception.Source ?? "N/A"}\n" +
+                //   $"Target Site : {(exception.TargetSite != null ? exception.TargetSite.Name : "N/A")}");
 
 
 
@@ -200,7 +203,7 @@ namespace TrendSoft.FastLog.Internal
                         Console.ResetColor();
                         Console.ForegroundColor = ConsoleColor.DarkRed;
 
-                        Console.WriteLine($"{LogToSave.ToPlainText()}\n");
+                        Console.WriteLine($"{LogToSave.ToJsonText()}\n");
 
                         Console.ResetColor();
 #endif
@@ -213,7 +216,7 @@ namespace TrendSoft.FastLog.Internal
                         Console.ResetColor();
                         Console.ForegroundColor = ConsoleColor.DarkRed;
 
-                        Console.WriteLine($"{LogToSave.ToPlainText()}\n");
+                        Console.WriteLine($"{LogToSave.ToJsonText()}\n");
 
                         Console.ResetColor();
                     }
@@ -223,7 +226,7 @@ namespace TrendSoft.FastLog.Internal
                 if (_LogOnDebugWindow)
                 {
                     Debug.WriteLine($"\nLogger \"Internal Exception\" has been occured :");
-                    Debug.WriteLine($"{LogToSave.ToPlainText()}\n");
+                    Debug.WriteLine($"{LogToSave.ToJsonText()}\n");
                 }
 
 
@@ -254,7 +257,7 @@ namespace TrendSoft.FastLog.Internal
 
 
                 ThreadSafeFileHelper.AppendAllText(InternalLogFile,
-                                                $"{LogToSave.ToPlainText()}");
+                                                $"{LogToSave.ToJsonText()}");
 
 
                 // May be NOT "Thread-Safe"

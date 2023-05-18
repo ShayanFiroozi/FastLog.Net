@@ -136,8 +136,6 @@ namespace FastLog.Net.Helpers.ExtendedMethods
             _ = finalMessage.Append(Environment.NewLine);
 
 
-
-
             return finalMessage.ToString();
 
         }

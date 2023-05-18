@@ -15,12 +15,15 @@ namespace TrendSoft.FastLog.Agents
 {
     // Note : DebugWindowLogger class uses fluent "Builder" pattern.
 
-    public class JsonFileAgent : ILoggerAgent
+    public class TextFileAgent : ILoggerAgent
     {
         private readonly List<LogEventTypes> _registeredEvents = new List<LogEventTypes>();
         private readonly InternalLogger InternalLogger = null;
+
         private bool executeOnlyOnDebugMode { get; set; } = false;
         private bool executeOnlyOnReleaseMode { get; set; } = false;
+
+        private bool jsonFormat { get; set; } = false;
 
         #region Properties
 
@@ -33,27 +36,34 @@ namespace TrendSoft.FastLog.Agents
         #region Fluent Builder Methods
 
         //Keep it private to make it non accessible from the outside of the class !!
-        private JsonFileAgent(InternalLogger internalLogger = null)
+        private TextFileAgent(InternalLogger internalLogger = null)
         {
             IncludeAllEventTypes();
             InternalLogger = internalLogger;
         }
 
-        public static JsonFileAgent Create(InternalLogger internalLogger = null) => new JsonFileAgent(internalLogger);
+        public static TextFileAgent Create(InternalLogger internalLogger = null) => new TextFileAgent(internalLogger);
 
-        public JsonFileAgent ExecuteOnlyOnDebugMode()
+        public TextFileAgent ExecuteOnlyOnDebugMode()
         {
             executeOnlyOnDebugMode = true;
             return this;
         }
 
-        public JsonFileAgent ExecuteOnlyOnReleaseMode()
+        public TextFileAgent ExecuteOnlyOnReleaseMode()
         {
             executeOnlyOnReleaseMode = true;
             return this;
         }
 
-        public JsonFileAgent IncludeEventType(LogEventTypes logEventType)
+
+        public TextFileAgent UseJsonFormat()
+        {
+            jsonFormat = true;
+            return this;
+        }
+
+        public TextFileAgent IncludeEventType(LogEventTypes logEventType)
         {
             if (!_registeredEvents.Any(type => type == logEventType))
             {
@@ -63,7 +73,8 @@ namespace TrendSoft.FastLog.Agents
             return this;
         }
 
-        public JsonFileAgent ExcludeEventType(LogEventTypes logEventType)
+
+        public TextFileAgent ExcludeEventType(LogEventTypes logEventType)
         {
             if (_registeredEvents.Any(type => type == logEventType))
             {
@@ -73,7 +84,8 @@ namespace TrendSoft.FastLog.Agents
             return this;
         }
 
-        public JsonFileAgent IncludeAllEventTypes()
+
+        public TextFileAgent IncludeAllEventTypes()
         {
             _registeredEvents.Clear();
 
@@ -85,7 +97,8 @@ namespace TrendSoft.FastLog.Agents
             return this;
         }
 
-        public JsonFileAgent ExcludeAllEventTypes()
+
+        public TextFileAgent ExcludeAllEventTypes()
         {
             _registeredEvents.Clear();
 
@@ -93,7 +106,7 @@ namespace TrendSoft.FastLog.Agents
         }
 
 
-        public JsonFileAgent SaveLogToFile(string filename)
+        public TextFileAgent SaveLogToFile(string filename)
         {
             if (string.IsNullOrWhiteSpace(filename))
             {
@@ -123,7 +136,8 @@ namespace TrendSoft.FastLog.Agents
 
         }
 
-        public JsonFileAgent DeleteTheLogFileWhenExceededTheMaximumSizeOf(short logFileMaxSizeMB)
+
+        public TextFileAgent DeleteTheLogFileWhenExceededTheMaximumSizeOf(short logFileMaxSizeMB)
         {
 
             if (logFileMaxSizeMB <= 0)
@@ -144,7 +158,6 @@ namespace TrendSoft.FastLog.Agents
 
         public Task ExecuteAgent(LogEventModel LogModel, CancellationToken cancellationToken = default)
         {
-
 #if !RELEASE
 
             if (executeOnlyOnReleaseMode) return Task.CompletedTask;
@@ -156,6 +169,7 @@ namespace TrendSoft.FastLog.Agents
 
 #endif
 
+
             if (LogModel is null)
             {
                 return Task.CompletedTask;
@@ -163,6 +177,8 @@ namespace TrendSoft.FastLog.Agents
 
             try
             {
+
+
 
                 if (!Directory.Exists(Path.GetDirectoryName(LogFile)))
                 {
@@ -184,7 +200,7 @@ namespace TrendSoft.FastLog.Agents
 
 
                 // #Refactor Required. ( Goal : use an approach to be able to catch exceptions properly and not using "Fire and Forget" style )
-                return Task.Run(() => ThreadSafeFileHelper.AppendAllText(LogFile, LogModel.ToJsonText()), cancellationToken);
+                return Task.Run(() => ThreadSafeFileHelper.AppendAllText(LogFile, jsonFormat ? LogModel.ToJsonText() : LogModel.ToPlainText()), cancellationToken);
 
 
                 // Note : The approach below (when using File.AppendAllTextAsync) is not thread-safe and has some issues ,

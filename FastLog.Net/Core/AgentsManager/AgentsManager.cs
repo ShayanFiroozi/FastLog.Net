@@ -46,18 +46,12 @@ namespace FastLog.Net.Core
         }
 
 
-        public AgentsManager AddPlaintTextFileAgent(PlainTextFileAgent plainTextFileLogger)
+        public AgentsManager AddTextFileAgent(TextFileAgent textFileAgent)
         {
-            AddAgent(plainTextFileLogger);
+            AddAgent(textFileAgent);
             return this;
         }
 
-
-        public AgentsManager AddJsonFileAgent(JsonFileAgent plainTextFileLogger)
-        {
-            AddAgent(plainTextFileLogger);
-            return this;
-        }
 
         public AgentsManager AddRunProcessAgent(RunProcessAgent runProcessAgent)
         {

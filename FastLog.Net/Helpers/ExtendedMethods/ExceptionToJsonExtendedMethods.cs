@@ -28,23 +28,16 @@ namespace FastLog.Net.Helpers.ExtendedMethods
                             .Append($"      \"Inner Exception\": \"{(exception.InnerException == null ? "N/A" : $"\n{exception.InnerException.ToJsonText()}\n")}\"")
                             .Append(',').Append('\n')
 
-                            .Append($"      \"Source\": \"{(string.IsNullOrWhiteSpace(exception.Source) ? "/NA" : exception.Source)}\"")
+                            .Append($"      \"Source\": \"{(string.IsNullOrWhiteSpace(exception.Source) ? "N/A" : exception.Source)}\"")
                             .Append(',').Append('\n')
 
-                            .Append($"      \"StackTrace\": \"{(string.IsNullOrWhiteSpace(exception.StackTrace) ? "/NA" : exception.StackTrace)}\"")
+                            .Append($"      \"StackTrace\": \"{(string.IsNullOrWhiteSpace(exception.StackTrace) ? "N/A" : exception.StackTrace)}\"")
                             .Append(',').Append('\n')
 
                             .Append($"      \"Target Site\": \"{(exception.TargetSite == null ? "N/A" : exception.TargetSite.Name)}\"")
                             .Append(',').Append('\n');
-
-
-
         
             _ = finalMessage.Append("     }\n   ]");
-
-            //_ = finalMessage.Append(Environment.NewLine);
-
-
 
 
             return finalMessage.ToString();
