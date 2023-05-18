@@ -22,6 +22,8 @@ namespace TrendSoft.FastLog.Agents
         private bool executeOnlyOnDebugMode { get; set; } = false;
         private bool executeOnlyOnReleaseMode { get; set; } = false;
 
+        private bool jsonFormat { get; set; } = false;
+
 
         #region Fluent Builder Methods
 
@@ -45,6 +47,12 @@ namespace TrendSoft.FastLog.Agents
         public ConsoleAgent ExecuteOnlyOnReleaseMode()
         {
             executeOnlyOnReleaseMode = true;
+            return this;
+        }
+
+        public ConsoleAgent UseJsonFormat()
+        {
+            jsonFormat = true;
             return this;
         }
 
@@ -158,7 +166,7 @@ namespace TrendSoft.FastLog.Agents
                 }
 
 
-                Console.WriteLine(LogModel.ToPlainText());
+                Console.WriteLine(jsonFormat ? LogModel.ToJsonText() : LogModel.ToPlainText());
 
 
             }
