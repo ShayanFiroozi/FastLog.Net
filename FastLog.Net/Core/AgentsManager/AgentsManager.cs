@@ -32,7 +32,7 @@ namespace FastLog.Net.Core
             return this;
         }
 
-        public AgentsManager AddDebugWindowAgent(DebugWindowAgent debugWindowLogger)
+        public AgentsManager AddDebugWindowAgent(DebugSystemAgent debugWindowLogger)
         {
             AddAgent(debugWindowLogger);
             return this;
@@ -78,7 +78,7 @@ namespace FastLog.Net.Core
 
 
 #if DEBUG
-            if (agent is DebugWindowAgent && loggerAgents.Any(a => a is DebugWindowAgent))
+            if (agent is DebugSystemAgent && loggerAgents.Any(a => a is DebugSystemAgent))
             {
                 throw new Exception("A \"DebugWindowLogger\" agent already exists on the agent list.");
             }

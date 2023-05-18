@@ -85,7 +85,7 @@ namespace FastLog.Net.Helpers.ExtendedMethods
         {
             StringBuilder finalMessage = new StringBuilder();
 
-            _ = finalMessage.Append("[\n {").Append('\n')
+            _ = finalMessage.Append("{").Append('\n')
 
 
                             .Append($" \"DateTime\": \"{logEventModel.DateTime.ToLogFriendlyDateTime()}\"")
@@ -100,7 +100,7 @@ namespace FastLog.Net.Helpers.ExtendedMethods
 
             if (logEventModel.LogEventType == LogEventTypes.EXCEPTION)
             {
-                _ = finalMessage.Append($" \"Message\":\n  \"{logEventModel.Exception.ToJsonText()}\"")
+                _ = finalMessage.Append($" \"Message\":\n  {logEventModel.Exception.ToJsonText()}")
                                  .Append(',').Append('\n');
             }
             else
@@ -108,7 +108,6 @@ namespace FastLog.Net.Helpers.ExtendedMethods
 
                 _ = finalMessage.Append($" \"Message\": \"{(string.IsNullOrWhiteSpace(logEventModel.EventMessage) ? "N/A" : logEventModel.EventMessage)}\"")
                                  .Append(',').Append('\n');
-
 
 
                 _ = finalMessage.Append($" \"Details\": \"{(string.IsNullOrWhiteSpace(logEventModel.Details) ? "N/A" : logEventModel.Details)}\"")
@@ -129,13 +128,11 @@ namespace FastLog.Net.Helpers.ExtendedMethods
                     .Append('\n');
             }
 
-            _ = finalMessage.Append(" }\n]")
+            _ = finalMessage.Append("}\n")
                             .Append('\n')
                             .Append(',');
 
-            _ = finalMessage.Append(Environment.NewLine);
-
-
+  
             return finalMessage.ToString();
 
         }
