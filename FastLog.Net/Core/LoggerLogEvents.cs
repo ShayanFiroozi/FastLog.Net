@@ -103,7 +103,7 @@ namespace TrendSoft.FastLog.Core
                                   int EventId = 0)
         {
 
-            if (!_IsLoggerRunning)
+            if (!isLoggerRunning)
             {
                 throw new Exception("The logger is not running , please call \"StartLogger\" to start the logger.");
 
@@ -125,15 +125,15 @@ namespace TrendSoft.FastLog.Core
                 LogEventModel LogEvent = new LogEventModel(LogType,
                                              LogText,
                                              Details,
-                                             ConfigManager.SaveMachineName,
-                                             ConfigManager.ApplicationName,
+                                             configManager.SaveMachineName,
+                                             configManager.ApplicationName,
                                              EventId);
 
                 return LoggerChannelWriter.WriteAsync(LogEvent);
             }
             catch (Exception ex)
             {
-                this.InternalLogger?.LogInternalException(ex);
+                this.internalLogger?.LogInternalException(ex);
             }
 
 #if NET5_0_OR_GREATER
@@ -147,7 +147,7 @@ namespace TrendSoft.FastLog.Core
         private ValueTask LogEventHelper(Exception exception,
                                          int EventId = 0)
         {
-            if (!_IsLoggerRunning)
+            if (!isLoggerRunning)
             {
                 throw new Exception("The logger is not running , please call \"StartLogger\" to start the logger.");
             }
@@ -164,15 +164,15 @@ namespace TrendSoft.FastLog.Core
             try
             {
                 LogEventModel LogEvent = new LogEventModel(exception,
-                                                           ConfigManager.SaveMachineName,
-                                                           ConfigManager.ApplicationName,
+                                                           configManager.SaveMachineName,
+                                                           configManager.ApplicationName,
                                                            EventId);
 
                 return LoggerChannelWriter.WriteAsync(LogEvent);
             }
             catch (Exception ex)
             {
-                this.InternalLogger?.LogInternalException(ex);
+                this.internalLogger?.LogInternalException(ex);
             }
 
 #if NET5_0_OR_GREATER

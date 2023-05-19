@@ -73,14 +73,6 @@ namespace FastLog.Net.Core
 
 
 
-        public AgentsManager AddInMemoryAgent(InMemoryAgent methodExecutionAgent)
-        {
-            AddAgent(methodExecutionAgent);
-            return this;
-        }
-
-
-
         public void AddAgent(IAgent agent)
         {
             if (agent is ConsoleAgent && loggerAgents.Any(a => a is ConsoleAgent))

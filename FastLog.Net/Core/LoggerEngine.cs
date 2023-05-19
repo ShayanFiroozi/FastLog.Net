@@ -1,5 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Diagnostics;
+using System.Linq;
 using System.Threading.Tasks;
 using TrendSoft.FastLog.Interfaces;
 using TrendSoft.FastLog.Models;
@@ -17,7 +19,7 @@ namespace TrendSoft.FastLog.Core
 
             List<Task> tasksList = null;
 
-            if (ConfigManager.runAgentsInParallel) tasksList = new List<Task>();
+            if (configManager.RunAgentsInParallel) tasksList = new List<Task>();
 
             // Logger engine ->
 
@@ -26,57 +28,74 @@ namespace TrendSoft.FastLog.Core
 
                 while (!LoggerChannelReader.Completion.IsCompleted && !_cts.IsCancellationRequested)
                 {
-                    _IsLoggerRunning = true;
 
-                    LogEventModel EventModelFromChannel = await LoggerChannelReader.ReadAsync().ConfigureAwait(false);
-
-                    if (EventModelFromChannel != null)
+                    try
                     {
+                        isLoggerRunning = true;
 
-                        // Consume the LogEventModel on channel one by one with each logger agent in the agent list !
+                        LogEventModel EventModelFromChannel = await LoggerChannelReader.ReadAsync().ConfigureAwait(false);
 
-                        foreach (IAgent logger in agentsManager.AgentList)
+                        if (EventModelFromChannel != null)
                         {
-                            if (logger is null)
-                            {
-                                continue;
-                            }
-                            
-                            if (!_IsLoggerRunning) return;
 
-                            try
+
+                            HandleInMemoryEvents(EventModelFromChannel);
+
+                            Debug.WriteLine(InMemoryEvents.Count());
+
+                            // Consume the LogEventModel on channel one by one with each logger agent in the agent list !
+
+                            foreach (IAgent logger in Agents.AgentList)
                             {
-                                if (!string.IsNullOrWhiteSpace(EventModelFromChannel.EventMessage))
-                                {
-                                    if (ConfigManager.runAgentsInParallel)
-                                    {
-                                        tasksList.Add(logger.ExecuteAgent(EventModelFromChannel, _cts.Token));
-                                    }
-                                    else
-                                    {
-                                        await logger.ExecuteAgent(EventModelFromChannel, _cts.Token).ConfigureAwait(false);
-                                    }
-                                }
-                                else
+                                if (logger is null)
                                 {
                                     continue;
                                 }
 
+                                if (!isLoggerRunning) return;
+
+                                try
+                                {
+                                    if (!string.IsNullOrWhiteSpace(EventModelFromChannel.EventMessage))
+                                    {
+                                        if (configManager.RunAgentsInParallel)
+                                        {
+                                            tasksList.Add(logger.ExecuteAgent(EventModelFromChannel, _cts.Token));
+                                        }
+                                        else
+                                        {
+                                            await logger.ExecuteAgent(EventModelFromChannel, _cts.Token).ConfigureAwait(false);
+                                        }
+                                    }
+                                    else
+                                    {
+                                        continue;
+                                    }
+
+                                }
+                                catch (Exception ex)
+                                {
+                                    this.internalLogger?.LogInternalException(ex);
+                                }
+
+                                //Console.WriteLine($"{LoggerChannelReader.Count:N0} item(s) left in channel.");
                             }
-                            catch (Exception ex)
+
+                            if (configManager.RunAgentsInParallel)
                             {
-                                InternalLogger?.LogInternalException(ex);
+                                await Task.WhenAll(tasksList).ConfigureAwait(false);
                             }
 
-                            //Console.WriteLine($"{LoggerChannelReader.Count:N0} item(s) left in channel.");
-                        }
-
-                        if (ConfigManager.runAgentsInParallel)
-                        {
-                            await Task.WhenAll(tasksList).ConfigureAwait(false);
                         }
 
                     }
+                    catch (Exception ex)
+                    {
+                        this.internalLogger?.LogInternalException(ex);
+                    }
+
+
+
 
                 }
 
@@ -85,10 +104,21 @@ namespace TrendSoft.FastLog.Core
             });
         }
 
+        private void HandleInMemoryEvents(LogEventModel logEvent)
+        {
+            if (inMemoryEvents.Count >= configManager.MaxEventsToKeep)
+            {
+                inMemoryEvents.RemoveAt(0); // Remove the oldest event.
+
+            }
+
+            inMemoryEvents.Add(logEvent);
+
+        }
 
         public void StopLogger()
         {
-            _IsLoggerRunning = false;
+            isLoggerRunning = false;
             _cts.Cancel();
         }
 

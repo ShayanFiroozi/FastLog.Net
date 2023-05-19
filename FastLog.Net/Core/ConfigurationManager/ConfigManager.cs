@@ -1,12 +1,14 @@
-﻿namespace FastLog.Net.Core
+﻿using System;
+
+namespace FastLog.Net.Core
 {
     public class ConfigManager
     {
-        public string ApplicationName { get; set; } = string.Empty;
-        public bool SaveMachineName { get; set; } = false;
-        public bool runAgentsInParallel { get; set; } = false;
-
-
+        internal int MaxEventsToKeep { get; set; } = 0;
+        internal string ApplicationName { get; set; } = string.Empty;
+        internal bool SaveMachineName { get; set; } = false;
+        internal bool RunAgentsInParallel { get; set; } = false;
+        
 
         private ConfigManager() { }
 
@@ -14,6 +16,21 @@
         {
             return new ConfigManager();
         }
+
+        public ConfigManager WithMaxEventsToKeepInMemory(int maxEventsToKeep)
+        {
+
+            if (maxEventsToKeep < 0)
+            {
+                throw new ArgumentException($"'{nameof(maxEventsToKeep)}' can not be negative.", nameof(maxEventsToKeep));
+            }
+
+            this.MaxEventsToKeep = maxEventsToKeep;
+            return this;
+
+
+        }
+
 
         public ConfigManager IncludeMachineName()
         {
@@ -31,9 +48,9 @@
         /// <summary>
         /// WARNING : Run "Logger Agents" in parallel may impact the performance.
         /// </summary>
-        public ConfigManager RunAgentsInParallel()
+        public ConfigManager RunAgentsInParallelMode()
         {
-            runAgentsInParallel = true;
+            RunAgentsInParallel = true;
             return this;
         }
 

@@ -16,7 +16,7 @@ namespace TrendSoft.LogModuleTest
 
 
             LoggerTest.CrazyTestWithMultiThreadMultiTask();
-          //  LoggerTest.NormalTest();
+           // LoggerTest.NormalTest();
 
             Console.Beep();
 

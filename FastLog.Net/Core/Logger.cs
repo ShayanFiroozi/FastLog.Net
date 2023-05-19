@@ -18,26 +18,27 @@ namespace TrendSoft.FastLog.Core
             LoggerChannelReader = LoggerChannel.Reader;
             LoggerChannelWriter = LoggerChannel.Writer;
 
-            InternalLogger = internalLogger;
+            this.internalLogger = internalLogger;
 
             // Init properties below to prevent null exception if user did not set them later !
-            agentsManager = AgentsManager.Create();
-            ConfigManager = ConfigManager.Create();
+            Agents = AgentsManager.Create();
+            configManager = ConfigManager.Create();
         }
 
         public static Logger Create(InternalLogger internalLogger = null) => new Logger(internalLogger);
 
 
+     
         public Logger ApplyAgents(AgentsManager agentsManager)
         {
-            this.agentsManager = agentsManager;
+            this.Agents = agentsManager;
             return this;
         }
 
 
         public Logger ApplyConfig(ConfigManager configManager)
         {
-            this.ConfigManager = configManager;
+            this.configManager = configManager;
             return this;
         }
 
@@ -70,7 +71,7 @@ namespace TrendSoft.FastLog.Core
 
                 catch (Exception ex)
                 {
-                    this.InternalLogger?.LogInternalException(ex);
+                    this.internalLogger?.LogInternalException(ex);
                 }
             }
 

@@ -4,7 +4,10 @@ using FastLog.Net.Agents.FileBaseAgents;
 using FastLog.Net.Core;
 using System;
 using System.Collections.Generic;
+using System.Diagnostics;
 using System.IO;
+using System.Linq;
+using System.Runtime.InteropServices;
 using System.Threading.Tasks;
 using TrendSoft.FastLog.Core;
 using TrendSoft.FastLog.Internal;
@@ -20,13 +23,14 @@ namespace FastLog.NetTest
         {
 
             InternalLogger internalLogger = InternalLogger.Create()
-                                                   .SaveInternalEventsToFile("D:\\Logs\\InternalEventsLog.LOG")
-                                                   .DeleteTheLogFileWhenExceededTheMaximumSizeOf(100)
-                                                   .Beep()
-                                                     .BeepOnlyOnDebugMode()
-                                                   .PrintOnConsole()
-                                                     .PrintOnConsoleOnlyOnDebugMode()
-                                                   .PrintOnDebugWindow();
+                                                          .UseJsonFormat()
+                                                          .SaveInternalEventsToFile("D:\\Logs\\InternalEventsLog.LOG")
+                                                          .DeleteTheLogFileWhenExceededTheMaximumSizeOf(100)
+                                                          .Beep()
+                                                            .BeepOnlyOnDebugMode()
+                                                          .PrintOnConsole()
+                                                            .PrintOnConsoleOnlyOnDebugMode()
+                                                          .PrintOnDebugWindow();
 
 
 
@@ -41,22 +45,13 @@ namespace FastLog.NetTest
                                                       .AddTextFileAgent(TextFileAgent.Create(internalLogger)
                                                                                      .UseJsonFormat()
                                                                                      .SaveLogToFile("D:\\Logs\\TestLog.json")
-                                                                                     .DeleteTheLogFileWhenExceededTheMaximumSizeOf(50)
-                                                                                     .ExcludeAllEventTypes().IncludeEventType(Enums.LogEventTypes.EXCEPTION))
+                                                                                     .DeleteTheLogFileWhenExceededTheMaximumSizeOf(50))
 
                                                       .AddTextFileAgent(TextFileAgent.Create(internalLogger)
                                                                                      .SaveLogToFile("D:\\Logs\\TestLog.log")
-                                                                                     .DeleteTheLogFileWhenExceededTheMaximumSizeOf(50))
+                                                                                     .DeleteTheLogFileWhenExceededTheMaximumSizeOf(50)))
 
-                                                      //.AddMethodExecutionAgent(MethodExecutionAgent.Create(internalLogger).MethodToExecute(MethodA).ExecuteOnlyOnReleaseMode())
-                                                      //.AddMethodExecutionAgent(MethodExecutionAgent.Create(internalLogger).MethodToExecute(MethodB).ExecuteOnlyOnReleaseMode())
-
-                                                      .AddInMemoryAgent(InMemoryAgent.Create().WithMaxEventsToKeep(1_000)))
-
-                            
-
-
-                             .ApplyConfig(ConfigManager.Create());
+                             .ApplyConfig(ConfigManager.Create().WithMaxEventsToKeepInMemory(1_000));
 
 
             loggerA.StartLogger();
@@ -198,36 +193,40 @@ namespace FastLog.NetTest
 
                 _ = loggerA.LogException(exception, 1364);
 
-                Task.Delay(2_000).GetAwaiter().GetResult();
+                Task.Delay(50).GetAwaiter().GetResult();
 
                 _ = loggerA.LogInfo($"This is an \"INFO\" message from the \"LoggerWriteTest\"");
-                Task.Delay(2_000).GetAwaiter().GetResult();
+                Task.Delay(50).GetAwaiter().GetResult();
 
                 _ = loggerA.LogAlert($"This is an \"ALERT\" message from the \"LoggerWriteTest\"");
-                Task.Delay(2_000).GetAwaiter().GetResult();
+                Task.Delay(50).GetAwaiter().GetResult();
 
                 _ = loggerA.LogError($"This is an \"ERROR\" message from the \"LoggerWriteTest\"");
 
-                Task.Delay(2_000).GetAwaiter().GetResult();
+                Task.Delay(50).GetAwaiter().GetResult();
 
                 _ = loggerA.LogDebug($"This is a \"DEBUG\" message from the \"LoggerWriteTest\"");
 
-                Task.Delay(2_000).GetAwaiter().GetResult();
+                Task.Delay(50).GetAwaiter().GetResult();
 
 
                 _ = loggerA.LogWarning($"This is a \"WARNING\" message from the \"LoggerWriteTest\"");
 
-                Task.Delay(2_000).GetAwaiter().GetResult();
+                Task.Delay(50).GetAwaiter().GetResult();
 
 
                 _ = loggerA.LogSystem($"This is a \"SYSTEM\" message from the \"LoggerWriteTest\"");
 
-                Task.Delay(2_000).GetAwaiter().GetResult();
+                Task.Delay(50).GetAwaiter().GetResult();
 
 
                 _ = loggerA.LogSecurity($"This is a \"SECURITY\" message from the \"LoggerWriteTest\"");
 
-                Task.Delay(2_000).GetAwaiter().GetResult();
+                Task.Delay(50).GetAwaiter().GetResult();
+
+
+               
+
             }
 
         }
