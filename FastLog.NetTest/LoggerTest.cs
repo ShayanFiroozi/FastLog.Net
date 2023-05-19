@@ -36,19 +36,17 @@ namespace FastLog.NetTest
                                                       .AddTextFileAgent(TextFileAgent.Create(internalLogger)
                                                                                      .UseJsonFormat() 
                                                                                      .SaveLogToFile("D:\\Logs\\TestLog.json")
-                                                                                     .DeleteTheLogFileWhenExceededTheMaximumSizeOf(1000))
+                                                                                     .DeleteTheLogFileWhenExceededTheMaximumSizeOf(50))
 
                                                       .AddTextFileAgent(TextFileAgent.Create(internalLogger)
                                                                                                 .SaveLogToFile("D:\\Logs\\TestLog.log")
-                                                                                                .DeleteTheLogFileWhenExceededTheMaximumSizeOf(1000))
+                                                                                                .DeleteTheLogFileWhenExceededTheMaximumSizeOf(50))
 
                                                       .AddMethodExecutionAgent(MethodExecutionAgent.Create(internalLogger).MethodToExecute(MethodA).ExecuteOnlyOnReleaseMode())
                                                       .AddMethodExecutionAgent(MethodExecutionAgent.Create(internalLogger).MethodToExecute(MethodB).ExecuteOnlyOnReleaseMode()))
 
 
-                             .ApplyConfig(ConfigManager.Create()
-                                                       .IncludeMachineName()
-                                                       .IncludeApplicationName("Shayan-TestApp"));
+                             .ApplyConfig(ConfigManager.Create());
 
 
             loggerA.StartLogger();
@@ -79,7 +77,7 @@ namespace FastLog.NetTest
 
             //Task.Delay(1_500).GetAwaiter().GetResult();
 
-            Parallel.For(0, 10_000, (y) =>
+            Parallel.For(0, 20_000, (y) =>
             {
                 _ = loggerA.LogException(new InvalidCastException(), 1364);
                 _ = loggerA.LogException(new InvalidOperationException(), 1365);

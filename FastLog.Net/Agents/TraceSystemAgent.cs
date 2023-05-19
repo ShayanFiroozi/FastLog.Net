@@ -23,7 +23,7 @@ namespace TrendSoft.FastLog.Agents
 
         private readonly List<LogEventTypes> _registeredEvents = new List<LogEventTypes>();
         private readonly InternalLogger InternalLogger = null;
-        private bool jsonFormat { get; set; } = false;
+        private bool useJsonFormat { get; set; } = false;
 
 
         #region Fluent Builder Methods
@@ -41,7 +41,7 @@ namespace TrendSoft.FastLog.Agents
 
         public TraceSystemAgent UseJsonFormat()
         {
-            jsonFormat = true;
+            useJsonFormat = true;
             return this;
         }
 
@@ -107,7 +107,7 @@ namespace TrendSoft.FastLog.Agents
                 if (!_registeredEvents.Any(type => LogModel.LogEventType == type)) return Task.CompletedTask;
 
                
-                Trace.WriteLine(jsonFormat ? LogModel.ToJsonText() : LogModel.ToPlainText());
+                Trace.WriteLine(useJsonFormat ? LogModel.ToJsonText() : LogModel.ToPlainText());
             }
             catch (Exception ex)
             {

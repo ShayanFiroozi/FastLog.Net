@@ -23,7 +23,7 @@ namespace TrendSoft.FastLog.Agents
         private bool executeOnlyOnDebugMode { get; set; } = false;
         private bool executeOnlyOnReleaseMode { get; set; } = false;
 
-        private bool jsonFormat { get; set; } = false;
+        private bool useJsonFormat { get; set; } = false;
 
         #region Properties
 
@@ -59,7 +59,7 @@ namespace TrendSoft.FastLog.Agents
 
         public TextFileAgent UseJsonFormat()
         {
-            jsonFormat = true;
+            useJsonFormat = true;
             return this;
         }
 
@@ -200,7 +200,7 @@ namespace TrendSoft.FastLog.Agents
 
 
                 // #Refactor Required. ( Goal : use an approach to be able to catch exceptions properly and not using "Fire and Forget" style )
-                return Task.Run(() => ThreadSafeFileHelper.AppendAllText(LogFile, jsonFormat ? LogModel.ToJsonText() : LogModel.ToPlainText()), cancellationToken);
+                return Task.Run(() => ThreadSafeFileHelper.AppendAllText(LogFile, useJsonFormat ? LogModel.ToJsonText() : LogModel.ToPlainText()), cancellationToken);
 
 
                 // Note : The approach below (when using File.AppendAllTextAsync) is not thread-safe and has some issues ,

@@ -30,6 +30,8 @@ namespace TrendSoft.FastLog.Internal
 
         private bool _PrintOnConsoleOnlyOnDebugMode { get; set; } = false;
 
+        private bool useJsonFormat { get; set; } = false;
+
 
 
         #endregion
@@ -43,6 +45,11 @@ namespace TrendSoft.FastLog.Internal
 
         public static InternalLogger Create() => new InternalLogger();
 
+        public InternalLogger UseJsonFormat()
+        {
+            useJsonFormat = true;
+            return this;
+        }
 
         public InternalLogger SaveInternalEventsToFile(string filename)
         {
@@ -287,7 +294,7 @@ namespace TrendSoft.FastLog.Internal
                     Console.ResetColor();
                     Console.ForegroundColor = ConsoleColor.DarkGray;
 
-                    Console.WriteLine($"{logEventModel.ToPlainText()}");
+                    Console.WriteLine(useJsonFormat ? logEventModel.ToJsonText() : logEventModel.ToPlainText());
 
                     Console.ResetColor();
                 }
@@ -296,7 +303,7 @@ namespace TrendSoft.FastLog.Internal
                 if (_LogOnDebugWindow)
                 {
                     Debug.Write($"Logger \"Internal System Event\" has been occured :\n");
-                    Debug.WriteLine($"{logEventModel.ToPlainText()}");
+                    Debug.WriteLine(useJsonFormat ? logEventModel.ToJsonText() : logEventModel.ToPlainText());
                 }
 
                 // ATTENTION : There's a chance of "HostProtectionException" or "PlatformNotSupportedException" exception.
@@ -315,7 +322,7 @@ namespace TrendSoft.FastLog.Internal
 
 
                 ThreadSafeFileHelper.AppendAllText(InternalLogFile,
-                                                $"{logEventModel.ToPlainText()}");
+                                                useJsonFormat ? logEventModel.ToJsonText() : logEventModel.ToPlainText());
 
 
                 // May be NOT "Thread-Safe"
