@@ -10,7 +10,7 @@ using TrendSoft.FastLog.Interfaces;
 using TrendSoft.FastLog.Internal;
 using TrendSoft.FastLog.Models;
 
-namespace TrendSoft.FastLog.Agents
+namespace FastLog.Net.Agents.DebugAndTraceAgents
 {
 
     // Note : DebugWindowLogger class uses fluent "Builder" pattern.
@@ -18,7 +18,7 @@ namespace TrendSoft.FastLog.Agents
 
 
 
-    public class DebugSystemAgent : ILoggerAgent
+    public class TraceSystemAgent : ILoggerAgent
     {
 
         private readonly List<LogEventTypes> _registeredEvents = new List<LogEventTypes>();
@@ -29,23 +29,23 @@ namespace TrendSoft.FastLog.Agents
         #region Fluent Builder Methods
 
         //Keep it private to make it non accessible from the outside of the class !!
-        private DebugSystemAgent(InternalLogger internalLogger)
+        private TraceSystemAgent(InternalLogger internalLogger)
         {
             InternalLogger = internalLogger;
             IncludeAllEventTypes();
         }
 
 
-        public static DebugSystemAgent Create(InternalLogger internalLogger = null) => new DebugSystemAgent(internalLogger);
+        public static TraceSystemAgent Create(InternalLogger internalLogger = null) => new TraceSystemAgent(internalLogger);
 
 
-        public DebugSystemAgent UseJsonFormat()
+        public TraceSystemAgent UseJsonFormat()
         {
             useJsonFormat = true;
             return this;
         }
 
-        public DebugSystemAgent IncludeEventType(LogEventTypes logEventType)
+        public TraceSystemAgent IncludeEventType(LogEventTypes logEventType)
         {
             if (!_registeredEvents.Any(type => type == logEventType))
             {
@@ -55,7 +55,7 @@ namespace TrendSoft.FastLog.Agents
             return this;
         }
 
-        public DebugSystemAgent ExcludeEventType(LogEventTypes logEventType)
+        public TraceSystemAgent ExcludeEventType(LogEventTypes logEventType)
         {
             if (_registeredEvents.Any(type => type == logEventType))
             {
@@ -65,7 +65,7 @@ namespace TrendSoft.FastLog.Agents
             return this;
         }
 
-        public DebugSystemAgent IncludeAllEventTypes()
+        public TraceSystemAgent IncludeAllEventTypes()
         {
             _registeredEvents.Clear();
 
@@ -77,7 +77,7 @@ namespace TrendSoft.FastLog.Agents
             return this;
         }
 
-        public DebugSystemAgent ExcludeAllEventTypes()
+        public TraceSystemAgent ExcludeAllEventTypes()
         {
             _registeredEvents.Clear();
 
@@ -99,15 +99,15 @@ namespace TrendSoft.FastLog.Agents
                 return Task.CompletedTask;
             }
 
-            
+
             try
             {
                 // Check if current log "Event Type" should be execute or not.
                 if (!_registeredEvents.Any()) return Task.CompletedTask;
                 if (!_registeredEvents.Any(type => LogModel.LogEventType == type)) return Task.CompletedTask;
 
-               
-                Debug.WriteLine(useJsonFormat ? LogModel.ToJsonText() : LogModel.ToPlainText());
+
+                Trace.WriteLine(useJsonFormat ? LogModel.ToJsonText() : LogModel.ToPlainText());
             }
             catch (Exception ex)
             {

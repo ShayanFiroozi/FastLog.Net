@@ -8,7 +8,7 @@ using TrendSoft.FastLog.Interfaces;
 using TrendSoft.FastLog.Internal;
 using TrendSoft.FastLog.Models;
 
-namespace TrendSoft.FastLog.Agents
+namespace FastLog.Net.Agents.AdvancedAgents
 {
 
     // Note : UserDefinedAgent class uses fluent "Builder" pattern.

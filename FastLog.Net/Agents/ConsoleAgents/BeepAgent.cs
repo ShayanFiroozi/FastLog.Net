@@ -1,62 +1,52 @@
 ﻿using FastLog.Enums;
-using FastLog.Net.Helpers.ExtendedMethods;
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Runtime.InteropServices;
 using System.Threading;
 using System.Threading.Tasks;
 using TrendSoft.FastLog.Interfaces;
 using TrendSoft.FastLog.Internal;
 using TrendSoft.FastLog.Models;
 
-namespace TrendSoft.FastLog.Agents
+namespace FastLog.Net.Agents.ConsoleAgents
 {
 
-    // Note : ConsoleLogger class uses fluent "Builder" pattern.
+    // Note : BeepAgent class uses fluent "Builder" pattern.
 
-    public class ConsoleAgent : ILoggerAgent
+    public class BeepAgent : ILoggerAgent
     {
-
         private readonly List<LogEventTypes> _registeredEvents = new List<LogEventTypes>();
         private readonly InternalLogger InternalLogger = null;
         private bool executeOnlyOnDebugMode { get; set; } = false;
         private bool executeOnlyOnReleaseMode { get; set; } = false;
 
-        private bool useJsonFormat { get; set; } = false;
-
-
         #region Fluent Builder Methods
 
         //Keep it private to make it non accessible from the outside of the class !!
-        private ConsoleAgent(InternalLogger internalLogger)
+        private BeepAgent(InternalLogger internalLogger)
         {
             InternalLogger = internalLogger;
             IncludeAllEventTypes();
         }
 
+        public static BeepAgent Create(InternalLogger internalLogger = null) => new BeepAgent(internalLogger);
 
-        public static ConsoleAgent Create(InternalLogger internalLogger = null) => new ConsoleAgent(internalLogger);
-
-
-        public ConsoleAgent ExecuteOnlyOnDebugMode()
+        public BeepAgent ExecuteOnlyOnDebugMode()
         {
             executeOnlyOnDebugMode = true;
             return this;
         }
 
-        public ConsoleAgent ExecuteOnlyOnReleaseMode()
+
+        public BeepAgent ExecuteOnlyOnReleaseMode()
         {
             executeOnlyOnReleaseMode = true;
             return this;
         }
 
-        public ConsoleAgent UseJsonFormat()
-        {
-            useJsonFormat = true;
-            return this;
-        }
 
-        public ConsoleAgent IncludeEventType(LogEventTypes logEventType)
+        public BeepAgent IncludeEventType(LogEventTypes logEventType)
         {
             if (!_registeredEvents.Any(type => type == logEventType))
             {
@@ -66,7 +56,7 @@ namespace TrendSoft.FastLog.Agents
             return this;
         }
 
-        public ConsoleAgent ExcludeEventType(LogEventTypes logEventType)
+        public BeepAgent ExcludeEventType(LogEventTypes logEventType)
         {
             if (_registeredEvents.Any(type => type == logEventType))
             {
@@ -76,7 +66,7 @@ namespace TrendSoft.FastLog.Agents
             return this;
         }
 
-        public ConsoleAgent IncludeAllEventTypes()
+        public BeepAgent IncludeAllEventTypes()
         {
             _registeredEvents.Clear();
 
@@ -88,19 +78,19 @@ namespace TrendSoft.FastLog.Agents
             return this;
         }
 
-        public ConsoleAgent ExcludeAllEventTypes()
+        public BeepAgent ExcludeAllEventTypes()
         {
             _registeredEvents.Clear();
 
             return this;
         }
 
-
         #endregion
 
 
         public Task ExecuteAgent(LogEventModel LogModel, CancellationToken cancellationToken = default)
         {
+
 
 #if !RELEASE
 
@@ -112,10 +102,15 @@ namespace TrendSoft.FastLog.Agents
             if (executeOnlyOnDebugMode) return Task.CompletedTask;
 
 #endif
+
+
             if (LogModel is null)
             {
                 return Task.CompletedTask;
             }
+
+
+
 
             try
             {
@@ -125,48 +120,11 @@ namespace TrendSoft.FastLog.Agents
                 if (!_registeredEvents.Any(type => LogModel.LogEventType == type)) return Task.CompletedTask;
 
 
-                // Set the proper console forecolor
+                // Note : "Beep" only works on Windows® OS.
+                // ATTENTION : There's a chance of "HostProtectionException" or "PlatformNotSupportedException" exception.
+                // For more info please visit : https://learn.microsoft.com/en-us/dotnet/api/system.console.beep?view=net-7.0
 
-                switch (LogModel.LogEventType)
-                {
-                    case LogEventTypes.INFO:
-                    case LogEventTypes.NOTE:
-                    case LogEventTypes.TODO:
-                        Console.ForegroundColor = ConsoleColor.White;
-                        break;
-
-                    case LogEventTypes.WARNING:
-                        Console.ForegroundColor = ConsoleColor.Yellow;
-                        break;
-
-                    case LogEventTypes.ALERT:
-                        Console.ForegroundColor = ConsoleColor.DarkRed;
-                        break;
-
-                    case LogEventTypes.DEBUG:
-                        Console.ForegroundColor = ConsoleColor.DarkGray;
-                        break;
-
-                    case LogEventTypes.ERROR:
-                    case LogEventTypes.EXCEPTION:
-                        Console.ForegroundColor = ConsoleColor.Red;
-                        break;
-
-
-                    case LogEventTypes.SYSTEM:
-                        Console.ForegroundColor = ConsoleColor.Blue;
-                        break;
-
-                    case LogEventTypes.SECURITY:
-                        Console.ForegroundColor = ConsoleColor.Cyan;
-                        break;
-
-                    default:
-                        break;
-                }
-
-
-                Console.WriteLine(useJsonFormat ? LogModel.ToJsonText() : LogModel.ToPlainText());
+                if (RuntimeInformation.IsOSPlatform(OSPlatform.Windows)) Console.Beep();
 
 
             }
@@ -177,11 +135,11 @@ namespace TrendSoft.FastLog.Agents
 
             return Task.CompletedTask;
 
-
         }
-
 
     }
 
 }
+
+
 

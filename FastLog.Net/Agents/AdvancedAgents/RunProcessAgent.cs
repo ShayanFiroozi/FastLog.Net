@@ -10,7 +10,7 @@ using TrendSoft.FastLog.Interfaces;
 using TrendSoft.FastLog.Internal;
 using TrendSoft.FastLog.Models;
 
-namespace TrendSoft.FastLog.Agents
+namespace FastLog.Net.Agents.AdvancedAgents
 {
 
     // Note : RunCommandAgent class uses fluent "Builder" pattern.
@@ -84,7 +84,7 @@ namespace TrendSoft.FastLog.Agents
         }
 
 
-        public RunProcessAgent WithWorkingDirectory(string workingDirectory)
+        public RunProcessAgent SetWorkingDirectory(string workingDirectory)
         {
             WorkingDirectory = workingDirectory;
 
@@ -92,7 +92,7 @@ namespace TrendSoft.FastLog.Agents
         }
 
 
-        public RunProcessAgent WithShellExecute()
+        public RunProcessAgent UseShellExecute()
         {
             useShellExecute = true;
 

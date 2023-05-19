@@ -11,7 +11,7 @@ using TrendSoft.FastLog.Interfaces;
 using TrendSoft.FastLog.Internal;
 using TrendSoft.FastLog.Models;
 
-namespace TrendSoft.FastLog.Agents
+namespace FastLog.Net.Agents.FileBaseAgents
 {
     // Note : DebugWindowLogger class uses fluent "Builder" pattern.
 

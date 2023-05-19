@@ -1,9 +1,11 @@
-﻿using FastLog.Net.Core;
+﻿using FastLog.Net.Agents.AdvancedAgents;
+using FastLog.Net.Agents.ConsoleAgents;
+using FastLog.Net.Agents.FileBaseAgents;
+using FastLog.Net.Core;
 using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Threading.Tasks;
-using TrendSoft.FastLog.Agents;
 using TrendSoft.FastLog.Core;
 using TrendSoft.FastLog.Internal;
 

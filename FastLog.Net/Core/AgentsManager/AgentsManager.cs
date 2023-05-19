@@ -1,7 +1,10 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
-using TrendSoft.FastLog.Agents;
+using FastLog.Net.Agents.AdvancedAgents;
+using FastLog.Net.Agents.ConsoleAgents;
+using FastLog.Net.Agents.DebugAndTraceAgents;
+using FastLog.Net.Agents.FileBaseAgents;
 using TrendSoft.FastLog.Interfaces;
 
 namespace FastLog.Net.Core

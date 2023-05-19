@@ -25,6 +25,10 @@
     <PackageReference Include="LiteDB" Version="5.0.16" />
     <PackageReference Include="System.Threading.Channels" Version="7.0.0" />
   </ItemGroup>
+
+  <ItemGroup>
+    <Folder Include="Agents\InMemoryAgents\" />
+  </ItemGroup>
   
 
 </Project>
