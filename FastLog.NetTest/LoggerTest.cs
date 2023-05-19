@@ -1,13 +1,9 @@
-﻿using FastLog.Net.Agents.AdvancedAgents;
-using FastLog.Net.Agents.ConsoleAgents;
-using FastLog.Net.Agents.FileBaseAgents;
-using FastLog.Net.Core;
+﻿using FastLog.Agents.ConsoleAgents;
+using FastLog.Agents.FileBaseAgents;
+using FastLog.Core;
 using System;
 using System.Collections.Generic;
-using System.Diagnostics;
 using System.IO;
-using System.Linq;
-using System.Runtime.InteropServices;
 using System.Threading.Tasks;
 using TrendSoft.FastLog.Core;
 using TrendSoft.FastLog.Internal;
@@ -225,7 +221,7 @@ namespace FastLog.NetTest
                 Task.Delay(50).GetAwaiter().GetResult();
 
 
-               
+
 
             }
 

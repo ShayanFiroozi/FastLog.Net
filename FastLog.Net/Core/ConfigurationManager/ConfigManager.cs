@@ -1,6 +1,6 @@
 ﻿using System;
 
-namespace FastLog.Net.Core
+namespace FastLog.Core
 {
     public class ConfigManager
     {
@@ -8,7 +8,7 @@ namespace FastLog.Net.Core
         internal string ApplicationName { get; set; } = string.Empty;
         internal bool SaveMachineName { get; set; } = false;
         internal bool RunAgentsInParallel { get; set; } = false;
-        
+
 
         private ConfigManager() { }
 

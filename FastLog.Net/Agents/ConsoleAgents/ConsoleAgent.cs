@@ -1,5 +1,5 @@
 ﻿using FastLog.Enums;
-using FastLog.Net.Helpers.ExtendedMethods;
+using FastLog.Helpers.ExtendedMethods;
 using System;
 using System.Threading;
 using System.Threading.Tasks;
@@ -7,7 +7,7 @@ using TrendSoft.FastLog.Interfaces;
 using TrendSoft.FastLog.Internal;
 using TrendSoft.FastLog.Models;
 
-namespace FastLog.Net.Agents.ConsoleAgents
+namespace FastLog.Agents.ConsoleAgents
 {
 
     // Note : ConsoleLogger class uses fluent "Builder" pattern.

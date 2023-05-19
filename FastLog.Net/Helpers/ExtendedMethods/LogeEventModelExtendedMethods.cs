@@ -3,7 +3,7 @@ using System;
 using System.Text;
 using TrendSoft.FastLog.Models;
 
-namespace FastLog.Net.Helpers.ExtendedMethods
+namespace FastLog.Helpers.ExtendedMethods
 {
     internal static class LogeEventModelExtendedMethods
     {
@@ -131,7 +131,7 @@ namespace FastLog.Net.Helpers.ExtendedMethods
             _ = finalMessage.Append("},")
                             .Append('\n');
 
-  
+
             return finalMessage.ToString();
 
         }

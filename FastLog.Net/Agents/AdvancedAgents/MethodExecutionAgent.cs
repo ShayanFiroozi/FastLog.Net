@@ -5,7 +5,7 @@ using TrendSoft.FastLog.Interfaces;
 using TrendSoft.FastLog.Internal;
 using TrendSoft.FastLog.Models;
 
-namespace FastLog.Net.Agents.AdvancedAgents
+namespace FastLog.Agents.AdvancedAgents
 {
 
 
@@ -30,7 +30,7 @@ namespace FastLog.Net.Agents.AdvancedAgents
             return this;
         }
 
-     
+
 
 
 
@@ -49,7 +49,7 @@ namespace FastLog.Net.Agents.AdvancedAgents
 
             if (!CanThisEventTypeExecute(LogModel.LogEventType)) return Task.CompletedTask;
 
-       
+
 
             try
             {
@@ -70,7 +70,7 @@ namespace FastLog.Net.Agents.AdvancedAgents
 
         }
 
-    
+
     }
 
 }

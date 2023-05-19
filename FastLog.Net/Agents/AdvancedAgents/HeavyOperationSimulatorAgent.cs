@@ -4,7 +4,7 @@ using System.Threading.Tasks;
 using TrendSoft.FastLog.Interfaces;
 using TrendSoft.FastLog.Models;
 
-namespace FastLog.Net.Agents.AdvancedAgents
+namespace FastLog.Agents.AdvancedAgents
 {
 
 
@@ -38,7 +38,7 @@ namespace FastLog.Net.Agents.AdvancedAgents
 
 
             // Simulate some heavy CPU or IO bound operation.
-              return Task.Delay(OperationTimeSpan, cancellationToken);
+            return Task.Delay(OperationTimeSpan, cancellationToken);
 
 
 

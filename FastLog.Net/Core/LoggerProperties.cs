@@ -1,4 +1,4 @@
-﻿using FastLog.Net.Core;
+﻿using FastLog.Core;
 using System;
 using System.Collections.Generic;
 using System.Threading;

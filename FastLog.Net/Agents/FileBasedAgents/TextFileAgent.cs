@@ -1,17 +1,15 @@
 ﻿using FastLog.Enums;
 using FastLog.Helpers;
-using FastLog.Net.Helpers.ExtendedMethods;
+using FastLog.Helpers.ExtendedMethods;
 using System;
-using System.Collections.Generic;
 using System.IO;
-using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
 using TrendSoft.FastLog.Interfaces;
 using TrendSoft.FastLog.Internal;
 using TrendSoft.FastLog.Models;
 
-namespace FastLog.Net.Agents.FileBaseAgents
+namespace FastLog.Agents.FileBaseAgents
 {
 
 
@@ -19,7 +17,7 @@ namespace FastLog.Net.Agents.FileBaseAgents
     {
 
 
-    
+
         private bool useJsonFormat { get; set; } = false;
 
         #region Private Properties

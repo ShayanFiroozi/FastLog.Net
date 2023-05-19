@@ -1,16 +1,13 @@
-﻿using FastLog.Enums;
-using FastLog.Net.Helpers.ExtendedMethods;
+﻿using FastLog.Helpers.ExtendedMethods;
 using System;
-using System.Collections.Generic;
 using System.Diagnostics;
-using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
 using TrendSoft.FastLog.Interfaces;
 using TrendSoft.FastLog.Internal;
 using TrendSoft.FastLog.Models;
 
-namespace FastLog.Net.Agents.DebugAndTraceAgents
+namespace FastLog.Agents.DebugAndTraceAgents
 {
 
 

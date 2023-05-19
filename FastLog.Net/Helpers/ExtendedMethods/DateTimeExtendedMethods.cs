@@ -1,6 +1,6 @@
 ﻿using System;
 
-namespace FastLog.Net.Helpers.ExtendedMethods
+namespace FastLog.Helpers.ExtendedMethods
 {
     internal static class DateTimeExtendedMethods
     {

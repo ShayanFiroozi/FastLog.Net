@@ -1,16 +1,12 @@
-﻿
-using FastLog.Enums;
-using System;
-using System.Collections.Generic;
+﻿using System;
 using System.Diagnostics;
-using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
 using TrendSoft.FastLog.Interfaces;
 using TrendSoft.FastLog.Internal;
 using TrendSoft.FastLog.Models;
 
-namespace FastLog.Net.Agents.AdvancedAgents
+namespace FastLog.Agents.AdvancedAgents
 {
 
     // Note : RunCommandAgent class uses fluent "Builder" pattern.
@@ -24,7 +20,7 @@ namespace FastLog.Net.Agents.AdvancedAgents
         private string ProcessToExecute { get; set; } = string.Empty;
         private string ExecutionArgument { get; set; }
         private bool runAsAdministrator { get; set; }
-        private bool useShellExecute { get; set; } 
+        private bool useShellExecute { get; set; }
         #endregion
 
 

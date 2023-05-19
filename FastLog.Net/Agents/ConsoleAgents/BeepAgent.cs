@@ -1,7 +1,4 @@
-﻿using FastLog.Enums;
-using System;
-using System.Collections.Generic;
-using System.Linq;
+﻿using System;
 using System.Runtime.InteropServices;
 using System.Threading;
 using System.Threading.Tasks;
@@ -9,7 +6,7 @@ using TrendSoft.FastLog.Interfaces;
 using TrendSoft.FastLog.Internal;
 using TrendSoft.FastLog.Models;
 
-namespace FastLog.Net.Agents.ConsoleAgents
+namespace FastLog.Agents.ConsoleAgents
 {
 
 

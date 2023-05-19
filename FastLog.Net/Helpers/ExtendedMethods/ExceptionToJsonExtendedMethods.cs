@@ -1,9 +1,7 @@
-﻿using FastLog.Enums;
-using System;
+﻿using System;
 using System.Text;
-using TrendSoft.FastLog.Models;
 
-namespace FastLog.Net.Helpers.ExtendedMethods
+namespace FastLog.Helpers.ExtendedMethods
 {
     internal static class ExceptionToJsonExtendedMethods
     {

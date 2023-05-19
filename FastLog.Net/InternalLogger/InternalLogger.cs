@@ -1,7 +1,5 @@
-﻿
-using FastLog.Enums;
-using FastLog.Helpers;
-using FastLog.Net.Helpers.ExtendedMethods;
+﻿using FastLog.Helpers;
+using FastLog.Helpers.ExtendedMethods;
 using System;
 using System.Diagnostics;
 using System.IO;

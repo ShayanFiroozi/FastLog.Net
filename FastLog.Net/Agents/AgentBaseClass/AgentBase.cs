@@ -5,7 +5,7 @@ using System.Linq;
 using TrendSoft.FastLog.Interfaces;
 using TrendSoft.FastLog.Internal;
 
-namespace FastLog.Net.Agents
+namespace FastLog.Agents
 {
     public class AgentBase<AgentType> where AgentType : AgentBase<AgentType>, IAgent
     {
@@ -19,7 +19,7 @@ namespace FastLog.Net.Agents
         private bool executeOnlyOnReleaseMode { get; set; }
         #endregion
 
-        
+
 
         #region Execution Conditions
 

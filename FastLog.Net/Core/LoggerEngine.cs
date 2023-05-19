@@ -1,7 +1,5 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Diagnostics;
-using System.Linq;
 using System.Threading.Tasks;
 using TrendSoft.FastLog.Interfaces;
 using TrendSoft.FastLog.Models;
@@ -38,10 +36,8 @@ namespace TrendSoft.FastLog.Core
                         if (EventModelFromChannel != null)
                         {
 
-
                             HandleInMemoryEvents(EventModelFromChannel);
 
-                            Debug.WriteLine(InMemoryEvents.Count());
 
                             // Consume the LogEventModel on channel one by one with each logger agent in the agent list !
 
