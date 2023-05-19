@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
+using FastLog.Net.Agents;
 using FastLog.Net.Agents.AdvancedAgents;
 using FastLog.Net.Agents.ConsoleAgents;
 using FastLog.Net.Agents.DebugAndTraceAgents;
@@ -11,8 +12,8 @@ namespace FastLog.Net.Core
 {
     public class AgentsManager
     {
-        private readonly List<ILoggerAgent> loggerAgents = new List<ILoggerAgent>();
-        public IEnumerable<ILoggerAgent> AgentList => loggerAgents;
+        private readonly List<IAgent> loggerAgents = new List<IAgent>();
+        public IEnumerable<IAgent> AgentList => loggerAgents;
 
 
 
@@ -72,7 +73,7 @@ namespace FastLog.Net.Core
 
 
 
-        public void AddAgent(ILoggerAgent agent)
+        public void AddAgent(IAgent agent)
         {
             if (agent is ConsoleAgent && loggerAgents.Any(a => a is ConsoleAgent))
             {
@@ -96,5 +97,9 @@ namespace FastLog.Net.Core
             loggerAgents.Add(agent);
         }
 
+        public object AddBeepAgent(AgentBase<BeepAgent> agentBase)
+        {
+            throw new NotImplementedException();
+        }
     }
 }

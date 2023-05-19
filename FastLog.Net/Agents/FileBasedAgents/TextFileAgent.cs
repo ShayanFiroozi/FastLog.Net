@@ -13,19 +13,16 @@ using TrendSoft.FastLog.Models;
 
 namespace FastLog.Net.Agents.FileBaseAgents
 {
-    // Note : DebugWindowLogger class uses fluent "Builder" pattern.
 
-    public class TextFileAgent : ILoggerAgent
+
+    public class TextFileAgent : AgentBase<TextFileAgent>, IAgent
     {
-        private readonly List<LogEventTypes> _registeredEvents = new List<LogEventTypes>();
-        private readonly InternalLogger InternalLogger = null;
 
-        private bool executeOnlyOnDebugMode { get; set; } = false;
-        private bool executeOnlyOnReleaseMode { get; set; } = false;
 
+    
         private bool useJsonFormat { get; set; } = false;
 
-        #region Properties
+        #region Private Properties
 
         private string LogFile { get; set; } = string.Empty;
         private short MaxLogFileSizeMB { get; set; } = 0;
@@ -33,7 +30,6 @@ namespace FastLog.Net.Agents.FileBaseAgents
         #endregion
 
 
-        #region Fluent Builder Methods
 
         //Keep it private to make it non accessible from the outside of the class !!
         private TextFileAgent(InternalLogger internalLogger = null)
@@ -43,68 +39,11 @@ namespace FastLog.Net.Agents.FileBaseAgents
         }
 
         public static TextFileAgent Create(InternalLogger internalLogger = null) => new TextFileAgent(internalLogger);
-
-        public TextFileAgent ExecuteOnlyOnDebugMode()
-        {
-            executeOnlyOnDebugMode = true;
-            return this;
-        }
-
-        public TextFileAgent ExecuteOnlyOnReleaseMode()
-        {
-            executeOnlyOnReleaseMode = true;
-            return this;
-        }
-
-
         public TextFileAgent UseJsonFormat()
         {
             useJsonFormat = true;
             return this;
         }
-
-        public TextFileAgent IncludeEventType(LogEventTypes logEventType)
-        {
-            if (!_registeredEvents.Any(type => type == logEventType))
-            {
-                _registeredEvents.Add(logEventType);
-            }
-
-            return this;
-        }
-
-
-        public TextFileAgent ExcludeEventType(LogEventTypes logEventType)
-        {
-            if (_registeredEvents.Any(type => type == logEventType))
-            {
-                _registeredEvents.Remove(logEventType);
-            }
-
-            return this;
-        }
-
-
-        public TextFileAgent IncludeAllEventTypes()
-        {
-            _registeredEvents.Clear();
-
-            foreach (LogEventTypes eventType in Enum.GetValues(typeof(LogEventTypes)))
-            {
-                _registeredEvents.Add(eventType);
-            }
-
-            return this;
-        }
-
-
-        public TextFileAgent ExcludeAllEventTypes()
-        {
-            _registeredEvents.Clear();
-
-            return this;
-        }
-
 
         public TextFileAgent SaveLogToFile(string filename)
         {
@@ -153,21 +92,11 @@ namespace FastLog.Net.Agents.FileBaseAgents
 
 
 
-        #endregion
 
 
         public Task ExecuteAgent(LogEventModel LogModel, CancellationToken cancellationToken = default)
         {
-#if !RELEASE
-
-            if (executeOnlyOnReleaseMode) return Task.CompletedTask;
-
-#endif
-
-#if !DEBUG
-            if (executeOnlyOnDebugMode) return Task.CompletedTask;
-
-#endif
+            if (!CanExecuteOnThidMode()) return Task.CompletedTask;
 
 
             if (LogModel is null)
@@ -187,9 +116,7 @@ namespace FastLog.Net.Agents.FileBaseAgents
 
 
 
-                // Check if current log "Event Type" should be execute or not.
-                if (!_registeredEvents.Any()) return Task.CompletedTask;
-                if (!_registeredEvents.Any(type => LogModel.LogEventType == type)) return Task.CompletedTask;
+                if (!CanThisEventTypeExecute(LogModel.LogEventType)) return Task.CompletedTask;
 
 
                 CheckAndDeleteLogFileSize();

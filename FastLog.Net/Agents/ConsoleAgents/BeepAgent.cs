@@ -12,16 +12,9 @@ using TrendSoft.FastLog.Models;
 namespace FastLog.Net.Agents.ConsoleAgents
 {
 
-    // Note : BeepAgent class uses fluent "Builder" pattern.
 
-    public class BeepAgent : ILoggerAgent
+    public class BeepAgent : AgentBase<BeepAgent>, IAgent
     {
-        private readonly List<LogEventTypes> _registeredEvents = new List<LogEventTypes>();
-        private readonly InternalLogger InternalLogger = null;
-        private bool executeOnlyOnDebugMode { get; set; } = false;
-        private bool executeOnlyOnReleaseMode { get; set; } = false;
-
-        #region Fluent Builder Methods
 
         //Keep it private to make it non accessible from the outside of the class !!
         private BeepAgent(InternalLogger internalLogger)
@@ -32,76 +25,12 @@ namespace FastLog.Net.Agents.ConsoleAgents
 
         public static BeepAgent Create(InternalLogger internalLogger = null) => new BeepAgent(internalLogger);
 
-        public BeepAgent ExecuteOnlyOnDebugMode()
-        {
-            executeOnlyOnDebugMode = true;
-            return this;
-        }
-
-
-        public BeepAgent ExecuteOnlyOnReleaseMode()
-        {
-            executeOnlyOnReleaseMode = true;
-            return this;
-        }
-
-
-        public BeepAgent IncludeEventType(LogEventTypes logEventType)
-        {
-            if (!_registeredEvents.Any(type => type == logEventType))
-            {
-                _registeredEvents.Add(logEventType);
-            }
-
-            return this;
-        }
-
-        public BeepAgent ExcludeEventType(LogEventTypes logEventType)
-        {
-            if (_registeredEvents.Any(type => type == logEventType))
-            {
-                _registeredEvents.Remove(logEventType);
-            }
-
-            return this;
-        }
-
-        public BeepAgent IncludeAllEventTypes()
-        {
-            _registeredEvents.Clear();
-
-            foreach (LogEventTypes eventType in Enum.GetValues(typeof(LogEventTypes)))
-            {
-                _registeredEvents.Add(eventType);
-            }
-
-            return this;
-        }
-
-        public BeepAgent ExcludeAllEventTypes()
-        {
-            _registeredEvents.Clear();
-
-            return this;
-        }
-
-        #endregion
-
 
         public Task ExecuteAgent(LogEventModel LogModel, CancellationToken cancellationToken = default)
         {
 
 
-#if !RELEASE
-
-            if (executeOnlyOnReleaseMode) return Task.CompletedTask;
-
-#endif
-
-#if !DEBUG
-            if (executeOnlyOnDebugMode) return Task.CompletedTask;
-
-#endif
+            if (!CanExecuteOnThidMode()) return Task.CompletedTask;
 
 
             if (LogModel is null)
@@ -115,9 +44,7 @@ namespace FastLog.Net.Agents.ConsoleAgents
             try
             {
 
-                // Check if current log "Event Type" should be execute or not.
-                if (!_registeredEvents.Any()) return Task.CompletedTask;
-                if (!_registeredEvents.Any(type => LogModel.LogEventType == type)) return Task.CompletedTask;
+                if (!CanThisEventTypeExecute(LogModel.LogEventType)) return Task.CompletedTask;
 
 
                 // Note : "Beep" only works on Windows® OS.

@@ -32,17 +32,20 @@ namespace FastLog.NetTest
 
             loggerA = Logger.Create(internalLogger)
                             .ApplyAgents(AgentsManager.Create()
-                                                      //.AddBeepAgent(BeepAgent.Create(internalLogger))
+                                                      .AddBeepAgent(BeepAgent.Create(internalLogger)
+                                                                             .ExcludeAllEventTypes()
+                                                                             .IncludeEventType(Enums.LogEventTypes.INFO))
                                                       .AddConsoleAgent(ConsoleAgent.Create(internalLogger))
 
                                                       .AddTextFileAgent(TextFileAgent.Create(internalLogger)
-                                                                                     .UseJsonFormat() 
+                                                                                     .UseJsonFormat()
                                                                                      .SaveLogToFile("D:\\Logs\\TestLog.json")
-                                                                                     .DeleteTheLogFileWhenExceededTheMaximumSizeOf(50))
+                                                                                     .DeleteTheLogFileWhenExceededTheMaximumSizeOf(50)
+                                                                                     .ExcludeAllEventTypes().IncludeEventType(Enums.LogEventTypes.EXCEPTION))
 
                                                       .AddTextFileAgent(TextFileAgent.Create(internalLogger)
-                                                                                                .SaveLogToFile("D:\\Logs\\TestLog.log")
-                                                                                                .DeleteTheLogFileWhenExceededTheMaximumSizeOf(50))
+                                                                                     .SaveLogToFile("D:\\Logs\\TestLog.log")
+                                                                                     .DeleteTheLogFileWhenExceededTheMaximumSizeOf(50))
 
                                                       .AddMethodExecutionAgent(MethodExecutionAgent.Create(internalLogger).MethodToExecute(MethodA).ExecuteOnlyOnReleaseMode())
                                                       .AddMethodExecutionAgent(MethodExecutionAgent.Create(internalLogger).MethodToExecute(MethodB).ExecuteOnlyOnReleaseMode()))
@@ -52,7 +55,7 @@ namespace FastLog.NetTest
 
 
             loggerA.StartLogger();
-            
+
 
 
         }
@@ -185,7 +188,7 @@ namespace FastLog.NetTest
             {
 
                 Exception exception = new InvalidCastException("ANPR engine cast is not valid",
-                                        new CannotUnloadAppDomainException("Engine is not loaded",new AccessViolationException("Just kiddin U !")));
+                                        new CannotUnloadAppDomainException("Engine is not loaded", new AccessViolationException("Just kiddin U !")));
 
 
                 _ = loggerA.LogException(exception, 1364);

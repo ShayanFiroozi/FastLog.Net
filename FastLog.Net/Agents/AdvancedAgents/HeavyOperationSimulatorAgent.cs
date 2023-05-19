@@ -8,18 +8,8 @@ namespace FastLog.Net.Agents.AdvancedAgents
 {
 
 
-    // Note : HeavyOperationSimulator class uses fluent "Builder" pattern.
-    // Note : HeavyOperationSimulator is only available in "Debug" mode.
-
-
-
-    /// <summary>
-    /// This class will be used when debugging (testing) the FastLog.Net to simulate a heavy CPU or IO bound operation.
-    /// </summary>
-    public class HeavyOperationSimulatorAgent : ILoggerAgent
+    public class HeavyOperationSimulatorAgent : AgentBase<HeavyOperationSimulatorAgent>, IAgent
     {
-
-
 
         public TimeSpan OperationTimeSpan { get; set; }
 
@@ -33,15 +23,24 @@ namespace FastLog.Net.Agents.AdvancedAgents
 
         public Task ExecuteAgent(LogEventModel LogModel, CancellationToken cancellationToken = default)
         {
-#if !DEBUG
-#warning "HeavyOperationSimulator.LogEvent" only works on the "Debug" mode and has no effect in the "Relase" mode !
-            return Task.CompletedTask;
 
-#else
+            if (!CanExecuteOnThidMode()) return Task.CompletedTask;
+
+
+            if (LogModel is null)
+            {
+                return Task.CompletedTask;
+            }
+
+
+            if (!CanThisEventTypeExecute(LogModel.LogEventType)) return Task.CompletedTask;
+
+
+
             // Simulate some heavy CPU or IO bound operation.
-            return Task.Delay(OperationTimeSpan, cancellationToken);
+              return Task.Delay(OperationTimeSpan, cancellationToken);
 
-#endif
+
 
         }
 

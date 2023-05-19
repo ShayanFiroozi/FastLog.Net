@@ -15,20 +15,19 @@ namespace FastLog.Net.Agents.AdvancedAgents
 
     // Note : RunCommandAgent class uses fluent "Builder" pattern.
 
-    public class RunProcessAgent : ILoggerAgent
+    public class RunProcessAgent : AgentBase<MethodExecutionAgent>, IAgent
     {
-        private readonly List<LogEventTypes> _registeredEvents = new List<LogEventTypes>();
-        private readonly InternalLogger InternalLogger = null;
-        private bool executeOnlyOnDebugMode { get; set; } = false;
-        private bool executeOnlyOnReleaseMode { get; set; } = false;
 
+
+        #region Private Properties
         private string WorkingDirectory { get; set; } = string.Empty;
         private string ProcessToExecute { get; set; } = string.Empty;
         private string ExecutionArgument { get; set; }
         private bool runAsAdministrator { get; set; }
-        private bool useShellExecute { get; set; }
+        private bool useShellExecute { get; set; } 
+        #endregion
 
-        #region Fluent Builder Methods
+
 
         //Keep it private to make it non accessible from the outside of the class !!
         private RunProcessAgent(InternalLogger internalLogger)
@@ -38,17 +37,6 @@ namespace FastLog.Net.Agents.AdvancedAgents
         }
 
         public static RunProcessAgent Create(InternalLogger internalLogger = null) => new RunProcessAgent(internalLogger);
-        public RunProcessAgent ExecuteOnlyOnDebugMode()
-        {
-            executeOnlyOnDebugMode = true;
-            return this;
-        }
-
-        public RunProcessAgent ExecuteOnlyOnReleaseMode()
-        {
-            executeOnlyOnReleaseMode = true;
-            return this;
-        }
 
         public RunProcessAgent ExecuteProcess(string commandToExecute)
         {
@@ -100,70 +88,11 @@ namespace FastLog.Net.Agents.AdvancedAgents
         }
 
 
-        public RunProcessAgent IncludeEventType(LogEventTypes logEventType)
-        {
-            if (!_registeredEvents.Any(type => type == logEventType))
-            {
-                _registeredEvents.Add(logEventType);
-            }
-
-            return this;
-        }
-
-
-
-        public RunProcessAgent ExcludeEventType(LogEventTypes logEventType)
-        {
-            if (_registeredEvents.Any(type => type == logEventType))
-            {
-                _registeredEvents.Remove(logEventType);
-            }
-
-            return this;
-        }
-
-        public RunProcessAgent IncludeAllEventTypes()
-        {
-            _registeredEvents.Clear();
-
-            foreach (LogEventTypes eventType in Enum.GetValues(typeof(LogEventTypes)))
-            {
-                _registeredEvents.Add(eventType);
-            }
-
-            return this;
-        }
-
-        public RunProcessAgent ExcludeAllEventTypes()
-        {
-            _registeredEvents.Clear();
-
-            return this;
-        }
-
-
-
-        #endregion
-
 
         public Task ExecuteAgent(LogEventModel LogModel, CancellationToken cancellationToken = default)
         {
 
-#if !RELEASE
-
-            if (executeOnlyOnReleaseMode) return Task.CompletedTask;
-
-#endif
-
-#if !DEBUG
-            if (executeOnlyOnDebugMode) return Task.CompletedTask;
-
-#endif
-
-            if (string.IsNullOrWhiteSpace(ProcessToExecute)) return Task.CompletedTask;
-
-
-
+            if (!CanExecuteOnThidMode()) return Task.CompletedTask;
 
 
             if (LogModel is null)
@@ -172,14 +101,10 @@ namespace FastLog.Net.Agents.AdvancedAgents
             }
 
 
-
-
             try
             {
 
-                // Check if current log "Event Type" should be execute or not.
-                if (!_registeredEvents.Any()) return Task.CompletedTask;
-                if (!_registeredEvents.Any(type => LogModel.LogEventType == type)) return Task.CompletedTask;
+                if (!CanThisEventTypeExecute(LogModel.LogEventType)) return Task.CompletedTask;
 
 
                 RunProcess(WorkingDirectory, ProcessToExecute, ExecutionArgument, useShellExecute, runAsAdministrator);

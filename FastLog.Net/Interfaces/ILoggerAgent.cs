@@ -4,7 +4,7 @@ using TrendSoft.FastLog.Models;
 
 namespace TrendSoft.FastLog.Interfaces
 {
-    public interface ILoggerAgent
+    public interface IAgent
     {
 
 #if NETFRAMEWORK || NETSTANDARD2_0

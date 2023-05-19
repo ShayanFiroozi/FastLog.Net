@@ -1,7 +1,4 @@
-﻿using FastLog.Enums;
-using System;
-using System.Collections.Generic;
-using System.Linq;
+﻿using System;
 using System.Threading;
 using System.Threading.Tasks;
 using TrendSoft.FastLog.Interfaces;
@@ -11,17 +8,12 @@ using TrendSoft.FastLog.Models;
 namespace FastLog.Net.Agents.AdvancedAgents
 {
 
-    // Note : UserDefinedAgent class uses fluent "Builder" pattern.
 
-    public class MethodExecutionAgent : ILoggerAgent
+    public class MethodExecutionAgent : AgentBase<MethodExecutionAgent>, IAgent
     {
-        private readonly List<LogEventTypes> _registeredEvents = new List<LogEventTypes>();
-        private readonly InternalLogger InternalLogger = null;
-        private bool executeOnlyOnDebugMode { get; set; } = false;
-        private bool executeOnlyOnReleaseMode { get; set; } = false;
+
         private Action methodToExecute { get; set; }
 
-        #region Fluent Builder Methods
 
         //Keep it private to make it non accessible from the outside of the class !!
         private MethodExecutionAgent(InternalLogger internalLogger)
@@ -38,75 +30,15 @@ namespace FastLog.Net.Agents.AdvancedAgents
             return this;
         }
 
-        public MethodExecutionAgent ExecuteOnlyOnDebugMode()
-        {
-            executeOnlyOnDebugMode = true;
-            return this;
-        }
+     
 
-        public MethodExecutionAgent ExecuteOnlyOnReleaseMode()
-        {
-            executeOnlyOnReleaseMode = true;
-            return this;
-        }
-
-
-        public MethodExecutionAgent IncludeEventType(LogEventTypes logEventType)
-        {
-            if (!_registeredEvents.Any(type => type == logEventType))
-            {
-                _registeredEvents.Add(logEventType);
-            }
-
-            return this;
-        }
-
-        public MethodExecutionAgent ExcludeEventType(LogEventTypes logEventType)
-        {
-            if (_registeredEvents.Any(type => type == logEventType))
-            {
-                _registeredEvents.Remove(logEventType);
-            }
-
-            return this;
-        }
-
-        public MethodExecutionAgent IncludeAllEventTypes()
-        {
-            _registeredEvents.Clear();
-
-            foreach (LogEventTypes eventType in Enum.GetValues(typeof(LogEventTypes)))
-            {
-                _registeredEvents.Add(eventType);
-            }
-
-            return this;
-        }
-
-        public MethodExecutionAgent ExcludeAllEventTypes()
-        {
-            _registeredEvents.Clear();
-
-            return this;
-        }
-
-        #endregion
 
 
         public Task ExecuteAgent(LogEventModel LogModel, CancellationToken cancellationToken = default)
         {
 
 
-#if !RELEASE
-
-            if (executeOnlyOnReleaseMode) return Task.CompletedTask;
-
-#endif
-
-#if !DEBUG
-            if (executeOnlyOnDebugMode) return Task.CompletedTask;
-
-#endif
+            if (!CanExecuteOnThidMode()) return Task.CompletedTask;
 
 
             if (LogModel is null)
@@ -115,15 +47,17 @@ namespace FastLog.Net.Agents.AdvancedAgents
             }
 
 
-            if (methodToExecute != null)
-            {
-                return Task.Run(methodToExecute, cancellationToken);
-            }
+            if (!CanThisEventTypeExecute(LogModel.LogEventType)) return Task.CompletedTask;
+
+       
 
             try
             {
 
-                // Call user-defined function here !
+                if (methodToExecute != null)
+                {
+                    return Task.Run(methodToExecute, cancellationToken);
+                }
 
 
             }
@@ -136,10 +70,7 @@ namespace FastLog.Net.Agents.AdvancedAgents
 
         }
 
-        public MethodExecutionAgent MethodToExecute(Task task)
-        {
-            throw new NotImplementedException();
-        }
+    
     }
 
 }
