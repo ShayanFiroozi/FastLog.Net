@@ -32,9 +32,10 @@ namespace FastLog.NetTest
 
             loggerA = Logger.Create(internalLogger)
                             .ApplyAgents(AgentsManager.Create()
-                                                      .AddBeepAgent(BeepAgent.Create(internalLogger)
-                                                                             .ExcludeAllEventTypes()
-                                                                             .IncludeEventType(Enums.LogEventTypes.INFO))
+                                                      //.AddBeepAgent(BeepAgent.Create(internalLogger)
+                                                      //                       .ExcludeAllEventTypes()
+                                                      //                       .IncludeEventType(Enums.LogEventTypes.INFO)
+                                                      //                       .ExecuteOnlyOnDebugMode())
                                                       .AddConsoleAgent(ConsoleAgent.Create(internalLogger))
 
                                                       .AddTextFileAgent(TextFileAgent.Create(internalLogger)
@@ -47,8 +48,12 @@ namespace FastLog.NetTest
                                                                                      .SaveLogToFile("D:\\Logs\\TestLog.log")
                                                                                      .DeleteTheLogFileWhenExceededTheMaximumSizeOf(50))
 
-                                                      .AddMethodExecutionAgent(MethodExecutionAgent.Create(internalLogger).MethodToExecute(MethodA).ExecuteOnlyOnReleaseMode())
-                                                      .AddMethodExecutionAgent(MethodExecutionAgent.Create(internalLogger).MethodToExecute(MethodB).ExecuteOnlyOnReleaseMode()))
+                                                      //.AddMethodExecutionAgent(MethodExecutionAgent.Create(internalLogger).MethodToExecute(MethodA).ExecuteOnlyOnReleaseMode())
+                                                      //.AddMethodExecutionAgent(MethodExecutionAgent.Create(internalLogger).MethodToExecute(MethodB).ExecuteOnlyOnReleaseMode())
+
+                                                      .AddInMemoryAgent(InMemoryAgent.Create().WithMaxEventsToKeep(1_000)))
+
+                            
 
 
                              .ApplyConfig(ConfigManager.Create());
