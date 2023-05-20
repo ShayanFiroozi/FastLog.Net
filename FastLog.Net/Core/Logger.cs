@@ -66,6 +66,7 @@ namespace TrendSoft.FastLog.Core
                 try
                 {
                     StopLogger();
+                    inMemoryEvents.Clear();
 
                 }
 

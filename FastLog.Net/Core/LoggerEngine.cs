@@ -14,7 +14,6 @@ namespace TrendSoft.FastLog.Core
         public Task StartLogger()
         {
 
-
             List<Task> tasksList = null;
 
             if (configManager.RunAgentsInParallel) tasksList = new List<Task>();

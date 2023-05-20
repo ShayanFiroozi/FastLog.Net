@@ -17,11 +17,9 @@ namespace FastLog.Agents.FileBaseAgents
     {
 
 
-
-        private bool useJsonFormat { get; set; } = false;
-
         #region Private Properties
 
+        private bool useJsonFormat { get; set; } = false;
         private string LogFile { get; set; } = string.Empty;
         private short MaxLogFileSizeMB { get; set; } = 0;
 
@@ -126,38 +124,48 @@ namespace FastLog.Agents.FileBaseAgents
                 }
 
 
-                //Note :  In code below we will lose exceptions from "ThreadSafeFileHelper.AppendAllText" due to use a "Fire and forget" approach here.
-                // Please note that it is not recomended to use "ReaderWriterLockSlim" in async/await methods.
-                //For more info please visit -> https://stackoverflow.com/questions/19659387/readerwriterlockslim-and-async-await
 
+                    // Note : This approach below will throw exception if "RunAgentsInParallel=true" , because it's is likely two or more threads access the file simultaneously.
 
+                    #region Not-Thread-Safe File Write Approach
 
+#if NETFRAMEWORK || NETSTANDARD2_0
 
-                // #Refactor Required. ( Goal : use an approach to be able to catch exceptions properly and not using "Fire and Forget" style )
-                return Task.Run(() =>
-                {
-                    try
+                    return Task.Run(() =>
                     {
-                        ThreadSafeFileHelper.AppendAllText(LogFile, useJsonFormat ? LogModel.ToJsonText() : LogModel.ToPlainText());
-                    }
-                    catch (Exception ex)
-                    {
-                        InternalLogger?.LogInternalException(ex);
-                    }
-                }, cancellationToken);
+                        try
+                        {
+                            File.AppendAllText(LogFile, useJsonFormat ? LogModel.ToJsonText() : LogModel.ToPlainText());
+                        }
+                        catch (Exception ex)
+                        {
+                            InternalLogger?.LogInternalException(ex);
+                        }
+                    }, cancellationToken);
+
+#else
+                    return File.AppendAllTextAsync(LogFile, useJsonFormat ? LogModel.ToJsonText() : LogModel.ToPlainText(), cancellationToken);
+#endif
 
 
-                // Note : The approach below (when using File.AppendAllTextAsync) is not thread-safe and has some issues ,
-                // - specially when two or more loggers are logging to the same file.
 
-                //#if NETFRAMEWORK || NETSTANDARD2_0
+                    #endregion
 
-                //                await Task.Run(() => ThreadSafeFileHelper.AppendAllText(LogFile, LogModel.GetLogMessage(true)), cancellationToken);
-                //#else
 
-                //                await File.AppendAllTextAsync(LogFile, LogModel.GetLogMessage(true), cancellationToken);
+                    #region ThreadSafe File Write Approach
 
-                //#endif
+                    //return Task.Run(() =>
+                    //      {
+                    //          try
+                    //          {
+                    //              ThreadSafeFileHelper.AppendAllText(LogFile, useJsonFormat ? LogModel.ToJsonText() : LogModel.ToPlainText());
+                    //          }
+                    //          catch (Exception ex)
+                    //          {
+                    //              InternalLogger?.LogInternalException(ex);
+                    //          }
+                    //      }, cancellationToken); 
+                    #endregion
 
 
 
