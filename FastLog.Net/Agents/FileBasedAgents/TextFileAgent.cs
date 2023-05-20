@@ -134,7 +134,17 @@ namespace FastLog.Agents.FileBaseAgents
 
 
                 // #Refactor Required. ( Goal : use an approach to be able to catch exceptions properly and not using "Fire and Forget" style )
-                return Task.Run(() => ThreadSafeFileHelper.AppendAllText(LogFile, useJsonFormat ? LogModel.ToJsonText() : LogModel.ToPlainText()), cancellationToken);
+                return Task.Run(() =>
+                {
+                    try
+                    {
+                        ThreadSafeFileHelper.AppendAllText(LogFile, useJsonFormat ? LogModel.ToJsonText() : LogModel.ToPlainText());
+                    }
+                    catch (Exception ex)
+                    {
+                        InternalLogger?.LogInternalException(ex);
+                    }
+                }, cancellationToken);
 
 
                 // Note : The approach below (when using File.AppendAllTextAsync) is not thread-safe and has some issues ,
