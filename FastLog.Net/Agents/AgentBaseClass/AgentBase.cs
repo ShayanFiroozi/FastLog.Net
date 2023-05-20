@@ -13,12 +13,26 @@ namespace FastLog.Agents
 
 
         #region Private Properties
+        private protected string ApplicationName { get; set; } = "N/A";
+
         private protected InternalLogger InternalLogger = null;
         private readonly List<LogEventTypes> _registeredEvents = new List<LogEventTypes>();
         private bool executeOnlyOnDebugMode { get; set; }
         private bool executeOnlyOnReleaseMode { get; set; }
         #endregion
 
+
+        internal AgentType WithApplicationName(string applicationName)
+        {
+            if (string.IsNullOrWhiteSpace(applicationName))
+            {
+                throw new ArgumentException($"'{nameof(applicationName)}' cannot be null or whitespace.", nameof(applicationName));
+            }
+
+            ApplicationName = applicationName;
+
+            return (AgentType)this;
+        }
 
 
         #region Execution Conditions
@@ -54,8 +68,6 @@ namespace FastLog.Agents
         }
 
         #endregion
-
-
 
 
         #region Event Management

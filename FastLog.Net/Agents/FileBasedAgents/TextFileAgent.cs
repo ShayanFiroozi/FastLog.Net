@@ -120,52 +120,52 @@ namespace FastLog.Agents.FileBaseAgents
                 // Create the new log file and add file header.
                 if (!File.Exists(LogFile))
                 {
-                    File.AppendAllText(LogFile, FileHeader.GenerateFileHeader(LogFile));
+                    ThreadSafeFileHelper.AppendAllText(LogFile, FileHeader.GenerateFileHeader(LogFile,ApplicationName));
                 }
 
 
 
-                    // Note : This approach below will throw exception if "RunAgentsInParallel=true" , because it's is likely two or more threads access the file simultaneously.
+                // Note : This approach below will throw exception if "RunAgentsInParallel=true" , because it's is likely two or more threads access the file simultaneously.
 
-                    #region Not-Thread-Safe File Write Approach
+                //                    #region Not-Thread-Safe File Write Approach
 
-#if NETFRAMEWORK || NETSTANDARD2_0
+                //#if NETFRAMEWORK || NETSTANDARD2_0
 
-                    return Task.Run(() =>
-                    {
-                        try
-                        {
-                            File.AppendAllText(LogFile, useJsonFormat ? LogModel.ToJsonText() : LogModel.ToPlainText());
-                        }
-                        catch (Exception ex)
-                        {
-                            InternalLogger?.LogInternalException(ex);
-                        }
-                    }, cancellationToken);
+                //                    return Task.Run(() =>
+                //                    {
+                //                        try
+                //                        {
+                //                            File.AppendAllText(LogFile, useJsonFormat ? LogModel.ToJsonText() : LogModel.ToPlainText());
+                //                        }
+                //                        catch (Exception ex)
+                //                        {
+                //                            InternalLogger?.LogInternalException(ex);
+                //                        }
+                //                    }, cancellationToken);
 
-#else
-                    return File.AppendAllTextAsync(LogFile, useJsonFormat ? LogModel.ToJsonText() : LogModel.ToPlainText(), cancellationToken);
-#endif
-
-
-
-                    #endregion
+                //#else
+                //                    return File.AppendAllTextAsync(LogFile, useJsonFormat ? LogModel.ToJsonText() : LogModel.ToPlainText(), cancellationToken);
+                //#endif
 
 
-                    #region ThreadSafe File Write Approach
 
-                    //return Task.Run(() =>
-                    //      {
-                    //          try
-                    //          {
-                    //              ThreadSafeFileHelper.AppendAllText(LogFile, useJsonFormat ? LogModel.ToJsonText() : LogModel.ToPlainText());
-                    //          }
-                    //          catch (Exception ex)
-                    //          {
-                    //              InternalLogger?.LogInternalException(ex);
-                    //          }
-                    //      }, cancellationToken); 
-                    #endregion
+                //                    #endregion
+
+
+                #region ThreadSafe File Write Approach
+
+                return Task.Run(() =>
+                      {
+                          try
+                          {
+                              ThreadSafeFileHelper.AppendAllText(LogFile, useJsonFormat ? LogModel.ToJsonText() : LogModel.ToPlainText());
+                          }
+                          catch (Exception ex)
+                          {
+                              InternalLogger?.LogInternalException(ex);
+                          }
+                      }, cancellationToken);
+                #endregion
 
 
 

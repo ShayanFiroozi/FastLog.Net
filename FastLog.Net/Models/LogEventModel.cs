@@ -18,8 +18,6 @@ namespace TrendSoft.FastLog.Models
             this.LogEventType = LogEventType;
             this.EventMessage = EventText;
             this.Details = Details;
-            this.LogMachineName = LogMachineName;
-            this.ApplicationName = ApplicationName;
             this.EventId = EventId;
         }
 
@@ -63,10 +61,6 @@ namespace TrendSoft.FastLog.Models
         public string EventMessage { get; private set; }
 
         public string Details { get; private set; }
-
-        public bool LogMachineName { get; private set; }
-
-        public string ApplicationName { get; private set; }
 
 
         #endregion

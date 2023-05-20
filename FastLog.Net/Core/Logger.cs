@@ -12,20 +12,24 @@ namespace TrendSoft.FastLog.Core
         #region Fluent Builder Methods
 
         //Keep it private to make it non accessible from the outside of the class !!
-        private Logger(InternalLogger internalLogger = null)
+        private Logger(InternalLogger internalLogger, ConfigManager config)
         {
+
+            this.internalLogger = internalLogger ?? throw new ArgumentNullException(nameof(internalLogger));
+
+            configManager = config ?? throw new ArgumentNullException(nameof(config));
+
+
             // Initialize Channels Reader/Writer
             LoggerChannelReader = LoggerChannel.Reader;
             LoggerChannelWriter = LoggerChannel.Writer;
 
-            this.internalLogger = internalLogger;
 
-            // Init properties below to prevent null exception if user did not set them later !
             Agents = AgentsManager.Create();
-            configManager = ConfigManager.Create();
+
         }
 
-        public static Logger Create(InternalLogger internalLogger = null) => new Logger(internalLogger);
+        public static Logger Create(InternalLogger internalLogger, ConfigManager config) => new Logger(internalLogger, config);
 
 
 
@@ -34,14 +38,6 @@ namespace TrendSoft.FastLog.Core
             this.Agents = agentsManager;
             return this;
         }
-
-
-        public Logger ApplyConfig(ConfigManager configManager)
-        {
-            this.configManager = configManager;
-            return this;
-        }
-
 
 
 

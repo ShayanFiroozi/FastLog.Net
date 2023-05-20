@@ -4,6 +4,7 @@ namespace FastLog.Core
 {
     public class ConfigManager
     {
+        internal string ApplicationName { get; set; } = "N/A";
         internal int MaxEventsToKeep { get; set; } = 0;
         internal bool RunAgentsInParallel { get; set; } = false;
 
@@ -30,7 +31,21 @@ namespace FastLog.Core
         }
 
 
-    
+
+        public ConfigManager WithApplicationName(string applicationName)
+        {
+            if (string.IsNullOrWhiteSpace(applicationName))
+            {
+                throw new ArgumentException($"'{nameof(applicationName)}' cannot be null or whitespace.", nameof(applicationName));
+            }
+
+            ApplicationName = applicationName;
+            return this;
+
+
+        }
+
+
 
         /// <summary>
         /// WARNING : Run "Logger Agents" in parallel may impact the performance.

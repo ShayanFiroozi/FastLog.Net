@@ -52,6 +52,7 @@ namespace FastLog.Core
 
         public AgentsManager AddHeavyOperationSimulatorAgent(HeavyOperationSimulatorAgent heavyOperationSimulator)
         {
+            
             AddAgent(heavyOperationSimulator);
             return this;
         }

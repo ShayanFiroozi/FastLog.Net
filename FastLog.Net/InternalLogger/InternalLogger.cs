@@ -182,7 +182,7 @@ namespace TrendSoft.FastLog.Internal
                     // Create the new internal log file and add file header.
                     if (!File.Exists(InternalLogFile))
                     {
-                        File.AppendAllText(InternalLogFile, FileHeader.GenerateFileHeader(InternalLogFile));
+                        ThreadSafeFileHelper.AppendAllText(InternalLogFile, FileHeader.GenerateFileHeader(InternalLogFile));
                     }
                 }
                 catch { }
@@ -297,7 +297,7 @@ namespace TrendSoft.FastLog.Internal
                     // Create the new internal log file and add file header.
                     if (!File.Exists(InternalLogFile))
                     {
-                        File.AppendAllText(InternalLogFile, FileHeader.GenerateFileHeader(InternalLogFile));
+                        ThreadSafeFileHelper.AppendAllText(InternalLogFile, FileHeader.GenerateFileHeader(InternalLogFile));
                     }
                 }
                 catch { }
