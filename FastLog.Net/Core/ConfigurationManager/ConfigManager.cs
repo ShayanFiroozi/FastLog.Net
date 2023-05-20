@@ -5,8 +5,6 @@ namespace FastLog.Core
     public class ConfigManager
     {
         internal int MaxEventsToKeep { get; set; } = 0;
-        internal string ApplicationName { get; set; } = string.Empty;
-        internal bool SaveMachineName { get; set; } = false;
         internal bool RunAgentsInParallel { get; set; } = false;
 
 
@@ -32,18 +30,7 @@ namespace FastLog.Core
         }
 
 
-        public ConfigManager IncludeMachineName()
-        {
-            SaveMachineName = true;
-            return this;
-        }
-
-
-        public ConfigManager IncludeApplicationName(string applicationName)
-        {
-            this.ApplicationName = applicationName;
-            return this;
-        }
+    
 
         /// <summary>
         /// WARNING : Run "Logger Agents" in parallel may impact the performance.

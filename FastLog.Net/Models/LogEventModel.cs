@@ -12,8 +12,6 @@ namespace TrendSoft.FastLog.Models
         public LogEventModel(LogEventTypes LogEventType,
                              string EventText,
                              string Details = "",
-                             bool LogMachineName = false,
-                             string ApplicationName = "",
                              int EventId = 0)
         {
             DateTime = DateTime.Now;
@@ -26,7 +24,7 @@ namespace TrendSoft.FastLog.Models
         }
 
 
-        public LogEventModel(Exception exception, bool LogMachineName = false, string ApplicationName = "", int EventId = 0)
+        public LogEventModel(Exception exception, int EventId = 0)
             : this(LogEventTypes.EXCEPTION,
 
                    $"\nId : {exception?.HResult}\n" +
@@ -36,9 +34,6 @@ namespace TrendSoft.FastLog.Models
                    $"StackTrace : {exception?.StackTrace ?? "N/A"}\n" +
                    $"Source : {exception?.Source ?? "N/A"}\n" +
                    $"Target Site : {(exception?.TargetSite != null ? exception?.TargetSite?.Name : "N/A")}",
-
-                   LogMachineName,
-                   ApplicationName,
                    EventId)
         {
             this.Exception = exception;

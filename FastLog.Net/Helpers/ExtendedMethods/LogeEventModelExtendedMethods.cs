@@ -31,33 +31,7 @@ namespace FastLog.Helpers.ExtendedMethods
             }
 
 
-            if (logEventModel.LogMachineName)
-            {
-                if (logEventModel.LogEventType != LogEventTypes.EXCEPTION)
-                {
-                    _ = finalMessage.Append($" , MachineName: \"{Environment.MachineName}\"");
-                }
-                else
-                {
-                    _ = finalMessage.Append($"\nMachineName: \"{Environment.MachineName}\"");
-                }
-            }
-
-
-            if (!string.IsNullOrWhiteSpace(logEventModel.ApplicationName))
-            {
-                if (logEventModel.LogEventType != LogEventTypes.EXCEPTION)
-                {
-                    _ = finalMessage.Append($" , App Name: \"{logEventModel.ApplicationName}\"");
-                }
-                else
-                {
-                    _ = finalMessage.Append($"\nApp Name: \"{logEventModel.ApplicationName}\"");
-                }
-
-            }
-
-
+   
 
             if (logEventModel.LogEventType != LogEventTypes.EXCEPTION)
             {
@@ -111,31 +85,22 @@ namespace FastLog.Helpers.ExtendedMethods
 
 
                 _ = finalMessage.Append($" \"Details\": \"{(string.IsNullOrWhiteSpace(logEventModel.Details) ? "N/A" : logEventModel.Details)}\"")
-                         .Append(',').Append('\n');
+                         .Append(',');
 
             }
 
-            if (logEventModel.LogMachineName)
-            {
-                _ = finalMessage.Append($" \"MachineName\": \"{Environment.MachineName}\"")
-                    .Append(',').Append('\n');
-            }
-
-
-            if (!string.IsNullOrWhiteSpace(logEventModel.ApplicationName))
-            {
-                _ = finalMessage.Append($" \"Application\": \"{(string.IsNullOrWhiteSpace(logEventModel.ApplicationName) ? "N/A" : logEventModel.ApplicationName)}\"")
-                    .Append('\n');
-            }
-
+    
             string finalResult = finalMessage.ToString();
 
             // Trim the last ',' character if exists !
 
-            if (finalResult.Substring(finalResult.Length - 1, 1) == ",") finalResult = finalResult.Substring(0, finalResult.Length - 1);
+            if (finalResult.Substring(finalResult.Length - 1, 1) == ",")
+            {
+                finalResult = finalResult.Substring(0, finalResult.Length - 1);
+            }
 
 
-            finalResult += $"}},\n";
+            finalResult += $"\n}},\n";
                             
 
 

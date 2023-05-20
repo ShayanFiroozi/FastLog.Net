@@ -39,9 +39,7 @@ namespace FastLog.NetTest
                                                                                      .DeleteTheLogFileWhenExceededTheMaximumSizeOf(10)))
 
                              .ApplyConfig(ConfigManager.Create()
-                                                       .WithMaxEventsToKeepInMemory(1_000)
-                                                       .IncludeApplicationName("Test-App")
-                                                       .IncludeMachineName());
+                                                       .WithMaxEventsToKeepInMemory(1_000));
 
 
 
@@ -78,44 +76,15 @@ namespace FastLog.NetTest
 
             Parallel.For(0, 40_000, (y) =>
             {
-                _ = loggerA.LogException(new InvalidCastException(), 1364);
+                loggerA.LogException(new InvalidCastException("ANPR engine cast is not valid",
+                                            new CannotUnloadAppDomainException("Engine is not loaded",
+                                            new AccessViolationException("Just kiddin U !",
+                                            new InvalidTimeZoneException("Really  kiddin With U !")))), 1365);
+
                 _ = loggerA.LogException(new InvalidOperationException(), 1365);
                 _ = loggerA.LogException(new DivideByZeroException(), 0);
                 _ = loggerA.LogException(new FileNotFoundException(), -1);
 
-                _ = loggerA.LogInfo($"This is the \"INFO\" a message from the \"CrazyTestWithMultiThreadMultiTask\"");
-                _ = loggerA.LogAlert($"This is the \"ALERT\" a message from the \"CrazyTestWithMultiThreadMultiTask\"");
-                _ = loggerA.LogSystem($"This is the \"SYSTEM\" a message number the \"CrazyTestWithMultiThreadMultiTask\"");
-                _ = loggerA.LogSystem($"This is the \"EXCEPTION\" a message from the \"CrazyTestWithMultiThreadMultiTask\"");
-
-
-                _ = loggerA.LogException(new InvalidCastException(), 1364);
-                _ = loggerA.LogException(new InvalidOperationException(), 1365);
-                _ = loggerA.LogException(new DivideByZeroException(), 0);
-                _ = loggerA.LogException(new FileNotFoundException(), -1);
-
-                _ = loggerA.LogInfo($"This is the \"INFO\" a message from the \"CrazyTestWithMultiThreadMultiTask\"");
-                _ = loggerA.LogAlert($"This is the \"ALERT\" a message from the \"CrazyTestWithMultiThreadMultiTask\"");
-                _ = loggerA.LogSystem($"This is the \"SYSTEM\" a message number the \"CrazyTestWithMultiThreadMultiTask\"");
-                _ = loggerA.LogSystem($"This is the \"EXCEPTION\" a message from the \"CrazyTestWithMultiThreadMultiTask\"");
-
-
-
-                _ = loggerA.LogException(new InvalidCastException(), 1364);
-                _ = loggerA.LogException(new InvalidOperationException(), 1365);
-                _ = loggerA.LogException(new DivideByZeroException(), 0);
-                _ = loggerA.LogException(new FileNotFoundException(), -1);
-
-                _ = loggerA.LogInfo($"This is the \"INFO\" a message from the \"CrazyTestWithMultiThreadMultiTask\"");
-                _ = loggerA.LogAlert($"This is the \"ALERT\" a message from the \"CrazyTestWithMultiThreadMultiTask\"");
-                _ = loggerA.LogSystem($"This is the \"SYSTEM\" a message number the \"CrazyTestWithMultiThreadMultiTask\"");
-                _ = loggerA.LogSystem($"This is the \"EXCEPTION\" a message from the \"CrazyTestWithMultiThreadMultiTask\"");
-
-
-                _ = loggerA.LogException(new InvalidCastException(), 1364);
-                _ = loggerA.LogException(new InvalidOperationException(), 1365);
-                _ = loggerA.LogException(new DivideByZeroException(), 0);
-                _ = loggerA.LogException(new FileNotFoundException(), -1);
 
                 _ = loggerA.LogInfo($"This is the \"INFO\" a message from the \"CrazyTestWithMultiThreadMultiTask\"");
                 _ = loggerA.LogAlert($"This is the \"ALERT\" a message from the \"CrazyTestWithMultiThreadMultiTask\"");
@@ -136,32 +105,6 @@ namespace FastLog.NetTest
                               _= loggerA.LogSystem($"This is the \"SYSTEM\" message number  from the \"CrazyTestWithMultiThreadMultiTask\"");
                               _= loggerA.LogSystem($"This is the \"EXCEPTION\" message number from the \"CrazyTestWithMultiThreadMultiTask\"");
 
-                              _ = loggerA.LogException(new InvalidCastException(), 1364);
-                _ = loggerA.LogException(new InvalidOperationException(), 1365);
-                _ = loggerA.LogException(new DivideByZeroException(), 0);
-                _ = loggerA.LogException(new FileNotFoundException(), -1);
-
-                _ = loggerA.LogInfo($"This is the \"INFO\" a message from the \"CrazyTestWithMultiThreadMultiTask\"");
-                _ = loggerA.LogAlert($"This is the \"ALERT\" a message from the \"CrazyTestWithMultiThreadMultiTask\"");
-                _ = loggerA.LogSystem($"This is the \"SYSTEM\" a message number the \"CrazyTestWithMultiThreadMultiTask\"");
-                _ = loggerA.LogSystem($"This is the \"EXCEPTION\" a message from the \"CrazyTestWithMultiThreadMultiTask\"");
-
-
-                                 _= loggerA.LogSecurity($"This is a \"Test Security\" number  from \"CrazyTestWithMultiThreadMultiTask\"");
-                                _= loggerA.LogSystem($"This is a \"Test SYSTEM\" number  from \"CrazyTestWithMultiThreadMultiTask\"");
-                                _= loggerA.LogSecurity($"This is a \"Test Security\"  from \"CrazyTestWithMultiThreadMultiTask\"");
-                                _= loggerA.LogSystem($"This is a \"Test SYSTEM\"  from \"CrazyTestWithMultiThreadMultiTask\"");
-
-                _ = loggerA.LogException(new InvalidCastException(), 1364);
-                _ = loggerA.LogException(new InvalidOperationException(), 1365);
-                _ = loggerA.LogException(new DivideByZeroException(), 0);
-                _ = loggerA.LogException(new FileNotFoundException(), -1);
-
-                _ = loggerA.LogInfo($"This is the \"INFO\" a message from the \"CrazyTestWithMultiThreadMultiTask\"");
-                _ = loggerA.LogAlert($"This is the \"ALERT\" a message from the \"CrazyTestWithMultiThreadMultiTask\"");
-                _ = loggerA.LogSystem($"This is the \"SYSTEM\" a message number the \"CrazyTestWithMultiThreadMultiTask\"");
-                _ = loggerA.LogSystem($"This is the \"EXCEPTION\" a message from the \"CrazyTestWithMultiThreadMultiTask\"");
-
 
                       }),
 
@@ -170,32 +113,15 @@ namespace FastLog.NetTest
                         {
 
 
-                                _= loggerA.LogException(new Exception($"This is a \"Test Exception\" from \"CrazyTestWithMultiThreadMultiTask\""));
-                                _= loggerA.LogException(new Exception($"This is a \"Test Exception\" from \"CrazyTestWithMultiThreadMultiTask\""));
-                                _= loggerA.LogSecurity($"This is a \"Test Security\" number  from \"CrazyTestWithMultiThreadMultiTask\"");
-                                _= loggerA.LogSystem($"This is a \"Test SYSTEM\" number  from \"CrazyTestWithMultiThreadMultiTask\"");
-                                _= loggerA.LogSecurity($"This is a \"Test Security\"  from \"CrazyTestWithMultiThreadMultiTask\"");
-                                _= loggerA.LogSystem($"This is a \"Test SYSTEM\"  from \"CrazyTestWithMultiThreadMultiTask\"");
 
 
-                               _= loggerA.LogException(new Exception($"This is a \"Test Exception\" from \"CrazyTestWithMultiThreadMultiTask\""));
-                                _= loggerA.LogSecurity($"This is a \"Test Security\" number  from \"CrazyTestWithMultiThreadMultiTask\"");
-                                _= loggerA.LogSystem($"This is a \"Test SYSTEM\" number  from \"CrazyTestWithMultiThreadMultiTask\"");
-                                _= loggerA.LogSecurity($"This is a \"Test Security\"  from \"CrazyTestWithMultiThreadMultiTask\"");
-                                _= loggerA.LogSystem($"This is a \"Test SYSTEM\"  from \"CrazyTestWithMultiThreadMultiTask\"");
-
-                                _ = loggerA.LogException(new InvalidCastException(), 1364);
-                _ = loggerA.LogException(new InvalidOperationException(), 1365);
-                _ = loggerA.LogException(new DivideByZeroException(), 0);
-                _ = loggerA.LogException(new FileNotFoundException(), -1);
-
-                _ = loggerA.LogInfo($"This is the \"INFO\" a message from the \"CrazyTestWithMultiThreadMultiTask\"");
-                _ = loggerA.LogAlert($"This is the \"ALERT\" a message from the \"CrazyTestWithMultiThreadMultiTask\"");
-                _ = loggerA.LogSystem($"This is the \"SYSTEM\" a message number the \"CrazyTestWithMultiThreadMultiTask\"");
-                _ = loggerA.LogSystem($"This is the \"EXCEPTION\" a message from the \"CrazyTestWithMultiThreadMultiTask\"");
 
 
-                _ = loggerA.LogException(new InvalidCastException(), 1364);
+                _ = loggerA.LogException(new InvalidCastException("ANPR engine cast is not valid",
+                                           new CannotUnloadAppDomainException("Engine is not loaded",
+                                           new AccessViolationException("Just kiddin U !",
+                                           new InvalidTimeZoneException("Really  kiddin With U !")))),1365);
+
                 _ = loggerA.LogException(new InvalidOperationException(), 1365);
                 _ = loggerA.LogException(new DivideByZeroException(), 0);
                 _ = loggerA.LogException(new FileNotFoundException(), -1);
@@ -226,21 +152,6 @@ namespace FastLog.NetTest
                 _ = loggerA.LogSystem($"This is the \"EXCEPTION\" a message from the \"CrazyTestWithMultiThreadMultiTask\"");
 
 
-                _ = loggerA.LogException(new InvalidCastException(), 1364);
-                _ = loggerA.LogException(new InvalidOperationException(), 1365);
-                _ = loggerA.LogException(new DivideByZeroException(), 0);
-                _ = loggerA.LogException(new FileNotFoundException(), -1);
-
-                _ = loggerA.LogInfo($"This is the \"INFO\" a message from the \"CrazyTestWithMultiThreadMultiTask\"");
-                _ = loggerA.LogAlert($"This is the \"ALERT\" a message from the \"CrazyTestWithMultiThreadMultiTask\"");
-                _ = loggerA.LogSystem($"This is the \"SYSTEM\" a message number the \"CrazyTestWithMultiThreadMultiTask\"");
-                _ = loggerA.LogSystem($"This is the \"EXCEPTION\" a message from the \"CrazyTestWithMultiThreadMultiTask\"");
-
-                               _= loggerA.LogException(new Exception($"This is a \"Test Exception\" from \"CrazyTestWithMultiThreadMultiTask\""));
-                                _= loggerA.LogSecurity($"This is a \"Test Security\" number  from \"CrazyTestWithMultiThreadMultiTask\"");
-                                _= loggerA.LogSystem($"This is a \"Test SYSTEM\" number  from \"CrazyTestWithMultiThreadMultiTask\"");
-                                _= loggerA.LogSecurity($"This is a \"Test Security\"  from \"CrazyTestWithMultiThreadMultiTask\"");
-                                _= loggerA.LogSystem($"This is a \"Test SYSTEM\"  from \"CrazyTestWithMultiThreadMultiTask\"");
 
                         }),
 
@@ -260,21 +171,10 @@ namespace FastLog.NetTest
                                 _= loggerA.LogSecurity($"This is a \"Test Security\"  from \"CrazyTestWithMultiThreadMultiTask\"");
                                 _= loggerA.LogSystem($"This is a \"Test SYSTEM\"  from \"CrazyTestWithMultiThreadMultiTask\"");
 
-                             _ = loggerA.LogInfo($"This is the \"INFO\" a message from the \"CrazyTestWithMultiThreadMultiTask\"");
-                _ = loggerA.LogAlert($"This is the \"ALERT\" a message from the \"CrazyTestWithMultiThreadMultiTask\"");
-                _ = loggerA.LogSystem($"This is the \"SYSTEM\" a message number the \"CrazyTestWithMultiThreadMultiTask\"");
-                _ = loggerA.LogSystem($"This is the \"EXCEPTION\" a message from the \"CrazyTestWithMultiThreadMultiTask\"");
+
 
 
                 _ = loggerA.LogException(new InvalidCastException(), 1364);
-                _ = loggerA.LogException(new InvalidOperationException(), 1365);
-                _ = loggerA.LogException(new DivideByZeroException(), 0);
-                _ = loggerA.LogException(new FileNotFoundException(), -1);
-
-                _ = loggerA.LogInfo($"This is the \"INFO\" a message from the \"CrazyTestWithMultiThreadMultiTask\"");
-                _ = loggerA.LogAlert($"This is the \"ALERT\" a message from the \"CrazyTestWithMultiThreadMultiTask\"");
-                _ = loggerA.LogSystem($"This is the \"SYSTEM\" a message number the \"CrazyTestWithMultiThreadMultiTask\"");
-                _ = loggerA.LogSystem($"This is the \"EXCEPTION\" a message from the \"CrazyTestWithMultiThreadMultiTask\"");
 
                         }),
 
@@ -283,27 +183,7 @@ namespace FastLog.NetTest
 
 
                                _= loggerA.LogError($"This is the \"ERROR\" message from the \"CrazyTestWithMultiThreadMultiTask\"");
-                               _= loggerA.LogDebug($"This is the \"DEBUG\" message from the \"CrazyTestWithMultiThreadMultiTask\"");
-                               _= loggerA.LogInfo($"This is the \"INFO\" message from the \"CrazyTestWithMultiThreadMultiTask\"");
-                               _= loggerA.LogNote($"This is the \"NOTE\" message from the \"CrazyTestWithMultiThreadMultiTask\"");
 
-                               _= loggerA.LogException(new Exception($"This is a \"Test Exception\" from \"CrazyTestWithMultiThreadMultiTask\""));
-                                _= loggerA.LogSecurity($"This is a \"Test Security\" number  from \"CrazyTestWithMultiThreadMultiTask\"");
-                                _= loggerA.LogSystem($"This is a \"Test SYSTEM\" number  from \"CrazyTestWithMultiThreadMultiTask\"");
-                                _= loggerA.LogSecurity($"This is a \"Test Security\"  from \"CrazyTestWithMultiThreadMultiTask\"");
-                                _= loggerA.LogSystem($"This is a \"Test SYSTEM\"  from \"CrazyTestWithMultiThreadMultiTask\"");
-
-
-                             _ = loggerA.LogInfo($"This is the \"INFO\" a message from the \"CrazyTestWithMultiThreadMultiTask\"");
-                _ = loggerA.LogAlert($"This is the \"ALERT\" a message from the \"CrazyTestWithMultiThreadMultiTask\"");
-                _ = loggerA.LogSystem($"This is the \"SYSTEM\" a message number the \"CrazyTestWithMultiThreadMultiTask\"");
-                _ = loggerA.LogSystem($"This is the \"EXCEPTION\" a message from the \"CrazyTestWithMultiThreadMultiTask\"");
-
-
-                _ = loggerA.LogException(new InvalidCastException(), 1364);
-                _ = loggerA.LogException(new InvalidOperationException(), 1365);
-                _ = loggerA.LogException(new DivideByZeroException(), 0);
-                _ = loggerA.LogException(new FileNotFoundException(), -1);
 
                 _ = loggerA.LogInfo($"This is the \"INFO\" a message from the \"CrazyTestWithMultiThreadMultiTask\"");
                 _ = loggerA.LogAlert($"This is the \"ALERT\" a message from the \"CrazyTestWithMultiThreadMultiTask\"");
