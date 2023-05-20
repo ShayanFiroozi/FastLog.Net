@@ -36,9 +36,16 @@ namespace FastLog.Core
             return this;
         }
 
-        public AgentsManager AddDebugWindowAgent(DebugSystemAgent debugWindowLogger)
+        public AgentsManager AddDebugSystemAgent(DebugSystemAgent debugSystemAgent)
         {
-            AddAgent(debugWindowLogger);
+            AddAgent(debugSystemAgent);
+            return this;
+        }
+
+
+        public AgentsManager AddTraceSystemAgent(TraceSystemAgent traceSystemAgent)
+        {
+            AddAgent(traceSystemAgent);
             return this;
         }
 
