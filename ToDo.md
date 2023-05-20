@@ -1,10 +1,9 @@
 # FastLog.Net
 ToDo List : 
 
-1- Add TextFile Header.
-2- Add LiteDB agent.
-3- Add SQL Server agent.
-4- Add file based configuration.
+1- Add LiteDB agent.
+2- Add SQL Server agent.
+3- Add file based configuration.
 
 
 
