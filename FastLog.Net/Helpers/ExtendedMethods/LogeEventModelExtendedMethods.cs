@@ -61,11 +61,11 @@ namespace FastLog.Helpers.ExtendedMethods
 
             if (logEventModel.LogEventType != LogEventTypes.EXCEPTION)
             {
-                _ = finalMessage.Append($" , DateTime: \"{logEventModel.DateTime.ToLogFriendlyDateTime()}\"");
+                _ = finalMessage.Append($" , DateTime: \"{logEventModel.DateTime.ToFriendlyDateTime()}\"");
             }
             else
             {
-                _ = finalMessage.Append($"\nDateTime: \"{logEventModel.DateTime.ToLogFriendlyDateTime()}\"");
+                _ = finalMessage.Append($"\nDateTime: \"{logEventModel.DateTime.ToFriendlyDateTime()}\"");
             }
 
 
@@ -88,7 +88,7 @@ namespace FastLog.Helpers.ExtendedMethods
             _ = finalMessage.Append("{").Append('\n')
 
 
-                            .Append($" \"DateTime\": \"{logEventModel.DateTime.ToLogFriendlyDateTime()}\"")
+                            .Append($" \"DateTime\": \"{logEventModel.DateTime.ToFriendlyDateTime()}\"")
                              .Append(',').Append('\n')
 
                             .Append($" \"Type\": \"{logEventModel.LogEventType}\"")

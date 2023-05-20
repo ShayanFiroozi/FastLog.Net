@@ -41,11 +41,11 @@ namespace FastLog.NetTest
                                                       .AddTextFileAgent(TextFileAgent.Create(internalLogger)
                                                                                      .UseJsonFormat()
                                                                                      .SaveLogToFile("D:\\Logs\\TestLog.json")
-                                                                                     .DeleteTheLogFileWhenExceededTheMaximumSizeOf(50))
+                                                                                     .DeleteTheLogFileWhenExceededTheMaximumSizeOf(5))
 
                                                       .AddTextFileAgent(TextFileAgent.Create(internalLogger)
                                                                                      .SaveLogToFile("D:\\Logs\\TestLog.log")
-                                                                                     .DeleteTheLogFileWhenExceededTheMaximumSizeOf(50)))
+                                                                                     .DeleteTheLogFileWhenExceededTheMaximumSizeOf(5)))
 
                              .ApplyConfig(ConfigManager.Create()
                                                        .WithMaxEventsToKeepInMemory(1_000)
@@ -81,7 +81,7 @@ namespace FastLog.NetTest
 
             //Task.Delay(1_500).GetAwaiter().GetResult();
 
-            Parallel.For(0, 20_000, (y) =>
+            Parallel.For(0, 40_000, (y) =>
             {
                 _ = loggerA.LogException(new InvalidCastException(), 1364);
                 _ = loggerA.LogException(new InvalidOperationException(), 1365);

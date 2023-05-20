@@ -115,15 +115,15 @@ namespace FastLog.Agents.FileBaseAgents
                 if (!CanThisEventTypeExecute(LogModel.LogEventType)) return Task.CompletedTask;
 
 
+                // If the log file exceeded the maximum size , we delete it !!
+                CheckAndDeleteLogFileSize();
+
 
                 // Create the new log file and add file header.
                 if (!File.Exists(LogFile))
                 {
                     File.AppendAllText(LogFile, FileHeader.GenerateFileHeader(LogFile));
                 }
-
-                // If the log file exceeded the maximum size , we delete it !!
-                CheckAndDeleteLogFileSize();
 
 
                 //Note :  In code below we will lose exceptions from "ThreadSafeFileHelper.AppendAllText" due to use a "Fire and forget" approach here.
@@ -184,10 +184,10 @@ namespace FastLog.Agents.FileBaseAgents
 
                     // Save the detele operation log with Internal Logger agen (if it was not null)
                     InternalLogger?.LogInternalSystemEvent(new LogEventModel(LogEventTypes.SYSTEM,
-                                   $"The log file \"{LogFile}\" exceeded the maximum permitted size of \"{MaxLogFileSizeMB:N0} MB\"."));
+                                   $"The log file \"{LogFile}\" exceeded the maximum permitted size of \"{MaxLogFileSizeMB:N0} MB\".", EventId: 1));
 
                     InternalLogger?.LogInternalSystemEvent(new LogEventModel(LogEventTypes.SYSTEM,
-                                   $"The log file \"{LogFile}\" has been deleted."));
+                                   $"The log file \"{LogFile}\" has been deleted.", EventId: 2));
 
 
 

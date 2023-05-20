@@ -1,6 +1,5 @@
 ﻿using FastLog.Helpers.ExtendedMethods;
 using System;
-using System.Reflection;
 
 namespace FastLog.Helpers
 {
@@ -11,22 +10,26 @@ namespace FastLog.Helpers
             try
             {
 
-                return $"{new string(' ', 0)} FastLog.Net Version:" +
-                       $"\"{Assembly.GetExecutingAssembly().GetName().Version}\"" +
-                       $" , Build: \"{Assembly.GetExecutingAssembly().GetName().Version}({(Environment.Is64BitProcess ? "64-bit" : "32-bit")})\"{new string(' ', 20)}\n\n" +
+                return $"► FastLog.Net Version: " +
+                       $"\"{SystemInformation.GetCurrentAssemblyVersion()}\" ({(Environment.Is64BitProcess ? "64-bit" : "32-bit")})" +
+                       $" , Build: \"{SystemInformation.GetCurrentAssemblyBuildDate()}" +
+                       $"\" ◄\n\n" +
 
-                       $"{new string(' ', 0)}-> Log File: \"{logFile}\"\n" +
-                       $"{new string(' ', 0)}-> Creation DateTime: \"{DateTime.Now.ToLogFriendlyDateTime()}\"\n" +
-                       $"{new string(' ', 0)}-> Machine Name: \"{Environment.MachineName}\"{new string(' ', 20)}\n" +
+                       $"-> Log File: \"{logFile}\"\n" +
+                       $"-> Creation DateTime: \"{DateTime.Now.ToFriendlyDateTime()}\"\n\n" +
+                       $"-> Machine Name: \"{SystemInformation.GetMachineName()}\"\n" +
 
-                       $"{new string(' ', 0)}-> OS Name: \"{Environment.OSVersion}" +
-                       $"({(Environment.Is64BitOperatingSystem ? "64-bit" : "32-bit")})\"{new string(' ', 20)}\n" +
+                       $"-> OS: \"{SystemInformation.GetOSInfo()}" +
+                       $" ({(Environment.Is64BitOperatingSystem ? "64-bit" : "32-bit")})\"\n" +
+                       
+                       $"-> .NET Runtime Version: \"{SystemInformation.GetDotNetRuntime()}\"\n\n" +
 
-                       $"{new string(' ', 0)}-> Application Name: \"{(string.IsNullOrWhiteSpace(ApplicationName) ? "N/A" : ApplicationName)}\"{new string(' ', 20)}\n" +
-                       $"{new string(' ', 0)}-> Current User: \"{Environment.UserName}\"{new string(' ', 20)}\n\n" +
 
-                       $"{new string(' ', 0)}-> Source Code: https://github.com/ShayanFiroozi/FastLog.Net{new string(' ', 20)}\n\n" +
-                       $"{new string('-', 80)}\n\n";
+                       $"-> Application Name: \"{(!string.IsNullOrWhiteSpace(ApplicationName) ? ApplicationName : "N/A")}\"\n" +
+                       $"-> Current User: \"{SystemInformation.GetCurrentUserName()}\"\n\n" +
+
+                       $"-> Source Code: https://github.com/ShayanFiroozi/FastLog.Net\n\n" +
+                       $"{new string('-', 120)}\n\n";
             }
             catch(Exception ex)
             {
