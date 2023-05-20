@@ -89,9 +89,6 @@ namespace FastLog.Agents.FileBaseAgents
         }
 
 
-
-
-
         public Task ExecuteAgent(LogEventModel LogModel, CancellationToken cancellationToken = default)
         {
             if (!CanExecuteOnThidMode()) return Task.CompletedTask;
@@ -106,7 +103,8 @@ namespace FastLog.Agents.FileBaseAgents
             {
 
 
-
+                // This is necessary to prevent repeatedly internal exception if the destination path ("Directory" or "Drive") ...
+                // are not exist or ready.
                 if (!Directory.Exists(Path.GetDirectoryName(LogFile)))
                 {
                     return Task.CompletedTask;
@@ -117,11 +115,22 @@ namespace FastLog.Agents.FileBaseAgents
                 if (!CanThisEventTypeExecute(LogModel.LogEventType)) return Task.CompletedTask;
 
 
+
+                // Create the new log file and add file header.
+                if (!File.Exists(LogFile))
+                {
+                    File.AppendAllText(LogFile, FileHeader.GenerateFileHeader(LogFile));
+                }
+
+                // If the log file exceeded the maximum size , we delete it !!
                 CheckAndDeleteLogFileSize();
+
 
                 //Note :  In code below we will lose exceptions from "ThreadSafeFileHelper.AppendAllText" due to use a "Fire and forget" approach here.
                 // Please note that it is not recomended to use "ReaderWriterLockSlim" in async/await methods.
                 //For more info please visit -> https://stackoverflow.com/questions/19659387/readerwriterlockslim-and-async-await
+
+
 
 
                 // #Refactor Required. ( Goal : use an approach to be able to catch exceptions properly and not using "Fire and Forget" style )

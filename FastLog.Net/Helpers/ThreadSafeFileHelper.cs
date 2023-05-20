@@ -14,6 +14,7 @@ namespace FastLog.Helpers
 
             try
             {
+
                 // Append text to the file
                 using (StreamWriter sw = File.AppendText(path))
                 {

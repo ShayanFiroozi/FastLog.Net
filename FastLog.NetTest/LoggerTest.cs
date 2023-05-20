@@ -47,7 +47,10 @@ namespace FastLog.NetTest
                                                                                      .SaveLogToFile("D:\\Logs\\TestLog.log")
                                                                                      .DeleteTheLogFileWhenExceededTheMaximumSizeOf(50)))
 
-                             .ApplyConfig(ConfigManager.Create().WithMaxEventsToKeepInMemory(1_000));
+                             .ApplyConfig(ConfigManager.Create()
+                                                       .WithMaxEventsToKeepInMemory(1_000)
+                                                       .IncludeApplicationName("Test-App")
+                                                       .IncludeMachineName());
 
 
             loggerA.StartLogger();
