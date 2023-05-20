@@ -128,11 +128,18 @@ namespace FastLog.Helpers.ExtendedMethods
                     .Append('\n');
             }
 
-            _ = finalMessage.Append("},")
-                            .Append('\n');
+            string finalResult = finalMessage.ToString();
+
+            // Trim the last ',' character if exists !
+
+            if (finalResult.Substring(finalResult.Length - 1, 1) == ",") finalResult = finalResult.Substring(0, finalResult.Length - 1);
 
 
-            return finalMessage.ToString();
+            finalResult += $"}},\n";
+                            
+
+
+            return finalResult;
 
         }
 
