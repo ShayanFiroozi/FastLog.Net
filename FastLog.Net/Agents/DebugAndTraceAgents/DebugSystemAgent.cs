@@ -12,14 +12,13 @@ namespace FastLog.Agents.DebugAndTraceAgents
 {
 
 
-
-    public sealed class DebugSystemAgent : AgentBase<DebugSystemAgent>, IAgent
+    public sealed class DebugSystemAgent : AgentBase<DebugSystemAgent>,  IAgent
     {
 
 
         private bool useJsonFormat { get; set; } = false;
 
-
+        
         //Keep it private to make it non accessible from the outside of the class !!
         private DebugSystemAgent(AgentsManager manager)
         {

@@ -7,6 +7,7 @@ namespace FastLog.Helpers
     {
         private static readonly ReaderWriterLockSlim _readWriteLock = new ReaderWriterLockSlim();
 
+
         public static void AppendAllText(string path, string content)
         {
             // Set Status to Locked

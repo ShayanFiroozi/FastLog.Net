@@ -9,13 +9,14 @@ using System.Linq;
 using FastLog.Core;
 using FastLog.Interfaces;
 using FastLog.Internal;
+using System.Diagnostics;
 
 namespace FastLog.Core
 {
     public sealed class AgentsManager
     {
         private readonly Logger _logger = null; // Will be used by the builder pattern to pass refrences.
-        
+
         private InternalLogger InternalLogger = null;
         private string LoggerName = "N/A";
 
@@ -24,7 +25,7 @@ namespace FastLog.Core
 
 
 
-        private AgentsManager(Logger logger) => _logger = logger; 
+        private AgentsManager(Logger logger) => _logger = logger;
 
 
         internal AgentsManager WithInternalLogger(InternalLogger internalLogger)
@@ -44,26 +45,29 @@ namespace FastLog.Core
         internal static AgentsManager Create(Logger logger) => new AgentsManager(logger);
 
 
-        public Logger BuildLogger() => _logger; // Just Used by "Builder" pattern
-
+        public Logger BuildLogger()
+        {
+            ValidateAgents();
+            return _logger; // Just Used by "Builder" pattern
+        }
 
         public BeepAgent AddBeepAgent()
         {
-            return (BeepAgent)AddUsetDefinedAgent(BeepAgent.Create(this) // pass the current logger to the AgeManager for builder pattern.
+            return (BeepAgent)AddUserDefinedAgent(BeepAgent.Create(this) // pass the current logger to the AgeManager for builder pattern.
                                   .WithInternalLogger(InternalLogger)
                                   .WithLoggerName(_logger.Configuration.LoggerName));
         }
 
         public ConsoleAgent AddConsoleAgent()
         {
-            return (ConsoleAgent)AddUsetDefinedAgent(ConsoleAgent.Create(this) // pass the current logger to the AgeManager for builder pattern.
+            return (ConsoleAgent)AddUserDefinedAgent(ConsoleAgent.Create(this) // pass the current logger to the AgeManager for builder pattern.
                                   .WithInternalLogger(InternalLogger)
                                   .WithLoggerName(_logger.Configuration.LoggerName));
         }
 
         public DebugSystemAgent AddDebugSystemAgent()
         {
-            return (DebugSystemAgent)AddUsetDefinedAgent(DebugSystemAgent.Create(this) // pass the current logger to the AgeManager for builder pattern.
+            return (DebugSystemAgent)AddUserDefinedAgent(DebugSystemAgent.Create(this) // pass the current logger to the AgeManager for builder pattern.
                                   .WithInternalLogger(InternalLogger)
                                   .WithLoggerName(_logger.Configuration.LoggerName));
         }
@@ -71,7 +75,7 @@ namespace FastLog.Core
 
         public TraceSystemAgent AddTraceSystemAgent()
         {
-            return (TraceSystemAgent)AddUsetDefinedAgent(TraceSystemAgent.Create(this) // pass the current logger to the AgeManager for builder pattern.
+            return (TraceSystemAgent)AddUserDefinedAgent(TraceSystemAgent.Create(this) // pass the current logger to the AgeManager for builder pattern.
                                   .WithInternalLogger(InternalLogger)
                                   .WithLoggerName(_logger.Configuration.LoggerName));
         }
@@ -79,7 +83,7 @@ namespace FastLog.Core
 
         public HeavyOperationSimulatorAgent AddHeavyOperationSimulatorAgent()
         {
-            return (HeavyOperationSimulatorAgent)AddUsetDefinedAgent(HeavyOperationSimulatorAgent.Create(this) // pass the current logger to the AgeManager for builder pattern.
+            return (HeavyOperationSimulatorAgent)AddUserDefinedAgent(HeavyOperationSimulatorAgent.Create(this) // pass the current logger to the AgeManager for builder pattern.
                                   .WithInternalLogger(InternalLogger)
                                   .WithLoggerName(_logger.Configuration.LoggerName));
         }
@@ -87,7 +91,7 @@ namespace FastLog.Core
 
         public TextFileAgent AddTextFileAgent()
         {
-            return (TextFileAgent)AddUsetDefinedAgent(TextFileAgent.Create(this) // pass the current logger to the AgeManager for builder pattern.
+            return (TextFileAgent)AddUserDefinedAgent(TextFileAgent.Create(this) // pass the current logger to the AgeManager for builder pattern.
                                   .WithInternalLogger(InternalLogger)
                                   .WithLoggerName(_logger.Configuration.LoggerName));
         }
@@ -95,7 +99,7 @@ namespace FastLog.Core
 
         public RunProcessAgent AddRunProcessAgent()
         {
-            return (RunProcessAgent)AddUsetDefinedAgent(RunProcessAgent.Create(this) // pass the current logger to the AgeManager for builder pattern.
+            return (RunProcessAgent)AddUserDefinedAgent(RunProcessAgent.Create(this) // pass the current logger to the AgeManager for builder pattern.
                                   .WithInternalLogger(InternalLogger)
                                   .WithLoggerName(_logger.Configuration.LoggerName));
         }
@@ -104,49 +108,15 @@ namespace FastLog.Core
 
         public MethodExecutionAgent AddMethodExecutionAgent()
         {
-            return (MethodExecutionAgent)AddUsetDefinedAgent(MethodExecutionAgent.Create(this) // pass the current logger to the AgeManager for builder pattern.
+            return (MethodExecutionAgent)AddUserDefinedAgent(MethodExecutionAgent.Create(this) // pass the current logger to the AgeManager for builder pattern.
                                   .WithInternalLogger(InternalLogger)
                                   .WithLoggerName(_logger.Configuration.LoggerName));
         }
 
 
 
-        public IAgent AddUsetDefinedAgent(IAgent agent)
+        public IAgent AddUserDefinedAgent(IAgent agent)
         {
-
-            if (agent is TextFileAgent)
-            {
-                if (loggerAgents.Any(a => ((TextFileAgent)a).LogFile == ((TextFileAgent)agent).LogFile))
-                {
-                    throw new Exception("A \"TextFileAgent\" agent with same log file already exists on the agent list.");
-                }
-
-            }
-
-            if (agent is ConsoleAgent && loggerAgents.Any(a => a is ConsoleAgent))
-            {
-                throw new Exception("A \"ConsoleLogger\" agent already exists on the agent list.");
-            }
-
-
-#if DEBUG
-            if (agent is DebugSystemAgent && loggerAgents.Any(a => a is DebugSystemAgent))
-            {
-                throw new Exception("A \"DebugWindowLogger\" agent already exists on the agent list.");
-            }
-#endif
-
-            if (agent is TraceSystemAgent && loggerAgents.Any(a => a is TraceSystemAgent))
-            {
-                throw new Exception("A \"TraceSystemAgent\" agent already exists on the agent list.");
-            }
-
-
-            if (agent is BeepAgent && loggerAgents.Any(a => a is BeepAgent))
-            {
-                throw new Exception("A \"BeepAgent\" agent already exists on the agent list.");
-            }
-
 
             loggerAgents.Add(agent);
 
@@ -159,6 +129,54 @@ namespace FastLog.Core
             loggerAgents.Remove(agent);
             return agent;
         }
+
+
+
+        private void ValidateAgents()
+        {
+            foreach (IAgent agent in _logger.WithAgents().loggerAgents)
+            {
+
+                if (agent is TextFileAgent)
+                {
+
+                    if (loggerAgents.Count(a => ((TextFileAgent)a).LogFile == ((TextFileAgent)agent).LogFile) > 1)
+                    {
+                        throw new Exception("A \"TextFileAgent\" agent with same log file already exists on the agent list.");
+                    }
+
+                }
+
+                if (agent is ConsoleAgent && loggerAgents.Any(a => a is ConsoleAgent))
+                {
+                    throw new Exception("A \"ConsoleLogger\" agent already exists on the agent list.");
+                }
+
+
+#if DEBUG
+                if (agent is DebugSystemAgent && loggerAgents.Any(a => a is DebugSystemAgent))
+                {
+                    throw new Exception("A \"DebugWindowLogger\" agent already exists on the agent list.");
+                }
+#endif
+
+                if (agent is TraceSystemAgent && loggerAgents.Any(a => a is TraceSystemAgent))
+                {
+                    throw new Exception("A \"TraceSystemAgent\" agent already exists on the agent list.");
+                }
+
+
+                if (agent is BeepAgent && loggerAgents.Any(a => a is BeepAgent))
+                {
+                    throw new Exception("A \"BeepAgent\" agent already exists on the agent list.");
+                }
+
+            }
+        }
+
+
+
+
 
 
     }

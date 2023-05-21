@@ -51,7 +51,7 @@ namespace FastLog.NetTest
 
                                 .AddTextFileAgent()
                                    .UseJsonFormat()
-                                   .SaveLogToFile("D:\\Logs\\TestLog.json")
+                                   .SaveLogToFile("L:\\Logs\\TestLog.json")
                                    .DeleteTheLogFileWhenExceededTheMaximumSizeOf(50)
                                    .BuildAgent()
 
