@@ -20,14 +20,10 @@ namespace FastLog.Agents.DebugAndTraceAgents
 
 
         //Keep it private to make it non accessible from the outside of the class !!
-        private DebugSystemAgent(InternalLogger internalLogger)
-        {
-            InternalLogger = internalLogger;
-            IncludeAllEventTypes();
-        }
+        private DebugSystemAgent() => IncludeAllEventTypes();
 
 
-        public static DebugSystemAgent Create(InternalLogger internalLogger = null) => new DebugSystemAgent(internalLogger);
+        public static DebugSystemAgent Create() => new DebugSystemAgent();
 
 
         public DebugSystemAgent UseJsonFormat()

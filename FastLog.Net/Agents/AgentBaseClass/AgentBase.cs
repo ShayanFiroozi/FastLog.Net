@@ -34,6 +34,18 @@ namespace FastLog.Agents
             return (AgentType)this;
         }
 
+        internal AgentType WithInternalLogger(InternalLogger internalLogger)
+        {
+            if (internalLogger is null)
+            {
+                throw new ArgumentNullException(nameof(internalLogger));
+            }
+
+            InternalLogger = internalLogger;
+
+            return (AgentType)this;
+        }
+
 
         #region Execution Conditions
 

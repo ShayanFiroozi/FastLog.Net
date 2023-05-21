@@ -16,13 +16,9 @@ namespace FastLog.Agents.AdvancedAgents
 
 
         //Keep it private to make it non accessible from the outside of the class !!
-        private MethodExecutionAgent(InternalLogger internalLogger)
-        {
-            InternalLogger = internalLogger;
-            IncludeAllEventTypes();
-        }
+        private MethodExecutionAgent() => IncludeAllEventTypes();
 
-        public static MethodExecutionAgent Create(InternalLogger internalLogger = null) => new MethodExecutionAgent(internalLogger);
+        public static MethodExecutionAgent Create() => new MethodExecutionAgent();
 
         public MethodExecutionAgent MethodToExecute(Action method)
         {

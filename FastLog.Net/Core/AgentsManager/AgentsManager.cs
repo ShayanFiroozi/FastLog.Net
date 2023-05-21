@@ -7,67 +7,86 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using TrendSoft.FastLog.Interfaces;
+using TrendSoft.FastLog.Internal;
 
 namespace FastLog.Core
 {
     public class AgentsManager
     {
+        private readonly InternalLogger InternalLogger = null;
+        private readonly string ApplicationName = "N/A";
+
         private readonly List<IAgent> loggerAgents = new List<IAgent>();
         public IEnumerable<IAgent> AgentList => loggerAgents;
 
 
 
-        private AgentsManager() { }
-
-        public static AgentsManager Create()
+        private AgentsManager(InternalLogger internalLogger, string applicationName)
         {
-            return new AgentsManager();
+            InternalLogger = internalLogger;
+            ApplicationName = applicationName;
+        }
+
+        public static AgentsManager Create(InternalLogger internalLogger, string applicationName)
+        {
+            if (internalLogger is null)
+            {
+                throw new ArgumentNullException(nameof(internalLogger));
+            }
+
+            if (string.IsNullOrEmpty(applicationName))
+            {
+                throw new ArgumentException($"'{nameof(applicationName)}' cannot be null or empty.", nameof(applicationName));
+            }
+
+            return new AgentsManager(internalLogger, applicationName);
         }
 
         public AgentsManager AddBeepAgent(BeepAgent beepAgent)
         {
-            AddAgent(beepAgent);
+            AddAgent(beepAgent.WithInternalLogger(InternalLogger).WithApplicationName(ApplicationName));
             return this;
         }
 
         public AgentsManager AddConsoleAgent(ConsoleAgent consoleLogger)
         {
-            AddAgent(consoleLogger);
+            AddAgent(consoleLogger.WithInternalLogger(InternalLogger).WithApplicationName(ApplicationName));
             return this;
         }
 
         public AgentsManager AddDebugSystemAgent(DebugSystemAgent debugSystemAgent)
         {
-            AddAgent(debugSystemAgent);
+            AddAgent(debugSystemAgent.WithInternalLogger(InternalLogger)
+                                     .WithApplicationName(ApplicationName));
             return this;
         }
 
 
         public AgentsManager AddTraceSystemAgent(TraceSystemAgent traceSystemAgent)
         {
-            AddAgent(traceSystemAgent);
+            AddAgent(traceSystemAgent.WithInternalLogger(InternalLogger).WithApplicationName(ApplicationName));
             return this;
         }
 
 
         public AgentsManager AddHeavyOperationSimulatorAgent(HeavyOperationSimulatorAgent heavyOperationSimulator)
         {
-            
-            AddAgent(heavyOperationSimulator);
+
+            AddAgent(heavyOperationSimulator.WithInternalLogger(InternalLogger).WithApplicationName(ApplicationName));
             return this;
         }
 
 
         public AgentsManager AddTextFileAgent(TextFileAgent textFileAgent)
         {
-            AddAgent(textFileAgent);
+            AddAgent(textFileAgent.WithInternalLogger(InternalLogger).WithApplicationName(ApplicationName));
             return this;
         }
 
 
         public AgentsManager AddRunProcessAgent(RunProcessAgent runProcessAgent)
         {
-            AddAgent(runProcessAgent);
+            AddAgent(runProcessAgent.WithInternalLogger(InternalLogger).WithApplicationName(ApplicationName));
             return this;
         }
 
@@ -75,7 +94,7 @@ namespace FastLog.Core
 
         public AgentsManager AddMethodExecutionAgent(MethodExecutionAgent methodExecutionAgent)
         {
-            AddAgent(methodExecutionAgent);
+            AddAgent(methodExecutionAgent.WithInternalLogger(InternalLogger).WithApplicationName(ApplicationName));
             return this;
         }
 
@@ -86,7 +105,7 @@ namespace FastLog.Core
 
             if (agent is TextFileAgent)
             {
-                if(loggerAgents.Any(a=>((TextFileAgent)a).LogFile == ((TextFileAgent)agent).LogFile))
+                if (loggerAgents.Any(a => ((TextFileAgent)a).LogFile == ((TextFileAgent)agent).LogFile))
                 {
                     throw new Exception("A \"TextFileAgent\" agent with same log file already exists on the agent list.");
                 }

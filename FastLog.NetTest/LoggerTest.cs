@@ -40,7 +40,7 @@ namespace FastLog.NetTest
                             .WithInternalLogger(internalLogger)
                             .WithConfiguration(loggerConfig)
                             .WithAgents(AgentsManager.Create()
-                                                     .AddTextFileAgent(TextFileAgent.Create(internalLogger)
+                                                     .AddTextFileAgent(TextFileAgent.Create()
                                                                                     .UseJsonFormat()
                                                                                     .SaveLogToFile("D:\\Logs\\TestLog.json")
                                                                                     .DeleteTheLogFileWhenExceededTheMaximumSizeOf(50)));

@@ -19,14 +19,10 @@ namespace FastLog.Agents.ConsoleAgents
 
 
         //Keep it private to make it non accessible from the outside of the class !!
-        private ConsoleAgent(InternalLogger internalLogger)
-        {
-            InternalLogger = internalLogger;
-            IncludeAllEventTypes();
-        }
+        private ConsoleAgent() => IncludeAllEventTypes();
 
 
-        public static ConsoleAgent Create(InternalLogger internalLogger = null) => new ConsoleAgent(internalLogger);
+        public static ConsoleAgent Create() => new ConsoleAgent();
 
         public ConsoleAgent UseJsonFormat()
         {

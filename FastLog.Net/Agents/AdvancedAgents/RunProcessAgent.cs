@@ -26,13 +26,9 @@ namespace FastLog.Agents.AdvancedAgents
 
 
         //Keep it private to make it non accessible from the outside of the class !!
-        private RunProcessAgent(InternalLogger internalLogger)
-        {
-            InternalLogger = internalLogger;
-            IncludeAllEventTypes();
-        }
+        private RunProcessAgent() => IncludeAllEventTypes();
 
-        public static RunProcessAgent Create(InternalLogger internalLogger = null) => new RunProcessAgent(internalLogger);
+        public static RunProcessAgent Create() => new RunProcessAgent();
 
         public RunProcessAgent ExecuteProcess(string commandToExecute)
         {

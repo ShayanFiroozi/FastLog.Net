@@ -14,13 +14,9 @@ namespace FastLog.Agents.ConsoleAgents
     {
 
         //Keep it private to make it non accessible from the outside of the class !!
-        private BeepAgent(InternalLogger internalLogger)
-        {
-            InternalLogger = internalLogger;
-            IncludeAllEventTypes();
-        }
+        private BeepAgent() => IncludeAllEventTypes();
 
-        public static BeepAgent Create(InternalLogger internalLogger = null) => new BeepAgent(internalLogger);
+        public static BeepAgent Create(InternalLogger internalLogger = null) => new BeepAgent();
 
 
         public Task ExecuteAgent(LogEventModel LogModel, CancellationToken cancellationToken = default)

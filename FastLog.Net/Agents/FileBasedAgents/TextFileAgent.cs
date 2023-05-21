@@ -28,13 +28,9 @@ namespace FastLog.Agents.FileBaseAgents
 
 
         //Keep it private to make it non accessible from the outside of the class !!
-        private TextFileAgent(InternalLogger internalLogger = null)
-        {
-            IncludeAllEventTypes();
-            InternalLogger = internalLogger;
-        }
+        private TextFileAgent() => IncludeAllEventTypes();
 
-        public static TextFileAgent Create(InternalLogger internalLogger = null) => new TextFileAgent(internalLogger);
+        public static TextFileAgent Create() => new TextFileAgent();
         public TextFileAgent UseJsonFormat()
         {
             useJsonFormat = true;
