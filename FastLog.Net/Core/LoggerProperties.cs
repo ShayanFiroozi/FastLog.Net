@@ -12,6 +12,7 @@ namespace FastLog.Core
     {
 
 
+        private const int LoggerChannelMaxCapacity = 1_000_000;
 
         #region Private Properties
         private readonly CancellationTokenSource _cts = new CancellationTokenSource();
@@ -23,7 +24,9 @@ namespace FastLog.Core
 
 
         #region Channel Properties
-        private readonly Channel<LogEventModel> LoggerChannel = Channel.CreateUnbounded<LogEventModel>(new UnboundedChannelOptions());
+        private readonly Channel<LogEventModel> LoggerChannel =
+                   Channel.CreateBounded<LogEventModel>(new BoundedChannelOptions(LoggerChannelMaxCapacity) { SingleReader = true, FullMode = BoundedChannelFullMode.DropOldest });
+
         private readonly ChannelReader<LogEventModel> LoggerChannelReader;
         private readonly ChannelWriter<LogEventModel> LoggerChannelWriter;
         #endregion

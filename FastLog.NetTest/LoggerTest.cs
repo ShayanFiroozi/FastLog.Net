@@ -20,11 +20,11 @@ namespace FastLog.NetTest
                                                           .UseJsonFormat()
                                                           .SaveInternalEventsToFile("D:\\Logs\\InternalEventsLog.log")
                                                           .DeleteTheLogFileWhenExceededTheMaximumSizeOf(100)
-                                                          .Beep()
-                                                            .BeepOnlyOnDebugMode()
-                                                          .PrintOnConsole()
-                                                            .PrintOnConsoleOnlyOnDebugMode()
-                                                          .PrintOnDebugWindow();
+                                                          //.Beep()
+                                                          //  .BeepOnlyOnDebugMode()
+                                                          .PrintOnConsole();
+                                                           // .PrintOnConsoleOnlyOnDebugMode()
+                                                         // .PrintOnDebugWindow();
 
 
 
@@ -43,17 +43,11 @@ namespace FastLog.NetTest
                                 .AddTextFileAgent()
                                    .UseJsonFormat()
                                    .SaveLogToFile("D:\\Logs\\TestLog.json")
-                                   .DeleteTheLogFileWhenExceededTheMaximumSizeOf(5)
-                                   .BuildAgent()
-
-                                .AddTextFileAgent()
-                                   .UseJsonFormat()
-                                   .SaveLogToFile("D:\\Logs\\TestLog2.json")
-                                   .DeleteTheLogFileWhenExceededTheMaximumSizeOf(2)
+                                   .DeleteTheLogFileWhenExceededTheMaximumSizeOf(20)
                                    .BuildAgent()
 
 
-
+                                //.AddConsoleAgent().UseJsonFormat().BuildAgent()
 
 
 
