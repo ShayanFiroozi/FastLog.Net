@@ -182,7 +182,7 @@ namespace FastLog.Internal
                     // Create the new internal log file and add file header.
                     if (!File.Exists(InternalLogFile))
                     {
-                        ThreadSafeFileHelper.AppendAllText(InternalLogFile, FileHeader.GenerateFileHeader(InternalLogFile));
+                        ThreadSafeFileHelper.AppendAllText(InternalLogFile, FileHeader.GenerateFileHeader(InternalLogFile,"FastLog.Net Internal Logger"));
                     }
                 }
                 catch { }
@@ -297,7 +297,7 @@ namespace FastLog.Internal
                     // Create the new internal log file and add file header.
                     if (!File.Exists(InternalLogFile))
                     {
-                        ThreadSafeFileHelper.AppendAllText(InternalLogFile, FileHeader.GenerateFileHeader(InternalLogFile));
+                        ThreadSafeFileHelper.AppendAllText(InternalLogFile, FileHeader.GenerateFileHeader(InternalLogFile, "FastLog.Net Internal Logger"));
                     }
                 }
                 catch { }

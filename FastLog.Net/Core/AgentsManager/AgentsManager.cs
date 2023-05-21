@@ -159,5 +159,7 @@ namespace FastLog.Core
             loggerAgents.Remove(agent);
             return agent;
         }
+
+
     }
 }

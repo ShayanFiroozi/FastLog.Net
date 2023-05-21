@@ -55,14 +55,8 @@ namespace FastLog.NetTest
                                    .DeleteTheLogFileWhenExceededTheMaximumSizeOf(50)
                                    .BuildAgent()
 
-
-                                 .AddConsoleAgent()
-                                    .UseJsonFormat()
-                                    .BuildAgent()
-
-
-                                 .AddBeepAgent().ExcludeAllEventTypes().BuildAgent()
-                                 
+                                  
+                               
 
 
 
