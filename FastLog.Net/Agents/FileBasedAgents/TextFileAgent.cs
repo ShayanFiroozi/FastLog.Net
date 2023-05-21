@@ -20,7 +20,7 @@ namespace FastLog.Agents.FileBaseAgents
         #region Private Properties
 
         private bool useJsonFormat { get; set; } = false;
-        private string LogFile { get; set; } = string.Empty;
+        internal string LogFile { get; set; } = string.Empty;
         private short MaxLogFileSizeMB { get; set; } = 0;
 
         #endregion
