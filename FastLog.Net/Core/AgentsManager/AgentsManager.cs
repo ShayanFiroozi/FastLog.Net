@@ -136,34 +136,33 @@ namespace FastLog.Core
 
                 if (agent is TextFileAgent)
                 {
-
-                    if (loggerAgents.Count(a => ((TextFileAgent)a).LogFile == ((TextFileAgent)agent).LogFile) > 1)
+                    if (loggerAgents.Where(a => a is TextFileAgent).Count(a => ((TextFileAgent)a).LogFile == ((TextFileAgent)agent).LogFile) > 1)
                     {
                         throw new Exception("A \"TextFileAgent\" agent with same log file already exists on the agent list.");
                     }
 
                 }
 
-                if (agent is ConsoleAgent && loggerAgents.Any(a => a is ConsoleAgent))
+                if (loggerAgents.Count(a => a is ConsoleAgent) > 1)
                 {
                     throw new Exception("A \"ConsoleLogger\" agent already exists on the agent list.");
                 }
 
 
 #if DEBUG
-                if (agent is DebugSystemAgent && loggerAgents.Any(a => a is DebugSystemAgent))
+                if (loggerAgents.Count(a => a is DebugSystemAgent) > 1)
                 {
                     throw new Exception("A \"DebugWindowLogger\" agent already exists on the agent list.");
                 }
 #endif
 
-                if (agent is TraceSystemAgent && loggerAgents.Any(a => a is TraceSystemAgent))
+                if (loggerAgents.Count(a => a is TraceSystemAgent) > 1)
                 {
                     throw new Exception("A \"TraceSystemAgent\" agent already exists on the agent list.");
                 }
 
 
-                if (agent is BeepAgent && loggerAgents.Any(a => a is BeepAgent))
+                if (loggerAgents.Count(a => a is BeepAgent) > 1)
                 {
                     throw new Exception("A \"BeepAgent\" agent already exists on the agent list.");
                 }
