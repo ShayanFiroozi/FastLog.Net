@@ -3,26 +3,30 @@ using FastLog.Helpers.ExtendedMethods;
 using System;
 using System.Threading;
 using System.Threading.Tasks;
-using TrendSoft.FastLog.Interfaces;
-using TrendSoft.FastLog.Internal;
-using TrendSoft.FastLog.Models;
+using FastLog.Interfaces;
+using FastLog.Internal;
+using FastLog.Models;
+using FastLog.Core;
 
 namespace FastLog.Agents.ConsoleAgents
 {
 
     // Note : ConsoleLogger class uses fluent "Builder" pattern.
 
-    public class ConsoleAgent : AgentBase<ConsoleAgent>, IAgent
+    public sealed class ConsoleAgent : AgentBase<ConsoleAgent>, IAgent
     {
 
         private bool useJsonFormat { get; set; } = false;
 
 
         //Keep it private to make it non accessible from the outside of the class !!
-        private ConsoleAgent() => IncludeAllEventTypes();
+        private ConsoleAgent(AgentsManager manager)
+        {
+            _manager = manager;
+            IncludeAllEventTypes();
+        }
 
-
-        public static ConsoleAgent Create() => new ConsoleAgent();
+        public static ConsoleAgent Create(AgentsManager manager) => new ConsoleAgent(manager);
 
         public ConsoleAgent UseJsonFormat()
         {

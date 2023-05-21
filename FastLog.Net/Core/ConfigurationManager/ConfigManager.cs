@@ -2,9 +2,9 @@
 
 namespace FastLog.Core
 {
-    public class ConfigManager
+    public sealed class ConfigManager
     {
-        internal string ApplicationName { get; set; } = "N/A";
+        internal string LoggerName { get; set; } = "N/A";
         internal int MaxEventsToKeep { get; set; } = 0;
         internal bool RunAgentsInParallel { get; set; } = false;
 
@@ -32,14 +32,14 @@ namespace FastLog.Core
 
 
 
-        public ConfigManager WithApplicationName(string applicationName)
+        public ConfigManager WithLoggerName(string loggerName)
         {
-            if (string.IsNullOrWhiteSpace(applicationName))
+            if (string.IsNullOrWhiteSpace(loggerName))
             {
-                throw new ArgumentException($"'{nameof(applicationName)}' cannot be null or whitespace.", nameof(applicationName));
+                throw new ArgumentException($"'{nameof(loggerName)}' cannot be null or whitespace.", nameof(loggerName));
             }
 
-            ApplicationName = applicationName;
+            LoggerName = loggerName;
             return this;
 
 

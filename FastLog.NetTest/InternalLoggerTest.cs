@@ -1,7 +1,7 @@
 ﻿using System;
 using System.IO;
 using System.Threading.Tasks;
-using TrendSoft.FastLog.Internal;
+using FastLog.Internal;
 
 namespace FastLog.NetTest
 {

@@ -6,101 +6,112 @@ using FastLog.Agents.FileBaseAgents;
 using System;
 using System.Collections.Generic;
 using System.Linq;
-using TrendSoft.FastLog.Interfaces;
-using TrendSoft.FastLog.Internal;
+using FastLog.Core;
+using FastLog.Interfaces;
+using FastLog.Internal;
 
 namespace FastLog.Core
 {
-    public class AgentsManager
+    public sealed class AgentsManager
     {
-        private readonly InternalLogger InternalLogger = null;
-        private readonly string ApplicationName = "N/A";
+        private readonly Logger _logger = null; // Will be used by the builder pattern to pass refrences.
+        
+        private InternalLogger InternalLogger = null;
+        private string LoggerName = "N/A";
 
         private readonly List<IAgent> loggerAgents = new List<IAgent>();
         public IEnumerable<IAgent> AgentList => loggerAgents;
 
 
 
-        private AgentsManager(InternalLogger internalLogger, string applicationName)
+        private AgentsManager(Logger logger) => _logger = logger; 
+
+
+        internal AgentsManager WithInternalLogger(InternalLogger internalLogger)
         {
             InternalLogger = internalLogger;
-            ApplicationName = applicationName;
-        }
-
-        public static AgentsManager Create(InternalLogger internalLogger, string applicationName)
-        {
-            if (internalLogger is null)
-            {
-                throw new ArgumentNullException(nameof(internalLogger));
-            }
-
-            if (string.IsNullOrEmpty(applicationName))
-            {
-                throw new ArgumentException($"'{nameof(applicationName)}' cannot be null or empty.", nameof(applicationName));
-            }
-
-            return new AgentsManager(internalLogger, applicationName);
-        }
-
-        public AgentsManager AddBeepAgent(BeepAgent beepAgent)
-        {
-            AddAgent(beepAgent.WithInternalLogger(InternalLogger).WithApplicationName(ApplicationName));
             return this;
         }
 
-        public AgentsManager AddConsoleAgent(ConsoleAgent consoleLogger)
+        internal AgentsManager WithLoggerName(string loggerName)
         {
-            AddAgent(consoleLogger.WithInternalLogger(InternalLogger).WithApplicationName(ApplicationName));
-            return this;
-        }
-
-        public AgentsManager AddDebugSystemAgent(DebugSystemAgent debugSystemAgent)
-        {
-            AddAgent(debugSystemAgent.WithInternalLogger(InternalLogger)
-                                     .WithApplicationName(ApplicationName));
-            return this;
-        }
-
-
-        public AgentsManager AddTraceSystemAgent(TraceSystemAgent traceSystemAgent)
-        {
-            AddAgent(traceSystemAgent.WithInternalLogger(InternalLogger).WithApplicationName(ApplicationName));
-            return this;
-        }
-
-
-        public AgentsManager AddHeavyOperationSimulatorAgent(HeavyOperationSimulatorAgent heavyOperationSimulator)
-        {
-
-            AddAgent(heavyOperationSimulator.WithInternalLogger(InternalLogger).WithApplicationName(ApplicationName));
-            return this;
-        }
-
-
-        public AgentsManager AddTextFileAgent(TextFileAgent textFileAgent)
-        {
-            AddAgent(textFileAgent.WithInternalLogger(InternalLogger).WithApplicationName(ApplicationName));
-            return this;
-        }
-
-
-        public AgentsManager AddRunProcessAgent(RunProcessAgent runProcessAgent)
-        {
-            AddAgent(runProcessAgent.WithInternalLogger(InternalLogger).WithApplicationName(ApplicationName));
+            LoggerName = loggerName;
             return this;
         }
 
 
 
-        public AgentsManager AddMethodExecutionAgent(MethodExecutionAgent methodExecutionAgent)
+        internal static AgentsManager Create(Logger logger) => new AgentsManager(logger);
+
+
+        public Logger BuildLogger() => _logger; // Just Used by "Builder" pattern
+
+
+        public BeepAgent AddBeepAgent()
         {
-            AddAgent(methodExecutionAgent.WithInternalLogger(InternalLogger).WithApplicationName(ApplicationName));
-            return this;
+            return (BeepAgent)AddUsetDefinedAgent(BeepAgent.Create(this) // pass the current logger to the AgeManager for builder pattern.
+                                  .WithInternalLogger(InternalLogger)
+                                  .WithLoggerName(_logger.Configuration.LoggerName));
+        }
+
+        public ConsoleAgent AddConsoleAgent()
+        {
+            return (ConsoleAgent)AddUsetDefinedAgent(ConsoleAgent.Create(this) // pass the current logger to the AgeManager for builder pattern.
+                                  .WithInternalLogger(InternalLogger)
+                                  .WithLoggerName(_logger.Configuration.LoggerName));
+        }
+
+        public DebugSystemAgent AddDebugSystemAgent()
+        {
+            return (DebugSystemAgent)AddUsetDefinedAgent(DebugSystemAgent.Create(this) // pass the current logger to the AgeManager for builder pattern.
+                                  .WithInternalLogger(InternalLogger)
+                                  .WithLoggerName(_logger.Configuration.LoggerName));
+        }
+
+
+        public TraceSystemAgent AddTraceSystemAgent()
+        {
+            return (TraceSystemAgent)AddUsetDefinedAgent(TraceSystemAgent.Create(this) // pass the current logger to the AgeManager for builder pattern.
+                                  .WithInternalLogger(InternalLogger)
+                                  .WithLoggerName(_logger.Configuration.LoggerName));
+        }
+
+
+        public HeavyOperationSimulatorAgent AddHeavyOperationSimulatorAgent()
+        {
+            return (HeavyOperationSimulatorAgent)AddUsetDefinedAgent(HeavyOperationSimulatorAgent.Create(this) // pass the current logger to the AgeManager for builder pattern.
+                                  .WithInternalLogger(InternalLogger)
+                                  .WithLoggerName(_logger.Configuration.LoggerName));
+        }
+
+
+        public TextFileAgent AddTextFileAgent()
+        {
+            return (TextFileAgent)AddUsetDefinedAgent(TextFileAgent.Create(this) // pass the current logger to the AgeManager for builder pattern.
+                                  .WithInternalLogger(InternalLogger)
+                                  .WithLoggerName(_logger.Configuration.LoggerName));
+        }
+
+
+        public RunProcessAgent AddRunProcessAgent()
+        {
+            return (RunProcessAgent)AddUsetDefinedAgent(RunProcessAgent.Create(this) // pass the current logger to the AgeManager for builder pattern.
+                                  .WithInternalLogger(InternalLogger)
+                                  .WithLoggerName(_logger.Configuration.LoggerName));
         }
 
 
 
-        public void AddAgent(IAgent agent)
+        public MethodExecutionAgent AddMethodExecutionAgent()
+        {
+            return (MethodExecutionAgent)AddUsetDefinedAgent(MethodExecutionAgent.Create(this) // pass the current logger to the AgeManager for builder pattern.
+                                  .WithInternalLogger(InternalLogger)
+                                  .WithLoggerName(_logger.Configuration.LoggerName));
+        }
+
+
+
+        public IAgent AddUsetDefinedAgent(IAgent agent)
         {
 
             if (agent is TextFileAgent)
@@ -138,7 +149,15 @@ namespace FastLog.Core
 
 
             loggerAgents.Add(agent);
+
+            return agent;
         }
 
+
+        public IAgent RemoveAgent(IAgent agent)
+        {
+            loggerAgents.Remove(agent);
+            return agent;
+        }
     }
 }

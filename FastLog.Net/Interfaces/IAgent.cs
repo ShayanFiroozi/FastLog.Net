@@ -1,9 +1,9 @@
 ﻿using FastLog.Core;
 using System.Threading;
 using System.Threading.Tasks;
-using TrendSoft.FastLog.Models;
+using FastLog.Models;
 
-namespace TrendSoft.FastLog.Interfaces
+namespace FastLog.Interfaces
 {
     public interface IAgent
     {

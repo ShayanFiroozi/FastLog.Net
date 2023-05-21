@@ -2,16 +2,17 @@
 using System.Diagnostics;
 using System.Threading;
 using System.Threading.Tasks;
-using TrendSoft.FastLog.Interfaces;
-using TrendSoft.FastLog.Internal;
-using TrendSoft.FastLog.Models;
+using FastLog.Core;
+using FastLog.Interfaces;
+using FastLog.Internal;
+using FastLog.Models;
 
 namespace FastLog.Agents.AdvancedAgents
 {
 
     // Note : RunCommandAgent class uses fluent "Builder" pattern.
 
-    public class RunProcessAgent : AgentBase<MethodExecutionAgent>, IAgent
+    public sealed class RunProcessAgent : AgentBase<MethodExecutionAgent>, IAgent
     {
 
 
@@ -26,9 +27,13 @@ namespace FastLog.Agents.AdvancedAgents
 
 
         //Keep it private to make it non accessible from the outside of the class !!
-        private RunProcessAgent() => IncludeAllEventTypes();
+        private RunProcessAgent(AgentsManager manager)
+        {
+            _manager = manager;
+            IncludeAllEventTypes();
+        }
 
-        public static RunProcessAgent Create() => new RunProcessAgent();
+        public static RunProcessAgent Create(AgentsManager manager) => new RunProcessAgent(manager);
 
         public RunProcessAgent ExecuteProcess(string commandToExecute)
         {

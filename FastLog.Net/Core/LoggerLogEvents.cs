@@ -1,12 +1,12 @@
 ﻿using FastLog.Enums;
 using System;
 using System.Threading.Tasks;
-using TrendSoft.FastLog.Models;
+using FastLog.Models;
 
-namespace TrendSoft.FastLog.Core
+namespace FastLog.Core
 {
 
-    public partial class Logger : IDisposable
+    public sealed partial class Logger : IDisposable
     {
 
 

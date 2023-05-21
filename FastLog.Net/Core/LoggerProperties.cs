@@ -3,13 +3,13 @@ using System;
 using System.Collections.Generic;
 using System.Threading;
 using System.Threading.Channels;
-using TrendSoft.FastLog.Internal;
-using TrendSoft.FastLog.Models;
+using FastLog.Internal;
+using FastLog.Models;
 
-namespace TrendSoft.FastLog.Core
+namespace FastLog.Core
 {
 
-    public partial class Logger : IDisposable
+    public sealed partial class Logger : IDisposable
     {
 
 
@@ -17,7 +17,7 @@ namespace TrendSoft.FastLog.Core
         #region Private Properties
         private readonly CancellationTokenSource _cts = new CancellationTokenSource();
         private InternalLogger InternalLogger = null;
-        private ConfigManager Configuration;
+        internal ConfigManager Configuration;
         private bool IsLoggerRunning = false;
         private AgentsManager Agents { get; set; }
         private List<LogEventModel> inMemoryEvents { get; set; } = new List<LogEventModel>();

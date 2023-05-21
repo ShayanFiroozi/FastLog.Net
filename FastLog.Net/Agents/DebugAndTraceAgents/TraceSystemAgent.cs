@@ -3,15 +3,16 @@ using System;
 using System.Diagnostics;
 using System.Threading;
 using System.Threading.Tasks;
-using TrendSoft.FastLog.Interfaces;
-using TrendSoft.FastLog.Internal;
-using TrendSoft.FastLog.Models;
+using FastLog.Interfaces;
+using FastLog.Internal;
+using FastLog.Models;
+using FastLog.Core;
 
 namespace FastLog.Agents.DebugAndTraceAgents
 {
 
 
-    public class TraceSystemAgent : AgentBase<TraceSystemAgent>, IAgent
+    public sealed class TraceSystemAgent : AgentBase<TraceSystemAgent>, IAgent
     {
 
         private bool useJsonFormat { get; set; } = false;
@@ -19,10 +20,13 @@ namespace FastLog.Agents.DebugAndTraceAgents
 
 
         //Keep it private to make it non accessible from the outside of the class !!
-        private TraceSystemAgent() => IncludeAllEventTypes();
+        private TraceSystemAgent(AgentsManager manager)
+        {
+            _manager = manager;
+            IncludeAllEventTypes();
+        }
 
-
-        public static TraceSystemAgent Create() => new TraceSystemAgent();
+        public static TraceSystemAgent Create(AgentsManager manager) => new TraceSystemAgent(manager);
 
 
         public TraceSystemAgent UseJsonFormat()

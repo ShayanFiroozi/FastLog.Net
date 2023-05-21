@@ -1,13 +1,13 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Threading.Tasks;
-using TrendSoft.FastLog.Interfaces;
-using TrendSoft.FastLog.Models;
+using FastLog.Interfaces;
+using FastLog.Models;
 
-namespace TrendSoft.FastLog.Core
+namespace FastLog.Core
 {
 
-    public partial class Logger : IDisposable
+    public sealed partial class Logger : IDisposable
     {
         // Channel Producer/Consumer pattern
 
@@ -101,6 +101,15 @@ namespace TrendSoft.FastLog.Core
 
         private void HandleInMemoryEvents(LogEventModel logEvent)
         {
+
+            if (inMemoryEvents.Count == 0) return;
+
+            if (Configuration.MaxEventsToKeep == 0 && inMemoryEvents.Count != 0)
+            {
+                inMemoryEvents.Clear();
+                return;
+            }
+
             if (inMemoryEvents.Count >= Configuration.MaxEventsToKeep)
             {
                 inMemoryEvents.RemoveAt(0); // Remove the oldest event.

@@ -2,7 +2,7 @@
 using System;
 using System.Threading.Tasks;
 
-namespace TrendSoft.LogModuleTest
+namespace LogModuleTest
 {
     internal static class Program
     {

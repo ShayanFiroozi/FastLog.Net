@@ -1,25 +1,37 @@
 ﻿using System;
 using System.Threading;
 using System.Threading.Tasks;
-using TrendSoft.FastLog.Interfaces;
-using TrendSoft.FastLog.Models;
+using FastLog.Core;
+using FastLog.Interfaces;
+using FastLog.Models;
 
 namespace FastLog.Agents.AdvancedAgents
 {
 
 
-    public class HeavyOperationSimulatorAgent : AgentBase<HeavyOperationSimulatorAgent>, IAgent
+    public sealed class HeavyOperationSimulatorAgent : AgentBase<HeavyOperationSimulatorAgent>, IAgent
     {
 
         public TimeSpan OperationTimeSpan { get; set; }
 
 
         //Keep it private to make it non accessible from the outside of the class !!
-        private HeavyOperationSimulatorAgent(TimeSpan operationTimeSpan) { OperationTimeSpan = operationTimeSpan; }
+        private HeavyOperationSimulatorAgent(AgentsManager manager)
+        {
+            _manager = manager;
+            IncludeAllEventTypes();
+        }
 
-        public static HeavyOperationSimulatorAgent Create(TimeSpan operationTimeSpan) => new HeavyOperationSimulatorAgent(operationTimeSpan);
+        public static HeavyOperationSimulatorAgent Create(AgentsManager manager) => new HeavyOperationSimulatorAgent(manager);
 
 
+       
+        public HeavyOperationSimulatorAgent WithDelay(TimeSpan timeSpan)
+        {
+            OperationTimeSpan = timeSpan;
+
+            return this;
+        }
 
         public Task ExecuteAgent(LogEventModel LogModel, CancellationToken cancellationToken = default)
         {

@@ -2,21 +2,26 @@
 using System.Runtime.InteropServices;
 using System.Threading;
 using System.Threading.Tasks;
-using TrendSoft.FastLog.Interfaces;
-using TrendSoft.FastLog.Internal;
-using TrendSoft.FastLog.Models;
+using FastLog.Core;
+using FastLog.Interfaces;
+using FastLog.Internal;
+using FastLog.Models;
 
 namespace FastLog.Agents.ConsoleAgents
 {
 
 
-    public class BeepAgent : AgentBase<BeepAgent>, IAgent
+    public sealed class BeepAgent : AgentBase<BeepAgent>, IAgent
     {
 
         //Keep it private to make it non accessible from the outside of the class !!
-        private BeepAgent() => IncludeAllEventTypes();
+        private BeepAgent(AgentsManager manager)
+        {
+            _manager = manager;
+            IncludeAllEventTypes();
+        }
 
-        public static BeepAgent Create(InternalLogger internalLogger = null) => new BeepAgent();
+        public static BeepAgent Create(AgentsManager manager) => new BeepAgent(manager);
 
 
         public Task ExecuteAgent(LogEventModel LogModel, CancellationToken cancellationToken = default)

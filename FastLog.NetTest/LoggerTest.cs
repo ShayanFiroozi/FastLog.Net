@@ -5,8 +5,8 @@ using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Threading.Tasks;
-using TrendSoft.FastLog.Core;
-using TrendSoft.FastLog.Internal;
+using FastLog.Core;
+using FastLog.Internal;
 
 namespace FastLog.NetTest
 {
@@ -30,8 +30,10 @@ namespace FastLog.NetTest
                                                           .PrintOnDebugWindow();
 
 
+
+
             ConfigManager loggerConfig = ConfigManager.Create()
-                                                      .WithApplicationName("Shayan® Test App")
+                                                      .WithLoggerName("ANPR® Logger")
                                                       .WithMaxEventsToKeepInMemory(1_000);
 
 
@@ -39,14 +41,34 @@ namespace FastLog.NetTest
             loggerA = Logger.Create()
                             .WithInternalLogger(internalLogger)
                             .WithConfiguration(loggerConfig)
-                            .WithAgents(AgentsManager.Create()
-                                                     .AddTextFileAgent(TextFileAgent.Create()
-                                                                                    .UseJsonFormat()
-                                                                                    .SaveLogToFile("D:\\Logs\\TestLog.json")
-                                                                                    .DeleteTheLogFileWhenExceededTheMaximumSizeOf(50)));
+                            .WithAgents()
+
+                                .AddTextFileAgent()
+                                   .UseJsonFormat()
+                                   .SaveLogToFile("D:\\Logs\\TestLog.json")
+                                   .DeleteTheLogFileWhenExceededTheMaximumSizeOf(50)
+                                   .BuildAgent()
+
+                                .AddTextFileAgent()
+                                   .UseJsonFormat()
+                                   .SaveLogToFile("D:\\Logs\\TestLog.json")
+                                   .DeleteTheLogFileWhenExceededTheMaximumSizeOf(50)
+                                   .BuildAgent()
+
+
+                                 .AddConsoleAgent()
+                                    .UseJsonFormat()
+                                    .BuildAgent()
+
+
+                                 .AddBeepAgent().ExcludeAllEventTypes().BuildAgent()
+                                 
+
+
+
+            .BuildLogger();
 
             loggerA.StartLogger();
-
 
 
 

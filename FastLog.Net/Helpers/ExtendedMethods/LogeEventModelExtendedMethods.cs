@@ -1,7 +1,7 @@
 ﻿using FastLog.Enums;
 using System;
 using System.Text;
-using TrendSoft.FastLog.Models;
+using FastLog.Models;
 
 namespace FastLog.Helpers.ExtendedMethods
 {

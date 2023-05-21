@@ -2,8 +2,9 @@
 using System;
 using System.Collections.Generic;
 using System.Linq;
-using TrendSoft.FastLog.Interfaces;
-using TrendSoft.FastLog.Internal;
+using FastLog.Interfaces;
+using FastLog.Internal;
+using FastLog.Core;
 
 namespace FastLog.Agents
 {
@@ -13,7 +14,9 @@ namespace FastLog.Agents
 
 
         #region Private Properties
-        private protected string ApplicationName { get; set; } = "N/A";
+        private protected string LoggerName { get; private set; } = "N/A";
+
+        private protected AgentsManager _manager { get; set; } = null; // Just for Builder Pattern
 
         private protected InternalLogger InternalLogger = null;
         private readonly List<LogEventTypes> _registeredEvents = new List<LogEventTypes>();
@@ -22,14 +25,16 @@ namespace FastLog.Agents
         #endregion
 
 
-        internal AgentType WithApplicationName(string applicationName)
+        public AgentsManager BuildAgent() => _manager;
+
+        internal AgentType WithLoggerName(string loggerName)
         {
-            if (string.IsNullOrWhiteSpace(applicationName))
+            if (string.IsNullOrWhiteSpace(loggerName))
             {
-                throw new ArgumentException($"'{nameof(applicationName)}' cannot be null or whitespace.", nameof(applicationName));
+                throw new ArgumentException($"'{nameof(loggerName)}' cannot be null or whitespace.", nameof(loggerName));
             }
 
-            ApplicationName = applicationName;
+            LoggerName = loggerName;
 
             return (AgentType)this;
         }

@@ -4,9 +4,9 @@ using System;
 using System.Diagnostics;
 using System.IO;
 using System.Runtime.InteropServices;
-using TrendSoft.FastLog.Models;
+using FastLog.Models;
 
-namespace TrendSoft.FastLog.Internal
+namespace FastLog.Internal
 {
     // Note : This class uses "fluent builder" pattern.
 

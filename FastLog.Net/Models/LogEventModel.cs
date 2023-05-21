@@ -2,7 +2,7 @@
 using FastLog.Enums;
 using System;
 
-namespace TrendSoft.FastLog.Models
+namespace FastLog.Models
 {
     public class LogEventModel
     {

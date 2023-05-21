@@ -1,24 +1,29 @@
 ﻿using System;
 using System.Threading;
 using System.Threading.Tasks;
-using TrendSoft.FastLog.Interfaces;
-using TrendSoft.FastLog.Internal;
-using TrendSoft.FastLog.Models;
+using FastLog.Core;
+using FastLog.Interfaces;
+using FastLog.Internal;
+using FastLog.Models;
 
 namespace FastLog.Agents.AdvancedAgents
 {
 
 
-    public class MethodExecutionAgent : AgentBase<MethodExecutionAgent>, IAgent
+    public sealed class MethodExecutionAgent : AgentBase<MethodExecutionAgent>, IAgent
     {
 
         private Action methodToExecute { get; set; }
 
 
         //Keep it private to make it non accessible from the outside of the class !!
-        private MethodExecutionAgent() => IncludeAllEventTypes();
+        private MethodExecutionAgent(AgentsManager manager)
+        {
+            _manager = manager;
+            IncludeAllEventTypes();
+        }
 
-        public static MethodExecutionAgent Create() => new MethodExecutionAgent();
+        public static MethodExecutionAgent Create(AgentsManager manager) => new MethodExecutionAgent(manager);
 
         public MethodExecutionAgent MethodToExecute(Action method)
         {

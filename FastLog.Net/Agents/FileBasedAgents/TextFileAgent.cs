@@ -5,15 +5,16 @@ using System;
 using System.IO;
 using System.Threading;
 using System.Threading.Tasks;
-using TrendSoft.FastLog.Interfaces;
-using TrendSoft.FastLog.Internal;
-using TrendSoft.FastLog.Models;
+using FastLog.Interfaces;
+using FastLog.Internal;
+using FastLog.Models;
+using FastLog.Core;
 
 namespace FastLog.Agents.FileBaseAgents
 {
 
 
-    public class TextFileAgent : AgentBase<TextFileAgent>, IAgent
+    public sealed class TextFileAgent : AgentBase<TextFileAgent>, IAgent
     {
 
 
@@ -28,9 +29,15 @@ namespace FastLog.Agents.FileBaseAgents
 
 
         //Keep it private to make it non accessible from the outside of the class !!
-        private TextFileAgent() => IncludeAllEventTypes();
+        private TextFileAgent(AgentsManager manager)
+        {
+            
+            _manager = manager; // Just For Builder Pattern.
 
-        public static TextFileAgent Create() => new TextFileAgent();
+            IncludeAllEventTypes();
+        }
+
+        public static TextFileAgent Create(AgentsManager manager) => new TextFileAgent(manager);
         public TextFileAgent UseJsonFormat()
         {
             useJsonFormat = true;
@@ -116,7 +123,7 @@ namespace FastLog.Agents.FileBaseAgents
                 // Create the new log file and add file header.
                 if (!File.Exists(LogFile))
                 {
-                    ThreadSafeFileHelper.AppendAllText(LogFile, FileHeader.GenerateFileHeader(LogFile,ApplicationName));
+                    ThreadSafeFileHelper.AppendAllText(LogFile, FileHeader.GenerateFileHeader(LogFile,LoggerName));
                 }
 
 

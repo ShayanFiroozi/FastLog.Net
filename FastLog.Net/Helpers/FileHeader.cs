@@ -5,12 +5,13 @@ namespace FastLog.Helpers
 {
     internal static class FileHeader
     {
-        internal static string GenerateFileHeader(string logFile , string ApplicationName = "N/A")
+        internal static string GenerateFileHeader(string logFile , string LoggerName = "N/A")
         {
             try
             {
 
-                return $"► FastLog.Net Version: " +
+                return $"{new string('-', 80)}\n\n" +
+                       $"► FastLog.Net Version: " +
                        $"\"{SystemInformation.GetCurrentAssemblyVersion()}\" ({(Environment.Is64BitProcess ? "64-bit" : "32-bit")})" +
                        $" , Build: \"{SystemInformation.GetCurrentAssemblyBuildDate()}" +
                        $"\" ◄\n\n" +
@@ -25,11 +26,11 @@ namespace FastLog.Helpers
                        $"-> .NET Runtime Version: \"{SystemInformation.GetDotNetRuntime()}\"\n\n" +
 
 
-                       $"-> Application Name: \"{(!string.IsNullOrWhiteSpace(ApplicationName) ? ApplicationName : "N/A")}\"\n" +
+                       $"-> Logger Name: \"{(!string.IsNullOrWhiteSpace(LoggerName) ? LoggerName : "N/A")}\"\n" +
                        $"-> Current User: \"{SystemInformation.GetCurrentUserName()}\"\n\n" +
 
                        $"-> Source Code: https://github.com/ShayanFiroozi/FastLog.Net\n\n" +
-                       $"{new string('-', 120)}\n\n";
+                       $"{new string('-', 80)}\n\n";
             }
             catch(Exception ex)
             {
