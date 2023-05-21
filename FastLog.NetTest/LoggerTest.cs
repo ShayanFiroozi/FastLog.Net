@@ -30,16 +30,20 @@ namespace FastLog.NetTest
                                                           .PrintOnDebugWindow();
 
 
+            ConfigManager loggerConfig = ConfigManager.Create()
+                                                      .WithApplicationName("Shayan® Test App")
+                                                      .WithMaxEventsToKeepInMemory(1_000);
 
-            loggerA = Logger.Create(internalLogger, ConfigManager.Create()
-                                                                 .WithApplicationName("Shayan Test App")
-                                                                 .WithMaxEventsToKeepInMemory(1_000))
 
-                             .ApplyAgents(AgentsManager.Create()
-                                                       .AddTextFileAgent(TextFileAgent.Create(internalLogger)
-                                                                                      .UseJsonFormat()
-                                                                                      .SaveLogToFile("D:\\Logs\\TestLog.json")
-                                                                                     .DeleteTheLogFileWhenExceededTheMaximumSizeOf(50)));
+
+            loggerA = Logger.Create()
+                            .WithInternalLogger(internalLogger)
+                            .WithConfiguration(loggerConfig)
+                            .WithAgents(AgentsManager.Create()
+                                                     .AddTextFileAgent(TextFileAgent.Create(internalLogger)
+                                                                                    .UseJsonFormat()
+                                                                                    .SaveLogToFile("D:\\Logs\\TestLog.json")
+                                                                                    .DeleteTheLogFileWhenExceededTheMaximumSizeOf(50)));
 
             loggerA.StartLogger();
 

@@ -16,10 +16,10 @@ namespace TrendSoft.FastLog.Core
 
         #region Private Properties
         private readonly CancellationTokenSource _cts = new CancellationTokenSource();
-        private readonly InternalLogger internalLogger = null;
-        private ConfigManager configManager;
-        private bool isLoggerRunning = false;
-
+        private InternalLogger InternalLogger = null;
+        private ConfigManager Configuration;
+        private bool IsLoggerRunning = false;
+        private AgentsManager Agents { get; set; }
         private List<LogEventModel> inMemoryEvents { get; set; } = new List<LogEventModel>();
 
 
@@ -34,7 +34,6 @@ namespace TrendSoft.FastLog.Core
 
 
 
-        public AgentsManager Agents { get; private set; }
         public IEnumerable<LogEventModel> InMemoryEvents => inMemoryEvents;
 
 

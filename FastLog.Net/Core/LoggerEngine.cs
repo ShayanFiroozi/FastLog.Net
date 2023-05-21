@@ -16,7 +16,7 @@ namespace TrendSoft.FastLog.Core
 
             List<Task> tasksList = null;
 
-            if (configManager.RunAgentsInParallel) tasksList = new List<Task>();
+            if (Configuration.RunAgentsInParallel) tasksList = new List<Task>();
 
             // Logger engine ->
 
@@ -28,7 +28,7 @@ namespace TrendSoft.FastLog.Core
 
                     try
                     {
-                        isLoggerRunning = true;
+                        IsLoggerRunning = true;
 
                         LogEventModel EventModelFromChannel = await LoggerChannelReader.ReadAsync().ConfigureAwait(false);
 
@@ -47,13 +47,13 @@ namespace TrendSoft.FastLog.Core
                                     continue;
                                 }
 
-                                if (!isLoggerRunning) return;
+                                if (!IsLoggerRunning) return;
 
                                 try
                                 {
                                     if (!string.IsNullOrWhiteSpace(EventModelFromChannel.EventMessage))
                                     {
-                                        if (configManager.RunAgentsInParallel)
+                                        if (Configuration.RunAgentsInParallel)
                                         {
                                             tasksList.Add(logger.ExecuteAgent(EventModelFromChannel, _cts.Token));
                                         }
@@ -70,13 +70,13 @@ namespace TrendSoft.FastLog.Core
                                 }
                                 catch (Exception ex)
                                 {
-                                    this.internalLogger?.LogInternalException(ex);
+                                    this.InternalLogger?.LogInternalException(ex);
                                 }
 
                                 //Console.WriteLine($"{LoggerChannelReader.Count:N0} item(s) left in channel.");
                             }
 
-                            if (configManager.RunAgentsInParallel)
+                            if (Configuration.RunAgentsInParallel)
                             {
                                 await Task.WhenAll(tasksList).ConfigureAwait(false);
                             }
@@ -86,7 +86,7 @@ namespace TrendSoft.FastLog.Core
                     }
                     catch (Exception ex)
                     {
-                        this.internalLogger?.LogInternalException(ex);
+                        this.InternalLogger?.LogInternalException(ex);
                     }
 
 
@@ -101,7 +101,7 @@ namespace TrendSoft.FastLog.Core
 
         private void HandleInMemoryEvents(LogEventModel logEvent)
         {
-            if (inMemoryEvents.Count >= configManager.MaxEventsToKeep)
+            if (inMemoryEvents.Count >= Configuration.MaxEventsToKeep)
             {
                 inMemoryEvents.RemoveAt(0); // Remove the oldest event.
 
@@ -113,7 +113,7 @@ namespace TrendSoft.FastLog.Core
 
         public void StopLogger()
         {
-            isLoggerRunning = false;
+            IsLoggerRunning = false;
             _cts.Cancel();
         }
 

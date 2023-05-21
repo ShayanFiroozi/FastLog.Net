@@ -103,7 +103,7 @@ namespace TrendSoft.FastLog.Core
                                   int EventId = 0)
         {
 
-            if (!isLoggerRunning)
+            if (!IsLoggerRunning)
             {
                 throw new Exception("The logger is not running , please call \"StartLogger\" to start the logger.");
 
@@ -131,7 +131,7 @@ namespace TrendSoft.FastLog.Core
             }
             catch (Exception ex)
             {
-                this.internalLogger?.LogInternalException(ex);
+                this.InternalLogger?.LogInternalException(ex);
             }
 
 #if NET5_0_OR_GREATER
@@ -145,7 +145,7 @@ namespace TrendSoft.FastLog.Core
         private ValueTask LogEventHelper(Exception exception,
                                          int EventId = 0)
         {
-            if (!isLoggerRunning)
+            if (!IsLoggerRunning)
             {
                 throw new Exception("The logger is not running , please call \"StartLogger\" to start the logger.");
             }
@@ -168,7 +168,7 @@ namespace TrendSoft.FastLog.Core
             }
             catch (Exception ex)
             {
-                this.internalLogger?.LogInternalException(ex);
+                this.InternalLogger?.LogInternalException(ex);
             }
 
 #if NET5_0_OR_GREATER

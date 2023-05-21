@@ -105,9 +105,5 @@ namespace FastLog.Core
             loggerAgents.Add(agent);
         }
 
-        public object AddBeepAgent(AgentBase<BeepAgent> agentBase)
-        {
-            throw new NotImplementedException();
-        }
     }
 }

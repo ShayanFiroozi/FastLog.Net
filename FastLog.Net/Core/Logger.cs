@@ -10,32 +10,59 @@ namespace TrendSoft.FastLog.Core
 
 
         #region Fluent Builder Methods
+ 
 
         //Keep it private to make it non accessible from the outside of the class !!
-        private Logger(InternalLogger internalLogger, ConfigManager config)
+        private Logger()
         {
 
-            this.internalLogger = internalLogger ?? throw new ArgumentNullException(nameof(internalLogger));
-
-            configManager = config ?? throw new ArgumentNullException(nameof(config));
-
-
             // Initialize Channels Reader/Writer
-            LoggerChannelReader = LoggerChannel.Reader;
-            LoggerChannelWriter = LoggerChannel.Writer;
+               LoggerChannelReader = LoggerChannel.Reader;
+               LoggerChannelWriter = LoggerChannel.Writer;
 
 
-            Agents = AgentsManager.Create();
+            //Agents = AgentsManager.Create();
 
         }
 
-        public static Logger Create(InternalLogger internalLogger, ConfigManager config) => new Logger(internalLogger, config);
+        public static Logger Create() => new Logger();
 
 
-
-        public Logger ApplyAgents(AgentsManager agentsManager)
+        public Logger WithInternalLogger(InternalLogger internalLogger)
         {
-            this.Agents = agentsManager;
+            InternalLogger = internalLogger ?? throw new ArgumentNullException(nameof(internalLogger));
+            return this;
+        }
+
+
+        public Logger WithConfiguration(ConfigManager configuration)
+        {
+            //#Refactor : The fluent builder should be design to force the user to build the Logger in proper order.
+            //https://methodpoet.com/builder-pattern/
+
+            if(InternalLogger == null)
+            {
+                throw new ArgumentNullException($"{nameof(InternalLogger)} can not be null.", $"The \"ApplyInternalLogger\" should be called first !");
+            }
+
+            Configuration = configuration ?? throw new ArgumentNullException(nameof(configuration));
+            return this;
+        }
+
+
+
+        public Logger WithAgents(AgentsManager agentsManager)
+        {
+
+            //#Refactor : The fluent builder should be design to force the user to build the Logger in proper order.
+            //https://methodpoet.com/builder-pattern/
+
+            if (Configuration == null)
+            {
+                throw new ArgumentNullException($"{nameof(Configuration)} can not be null.", $"The \"ApplyConfiguration\" should be called first !");
+            }
+
+            this.Agents = agentsManager ?? throw new ArgumentNullException(nameof(agentsManager));
             return this;
         }
 
@@ -68,7 +95,7 @@ namespace TrendSoft.FastLog.Core
 
                 catch (Exception ex)
                 {
-                    this.internalLogger?.LogInternalException(ex);
+                    this.InternalLogger?.LogInternalException(ex);
                 }
             }
 
