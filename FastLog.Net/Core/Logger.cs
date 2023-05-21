@@ -1,5 +1,4 @@
-﻿using FastLog.Core;
-using FastLog.Internal;
+﻿using FastLog.Internal;
 using System;
 
 namespace FastLog.Core

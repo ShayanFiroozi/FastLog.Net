@@ -1,6 +1,5 @@
 ﻿using FastLog.Core;
 using FastLog.Interfaces;
-using FastLog.Internal;
 using FastLog.Models;
 using System;
 using System.Diagnostics;
@@ -49,9 +48,9 @@ namespace FastLog.Agents.AdvancedAgents
 
         public RunProcessAgent WithArgument(string commandArgument)
         {
-            if (string.IsNullOrWhiteSpace(ProcessToExecute))
+            if (string.IsNullOrWhiteSpace(commandArgument))
             {
-                throw new ArgumentException($"'{nameof(ProcessToExecute)}' cannot be null or whitespace.", nameof(ProcessToExecute));
+                throw new ArgumentException($"'{nameof(commandArgument)}' cannot be null or whitespace.", nameof(commandArgument));
             }
 
 

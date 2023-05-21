@@ -59,7 +59,7 @@ namespace FastLog.Helpers.ExtendedMethods
         {
             StringBuilder finalMessage = new StringBuilder();
 
-            _ = finalMessage.Append("{").Append('\n')
+            _ = finalMessage.Append('{').Append('\n')
 
 
                             .Append($" \"DateTime\": \"{logEventModel.DateTime.ToFriendlyDateTime()}\"")

@@ -1,7 +1,4 @@
-﻿using FastLog.Agents.ConsoleAgents;
-using FastLog.Agents.FileBaseAgents;
-using FastLog.Core;
-using FastLog.Core;
+﻿using FastLog.Core;
 using FastLog.Internal;
 using System;
 using System.Collections.Generic;
