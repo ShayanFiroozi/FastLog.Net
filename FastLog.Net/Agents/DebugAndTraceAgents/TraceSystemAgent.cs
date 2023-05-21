@@ -1,12 +1,12 @@
-﻿using FastLog.Helpers.ExtendedMethods;
+﻿using FastLog.Core;
+using FastLog.Helpers.ExtendedMethods;
+using FastLog.Interfaces;
+using FastLog.Internal;
+using FastLog.Models;
 using System;
 using System.Diagnostics;
 using System.Threading;
 using System.Threading.Tasks;
-using FastLog.Interfaces;
-using FastLog.Internal;
-using FastLog.Models;
-using FastLog.Core;
 
 namespace FastLog.Agents.DebugAndTraceAgents
 {

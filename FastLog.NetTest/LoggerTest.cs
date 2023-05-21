@@ -1,12 +1,12 @@
 ﻿using FastLog.Agents.ConsoleAgents;
 using FastLog.Agents.FileBaseAgents;
 using FastLog.Core;
+using FastLog.Core;
+using FastLog.Internal;
 using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Threading.Tasks;
-using FastLog.Core;
-using FastLog.Internal;
 
 namespace FastLog.NetTest
 {
@@ -46,17 +46,17 @@ namespace FastLog.NetTest
                                 .AddTextFileAgent()
                                    .UseJsonFormat()
                                    .SaveLogToFile("D:\\Logs\\TestLog.json")
-                                   .DeleteTheLogFileWhenExceededTheMaximumSizeOf(50)
+                                   .DeleteTheLogFileWhenExceededTheMaximumSizeOf(5)
                                    .BuildAgent()
 
                                 .AddTextFileAgent()
                                    .UseJsonFormat()
-                                   .SaveLogToFile("L:\\Logs\\TestLog.json")
-                                   .DeleteTheLogFileWhenExceededTheMaximumSizeOf(50)
+                                   .SaveLogToFile("D:\\Logs\\TestLog2.json")
+                                   .DeleteTheLogFileWhenExceededTheMaximumSizeOf(2)
                                    .BuildAgent()
 
-                                  
-                               
+
+
 
 
 

@@ -1,6 +1,6 @@
 ﻿using FastLog.Core;
-using System;
 using FastLog.Internal;
+using System;
 
 namespace FastLog.Core
 {
@@ -58,7 +58,7 @@ namespace FastLog.Core
 
 
         public AgentsManager WithAgents() => Agents;
-//        {
+        //        {
 
         //    //#Refactor : The fluent builder should be design to force the user to build the Logger in proper order.
         //    //https://methodpoet.com/builder-pattern/

@@ -1,10 +1,10 @@
-﻿using System;
-using System.Threading;
-using System.Threading.Tasks;
-using FastLog.Core;
+﻿using FastLog.Core;
 using FastLog.Interfaces;
 using FastLog.Internal;
 using FastLog.Models;
+using System;
+using System.Threading;
+using System.Threading.Tasks;
 
 namespace FastLog.Agents.AdvancedAgents
 {

@@ -1,7 +1,7 @@
 ﻿using FastLog.Enums;
+using FastLog.Models;
 using System;
 using System.Text;
-using FastLog.Models;
 
 namespace FastLog.Helpers.ExtendedMethods
 {
@@ -31,7 +31,7 @@ namespace FastLog.Helpers.ExtendedMethods
             }
 
 
-   
+
 
             if (logEventModel.LogEventType != LogEventTypes.EXCEPTION)
             {
@@ -89,7 +89,7 @@ namespace FastLog.Helpers.ExtendedMethods
 
             }
 
-    
+
             string finalResult = finalMessage.ToString();
 
             // Trim the last ',' character if exists !
@@ -101,7 +101,7 @@ namespace FastLog.Helpers.ExtendedMethods
 
 
             finalResult += $"\n}},\n";
-                            
+
 
 
             return finalResult;

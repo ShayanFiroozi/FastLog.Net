@@ -1,10 +1,10 @@
-﻿using FastLog.Enums;
+﻿using FastLog.Core;
+using FastLog.Enums;
+using FastLog.Interfaces;
+using FastLog.Internal;
 using System;
 using System.Collections.Generic;
 using System.Linq;
-using FastLog.Interfaces;
-using FastLog.Internal;
-using FastLog.Core;
 
 namespace FastLog.Agents
 {

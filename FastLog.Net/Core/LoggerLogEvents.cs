@@ -1,7 +1,7 @@
 ﻿using FastLog.Enums;
+using FastLog.Models;
 using System;
 using System.Threading.Tasks;
-using FastLog.Models;
 
 namespace FastLog.Core
 {

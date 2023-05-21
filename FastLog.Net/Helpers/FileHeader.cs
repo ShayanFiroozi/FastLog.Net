@@ -5,7 +5,7 @@ namespace FastLog.Helpers
 {
     internal static class FileHeader
     {
-        internal static string GenerateFileHeader(string logFile , string LoggerName = "N/A")
+        internal static string GenerateFileHeader(string logFile, string LoggerName = "N/A")
         {
             try
             {
@@ -22,7 +22,7 @@ namespace FastLog.Helpers
 
                        $"-> OS: \"{SystemInformation.GetOSInfo()}" +
                        $" ({(Environment.Is64BitOperatingSystem ? "64-bit" : "32-bit")})\"\n" +
-                       
+
                        $"-> .NET Runtime Version: \"{SystemInformation.GetDotNetRuntime()}\"\n\n" +
 
 
@@ -32,7 +32,7 @@ namespace FastLog.Helpers
                        $"-> Source Code: https://github.com/ShayanFiroozi/FastLog.Net\n\n" +
                        $"{new string('-', 80)}\n\n";
             }
-            catch(Exception ex)
+            catch (Exception ex)
             {
                 return $"Failed to create the Log File Header!\n{ex.ToJsonText()}{new string('-', 80)}\n\n";
             }

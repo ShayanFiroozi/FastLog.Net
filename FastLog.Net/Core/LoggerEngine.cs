@@ -1,8 +1,8 @@
-﻿using System;
+﻿using FastLog.Interfaces;
+using FastLog.Models;
+using System;
 using System.Collections.Generic;
 using System.Threading.Tasks;
-using FastLog.Interfaces;
-using FastLog.Models;
 
 namespace FastLog.Core
 {

@@ -1,14 +1,14 @@
-﻿using FastLog.Enums;
+﻿using FastLog.Core;
+using FastLog.Enums;
 using FastLog.Helpers;
 using FastLog.Helpers.ExtendedMethods;
+using FastLog.Interfaces;
+using FastLog.Internal;
+using FastLog.Models;
 using System;
 using System.IO;
 using System.Threading;
 using System.Threading.Tasks;
-using FastLog.Interfaces;
-using FastLog.Internal;
-using FastLog.Models;
-using FastLog.Core;
 
 namespace FastLog.Agents.FileBaseAgents
 {
@@ -31,7 +31,7 @@ namespace FastLog.Agents.FileBaseAgents
         //Keep it private to make it non accessible from the outside of the class !!
         private TextFileAgent(AgentsManager manager)
         {
-            
+
             _manager = manager; // Just For Builder Pattern.
 
             IncludeAllEventTypes();
@@ -123,7 +123,7 @@ namespace FastLog.Agents.FileBaseAgents
                 // Create the new log file and add file header.
                 if (!File.Exists(LogFile))
                 {
-                    ThreadSafeFileHelper.AppendAllText(LogFile, FileHeader.GenerateFileHeader(LogFile,LoggerName));
+                    ThreadSafeFileHelper.AppendAllText(LogFile, FileHeader.GenerateFileHeader(LogFile, LoggerName));
                 }
 
 

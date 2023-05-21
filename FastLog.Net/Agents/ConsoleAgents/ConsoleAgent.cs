@@ -1,12 +1,12 @@
-﻿using FastLog.Enums;
+﻿using FastLog.Core;
+using FastLog.Enums;
 using FastLog.Helpers.ExtendedMethods;
-using System;
-using System.Threading;
-using System.Threading.Tasks;
 using FastLog.Interfaces;
 using FastLog.Internal;
 using FastLog.Models;
-using FastLog.Core;
+using System;
+using System.Threading;
+using System.Threading.Tasks;
 
 namespace FastLog.Agents.ConsoleAgents
 {

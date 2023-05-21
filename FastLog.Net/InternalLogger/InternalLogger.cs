@@ -1,10 +1,10 @@
 ﻿using FastLog.Helpers;
 using FastLog.Helpers.ExtendedMethods;
+using FastLog.Models;
 using System;
 using System.Diagnostics;
 using System.IO;
 using System.Runtime.InteropServices;
-using FastLog.Models;
 
 namespace FastLog.Internal
 {
@@ -182,7 +182,7 @@ namespace FastLog.Internal
                     // Create the new internal log file and add file header.
                     if (!File.Exists(InternalLogFile))
                     {
-                        ThreadSafeFileHelper.AppendAllText(InternalLogFile, FileHeader.GenerateFileHeader(InternalLogFile,"FastLog.Net Internal Logger"));
+                        ThreadSafeFileHelper.AppendAllText(InternalLogFile, FileHeader.GenerateFileHeader(InternalLogFile, "FastLog.Net Internal Logger"));
                     }
                 }
                 catch { }

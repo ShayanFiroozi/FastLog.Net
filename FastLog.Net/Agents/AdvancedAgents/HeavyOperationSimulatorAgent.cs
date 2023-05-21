@@ -1,9 +1,9 @@
-﻿using System;
-using System.Threading;
-using System.Threading.Tasks;
-using FastLog.Core;
+﻿using FastLog.Core;
 using FastLog.Interfaces;
 using FastLog.Models;
+using System;
+using System.Threading;
+using System.Threading.Tasks;
 
 namespace FastLog.Agents.AdvancedAgents
 {
@@ -25,7 +25,7 @@ namespace FastLog.Agents.AdvancedAgents
         public static HeavyOperationSimulatorAgent Create(AgentsManager manager) => new HeavyOperationSimulatorAgent(manager);
 
 
-       
+
         public HeavyOperationSimulatorAgent WithDelay(TimeSpan timeSpan)
         {
             OperationTimeSpan = timeSpan;

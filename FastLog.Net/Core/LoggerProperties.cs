@@ -1,10 +1,10 @@
 ﻿using FastLog.Core;
+using FastLog.Internal;
+using FastLog.Models;
 using System;
 using System.Collections.Generic;
 using System.Threading;
 using System.Threading.Channels;
-using FastLog.Internal;
-using FastLog.Models;
 
 namespace FastLog.Core
 {

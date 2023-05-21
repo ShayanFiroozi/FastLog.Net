@@ -1,28 +1,28 @@
-﻿using FastLog.Helpers.ExtendedMethods;
+﻿using FastLog.Core;
+using FastLog.Helpers.ExtendedMethods;
+using FastLog.Interfaces;
+using FastLog.Internal;
+using FastLog.Models;
 using System;
 using System.Diagnostics;
 using System.Threading;
 using System.Threading.Tasks;
-using FastLog.Interfaces;
-using FastLog.Internal;
-using FastLog.Models;
-using FastLog.Core;
 
 namespace FastLog.Agents.DebugAndTraceAgents
 {
 
 
-    public sealed class DebugSystemAgent : AgentBase<DebugSystemAgent>,  IAgent
+    public sealed class DebugSystemAgent : AgentBase<DebugSystemAgent>, IAgent
     {
 
 
         private bool useJsonFormat { get; set; } = false;
 
-        
+
         //Keep it private to make it non accessible from the outside of the class !!
         private DebugSystemAgent(AgentsManager manager)
         {
-            _manager = manager; 
+            _manager = manager;
             IncludeAllEventTypes();
         }
 

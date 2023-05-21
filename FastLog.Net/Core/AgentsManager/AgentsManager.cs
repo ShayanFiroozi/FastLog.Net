@@ -3,13 +3,13 @@ using FastLog.Agents.AdvancedAgents;
 using FastLog.Agents.ConsoleAgents;
 using FastLog.Agents.DebugAndTraceAgents;
 using FastLog.Agents.FileBaseAgents;
-using System;
-using System.Collections.Generic;
-using System.Linq;
 using FastLog.Core;
 using FastLog.Interfaces;
 using FastLog.Internal;
+using System;
+using System.Collections.Generic;
 using System.Diagnostics;
+using System.Linq;
 
 namespace FastLog.Core
 {

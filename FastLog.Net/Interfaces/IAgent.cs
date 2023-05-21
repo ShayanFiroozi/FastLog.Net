@@ -1,7 +1,7 @@
 ﻿using FastLog.Core;
+using FastLog.Models;
 using System.Threading;
 using System.Threading.Tasks;
-using FastLog.Models;
 
 namespace FastLog.Interfaces
 {

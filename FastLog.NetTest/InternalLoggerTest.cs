@@ -1,7 +1,7 @@
-﻿using System;
+﻿using FastLog.Internal;
+using System;
 using System.IO;
 using System.Threading.Tasks;
-using FastLog.Internal;
 
 namespace FastLog.NetTest
 {
