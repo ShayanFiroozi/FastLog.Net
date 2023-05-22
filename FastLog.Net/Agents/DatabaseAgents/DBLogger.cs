@@ -19,7 +19,10 @@ namespace LogModule.Agents
 
         public static DBLogger Create(AgentsManager manager) => new DBLogger(manager);
 
-        private DBLogger(AgentsManager manager) { }
+        private DBLogger(AgentsManager manager) 
+        {
+            _manager = manager;
+        }
 
 
         public DBLogger WithDbFile(string fileName)
@@ -73,13 +76,13 @@ namespace LogModule.Agents
             try
             {
 
-                if (string.IsNullOrWhiteSpace(dbFile))
+                if (string.IsNullOrWhiteSpace(DBFile))
                 {
                     throw new Exception("Db file is not defined.");
                 }
 
                 // Open or create the database
-                using (LiteDatabase db = new(dbFile))
+                using (LiteDatabase db = new LiteDatabase(DBFile))
                 {
                     // Open or create the table
                     ILiteCollection<LogEventModel> dbTable = db.GetCollection<LogEventModel>();
@@ -128,7 +131,7 @@ namespace LogModule.Agents
             {
 
                 // Open or create the database
-                using (LiteDatabase db = new(DBFile))
+                using (LiteDatabase db = new LiteDatabase(DBFile))
                 {
 
                     // Open or create the table
@@ -197,7 +200,7 @@ namespace LogModule.Agents
 
 
                 // Open or create the database
-                using (LiteDatabase db = new(DBFile))
+                using (LiteDatabase db = new LiteDatabase(DBFile))
                 {
 
                     // Open or create the table
@@ -236,6 +239,9 @@ namespace LogModule.Agents
         public Task ExecuteAgent(LogEventModel logMessage, CancellationToken cancellationToken)
         {
             DeleteOldLogs(MaxDaysToKeepLogs);
+
+
+            return Task.CompletedTask;
         }
 
 
