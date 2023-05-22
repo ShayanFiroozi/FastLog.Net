@@ -1,332 +1,247 @@
-﻿//using LiteDB;
-//using System;
-//using System.Collections.Generic;
-//using System.IO;
-//using System.Threading.Tasks;
+﻿using FastLog.Agents;
+using FastLog.Core;
+using FastLog.Interfaces;
+using FastLog.Models;
+using LiteDB;
+using System;
+using System.IO;
+using System.Threading;
+using System.Threading.Tasks;
 
-//namespace LogModule.Agents
-//{
-//    public  class DBLogger : IDBLogger
-//    {
+namespace LogModule.Agents
+{
+    public sealed class DBLogger : AgentBase<DBLogger>, IAgent
+    {
 
-//        #region ReadOnly Variables
-//        private readonly int LOG_FILE_MAX_SIZE_IN_MB = 0; // 0 for unlimited file size
+        private string DBFile { get; set; }
+        private short MaxDaysToKeepLogs { get; set; }
 
-//        private readonly string _LogFile;
-//        #endregion
 
+        public static DBLogger Create(AgentsManager manager) => new DBLogger(manager);
 
+        private DBLogger(AgentsManager manager) { }
 
-//        #region Properties
 
+        public DBLogger WithDbFile(string fileName)
+        {
+            if (string.IsNullOrWhiteSpace(fileName))
+            {
+                throw new ArgumentException($"'{nameof(fileName)}' cannot be null or whitespace.", nameof(fileName));
+            }
 
-//        public string LogFile => _LogFile;
+            DBFile = fileName;
 
+            try
+            {
 
-//        public int LogFileSizeMB
-//        {
-//            get
-//            {
-//                try
-//                {
-//                    return Convert.ToInt32((new FileInfo(LogFile).Length / 1024) / 1024);
-//                }
-//                catch (Exception ex)
-//                {
-//                    InnerException.InnerException.LogInnerException(ex);
-//                    return 0;
-//                }
-//            }
-//        }
+                if (!Directory.Exists(Path.GetDirectoryName(DBFile)))
+                {
+                    _ = Directory.CreateDirectory(Path.GetDirectoryName(DBFile));
+                }
 
-//        public int GetLogCount
-//        {
-//            get
-//            {
-//                try
-//                {
+                CleanUpTempDBFile();
 
-//                    // Open or create the database
-//                    using (LiteDatabase db = new(LogFile))
-//                    {
+            }
 
+            catch (Exception ex)
+            {
+                InternalLogger?.LogInternalException(ex);
+            }
 
-//                        // Open or create the table
-//                        ILiteCollection<LogMessage> dbTable = db.GetCollection<LogMessage>();
 
-//                        return dbTable.Count();
 
-//                    }
 
-//                }
-//                catch (Exception ex)
-//                {
-//                    InnerException.InnerException.LogInnerException(ex);
-//                    return 0;
-//                }
-//            }
-//        }
+            return this;
+        }
 
+        public DBLogger WithMaxDaysToKeepLogs(short maxDaysToKeepLogs)
+        {
 
+            if (maxDaysToKeepLogs <= 0)
+            {
+                throw new ArgumentException($"'{nameof(maxDaysToKeepLogs)}' must be greater then zero.", nameof(maxDaysToKeepLogs));
+            }
 
+            MaxDaysToKeepLogs = maxDaysToKeepLogs;
 
-//        #endregion
+            return this;
+        }
 
 
+        private int GetLogCountInDB()
+        {
+            try
+            {
 
-//        #region Constructors
+                if (string.IsNullOrWhiteSpace(dbFile))
+                {
+                    throw new Exception("Db file is not defined.");
+                }
 
+                // Open or create the database
+                using (LiteDatabase db = new(dbFile))
+                {
+                    // Open or create the table
+                    ILiteCollection<LogEventModel> dbTable = db.GetCollection<LogEventModel>();
 
-//        public DBLogger(string LogFile,
-//                          int LOG_FILE_MAX_SIZE_IN_MB = 200,
-//                          short LOGS_ARE_OLDER_THAN_X_DAYS = 365)
-//        {
+                    return dbTable.Count();
+                }
 
-//            try
-//            {
+            }
+            catch (Exception ex)
+            {
+                InternalLogger?.LogInternalException(ex);
+                return 0;
+            }
+        }
 
-//                if (string.IsNullOrWhiteSpace(LogFile))
-//                {
-//                    throw new ArgumentNullException("Invalid logging path or file name");
-//                }
+        private void CleanUpTempDBFile()
+        {
+            // Delete the LiteDB temporary file is existed ( in case of power loss or app crash )
 
+            try
+            {
 
-//                this._LogFile = LogFile;
-//                this.LOG_FILE_MAX_SIZE_IN_MB = LOG_FILE_MAX_SIZE_IN_MB;
+                string _targetLiteDBTempFile =
+                    $"{Path.Combine(Path.GetDirectoryName(DBFile), Path.GetFileNameWithoutExtension(DBFile))}-log{Path.GetExtension(DBFile)}";
 
+                if (File.Exists(_targetLiteDBTempFile))
+                {
+                    File.Delete(_targetLiteDBTempFile);
+                }
+            }
+            catch { }
 
-//                // Create the log file directory
+        }
 
-//                Directory.CreateDirectory(new FileInfo(this.LogFile).Directory.FullName);
 
 
 
+        public void SaveLog(LogEventModel logMessage)
+        {
+            if (logMessage is null)
+            {
+                throw new ArgumentNullException(nameof(logMessage));
+            }
 
+            try
+            {
 
-//                // Delete the LiteDB temporary file is existed ( in case of power loss or app crash )
+                // Open or create the database
+                using (LiteDatabase db = new(DBFile))
+                {
 
-//                try
-//                {
+                    // Open or create the table
+                    ILiteCollection<LogEventModel> dbTable = db.GetCollection<LogEventModel>();
 
-//                    string _targetLiteDBTempFile = 
-//                        $"{Path.Combine(Path.GetDirectoryName(LogFile),Path.GetFileNameWithoutExtension(LogFile))}-log{Path.GetExtension(LogFile)}";
+                    dbTable.Insert(logMessage);
+                }
 
-//                    if (File.Exists(_targetLiteDBTempFile))
-//                    {
-//                        File.Delete(_targetLiteDBTempFile);
-//                    }
-//                }
-//                catch { }
 
+            }
+            catch (Exception ex)
+            {
+                InternalLogger?.LogInternalException(ex);
+            }
+        }
 
 
 
-//                // Delete the log file if it's bigger than LOG_FILE_MAX_SIZE_IN_MB
+        public void SaveLog(LogEventModel logMessage, LiteDatabase logDB)
+        {
+            if (logMessage is null)
+            {
+                throw new ArgumentNullException(nameof(logMessage));
+            }
 
-//                DeleteLogFile();
+            if (logDB is null)
+            {
+                throw new ArgumentNullException(nameof(logDB));
+            }
 
+            try
+            {
+                // Open or create the table
+                ILiteCollection<LogEventModel> dbTable = logDB.GetCollection<LogEventModel>();
 
+                dbTable.Insert(logMessage);
 
-//                // Delete the logs they are older than  MAX_OLD_DAYS_LOGS_IN_DATABSE day(s)
 
-//                DeleteOldLogs(LOGS_ARE_OLDER_THAN_X_DAYS);
+            }
+            catch (Exception ex)
+            {
+                InternalLogger?.LogInternalException(ex);
+            }
 
 
+        }
 
 
-//            }
-//            catch (Exception ex)
-//            {
-//                InnerException.InnerException.LogInnerException(ex);
-//            }
-//        }
+        public void DeleteOldLogs(short OlderThanXDays)
+        {
+            int howManyDeleted = 0;
 
+            try
+            {
 
-//        #endregion
+                if (!File.Exists(DBFile))
+                {
+                    return;
+                }
 
 
+                if (OlderThanXDays <= 0) return;
 
-//        #region Methods
 
+                DateTime targetDatetTime_For_OLD_Logs = DateTime.Now.AddDays(-OlderThanXDays);
 
 
+                // Open or create the database
+                using (LiteDatabase db = new(DBFile))
+                {
 
-//        /// <summary>
-//        /// Save the log (LiteDatabase will be initialized internally)
-//        /// </summary>
-//        /// <param name="logMessage">LogMessage object to save</param>
-//        public void SaveLog(LogMessage logMessage)
-//        {
+                    // Open or create the table
+                    ILiteCollection<LogEventModel> dbTable = db.GetCollection<LogEventModel>();
 
-//            try
-//            {
 
-//                if (logMessage == null)
-//                {
-//                    throw new ArgumentNullException("logMessage parameter can not be null.");
-//                }
+                    if (dbTable.FindOne(log => log.DateTime < targetDatetTime_For_OLD_Logs) == null)
+                    {
+                        return; // No record to delete
+                    }
 
-//                // Open or create the database
-//                using (LiteDatabase db = new(LogFile))
-//                {
 
-//                    // Open or create the table
-//                    ILiteCollection<LogMessage> dbTable = db.GetCollection<LogMessage>();
 
-//                    dbTable.Insert(logMessage);
-//                }
+                    howManyDeleted = dbTable.DeleteMany(log => log.DateTime < targetDatetTime_For_OLD_Logs);
 
 
-//            }
-//            catch (Exception ex)
-//            {
-//                InnerException.InnerException.LogInnerException(ex);
-//            }
-//        }
 
+                    _ = db.Rebuild(); // Shrink the database file ( remove unused spaces )
 
+                }
 
-//        /// <summary>
-//        /// Save the log with initialized LiteDatabase object ( dependency injection )
-//        /// </summary>
-//        /// <param name="logMessage">LogMessage object to save</param>
-//        /// <param name="logDB">Initialized LiteDatabase  object ( dependency injection )</param>
+                if (howManyDeleted != 0)
+                {
+                    InternalLogger?.LogInternalSystemEvent(new LogEventModel(FastLog.Enums.LogEventTypes.SYSTEM,
+                                  $"The {howManyDeleted:N0} old record(s) have been deleted.",
+                                  $"Reaches the maximum day(s) to keep logs , ({howManyDeleted:N0} day(s))"));
+                }
 
-//        public void SaveLog(LogMessage logMessage, LiteDatabase logDB)
-//        {
-//            if (logMessage is null)
-//            {
-//                throw new ArgumentNullException(nameof(logMessage));
-//            }
+            }
+            catch (Exception ex)
+            {
+                InternalLogger?.LogInternalException(ex);
+            }
+        }
 
-//            if (logDB is null)
-//            {
-//                throw new ArgumentNullException(nameof(logDB));
-//            }
+        public Task ExecuteAgent(LogEventModel logMessage, CancellationToken cancellationToken)
+        {
+            DeleteOldLogs(MaxDaysToKeepLogs);
+        }
 
 
-//            try
-//            {
-//                // Open or create the table
-//                ILiteCollection<LogMessage> dbTable = logDB.GetCollection<LogMessage>();
 
-//                dbTable.Insert(logMessage);
 
 
-//            }
-//            catch (Exception ex)
-//            {
-//                InnerException.InnerException.LogInnerException(ex);
-//            }
 
-
-//        }
-
-
-
-
-
-//        public void DeleteLogFile()
-//        {
-//            try
-//            {
-
-//                if (!File.Exists(LogFile))
-//                {
-//                    return;
-//                }
-
-
-//                if (LogFileSizeMB
-//                     <= LOG_FILE_MAX_SIZE_IN_MB || LOG_FILE_MAX_SIZE_IN_MB == 0)
-//                {
-//                    return;
-//                }
-//            }
-//            catch (Exception ex)
-//            {
-//                InnerException.InnerException.LogInnerException(ex);
-//            }
-
-
-
-
-//            try
-//            {
-//                File.Delete(LogFile);
-
-//                SaveLog(new LogMessage(LogMessage.LogTypeEnum.INFO,
-//                                      "The Log file has been deleted.",
-//                                      $"Reaches the maximum file size ({LOG_FILE_MAX_SIZE_IN_MB:N0} MB)"));
-//            }
-//            catch (Exception ex)
-//            {
-//                InnerException.InnerException.LogInnerException(ex);
-//            }
-//        }
-
-//        public void DeleteOldLogs(short OlderThanxDays)
-//        {
-//            int _howManyDeleted = 0;
-
-
-
-//            try
-//            {
-
-//                if (!File.Exists(LogFile))
-//                {
-//                    return;
-//                }
-
-
-//                if (OlderThanxDays <= 0) return;
-
-
-//                DateTime targetDatetTime_For_OLD_Logs = DateTime.Now.AddDays(-OlderThanxDays);
-
-
-//                // Open or create the database
-//                using (LiteDatabase db = new(LogFile))
-//                {
-
-//                    // Open or create the table
-//                    ILiteCollection<LogMessage> dbTable = db.GetCollection<LogMessage>();
-
-
-//                    if (dbTable.FindOne(log => log.DateTime < targetDatetTime_For_OLD_Logs) == null)
-//                    {
-//                        return; // No record to delete
-//                    }
-
-
-
-//                    _howManyDeleted = dbTable.DeleteMany(log => log.DateTime < targetDatetTime_For_OLD_Logs);
-
-
-
-//                    _ = db.Rebuild(); // Shrink the database file ( remove unused spaces )
-
-//                }
-
-//                if (_howManyDeleted != 0)
-//                {
-//                    SaveLog(new LogMessage(LogMessage.LogTypeEnum.INFO,
-//                                  $"The {_howManyDeleted:N0} pld log records have been deleted.",
-//                                  $"Reaches the maximum old logs days ({OlderThanxDays:N0} day(s))"));
-//                }
-
-//            }
-//            catch (Exception ex)
-//            {
-//                InnerException.InnerException.LogInnerException(ex);
-//            }
-//        }
-
-
-//        #endregion
-
-
-
-//    }
-//}
+    }
+}

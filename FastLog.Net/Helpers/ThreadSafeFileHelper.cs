@@ -3,6 +3,14 @@ using System.Threading;
 
 namespace FastLog.Helpers
 {
+
+    //#Refactor : In codes below we used "ReaderWriterLockSlim" for thread-safety file access , BUT !
+    // Of course there is better solution to achive that.
+
+    //Known Issue : "ReaderWriterLockSlim" is thread-safe but could not be used in async method and also is not process safe.
+    // See accepted answer of this thread for more info :
+    // https://stackoverflow.com/questions/19659387/readerwriterlockslim-and-async-await
+
     internal static class ThreadSafeFileHelper
     {
         private static readonly ReaderWriterLockSlim _readWriteLock = new ReaderWriterLockSlim();
