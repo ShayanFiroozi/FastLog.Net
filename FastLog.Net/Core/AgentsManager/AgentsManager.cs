@@ -15,7 +15,6 @@ namespace FastLog.Core
         private readonly Logger _logger = null; // Will be used by the builder pattern to pass refrences.
 
         private InternalLogger InternalLogger = null;
-        private string LoggerName = "N/A";
 
         private readonly List<IAgent> loggerAgents = new List<IAgent>();
         public IEnumerable<IAgent> AgentList => loggerAgents;
@@ -31,11 +30,11 @@ namespace FastLog.Core
             return this;
         }
 
-        internal AgentsManager WithLoggerName(string loggerName)
-        {
-            LoggerName = loggerName;
-            return this;
-        }
+        //internal AgentsManager WithLoggerName(string loggerName)
+        //{
+        //    LoggerName = loggerName;
+        //    return this;
+        //}
 
 
 
@@ -111,6 +110,7 @@ namespace FastLog.Core
         }
 
 
+      
 
         public IAgent AddUserDefinedAgent(IAgent agent)
         {

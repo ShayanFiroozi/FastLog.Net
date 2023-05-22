@@ -48,8 +48,8 @@ namespace FastLog.Core
 
             // Init AgentManager with "Internal Logger" & "Logger Name" dependencies.
             Agents = AgentsManager.Create(this) // pass the current logger to the AgeManager for builder pattern.
-                                  .WithInternalLogger(InternalLogger)
-                                  .WithLoggerName(Configuration.LoggerName);
+                                  .WithInternalLogger(InternalLogger);
+                                  //.WithLoggerName(Configuration.LoggerName);
 
             return this;
         }
