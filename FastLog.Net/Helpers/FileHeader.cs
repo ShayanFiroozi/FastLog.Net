@@ -1,4 +1,18 @@
-﻿using FastLog.Helpers.ExtendedMethods;
+﻿/*---------------------------------------------------------------------------------------------
+
+                ► FastLog.Net , High Performance Logger For .Net ◄
+
+
+
+ → Copyright (c) 2020-2023 Shayan Firoozi , Bandar Abbas , Iran , Under MIT License.
+
+ → Contact : <shayan.firoozi@gmail.com>
+
+ → GitHub repository : https://github.com/ShayanFiroozi/FastLog.Net
+
+---------------------------------------------------------------------------------------------*/
+
+using FastLog.Helpers.ExtendedMethods;
 using System;
 
 namespace FastLog.Helpers

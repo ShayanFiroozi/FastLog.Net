@@ -1,3 +1,17 @@
+﻿/*---------------------------------------------------------------------------------------------
+
+                ► FastLog.Net , High Performance Logger For .Net ◄
+
+
+
+ → Copyright (c) 2020-2023 Shayan Firoozi , Bandar Abbas , Iran , Under MIT License.
+
+ → Contact : <shayan.firoozi@gmail.com>
+
+ → GitHub repository : https://github.com/ShayanFiroozi/FastLog.Net
+
+---------------------------------------------------------------------------------------------*/
+
 using System;
 using System.Reflection;
 using System.Runtime.InteropServices;
@@ -10,9 +24,9 @@ using System.Runtime.InteropServices;
 [assembly: AssemblyTitle("High performance logger for .NET")]
 [assembly: AssemblyDescription("High performance logger for .NET")]
 [assembly: AssemblyConfiguration("")]
-[assembly: AssemblyCompany("TrendSoft� , Bandar Abbas , Iran")]
-[assembly: AssemblyProduct("TrendSoft� FastLog.Net")]
-[assembly: AssemblyCopyright("Copyright � 2023 TrendSoft� (MIT License)")]
+[assembly: AssemblyCompany("TrendSoft® , Bandar Abbas , Iran")]
+[assembly: AssemblyProduct("TrendSoft® FastLog.Net")]
+[assembly: AssemblyCopyright("Copyright © 2023 TrendSoft® (MIT License)")]
 [assembly: AssemblyTrademark("Shayan Firoozi")]
 [assembly: AssemblyCulture("")]
 
