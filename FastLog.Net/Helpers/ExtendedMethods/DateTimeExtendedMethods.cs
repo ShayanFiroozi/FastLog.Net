@@ -14,8 +14,14 @@
 
 using System;
 
+
+
 namespace FastLog.Helpers.ExtendedMethods
 {
+
+    /// <summary>
+    /// DateTime class extended method.
+    /// </summary>
     internal static class DateTimeExtendedMethods
     {
         public static string ToFriendlyDateTime(this DateTime dateTime) => $"{ToFriendlyDate(dateTime)} {ToFriendlyTime(dateTime)}";

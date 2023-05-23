@@ -18,6 +18,10 @@ using System.Reflection;
 
 namespace FastLog.Helpers
 {
+
+    /// <summary>
+    /// Get system information
+    /// </summary>
     internal static class SystemInformation
     {
         internal static string GetCurrentAssemblyVersion()

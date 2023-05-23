@@ -17,6 +17,10 @@ using System.Text;
 
 namespace FastLog.Helpers.ExtendedMethods
 {
+
+    /// <summary>
+    /// Generate Json text from "Exception" class.
+    /// </summary>
     internal static class ExceptionToJsonExtendedMethods
     {
 

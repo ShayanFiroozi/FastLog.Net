@@ -12,16 +12,18 @@
 
 ---------------------------------------------------------------------------------------------*/
 
-using FastLog.Core;
 using FastLog.Models;
 using System.Threading;
 using System.Threading.Tasks;
 
 namespace FastLog.Interfaces
 {
+
+    /// <summary>
+    /// Interface which all agents should be implemented.
+    /// </summary>
     public interface IAgent
     {
-
 
 #if NETFRAMEWORK || NETSTANDARD2_0
         Task ExecuteAgent(LogEventModel logMessage, CancellationToken cancellationToken = default);

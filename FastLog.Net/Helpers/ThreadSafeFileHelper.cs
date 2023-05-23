@@ -15,6 +15,8 @@
 using System.IO;
 using System.Threading;
 
+
+
 namespace FastLog.Helpers
 {
 
@@ -25,6 +27,11 @@ namespace FastLog.Helpers
     // See accepted answer of this thread for more info :
     // https://stackoverflow.com/questions/19659387/readerwriterlockslim-and-async-await
 
+
+    /// <summary>
+    /// Thread-Safe File Access ( read and write ) with "ReaderWriterLockSlim" class.
+    /// Note : "ReaderWriterLockSlim" is thread-safe but is NOT process safe.
+    /// </summary>
     internal static class ThreadSafeFileHelper
     {
         private static readonly ReaderWriterLockSlim _readWriteLock = new ReaderWriterLockSlim();

@@ -44,7 +44,7 @@ namespace FastLog.Core
         /// </summary>
         /// <param name="logger"></param>
         /// <returns>Builder Pattern : Logger</returns>
-        internal static Logger Create() => new Logger();
+        public static Logger Create() => new Logger();
 
 
         public Logger WithInternalLogger(InternalLogger internalLogger)

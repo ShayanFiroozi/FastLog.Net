@@ -17,6 +17,10 @@ using System;
 
 namespace FastLog.Helpers
 {
+
+    /// <summary>
+    /// Generate file header of the log file which contains some information about current system and logger info.
+    /// </summary>
     internal static class FileHeader
     {
         internal static string GenerateFileHeader(string logFile, string LoggerName = "N/A")

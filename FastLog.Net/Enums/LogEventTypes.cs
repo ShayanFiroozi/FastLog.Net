@@ -15,6 +15,9 @@
 namespace FastLog.Enums
 {
 
+/// <summary>
+/// Event types.
+/// </summary>
     public enum LogEventTypes : byte
     {
         INFO = 0,

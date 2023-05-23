@@ -22,9 +22,13 @@ using System.Runtime.InteropServices;
 
 namespace FastLog.Internal
 {
-    // Note : This class uses "fluent builder" pattern.
+    
 
 
+    /// <summary>
+    /// Internal Logger class , resposible to log the exceptions and events which occured in the FastLog.Net
+    /// Note : This class used Fluent Builder.
+    /// </summary>
     public class InternalLogger
     {
 
@@ -168,7 +172,11 @@ namespace FastLog.Internal
 
 
 
-
+        /// <summary>
+        /// Log internal Exceptions of FastLog.Net
+        /// </summary>
+        /// <param name="exception"></param>
+        /// <exception cref="ArgumentException"></exception>
         public void LogInternalException(Exception exception)
         {
             if (string.IsNullOrWhiteSpace(InternalLogFile))
@@ -298,6 +306,10 @@ namespace FastLog.Internal
         }
 
 
+        /// <summary>
+        /// Log internal events of FastLog.Net
+        /// </summary>
+        /// <param name="logEventModel"></param>
         public void LogInternalSystemEvent(LogEventModel logEventModel)
         {
 

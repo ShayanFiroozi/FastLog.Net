@@ -19,6 +19,10 @@ using System.Text;
 
 namespace FastLog.Helpers.ExtendedMethods
 {
+
+    /// <summary>
+    /// Convert "LogeEventModel" to the "Plain" or "Json" text.
+    /// </summary>
     internal static class LogeEventModelExtendedMethods
     {
 

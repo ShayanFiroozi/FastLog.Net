@@ -17,11 +17,22 @@ using System;
 
 namespace FastLog.Models
 {
+
+    /// <summary>
+    /// Event Model class
+    /// </summary>
     public class LogEventModel
     {
 
         #region Constructors
 
+        /// <summary>
+        /// Create user-define event with custom Event Type , Event Text and Event Details
+        /// </summary>
+        /// <param name="LogEventType">Event Type</param>
+        /// <param name="EventText">Event Text</param>
+        /// <param name="Details">Event Details</param>
+        /// <param name="EventId">Event Id</param>
         public LogEventModel(LogEventTypes LogEventType,
                              string EventText,
                              string Details = "",
@@ -35,6 +46,11 @@ namespace FastLog.Models
         }
 
 
+        /// <summary>
+        /// Create Exception event.
+        /// </summary>
+        /// <param name="exception">Exception to save.</param>
+        /// <param name="EventId">User defined Event Id.</param>
         public LogEventModel(Exception exception, int EventId = 0)
             : this(LogEventTypes.EXCEPTION,
 
@@ -67,6 +83,9 @@ namespace FastLog.Models
 
         public DateTime DateTime { get; private set; }
 
+        /// <summary>
+        /// Store exception object here to access them "Logger.InMemoryEvents" class.
+        /// </summary>
         internal Exception Exception { get; private set; } = null;
 
         public LogEventTypes LogEventType { get; private set; }
