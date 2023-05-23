@@ -25,13 +25,32 @@ namespace FastLog.Core
     public sealed partial class Logger : IDisposable
     {
 
-      
+
 
         #region Private Properties
+
+
+        /// <summary>
+        /// It's responsible to ensure there's no reader of "InMemoryEvents" property when we want to update it in "HandleInMemoryEvents" method.
+        /// </summary>
+        private static readonly ReaderWriterLockSlim _inMemoryEventsLock = new ReaderWriterLockSlim();
+
+        /// <summary>
+        /// Global cancelation token for logger.
+        /// </summary>
         private readonly CancellationTokenSource _cts = new CancellationTokenSource();
+
+        /// <summary>
+        /// Internal Logger agent to log the FastLog.Net internal exception or events.
+        /// </summary>
         private InternalLogger InternalLogger = null;
+        
         internal ConfigManager Configuration;
         private bool IsLoggerRunning = false;
+        
+        /// <summary>
+        /// Active agent(s) defined in the logger agent list.
+        /// </summary>
         private AgentsManager Agents { get; set; }
         private List<LogEventModel> inMemoryEvents { get; set; } = new List<LogEventModel>();
 

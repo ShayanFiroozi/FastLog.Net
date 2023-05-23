@@ -121,24 +121,46 @@ namespace FastLog.Core
             });
         }
 
+        /// <summary>
+        /// Check if the number of In Memory Event(s) are greater than "MaxEventsToKeep" property value.
+        /// Note : Use "ReaderWriterLockSlim" to lock the object when modifying and making this method Thread-Safe.
+        /// Warning : If the count of in-memory-events reached the "MaxEventsToKeep" , this method will drop the oldet event in the list and then add new one.
+        /// </summary>
+        /// <param name="logEvent">Log Event to store inthe In-Memory-Event list.</param>
         private void HandleInMemoryEvents(LogEventModel logEvent)
         {
+              // Enter to the write lock
+
+            _inMemoryEventsLock.EnterWriteLock();
 
             if (inMemoryEvents.Count == 0) return;
 
-            if (Configuration.MaxEventsToKeep == 0 && inMemoryEvents.Count != 0)
+            try
             {
-                inMemoryEvents.Clear();
-                return;
-            }
 
-            if (inMemoryEvents.Count >= Configuration.MaxEventsToKeep)
+                if (Configuration.MaxEventsToKeep == 0 && inMemoryEvents.Count != 0)
+                {
+                    inMemoryEvents.Clear();
+                    return;
+                }
+
+                if (inMemoryEvents.Count >= Configuration.MaxEventsToKeep)
+                {
+                    inMemoryEvents.RemoveAt(0); // Remove the oldest event.
+
+                }
+
+                inMemoryEvents.Add(logEvent);
+            }
+            catch (Exception ex)
             {
-                inMemoryEvents.RemoveAt(0); // Remove the oldest event.
-
+                InternalLogger?.LogInternalException(ex);
             }
-
-            inMemoryEvents.Add(logEvent);
+            finally
+            {
+                // Release the lock
+                _inMemoryEventsLock.ExitWriteLock();
+            }
 
         }
 
