@@ -147,17 +147,25 @@ namespace FastLog.Agents.AdvancedAgents
         }
 
 
-
+        /// <summary>
+        /// Execute the Agent.
+        /// </summary>
+        /// <param name="LogModel">This parameter will be ignored in this agent.</param>
+        /// <param name="cancellationToken">CancellationToken for canceling the running task</param>
+        /// <returns>Task</returns>
         public Task ExecuteAgent(LogEventModel LogModel, CancellationToken cancellationToken = default)
         {
-
-            if (!CanExecuteOnThidMode()) return Task.CompletedTask;
-
 
             if (LogModel is null)
             {
                 return Task.CompletedTask;
             }
+
+
+            if (!CanExecuteOnThidMode()) return Task.CompletedTask;
+
+
+         
 
 
             try

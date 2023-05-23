@@ -18,27 +18,33 @@ using System;
 namespace FastLog.Core
 {
 
+    /// <summary>
+    /// Logger core class.
+    /// </summary>
     public sealed partial class Logger : IDisposable
     {
 
-
         #region Fluent Builder Methods
 
-
-        //Keep it private to make it non accessible from the outside of the class !!
+        /// <summary>
+        /// Builder Pattern : Keep it private to make it non accessible from the outside of the class !!
+        /// </summary>
+        
         private Logger()
         {
-
             // Initialize Channels Reader/Writer
             LoggerChannelReader = LoggerChannel.Reader;
             LoggerChannelWriter = LoggerChannel.Writer;
 
-
-            //Agents = AgentsManager.Create();
-
         }
 
-        public static Logger Create() => new Logger();
+
+        /// <summary>
+        /// Creae AgentManager object.
+        /// </summary>
+        /// <param name="logger"></param>
+        /// <returns>Builder Pattern : Logger</returns>
+        internal static Logger Create() => new Logger();
 
 
         public Logger WithInternalLogger(InternalLogger internalLogger)
@@ -135,4 +141,6 @@ namespace FastLog.Core
 
 
     }
+
+
 }

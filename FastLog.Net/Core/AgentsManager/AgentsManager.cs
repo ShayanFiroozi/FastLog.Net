@@ -52,15 +52,25 @@ namespace FastLog.Core
         /// <summary>
         /// Builder Pattern : Keep it private to make it non accessible from the outside of the class !!
         /// </summary>
-        /// <param name="manager">AgentsManager reference to pass to the AgentBase class to achieve Builder pattern.</param>
+        /// <param name="logger">Builder Pattern : Logger reference to pass to the logger class to achieve Builder pattern.</param>
         private AgentsManager(Logger logger) => _logger = logger;
+
+
+
+        /// <summary>
+        /// Creae AgentsManager object.
+        /// </summary>
+        /// <param name="logger">Builder Pattern : Logger reference to pass to the logger class to achieve Builder pattern.</param>
+        /// <returns>Builder Pattern : AgentsManager</returns>
+        internal static AgentsManager Create(Logger logger) => new AgentsManager(logger);
+
 
 
         /// <summary>
         /// (Optional) (High Recommended) Define an internal logger for FastLog.Net itself ! to log the internal exceptions or events.
         /// It is highly recommended to provide an internal logger to catch and trace FastLog.Net internal exception or events.
         /// </summary>
-        /// <param name="internalLogger"></param>
+        /// <param name="internalLogger">reference to an internal logger object.</param>
         /// <returns>Builder Pattern : AgentsManager</returns>
         /// <exception cref="ArgumentNullException"></exception>
         internal AgentsManager WithInternalLogger(InternalLogger internalLogger)
@@ -69,13 +79,7 @@ namespace FastLog.Core
             return this;
         }
 
-        /// <summary>
-        /// Creae AgentManager object.
-        /// </summary>
-        /// <param name="logger"></param>
-        /// <returns>Builder Pattern : AgentsManager</returns>
-        internal static AgentsManager Create(Logger logger) => new AgentsManager(logger);
-
+    
         /// <summary>
         /// Build the logger object.
         /// </summary>

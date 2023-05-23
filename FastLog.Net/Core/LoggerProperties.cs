@@ -25,8 +25,7 @@ namespace FastLog.Core
     public sealed partial class Logger : IDisposable
     {
 
-
-        private const int LoggerChannelMaxCapacity = 1_000_000;
+      
 
         #region Private Properties
         private readonly CancellationTokenSource _cts = new CancellationTokenSource();
@@ -38,8 +37,15 @@ namespace FastLog.Core
 
 
         #region Channel Properties
+
+        /// <summary>
+        /// If more than LoggerChannelMaxCapacity log placed into the channel , the cannel will drop the oldest one.
+        /// </summary>
+        private const int LoggerChannelMaxCapacity = 1_000_000;
+
         private readonly Channel<LogEventModel> LoggerChannel =
-                   Channel.CreateBounded<LogEventModel>(new BoundedChannelOptions(LoggerChannelMaxCapacity) { SingleReader = true, FullMode = BoundedChannelFullMode.DropOldest });
+                   Channel.CreateBounded<LogEventModel>(new BoundedChannelOptions(LoggerChannelMaxCapacity)
+                                           { SingleReader = true, FullMode = BoundedChannelFullMode.DropOldest });
 
         private readonly ChannelReader<LogEventModel> LoggerChannelReader;
         private readonly ChannelWriter<LogEventModel> LoggerChannelWriter;
@@ -49,7 +55,9 @@ namespace FastLog.Core
 
 
 
-
+        /// <summary>
+        /// On Memory Log Event(s).
+        /// </summary>
         public IEnumerable<LogEventModel> InMemoryEvents => inMemoryEvents;
 
 

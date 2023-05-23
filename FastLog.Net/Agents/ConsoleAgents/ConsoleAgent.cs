@@ -24,7 +24,12 @@ using System.Threading.Tasks;
 namespace FastLog.Agents.ConsoleAgents
 {
 
-    // Note : ConsoleLogger class uses fluent "Builder" pattern.
+    /// <summary>
+    /// An agent to write the logging info on the Console.
+    /// Notes : This class uses "Builder" pattern.
+    /// Performance Warning : The Console has poor performance in comparison with file operation.
+    /// It is not recommended to use it on high performance and multi-threaded scenarios unless in time of debuggin.
+    /// </summary>
 
     public sealed class ConsoleAgent : BaseAgent<ConsoleAgent>, IAgent
     {
@@ -32,31 +37,54 @@ namespace FastLog.Agents.ConsoleAgents
         private bool useJsonFormat { get; set; } = false;
 
 
-        //Keep it private to make it non accessible from the outside of the class !!
+        /// <summary>
+        /// Builder Pattern : Keep it private to make it non accessible from the outside of the class !!
+        /// </summary>
+        /// <param name="manager">AgentManager reference to pass to the AgentBase class to achieve Builder pattern.</param>
         private ConsoleAgent(AgentsManager manager)
         {
             _manager = manager;
             IncludeAllEventTypes();
         }
 
+
+        /// <summary>
+        /// Create a new ConsoleAgent object.
+        /// </summary>
+        /// <param name="manager">AgentManager reference to pass to the class private constructor</param>
+        /// <returns>Builder pattern : Returns ConsoleAgent class</returns>
         public static ConsoleAgent Create(AgentsManager manager) => new ConsoleAgent(manager);
 
+
+        /// <summary>
+        /// Ask the agent to use json format for the logging data.
+        /// </summary>
+        /// <returns>Builder pattern : Returns ConsoleAgent class</returns>
         public ConsoleAgent UseJsonFormat()
         {
             useJsonFormat = true;
             return this;
         }
 
+
+        /// <summary>
+        /// Execute the Agent.
+        /// </summary>
+        /// <param name="LogModel">Logging info</param>
+        /// <param name="cancellationToken">CancellationToken for canceling the running task.</param>
+        /// <returns>Task</returns>
         public Task ExecuteAgent(LogEventModel LogModel, CancellationToken cancellationToken = default)
         {
 
-            if (!CanExecuteOnThidMode()) return Task.CompletedTask;
 
 
             if (LogModel is null)
             {
                 return Task.CompletedTask;
             }
+
+            if (!CanExecuteOnThidMode()) return Task.CompletedTask;
+
 
 
             try

@@ -16,6 +16,10 @@ using System;
 
 namespace FastLog.Core
 {
+
+    /// <summary>
+    /// Class to create FastLog.Net configuration
+    /// </summary>
     public sealed class ConfigManager
     {
         internal string LoggerName { get; set; } = "N/A";
@@ -30,6 +34,13 @@ namespace FastLog.Core
             return new ConfigManager();
         }
 
+
+        /// <summary>
+        /// Max log event(s) to keep in memory which can be accessed by "InMemoryEvents" property. ( default is 0 )
+        /// </summary>
+        /// <param name="maxEventsToKeep"></param>
+        /// <returns>Builder Pattern : ConfigManager</returns>
+        /// <exception cref="ArgumentException"></exception>
         public ConfigManager WithMaxEventsToKeepInMemory(int maxEventsToKeep)
         {
 
@@ -45,7 +56,12 @@ namespace FastLog.Core
         }
 
 
-
+        /// <summary>
+        /// (Optional) Define Logger name or title.
+        /// </summary>
+        /// <param name="loggerName">logger name or title.</param>
+        /// <returns>Builder Pattern : ConfigManager</returns>
+        /// <exception cref="ArgumentException"></exception>
         public ConfigManager WithLoggerName(string loggerName)
         {
             if (string.IsNullOrWhiteSpace(loggerName))
@@ -62,7 +78,8 @@ namespace FastLog.Core
 
 
         /// <summary>
-        /// WARNING : Run "Logger Agents" in parallel may impact the performance.
+        /// (Optional) Run logger's agent(s) in seuential or parallel mode. ( default is false).
+        /// WARNING : Run agent in parallel may impact the overall performance.
         /// </summary>
         public ConfigManager RunAgentsInParallelMode()
         {

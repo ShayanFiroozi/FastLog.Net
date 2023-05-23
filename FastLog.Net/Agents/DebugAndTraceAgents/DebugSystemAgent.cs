@@ -24,7 +24,10 @@ using System.Threading.Tasks;
 namespace FastLog.Agents.DebugAndTraceAgents
 {
 
-
+    /// <summary>
+    /// An agent to write the logging info on the Debug system.
+    /// Notes : This class uses "Builder" pattern.
+    /// </summary>
     public sealed class DebugSystemAgent : BaseAgent<DebugSystemAgent>, IAgent
     {
 
@@ -32,16 +35,29 @@ namespace FastLog.Agents.DebugAndTraceAgents
         private bool useJsonFormat { get; set; } = false;
 
 
-        //Keep it private to make it non accessible from the outside of the class !!
+        /// <summary>
+        /// Builder Pattern : Keep it private to make it non accessible from the outside of the class !!
+        /// </summary>
+        /// <param name="manager">AgentManager reference to pass to the AgentBase class to achieve Builder pattern.</param>
         private DebugSystemAgent(AgentsManager manager)
         {
             _manager = manager;
             IncludeAllEventTypes();
         }
 
+
+        /// <summary>
+        /// Create a new DebugSystemAgent object.
+        /// </summary>
+        /// <param name="manager">AgentManager reference to pass to the class private constructor</param>
+        /// <returns>Builder pattern : Returns DebugSystemAgent class</returns>
         public static DebugSystemAgent Create(AgentsManager manager) => new DebugSystemAgent(manager);
 
 
+        /// <summary>
+        /// Ask the agent to use json format for the logging data.
+        /// </summary>
+        /// <returns>Builder pattern : Returns DebugSystemAgent class</returns>
         public DebugSystemAgent UseJsonFormat()
         {
             useJsonFormat = true;
@@ -49,15 +65,23 @@ namespace FastLog.Agents.DebugAndTraceAgents
         }
 
 
+        /// <summary>
+        /// Execute the Agent.
+        /// </summary>
+        /// <param name="LogModel">Logging info</param>
+        /// <param name="cancellationToken">CancellationToken for canceling the running task.</param>
+        /// <returns>Task</returns>
         public Task ExecuteAgent(LogEventModel LogModel, CancellationToken cancellationToken = default)
         {
-            if (!CanExecuteOnThidMode()) return Task.CompletedTask;
-
 
             if (LogModel is null)
             {
                 return Task.CompletedTask;
             }
+
+            if (!CanExecuteOnThidMode()) return Task.CompletedTask;
+
+
 
 
             try

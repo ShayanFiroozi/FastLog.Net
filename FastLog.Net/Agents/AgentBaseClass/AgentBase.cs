@@ -145,6 +145,7 @@ namespace FastLog.Agents
 
         /// <summary>
         /// Incude an event to the execution list.(the event will be ignored if already exists on the list).
+        /// By default all events are included.
         /// </summary>
         /// <param name="logEventType">LogEventTypes to exclude.</param>
         /// <returns>Builder Pattern : AgentType</returns>

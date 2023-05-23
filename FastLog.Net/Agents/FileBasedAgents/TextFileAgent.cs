@@ -27,6 +27,9 @@ namespace FastLog.Agents.FileBaseAgents
 {
 
 
+    /// <summary>
+    /// An agent to write log into plain text or json file.
+    /// </summary>
     public sealed class TextFileAgent : BaseAgent<TextFileAgent>, IAgent
     {
 
@@ -35,13 +38,16 @@ namespace FastLog.Agents.FileBaseAgents
 
         private bool useJsonFormat { get; set; } = false;
         internal string LogFile { get; set; } = string.Empty;
-        private short MaxLogFileSizeMB { get; set; } = 0;
+        private short MaxLogFileSizeMB { get; set; } = 900; // Limited to 900 MB
 
         #endregion
 
 
 
-        //Keep it private to make it non accessible from the outside of the class !!
+        /// <summary>
+        /// Builder Pattern : Keep it private to make it non accessible from the outside of the class !!
+        /// </summary>
+        /// <param name="manager">AgentManager reference to pass to the AgentBase class to achieve Builder pattern.</param>
         private TextFileAgent(AgentsManager manager)
         {
 
@@ -50,13 +56,32 @@ namespace FastLog.Agents.FileBaseAgents
             IncludeAllEventTypes();
         }
 
+
+        /// <summary>
+        /// Create a new TextFileAgent object.
+        /// </summary>
+        /// <param name="manager">AgentManager reference to pass to the class private constructor</param>
+        /// <returns>Builder pattern : Returns TextFileAgent class.</returns>
         public static TextFileAgent Create(AgentsManager manager) => new TextFileAgent(manager);
+
+
+        /// <summary>
+        /// (Optional) Ask the agent to use json format for the logging data.
+        /// </summary>
+        /// <returns>Builder pattern : Returns TextFileAgent class.</returns>
         public TextFileAgent UseJsonFormat()
         {
             useJsonFormat = true;
             return this;
         }
 
+
+        /// <summary>
+        /// (Required) Define a file to save the logs.
+        /// </summary>
+        /// <param name="filename">File to save the logs.</param>
+        /// <returns>Builder pattern : Returns TextFileAgent class.</returns>
+        /// <exception cref="ArgumentException"></exception>
         public TextFileAgent SaveLogToFile(string filename)
         {
             if (string.IsNullOrWhiteSpace(filename))
@@ -88,6 +113,14 @@ namespace FastLog.Agents.FileBaseAgents
         }
 
 
+
+        /// <summary>
+        /// (Optional) Define the max log file size in megabytes , default file size is  : 900 MB
+        /// Warning : The log file will be "DELETED" when reached to this size.
+        /// </summary>
+        /// <param name="logFileMaxSizeMB">The max log file size in megabytes</param>
+        /// <returns>Builder pattern : Returns TextFileAgent class.</returns>
+        /// <exception cref="ArgumentException"></exception>
         public TextFileAgent DeleteTheLogFileWhenExceededTheMaximumSizeOf(short logFileMaxSizeMB)
         {
 
@@ -102,7 +135,12 @@ namespace FastLog.Agents.FileBaseAgents
 
         }
 
-
+        /// <summary>
+        /// Execute the Agent.
+        /// </summary>
+        /// <param name="LogModel">Logging info</param>
+        /// <param name="cancellationToken">CancellationToken for canceling the running task.</param>
+        /// <returns>Task</returns>
         public Task ExecuteAgent(LogEventModel LogModel, CancellationToken cancellationToken = default)
         {
             if (!CanExecuteOnThidMode()) return Task.CompletedTask;
@@ -141,6 +179,7 @@ namespace FastLog.Agents.FileBaseAgents
 
 
 
+                #region Non Thread-Safe attempt !  (Disabled)
                 // Note : This approach below will throw exception if "RunAgentsInParallel=true" , because it's is likely two or more threads access the file simultaneously.
 
                 //                    #region Not-Thread-Safe File Write Approach
@@ -165,7 +204,9 @@ namespace FastLog.Agents.FileBaseAgents
 
 
 
-                //                    #endregion
+                //                    #endregion 
+                #endregion
+
 
 
                 #region ThreadSafe File Write Approach
