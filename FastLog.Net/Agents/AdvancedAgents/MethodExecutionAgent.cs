@@ -26,7 +26,7 @@ namespace FastLog.Agents.AdvancedAgents
     /// An agent to execute a method.
     /// Note : This class uses "Builder" pattern.
     /// </summary>
-    public sealed class MethodExecutionAgent : AgentBase<MethodExecutionAgent>, IAgent
+    public sealed class MethodExecutionAgent : BaseAgent<MethodExecutionAgent>, IAgent
     {
 
         private Action methodToExecute { get; set; }

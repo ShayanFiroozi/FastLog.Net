@@ -25,7 +25,7 @@ namespace FastLog.Agents.DebugAndTraceAgents
 {
 
 
-    public sealed class TraceSystemAgent : AgentBase<TraceSystemAgent>, IAgent
+    public sealed class TraceSystemAgent : BaseAgent<TraceSystemAgent>, IAgent
     {
 
         private bool useJsonFormat { get; set; } = false;

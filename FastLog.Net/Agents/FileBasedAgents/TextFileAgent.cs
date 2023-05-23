@@ -27,7 +27,7 @@ namespace FastLog.Agents.FileBaseAgents
 {
 
 
-    public sealed class TextFileAgent : AgentBase<TextFileAgent>, IAgent
+    public sealed class TextFileAgent : BaseAgent<TextFileAgent>, IAgent
     {
 
 

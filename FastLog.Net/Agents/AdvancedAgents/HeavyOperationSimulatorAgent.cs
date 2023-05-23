@@ -26,7 +26,7 @@ namespace FastLog.Agents.AdvancedAgents
     /// An agent to simulate an heavy operation , specially IO bound operations such as Email , SMS send or HTTP request.
     /// Note : This class uses "Builder" pattern.
     /// </summary>
-    public sealed class HeavyOperationSimulatorAgent : AgentBase<HeavyOperationSimulatorAgent>, IAgent
+    public sealed class HeavyOperationSimulatorAgent : BaseAgent<HeavyOperationSimulatorAgent>, IAgent
     {
 
         private TimeSpan OperationTimeSpan { get; set; }

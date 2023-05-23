@@ -28,7 +28,7 @@ namespace FastLog.Agents.AdvancedAgents
     /// Note : This class uses "Builder" pattern.
     /// </summary>
 
-    public sealed class RunProcessAgent : AgentBase<MethodExecutionAgent>, IAgent
+    public sealed class RunProcessAgent : BaseAgent<MethodExecutionAgent>, IAgent
     {
 
 

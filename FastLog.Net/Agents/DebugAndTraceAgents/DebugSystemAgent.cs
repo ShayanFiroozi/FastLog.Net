@@ -25,7 +25,7 @@ namespace FastLog.Agents.DebugAndTraceAgents
 {
 
 
-    public sealed class DebugSystemAgent : AgentBase<DebugSystemAgent>, IAgent
+    public sealed class DebugSystemAgent : BaseAgent<DebugSystemAgent>, IAgent
     {
 
 

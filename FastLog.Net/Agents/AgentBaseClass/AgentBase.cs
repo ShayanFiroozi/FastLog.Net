@@ -27,7 +27,7 @@ namespace FastLog.Agents
     /// Base class of the agents.
     /// </summary>
     /// <typeparam name="AgentType">Any Agent class which implements IAgent</typeparam>
-    public class AgentBase<AgentType> where AgentType : AgentBase<AgentType>, IAgent
+    public class BaseAgent<AgentType> where AgentType : BaseAgent<AgentType>, IAgent
     {
         #region Private Properties
         private protected string LoggerName { get; private set; } = "N/A";

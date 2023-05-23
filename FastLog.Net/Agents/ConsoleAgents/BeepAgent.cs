@@ -24,7 +24,7 @@ namespace FastLog.Agents.ConsoleAgents
 {
 
 
-    public sealed class BeepAgent : AgentBase<BeepAgent>, IAgent
+    public sealed class BeepAgent : BaseAgent<BeepAgent>, IAgent
     {
 
         //Keep it private to make it non accessible from the outside of the class !!

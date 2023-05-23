@@ -26,7 +26,7 @@ namespace FastLog.Agents.ConsoleAgents
 
     // Note : ConsoleLogger class uses fluent "Builder" pattern.
 
-    public sealed class ConsoleAgent : AgentBase<ConsoleAgent>, IAgent
+    public sealed class ConsoleAgent : BaseAgent<ConsoleAgent>, IAgent
     {
 
         private bool useJsonFormat { get; set; } = false;
