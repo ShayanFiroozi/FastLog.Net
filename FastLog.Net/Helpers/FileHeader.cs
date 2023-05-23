@@ -23,6 +23,29 @@ namespace FastLog.Helpers
     /// </summary>
     internal static class FileHeader
     {
+        /* 
+
+         *-->  Output example of the File header generator : 
+
+                 --------------------------------------------------------------------------------
+
+               ► FastLog.Net Version: "1.0.8543.39932" (64-bit) , Build: "2023-05-23" ◄
+
+               → Log File: "D:\Logs\InternalEventsLog.log"
+               → Creation DateTime: "2023-05-23 22:11:13"
+
+               → Machine Name: "SHAYAN-PC"
+               → OS: "Microsoft Windows NT 10.0.19045.0 (64-bit)"
+               → .NET Runtime Version: ".NETCoreApp,Version=v7.0"
+
+               → Logger Name: "FastLog.Net Internal Logger"
+               → Current User: "Shayan"
+
+               → Source Code: https://github.com/ShayanFiroozi/FastLog.Net
+
+               --------------------------------------------------------------------------------
+        */
+
         internal static string GenerateFileHeader(string logFile, string LoggerName = "N/A")
         {
             try
@@ -34,20 +57,20 @@ namespace FastLog.Helpers
                        $" , Build: \"{SystemInformation.GetCurrentAssemblyBuildDate()}" +
                        $"\" ◄\n\n" +
 
-                       $"-> Log File: \"{logFile}\"\n" +
-                       $"-> Creation DateTime: \"{DateTime.Now.ToFriendlyDateTime()}\"\n\n" +
-                       $"-> Machine Name: \"{SystemInformation.GetMachineName()}\"\n" +
+                       $"→ Log File: \"{logFile}\"\n" +
+                       $"→ Creation DateTime: \"{DateTime.Now.ToFriendlyDateTime()}\"\n\n" +
+                       $"→ Machine Name: \"{SystemInformation.GetMachineName()}\"\n" +
 
-                       $"-> OS: \"{SystemInformation.GetOSInfo()}" +
+                       $"→ OS: \"{SystemInformation.GetOSInfo()}" +
                        $" ({(Environment.Is64BitOperatingSystem ? "64-bit" : "32-bit")})\"\n" +
 
-                       $"-> .NET Runtime Version: \"{SystemInformation.GetDotNetRuntime()}\"\n\n" +
+                       $"→ .NET Runtime Version: \"{SystemInformation.GetDotNetRuntime()}\"\n\n" +
 
 
-                       $"-> Logger Name: \"{(!string.IsNullOrWhiteSpace(LoggerName) ? LoggerName : "N/A")}\"\n" +
-                       $"-> Current User: \"{SystemInformation.GetCurrentUserName()}\"\n\n" +
+                       $"→ Logger Name: \"{(!string.IsNullOrWhiteSpace(LoggerName) ? LoggerName : "N/A")}\"\n" +
+                       $"→ Current User: \"{SystemInformation.GetCurrentUserName()}\"\n\n" +
 
-                       $"-> Source Code: https://github.com/ShayanFiroozi/FastLog.Net\n\n" +
+                       $"→ Source Code: https://github.com/ShayanFiroozi/FastLog.Net\n\n" +
                        $"{new string('-', 80)}\n\n";
             }
             catch (Exception ex)

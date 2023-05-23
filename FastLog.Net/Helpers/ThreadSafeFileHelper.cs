@@ -34,13 +34,13 @@ namespace FastLog.Helpers
     /// </summary>
     internal static class ThreadSafeFileHelper
     {
-        private static readonly ReaderWriterLockSlim _readWriteLock = new ReaderWriterLockSlim();
+        
 
 
         public static void AppendAllText(string path, string content)
         {
             // Set Status to Locked
-            _readWriteLock.EnterWriteLock();
+            SlimReadWriteLock.Lock.EnterWriteLock();
 
             try
             {
@@ -56,7 +56,7 @@ namespace FastLog.Helpers
             finally
             {
                 // Release lock
-                _readWriteLock.ExitWriteLock();
+                SlimReadWriteLock.Lock.ExitWriteLock();
             }
 
         }
@@ -66,7 +66,7 @@ namespace FastLog.Helpers
         public static void DeleteFile(string path)
         {
             // Set Status to Locked
-            _readWriteLock.EnterWriteLock();
+            SlimReadWriteLock.Lock.EnterWriteLock();
 
             try
             {
@@ -75,7 +75,7 @@ namespace FastLog.Helpers
             finally
             {
                 // Release lock
-                _readWriteLock.ExitWriteLock();
+                SlimReadWriteLock.Lock.ExitWriteLock();
             }
 
         }
@@ -87,7 +87,7 @@ namespace FastLog.Helpers
             try
             {
                 // Set Status to Locked
-                _readWriteLock.EnterReadLock();
+                SlimReadWriteLock.Lock.EnterReadLock();
 
                 return string.IsNullOrWhiteSpace(fileName) ? (short)0 : !File.Exists(fileName) ? (short)0 :
                 (short)(new FileInfo(fileName).Length / 1024 / 1024);
@@ -101,7 +101,7 @@ namespace FastLog.Helpers
             finally
             {
                 // Release lock
-                _readWriteLock.ExitReadLock();
+                SlimReadWriteLock.Lock.ExitReadLock();
             }
         }
 

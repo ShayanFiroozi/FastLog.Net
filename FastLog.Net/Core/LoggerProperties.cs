@@ -12,10 +12,12 @@
 
 ---------------------------------------------------------------------------------------------*/
 
+using FastLog.Helpers;
 using FastLog.Internal;
 using FastLog.Models;
 using System;
 using System.Collections.Generic;
+using System.Linq;
 using System.Threading;
 using System.Threading.Channels;
 
@@ -28,12 +30,6 @@ namespace FastLog.Core
 
 
         #region Private Properties
-
-
-        /// <summary>
-        /// It's responsible to ensure there's no reader of "InMemoryEvents" property when we want to update it in "HandleInMemoryEvents" method.
-        /// </summary>
-        private static readonly ReaderWriterLockSlim _inMemoryEventsLock = new ReaderWriterLockSlim();
 
         /// <summary>
         /// Global cancelation token for logger.
@@ -58,7 +54,7 @@ namespace FastLog.Core
         #region Channel Properties
 
         /// <summary>
-        /// If more than LoggerChannelMaxCapacity log placed into the channel , the cannel will drop the oldest one.
+        /// If more than LoggerChannelMaxCapacity event placed into the channel , the cannel will drop the oldest and then add the new one.
         /// </summary>
         private const int LoggerChannelMaxCapacity = 1_000_000;
 
@@ -77,7 +73,26 @@ namespace FastLog.Core
         /// <summary>
         /// On Memory Log Event(s).
         /// </summary>
-        public IEnumerable<LogEventModel> InMemoryEvents => inMemoryEvents;
+        public IEnumerable<LogEventModel> InMemoryEvents
+        {
+            get
+            {
+               SlimReadWriteLock.Lock.EnterReadLock();
+
+                try
+                {
+                    return inMemoryEvents;
+                }
+                finally
+                {
+                    SlimReadWriteLock.Lock.ExitReadLock();
+                }
+
+            }
+        }
+
+
+
 
 
 

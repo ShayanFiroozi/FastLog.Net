@@ -1,8 +1,10 @@
 ﻿using FastLog.Core;
 using FastLog.Internal;
+using FastLog.Models;
 using System;
 using System.Collections.Generic;
 using System.IO;
+using System.Linq;
 using System.Threading.Tasks;
 
 namespace FastLog.NetTest
@@ -13,7 +15,7 @@ namespace FastLog.NetTest
 
 
 
-        public static void StartLoggers()
+        public static async void StartLoggers()
         {
 
             InternalLogger internalLogger = InternalLogger.Create()
@@ -23,8 +25,8 @@ namespace FastLog.NetTest
                                                           //.Beep()
                                                           //  .BeepOnlyOnDebugMode()
                                                           .PrintOnConsole();
-                                                           // .PrintOnConsoleOnlyOnDebugMode()
-                                                         // .PrintOnDebugWindow();
+            // .PrintOnConsoleOnlyOnDebugMode()
+            // .PrintOnDebugWindow();
 
 
 
@@ -43,19 +45,39 @@ namespace FastLog.NetTest
                                 .AddTextFileAgent()
                                    .UseJsonFormat()
                                    .SaveLogToFile("D:\\Logs\\TestLog.json")
-                                   .DeleteTheLogFileWhenExceededTheMaximumSizeOf(20)
+                                   .DeleteTheLogFileWhenExceededTheMaximumSizeOf(2)
                                     .BuildAgent()
 
-                                                       
 
 
-                                //.AddConsoleAgent().UseJsonFormat().BuildAgent()
+
+            //.AddConsoleAgent().UseJsonFormat().BuildAgent()
 
 
 
             .BuildLogger();
 
             loggerA.StartLogger();
+
+
+            // Causing exception !
+            //await Task.Run(async () =>
+            //    {
+            //        while (true)
+            //        {
+            //            foreach (LogEventModel logEvent in loggerA.InMemoryEvents.ToList())
+            //            {
+
+            //                Console.WriteLine(loggerA.InMemoryEvents.Count());
+            //                Console.WriteLine(loggerA.InMemoryEvents.First().EventMessage);
+            //                Console.WriteLine();
+
+            //            }
+
+
+            //        }
+
+            //    });
 
 
 
@@ -75,7 +97,7 @@ namespace FastLog.NetTest
 
 
 
-        public static void CrazyTestWithMultiThreadMultiTask()
+        public static async void CrazyTestWithMultiThreadMultiTask()
         {
 
             //while (true)
@@ -209,7 +231,6 @@ namespace FastLog.NetTest
             });
 
 
-            // }
 
 
         }

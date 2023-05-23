@@ -16,6 +16,7 @@ using FastLog.Interfaces;
 using FastLog.Models;
 using System;
 using System.Collections.Generic;
+using System.Linq;
 using System.Threading.Tasks;
 
 namespace FastLog.Core
@@ -95,6 +96,7 @@ namespace FastLog.Core
                                     this.InternalLogger?.LogInternalException(ex);
                                 }
 
+
                                 //Console.WriteLine($"{LoggerChannelReader.Count:N0} item(s) left in channel.");
                             }
 
@@ -121,49 +123,7 @@ namespace FastLog.Core
             });
         }
 
-        /// <summary>
-        /// Check if the number of In Memory Event(s) are greater than "MaxEventsToKeep" property value.
-        /// Note : Use "ReaderWriterLockSlim" to lock the object when modifying and making this method Thread-Safe.
-        /// Warning : If the count of in-memory-events reached the "MaxEventsToKeep" , this method will drop the oldet event in the list and then add new one.
-        /// </summary>
-        /// <param name="logEvent">Log Event to store inthe In-Memory-Event list.</param>
-        private void HandleInMemoryEvents(LogEventModel logEvent)
-        {
-              // Enter to the write lock
-
-            _inMemoryEventsLock.EnterWriteLock();
-
-            if (inMemoryEvents.Count == 0) return;
-
-            try
-            {
-
-                if (Configuration.MaxEventsToKeep == 0 && inMemoryEvents.Count != 0)
-                {
-                    inMemoryEvents.Clear();
-                    return;
-                }
-
-                if (inMemoryEvents.Count >= Configuration.MaxEventsToKeep)
-                {
-                    inMemoryEvents.RemoveAt(0); // Remove the oldest event.
-
-                }
-
-                inMemoryEvents.Add(logEvent);
-            }
-            catch (Exception ex)
-            {
-                InternalLogger?.LogInternalException(ex);
-            }
-            finally
-            {
-                // Release the lock
-                _inMemoryEventsLock.ExitWriteLock();
-            }
-
-        }
-
+  
         public void StopLogger()
         {
             IsLoggerRunning = false;
