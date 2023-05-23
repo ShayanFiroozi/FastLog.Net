@@ -21,9 +21,17 @@ using System.Threading.Tasks;
 namespace FastLog.Core
 {
 
+    /// <summary>
+    /// The logger engine which consume and execute the produced log event in the channel.
+    /// Note : The FastLog.Net uses producer/consumer pattern of System.Threading.Channel
+    /// For more info visit : https://code-maze.com/dotnet-producer-consumer-channels/
+    /// </summary>
     public sealed partial class Logger : IDisposable
     {
-        // Channel Producer/Consumer pattern
+       /// <summary>
+       /// Start the FastLog.Net logger core engine.
+       /// </summary>
+       /// <returns></returns>
 
         public Task StartLogger()
         {
@@ -48,7 +56,7 @@ namespace FastLog.Core
 
                         if (EventModelFromChannel != null)
                         {
-
+                            
                             HandleInMemoryEvents(EventModelFromChannel);
 
 
