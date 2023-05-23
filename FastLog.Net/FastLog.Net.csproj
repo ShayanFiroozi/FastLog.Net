@@ -22,11 +22,13 @@
   </PropertyGroup>
 
   <ItemGroup>
-    <PackageReference Include="System.Threading.Channels" Version="7.0.0" />
+    <Compile Remove="Agents\DatabaseAgents\**" />
+    <EmbeddedResource Remove="Agents\DatabaseAgents\**" />
+    <None Remove="Agents\DatabaseAgents\**" />
   </ItemGroup>
 
   <ItemGroup>
-    <Folder Include="Agents\DatabaseAgents\" />
+    <PackageReference Include="System.Threading.Channels" Version="7.0.0" />
   </ItemGroup>
   
 
