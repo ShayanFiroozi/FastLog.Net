@@ -61,27 +61,32 @@ namespace FastLog.NetTest
             loggerA.StartLogger();
 
 
-            //// Causing exception !
-            //await Task.Run(() =>
-            //    {
-            //        while (true)
-            //        {
-
-                     
-
-            //            foreach (LogEventModel logEvent in loggerA.InMemoryEvents)
-            //            {
-
-            //                Console.WriteLine(loggerA.InMemoryEvents.Count());
-            //                Console.WriteLine(loggerA.InMemoryEvents.First().EventMessage);
-            //                Console.WriteLine();
-
-            //            }
+            
+            await Task.Run(() =>
+                {
+                    while (true)
+                    {
 
 
-            //        }
 
-            //    });
+                        foreach (LogEventModel logEvent in loggerA.InMemoryEvents)
+                        {
+
+                            Console.WriteLine(loggerA.InMemoryEvents.Count());
+                            Console.WriteLine(loggerA.InMemoryEvents.First().EventMessage);
+                            Console.WriteLine();
+
+                        }
+
+                        Console.WriteLine($"Remaining event(s) to process : {loggerA.InChannelEventCount:N0}");
+
+                        Task.Delay(3_000).GetAwaiter().GetResult();
+
+                        
+
+                    }
+
+                });
 
 
 

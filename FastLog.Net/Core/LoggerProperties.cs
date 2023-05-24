@@ -95,7 +95,10 @@ namespace FastLog.Core
             }
         }
 
-
+        /// <summary>
+        /// Count the remaining event(s) in the channel to process.
+        /// </summary>
+        public int InChannelEventCount => LoggerChannelReader.Count;
 
 
     }
