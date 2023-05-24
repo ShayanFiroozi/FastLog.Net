@@ -82,7 +82,8 @@ namespace FastLog.Core
 
                 try
                 {
-                    return inMemoryEvents;
+                    // ToList() is highly necessary here to prevent race condition when accessing inMemoryEvents property.
+                    return inMemoryEvents.ToList();
                 }
                 finally
                 {

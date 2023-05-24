@@ -45,8 +45,9 @@ namespace FastLog.NetTest
                                 .AddTextFileAgent()
                                    .UseJsonFormat()
                                    .SaveLogToFile("D:\\Logs\\TestLog.json")
-                                   .DeleteTheLogFileWhenExceededTheMaximumSizeOf(50)
+                                   .DeleteTheLogFileWhenExceededTheMaximumSizeOf(10)
                                     .BuildAgent()
+
 
 
 
@@ -65,7 +66,10 @@ namespace FastLog.NetTest
                 {
                     while (true)
                     {
-                        foreach (LogEventModel logEvent in loggerA.InMemoryEvents.ToList())
+
+                     
+
+                        foreach (LogEventModel logEvent in loggerA.InMemoryEvents)
                         {
 
                             Console.WriteLine(loggerA.InMemoryEvents.Count());
