@@ -7,7 +7,7 @@ namespace LogModuleTest
     internal static class Program
     {
 
-        static void Main(string[] args)
+        static async Task Main(string[] args)
         {
 
             LoggerTest.StartLoggers();
@@ -15,8 +15,16 @@ namespace LogModuleTest
             Task.Delay(1_000).GetAwaiter().GetResult();
 
 
-            LoggerTest.CrazyTestWithMultiThreadMultiTask();
-           // LoggerTest.NormalTest();
+            // LoggerTest.CrazyTestWithMultiThreadMultiTask();
+
+
+            // Test With 5 thread ( to test thread-safety)
+            for (int i = 0; i < 5; i++)
+            {
+                _= Task.Run(LoggerTest.NormalTest);
+            }
+
+            await Task.Run(LoggerTest.NormalTest);
 
             Console.Beep();
 

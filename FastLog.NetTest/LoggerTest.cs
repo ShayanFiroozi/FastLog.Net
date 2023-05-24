@@ -20,7 +20,7 @@ namespace FastLog.NetTest
 
             InternalLogger internalLogger = InternalLogger.Create()
                                                           .UseJsonFormat()
-                                                          .SaveInternalEventsToFile("D:\\Logs\\InternalEventsLog.log")
+                                                          .SaveInternalEventsToFile("E:\\Logs\\InternalEventsLog.log")
                                                           .DeleteTheLogFileWhenExceededTheMaximumSizeOf(100)
                                                           //.Beep()
                                                           //  .BeepOnlyOnDebugMode()
@@ -44,7 +44,7 @@ namespace FastLog.NetTest
 
                                 .AddTextFileAgent()
                                    .UseJsonFormat()
-                                   .SaveLogToFile("D:\\Logs\\TestLog.json")
+                                   .SaveLogToFile("E:\\Logs\\TestLog.json")
                                    .DeleteTheLogFileWhenExceededTheMaximumSizeOf(10)
                                     .BuildAgent()
 
@@ -52,7 +52,7 @@ namespace FastLog.NetTest
 
 
 
-           // .AddConsoleAgent().UseJsonFormat().BuildAgent()
+            // .AddConsoleAgent().UseJsonFormat().BuildAgent()
 
 
 
@@ -61,7 +61,7 @@ namespace FastLog.NetTest
             loggerA.StartLogger();
 
 
-            
+
             await Task.Run(() =>
                 {
                     while (true)
@@ -72,17 +72,23 @@ namespace FastLog.NetTest
                         foreach (LogEventModel logEvent in loggerA.InMemoryEvents)
                         {
 
-                            Console.WriteLine(loggerA.InMemoryEvents.Count());
-                            Console.WriteLine(loggerA.InMemoryEvents.First().EventMessage);
-                            Console.WriteLine();
+                            //Console.WriteLine(loggerA.InMemoryEvents.Count());
+                            //Console.WriteLine(loggerA.InMemoryEvents.First().EventMessage);
+
+
+                            //Console.WriteLine();
+
+                            // Just to access the property from another thread to test thread-satefy.
+                            _ = loggerA.InMemoryEvents.Count();
+                            _ = loggerA.InMemoryEvents.First().EventMessage;
 
                         }
 
                         Console.WriteLine($"Remaining event(s) to process : {loggerA.InChannelEventCount:N0}");
 
-                        Task.Delay(3_000).GetAwaiter().GetResult();
+                        Task.Delay(10).GetAwaiter().GetResult();
 
-                        
+
 
                     }
 
@@ -92,7 +98,7 @@ namespace FastLog.NetTest
 
         }
 
-     
+
 
         public static async void CrazyTestWithMultiThreadMultiTask()
         {
@@ -238,7 +244,7 @@ namespace FastLog.NetTest
         {
             while (true)
             {
-                int waitTime = 500;
+                TimeSpan waitTime = TimeSpan.FromMilliseconds(1);
 
                 Exception exception = new InvalidCastException("ANPR engine cast is not valid",
                                         new CannotUnloadAppDomainException("Engine is not loaded", new AccessViolationException("Just kiddin U !")));
@@ -246,37 +252,37 @@ namespace FastLog.NetTest
 
                 _ = loggerA.LogException(exception, 1364);
 
-                Task.Delay(waitTime).GetAwaiter().GetResult();
+                //Task.Delay(waitTime).GetAwaiter().GetResult();
 
                 _ = loggerA.LogInfo($"This is an \"INFO\" message from the \"CrazyTestWithMultiThreadMultiTask\"");
-                Task.Delay(waitTime).GetAwaiter().GetResult();
+                // Task.Delay(waitTime).GetAwaiter().GetResult();
 
                 _ = loggerA.LogAlert($"This is an \"ALERT\" message from the \"CrazyTestWithMultiThreadMultiTask\"");
-                Task.Delay(waitTime).GetAwaiter().GetResult();
+                //  Task.Delay(waitTime).GetAwaiter().GetResult();
 
                 _ = loggerA.LogError($"This is an \"ERROR\" message from the \"CrazyTestWithMultiThreadMultiTask\"");
 
-                Task.Delay(waitTime).GetAwaiter().GetResult();
+                //  Task.Delay(waitTime).GetAwaiter().GetResult();
 
                 _ = loggerA.LogDebug($"This is a \"DEBUG\" message from the \"CrazyTestWithMultiThreadMultiTask\"");
 
-                Task.Delay(waitTime).GetAwaiter().GetResult();
+                // Task.Delay(waitTime).GetAwaiter().GetResult();
 
 
                 _ = loggerA.LogWarning($"This is a \"WARNING\" message from the \"CrazyTestWithMultiThreadMultiTask\"");
 
-                Task.Delay(waitTime).GetAwaiter().GetResult();
+                // Task.Delay(waitTime).GetAwaiter().GetResult();
 
 
                 _ = loggerA.LogSystem($"This is a \"SYSTEM\" message from the \"CrazyTestWithMultiThreadMultiTask\"");
 
-                Task.Delay(waitTime).GetAwaiter().GetResult();
+                // Task.Delay(waitTime).GetAwaiter().GetResult();
 
 
                 _ = loggerA.LogSecurity($"This is a \"SECURITY\" message from the \"CrazyTestWithMultiThreadMultiTask\"");
 
 
-                _ = loggerA.LogException(new Exception("Test Exception !"),0);
+                _ = loggerA.LogException(new Exception("Test Exception !"));
 
                 Task.Delay(waitTime).GetAwaiter().GetResult();
 
