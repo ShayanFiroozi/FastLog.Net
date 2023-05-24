@@ -51,6 +51,7 @@ namespace FastLog.Core
         private List<LogEventModel> inMemoryEvents { get; } = new List<LogEventModel>();
 
 
+
         #region Channel Properties
 
         /// <summary>
@@ -71,7 +72,7 @@ namespace FastLog.Core
 
 
         /// <summary>
-        /// On Memory Log Event(s).
+        /// Enumerates the last X logged event(s). X = "ConfigManager.MaxEventsToKeep";
         /// </summary>
         public IEnumerable<LogEventModel> InMemoryEvents
         {
@@ -93,8 +94,6 @@ namespace FastLog.Core
 
             }
         }
-
-
 
 
 
