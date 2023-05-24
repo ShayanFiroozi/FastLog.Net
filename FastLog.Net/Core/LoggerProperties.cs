@@ -40,15 +40,15 @@ namespace FastLog.Core
         /// Internal Logger agent to log the FastLog.Net internal exception or events.
         /// </summary>
         private InternalLogger InternalLogger = null;
-        
+
         internal ConfigManager Configuration;
         private bool IsLoggerRunning = false;
-        
+
         /// <summary>
         /// Active agent(s) defined in the logger agent list.
         /// </summary>
         private AgentsManager Agents { get; set; }
-        private List<LogEventModel> inMemoryEvents { get; set; } = new List<LogEventModel>();
+        private List<LogEventModel> inMemoryEvents { get; } = new List<LogEventModel>();
 
 
         #region Channel Properties
@@ -60,7 +60,7 @@ namespace FastLog.Core
 
         private readonly Channel<LogEventModel> LoggerChannel =
                    Channel.CreateBounded<LogEventModel>(new BoundedChannelOptions(LoggerChannelMaxCapacity)
-                                           { SingleReader = true, FullMode = BoundedChannelFullMode.DropOldest });
+                   { SingleReader = true, FullMode = BoundedChannelFullMode.DropOldest });
 
         private readonly ChannelReader<LogEventModel> LoggerChannelReader;
         private readonly ChannelWriter<LogEventModel> LoggerChannelWriter;
@@ -77,7 +77,8 @@ namespace FastLog.Core
         {
             get
             {
-               SlimReadWriteLock.Lock.EnterReadLock();
+                // Grab the lock  
+                SlimReadWriteLock.Lock.EnterReadLock();
 
                 try
                 {
@@ -85,6 +86,7 @@ namespace FastLog.Core
                 }
                 finally
                 {
+                    // Release the lock
                     SlimReadWriteLock.Lock.ExitReadLock();
                 }
 

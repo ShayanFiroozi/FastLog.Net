@@ -40,6 +40,8 @@ namespace FastLog.Core
 
             try
             {
+
+                // Grab the lock
                 SlimReadWriteLock.Lock.EnterWriteLock();
 
                 if (Configuration.MaxEventsToKeep == 0 && inMemoryEvents.Count != 0)
@@ -66,6 +68,7 @@ namespace FastLog.Core
             }
             finally
             {
+                // Release the lock
                 SlimReadWriteLock.Lock.ExitWriteLock();
             }
 
