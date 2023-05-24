@@ -121,7 +121,7 @@ namespace FastLog.Core
 
 
 
-            });
+            },_cts.Token);
         }
 
   

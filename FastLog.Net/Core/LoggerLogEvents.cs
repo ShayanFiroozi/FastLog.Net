@@ -83,7 +83,7 @@ namespace FastLog.Core
         }
 
 
-        public ValueTask LogException(Exception exception, int EventId = 0,bool throwException = false)
+        public ValueTask LogException(Exception exception, int EventId = 0, bool throwException = false)
         {
             try
             {
@@ -91,7 +91,7 @@ namespace FastLog.Core
             }
             finally
             {
-                if(throwException)
+                if (throwException)
                 {
                     throw exception;
                 }
@@ -150,7 +150,7 @@ namespace FastLog.Core
                                              Details,
                                              EventId);
 
-                return LoggerChannelWriter.WriteAsync(LogEvent);
+                return LoggerChannelWriter.WriteAsync(LogEvent, _cts.Token);
             }
             catch (Exception ex)
             {
@@ -187,7 +187,7 @@ namespace FastLog.Core
                 LogEventModel LogEvent = new LogEventModel(exception,
                                                            EventId);
 
-                return LoggerChannelWriter.WriteAsync(LogEvent);
+                return LoggerChannelWriter.WriteAsync(LogEvent, _cts.Token);
             }
             catch (Exception ex)
             {
