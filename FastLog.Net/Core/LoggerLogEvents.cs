@@ -83,10 +83,19 @@ namespace FastLog.Core
         }
 
 
-        public ValueTask LogException(Exception exception, int EventId = 0)
+        public ValueTask LogException(Exception exception, int EventId = 0,bool throwException = false)
         {
-
-            return LogEventHelper(exception, EventId);
+            try
+            {
+                return LogEventHelper(exception, EventId);
+            }
+            finally
+            {
+                if(throwException)
+                {
+                    throw exception;
+                }
+            }
 
         }
 

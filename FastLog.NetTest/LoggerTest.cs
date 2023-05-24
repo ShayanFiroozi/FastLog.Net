@@ -52,7 +52,7 @@ namespace FastLog.NetTest
 
 
 
-            //.AddConsoleAgent().UseJsonFormat().BuildAgent()
+           // .AddConsoleAgent().UseJsonFormat().BuildAgent()
 
 
 
@@ -61,45 +61,33 @@ namespace FastLog.NetTest
             loggerA.StartLogger();
 
 
-            // Causing exception !
-            await Task.Run(() =>
-                {
-                    while (true)
-                    {
+            //// Causing exception !
+            //await Task.Run(() =>
+            //    {
+            //        while (true)
+            //        {
 
                      
 
-                        foreach (LogEventModel logEvent in loggerA.InMemoryEvents)
-                        {
+            //            foreach (LogEventModel logEvent in loggerA.InMemoryEvents)
+            //            {
 
-                            Console.WriteLine(loggerA.InMemoryEvents.Count());
-                            Console.WriteLine(loggerA.InMemoryEvents.First().EventMessage);
-                            Console.WriteLine();
+            //                Console.WriteLine(loggerA.InMemoryEvents.Count());
+            //                Console.WriteLine(loggerA.InMemoryEvents.First().EventMessage);
+            //                Console.WriteLine();
 
-                        }
-
-
-                    }
-
-                });
+            //            }
 
 
+            //        }
 
-        }
+            //    });
 
-        static void MethodA()
-        {
-            Console.WriteLine("MethodA");
+
 
         }
 
-        static void MethodB()
-        {
-            Console.WriteLine("MethodB");
-            Task.Delay(2_000).GetAwaiter().GetResult();
-        }
-
-
+     
 
         public static async void CrazyTestWithMultiThreadMultiTask()
         {
@@ -245,6 +233,7 @@ namespace FastLog.NetTest
         {
             while (true)
             {
+                int waitTime = 500;
 
                 Exception exception = new InvalidCastException("ANPR engine cast is not valid",
                                         new CannotUnloadAppDomainException("Engine is not loaded", new AccessViolationException("Just kiddin U !")));
@@ -252,36 +241,39 @@ namespace FastLog.NetTest
 
                 _ = loggerA.LogException(exception, 1364);
 
-                Task.Delay(50).GetAwaiter().GetResult();
+                Task.Delay(waitTime).GetAwaiter().GetResult();
 
                 _ = loggerA.LogInfo($"This is an \"INFO\" message from the \"CrazyTestWithMultiThreadMultiTask\"");
-                Task.Delay(50).GetAwaiter().GetResult();
+                Task.Delay(waitTime).GetAwaiter().GetResult();
 
                 _ = loggerA.LogAlert($"This is an \"ALERT\" message from the \"CrazyTestWithMultiThreadMultiTask\"");
-                Task.Delay(50).GetAwaiter().GetResult();
+                Task.Delay(waitTime).GetAwaiter().GetResult();
 
                 _ = loggerA.LogError($"This is an \"ERROR\" message from the \"CrazyTestWithMultiThreadMultiTask\"");
 
-                Task.Delay(50).GetAwaiter().GetResult();
+                Task.Delay(waitTime).GetAwaiter().GetResult();
 
                 _ = loggerA.LogDebug($"This is a \"DEBUG\" message from the \"CrazyTestWithMultiThreadMultiTask\"");
 
-                Task.Delay(50).GetAwaiter().GetResult();
+                Task.Delay(waitTime).GetAwaiter().GetResult();
 
 
                 _ = loggerA.LogWarning($"This is a \"WARNING\" message from the \"CrazyTestWithMultiThreadMultiTask\"");
 
-                Task.Delay(50).GetAwaiter().GetResult();
+                Task.Delay(waitTime).GetAwaiter().GetResult();
 
 
                 _ = loggerA.LogSystem($"This is a \"SYSTEM\" message from the \"CrazyTestWithMultiThreadMultiTask\"");
 
-                Task.Delay(50).GetAwaiter().GetResult();
+                Task.Delay(waitTime).GetAwaiter().GetResult();
 
 
                 _ = loggerA.LogSecurity($"This is a \"SECURITY\" message from the \"CrazyTestWithMultiThreadMultiTask\"");
 
-                Task.Delay(50).GetAwaiter().GetResult();
+
+                _ = loggerA.LogException(new Exception("Test Exception !"),0);
+
+                Task.Delay(waitTime).GetAwaiter().GetResult();
 
 
 
