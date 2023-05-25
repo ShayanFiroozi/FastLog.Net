@@ -79,7 +79,11 @@ namespace FastLog.Core
                                 {
                                     if (!string.IsNullOrWhiteSpace(EventModelFromChannel.EventMessage))
                                     {
-                                        if (Configuration.RunAgentsInParallel)
+                                        // Important Warning : "Task.WhenAll" has serious performance issue here ,
+                                        // so use it just when we have more than 1 agent and a hevy IO waiting operation is used like Email or SMS send.
+                                        // "Agents.AgentList.Count() > 1" --> Prevent using "Task.WhenAll" if we have just 1 agent.
+
+                                        if (Configuration.RunAgentsInParallel && Agents.AgentList.Count() > 1)
                                         {
                                             tasksList.Add(logger.ExecuteAgent(EventModelFromChannel, _cts.Token));
                                         }
@@ -114,7 +118,7 @@ namespace FastLog.Core
                             channelProcessedEventCount++;
 
                         }
-                    
+
 
                     }
                     catch (Exception ex)
