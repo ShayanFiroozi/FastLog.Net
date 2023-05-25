@@ -1,8 +1,10 @@
 ﻿## ✔ Donations
 
-If you would like to financially support **FastLog.Net**, first of all, thank you!🙏🏻 I'm really glad to see you find the **FastLog.Net** useful☺. Please find below crypto address details for donations :
+If you would like to financially support **FastLog.Net**, first of all, thank you!🙏🏻 
+I'm really glad to see you find the **FastLog.Net** useful☺.
+Please find below crypto address details for donations :
 
-## 💲Cryptocurrency
+## 💲 Cryptocurrency
 
 | Crypto Coin | Address |
 |-------------|---------|
