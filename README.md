@@ -1,16 +1,17 @@
-﻿![alt tag] https://github.com/ShayanFiroozi/FastLog.Net/blob/master/FastLog.Net/Icon/FastLogNet.png
+![alt tag](https://github.com/ShayanFiroozi/FastLog.Net/blob/master/FastLog.Net/Icon/FastLogNet.ico)
 
 # FastLog.Net
 
-**FastLog.Net** is the fastest , most efficient and high performance logger for .Net
-Easy to use and develop , clean code , extensible agents and fully thread-safe. FastLog.Net supports structured logging and enhanced Json format for Exceptions class.
-FastLog.Net uses queueing approach to enqueue the logging request(s) and release your busy thread almost immediately after you log an event.
+**FastLog.Net** is the fastest , most efficient and high performance logger for .Net  
+Easy to use and develop , clean code , extensible agents and fully thread-safe.  
+FastLog.Net supports structured logging and enhanced Json format for Exceptions class.  
+FastLog.Net uses thread-safe queueing technique to enqueue the logging request(s) and release your thread almost immediately after you log an event.
 
 ## Contributions
 
-As this is a new repository , there's no contributor yet ! , but **FastLog.Net** welcomes and appreciates any contribution , pull request or bug report.
+As this is a new repository , there's no contributor yet! , But **FastLog.Net** welcomes and appreciates any contribution , pull request or bug report.
 
-If you'd like to contribute, please read the **How It Works** section and then take a look at [Todo.md](Todo.md) !.😎
+If you'd like to contribute, please read the **How It Works** section and then take a look at [Todo.md](Todo.md) ! 😎
 
 
 # How To Use
@@ -19,11 +20,11 @@ If you'd like to contribute, please read the **How It Works** section and then t
 # How It Works
 
 
-# Limitations❌
+# ❌ Limitations
 
-However **FastLog.Net** is thread-safe BUT it is NOT recommended to build two agents with same logging file , so this limitation intentionally applied to the FastLog.Net.
+However **FastLog.Net** is thread-safe BUT it is **NOT** recommended to build two agents with same logging file , so this limitation applied to the FastLog.Net intentionally to prevent two or more agents write and manage same logging file.
 
-# Known Issues ⁉
+# ⁉ Known Issues
 
 
 License
