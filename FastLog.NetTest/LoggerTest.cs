@@ -20,11 +20,11 @@ namespace FastLog.NetTest
 
             InternalLogger internalLogger = InternalLogger.Create()
                                                           .UseJsonFormat()
-                                                          .SaveInternalEventsToFile("E:\\Logs\\InternalEventsLog.log")
-                                                          .DeleteTheLogFileWhenExceededTheMaximumSizeOf(100)
+                                                          .SaveInternalEventsToFile("M:\\Logs\\InternalEventsLog.log")
+                                                          .DeleteTheLogFileWhenExceededTheMaximumSizeOf(100);
                                                           //.Beep()
                                                           //  .BeepOnlyOnDebugMode()
-                                                          .PrintOnConsole();
+                                                       //   .PrintOnConsole();
             // .PrintOnConsoleOnlyOnDebugMode()
             // .PrintOnDebugWindow();
 
@@ -44,7 +44,7 @@ namespace FastLog.NetTest
 
                                 .AddTextFileAgent()
                                    .UseJsonFormat()
-                                   .SaveLogToFile("E:\\Logs\\TestLog.json")
+                                   .SaveLogToFile("M:\\Logs\\TestLog.json")
                                    .DeleteTheLogFileWhenExceededTheMaximumSizeOf(10)
                                     .BuildAgent()
 
@@ -84,9 +84,13 @@ namespace FastLog.NetTest
 
                         }
 
-                        Console.WriteLine($"Remaining event(s) to process : {loggerA.InChannelEventCount:N0}");
+                        Console.WriteLine();
+                        Console.WriteLine($"Total event(s) added to Channel : {loggerA.ChannelTotalEventCount:N0}");
+                        Console.WriteLine($"Total processed event(s) : {loggerA.ChannelProcessedEventCount:N0}");
+                        Console.WriteLine($"Remaining event(s) to process : {loggerA.ChannelEventCount:N0}");
+                        Console.WriteLine();
 
-                        Task.Delay(10).GetAwaiter().GetResult();
+                        Task.Delay(3_000).GetAwaiter().GetResult();
 
 
 

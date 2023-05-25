@@ -15,6 +15,7 @@
 using FastLog.Enums;
 using FastLog.Models;
 using System;
+using System.Threading;
 using System.Threading.Tasks;
 
 namespace FastLog.Core
@@ -149,12 +150,14 @@ namespace FastLog.Core
                                              LogText,
                                              Details,
                                              EventId);
+               
+                Interlocked.Increment(ref channelTotalEventCount);
 
                 return LoggerChannelWriter.WriteAsync(LogEvent, _cts.Token);
             }
             catch (Exception ex)
             {
-                this.InternalLogger?.LogInternalException(ex);
+                InternalLogger?.LogInternalException(ex);
             }
 
 #if NET5_0_OR_GREATER
@@ -187,11 +190,13 @@ namespace FastLog.Core
                 LogEventModel LogEvent = new LogEventModel(exception,
                                                            EventId);
 
+                Interlocked.Increment(ref channelTotalEventCount);
+
                 return LoggerChannelWriter.WriteAsync(LogEvent, _cts.Token);
             }
             catch (Exception ex)
             {
-                this.InternalLogger?.LogInternalException(ex);
+                InternalLogger?.LogInternalException(ex);
             }
 
 #if NET5_0_OR_GREATER

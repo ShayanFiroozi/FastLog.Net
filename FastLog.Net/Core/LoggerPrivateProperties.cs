@@ -28,9 +28,7 @@ namespace FastLog.Core
     {
 
 
-
-        #region Private Properties
-
+  
         /// <summary>
         /// Global cancelation token for logger.
         /// </summary>
@@ -42,14 +40,17 @@ namespace FastLog.Core
         private InternalLogger InternalLogger = null;
 
         internal ConfigManager Configuration;
+
         private bool IsLoggerRunning = false;
 
         /// <summary>
         /// Active agent(s) defined in the logger agent list.
         /// </summary>
         private AgentsManager Agents { get; set; }
+
         private List<LogEventModel> inMemoryEvents { get; } = new List<LogEventModel>();
 
+        private long channelTotalEventCount = 0;
 
 
         #region Channel Properties
@@ -67,38 +68,7 @@ namespace FastLog.Core
         private readonly ChannelWriter<LogEventModel> LoggerChannelWriter;
         #endregion
 
-        #endregion
 
-
-
-        /// <summary>
-        /// Enumerates the last X logged event(s). X = "ConfigManager.MaxEventsToKeep";
-        /// </summary>
-        public IEnumerable<LogEventModel> InMemoryEvents
-        {
-            get
-            {
-                // Grab the lock  
-                SlimReadWriteLock.Lock.EnterReadLock();
-
-                try
-                {
-                    // ToList() is highly necessary here to prevent race condition when accessing inMemoryEvents property.
-                    return inMemoryEvents.ToList();
-                }
-                finally
-                {
-                    // Release the lock
-                    SlimReadWriteLock.Lock.ExitReadLock();
-                }
-
-            }
-        }
-
-        /// <summary>
-        /// Count the remaining event(s) in the channel to process.
-        /// </summary>
-        public int InChannelEventCount => LoggerChannelReader.Count;
 
 
     }

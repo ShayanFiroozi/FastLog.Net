@@ -86,15 +86,17 @@ namespace FastLog.Core
                                             await logger.ExecuteAgent(EventModelFromChannel, _cts.Token).ConfigureAwait(false);
                                         }
                                     }
+
                                     else
                                     {
                                         continue;
                                     }
 
+
                                 }
                                 catch (Exception ex)
                                 {
-                                    this.InternalLogger?.LogInternalException(ex);
+                                    InternalLogger?.LogInternalException(ex);
                                 }
 
 
@@ -106,16 +108,16 @@ namespace FastLog.Core
                                 await Task.WhenAll(tasksList).ConfigureAwait(false);
                             }
 
+                            ChannelProcessedEventCount++;
+
                         }
+
 
                     }
                     catch (Exception ex)
                     {
-                        this.InternalLogger?.LogInternalException(ex);
+                        InternalLogger?.LogInternalException(ex);
                     }
-
-
-
 
                 }
 
