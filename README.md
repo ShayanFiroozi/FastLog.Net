@@ -29,13 +29,13 @@ However **FastLog.Net** is thread-safe BUT it is **NOT** recommended to build tw
 ## ⁉ Known Issues
 
 
-## License
+## © License
 
 **FastLog.Net** is an open source software, licensed under the terms of MIT license.
 See [LICENSE](LICENSE.md) for more details.
 
 
-## How to build
+## 🛠 How to build
 
 Use **Visual Studio 2022** and open the solution 'FastLog.Net.sln'.
 
