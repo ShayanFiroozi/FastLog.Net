@@ -11,7 +11,7 @@ FastLog.Net uses thread-safe queueing technique to enqueue the logging request(s
 
 As this is a new repository , there's no contributor yet! , But **FastLog.Net** welcomes and appreciates any contribution , pull request or bug report.
 
-If you'd like to contribute, please read the **How It Works** section and then take a look at [ToDo List](ToDo.md) to get involved ! 😎
+If you'd like to contribute, please read the [**How It Works**](https://github.com/ShayanFiroozi/FastLog.Net#-how-it-works) section and then take a look at [ToDo List](ToDo.md) to get involved ! 😎
 
 
 ## ❔ How To Use
