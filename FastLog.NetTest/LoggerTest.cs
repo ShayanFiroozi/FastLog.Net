@@ -22,9 +22,9 @@ namespace FastLog.NetTest
                                                           .UseJsonFormat()
                                                           .SaveInternalEventsToFile("M:\\Logs\\InternalEventsLog.log")
                                                           .DeleteTheLogFileWhenExceededTheMaximumSizeOf(100);
-                                                          //.Beep()
-                                                          //  .BeepOnlyOnDebugMode()
-                                                       //   .PrintOnConsole();
+            //.Beep()
+            //  .BeepOnlyOnDebugMode()
+            //   .PrintOnConsole();
             // .PrintOnConsoleOnlyOnDebugMode()
             // .PrintOnDebugWindow();
 
@@ -33,8 +33,8 @@ namespace FastLog.NetTest
 
             ConfigManager loggerConfig = ConfigManager.Create()
                                                       .WithLoggerName("ANPR® Logger")
-                                                      .WithMaxEventsToKeepInMemory(1_000)
-                                                      .RunAgentsInParallelMode();
+                                                      .WithMaxEventsToKeepInMemory(1_000);
+                                                      //.RunAgentsInParallelMode();
 
 
 
@@ -46,6 +46,13 @@ namespace FastLog.NetTest
                                 .AddTextFileAgent()
                                    .UseJsonFormat()
                                    .SaveLogToFile("M:\\Logs\\TestLog.json")
+                                   .DeleteTheLogFileWhenExceededTheMaximumSizeOf(10)
+                                    .BuildAgent()
+
+
+                                .AddTextFileAgent()
+                                   .UseJsonFormat()
+                                   .SaveLogToFile("M:\\Logs\\TestLog2.json")
                                    .DeleteTheLogFileWhenExceededTheMaximumSizeOf(10)
                                     .BuildAgent()
 
@@ -89,7 +96,7 @@ namespace FastLog.NetTest
                         Console.WriteLine($"Remaining event(s) to process : {loggerA.ChannelEventCount:N0}");
                         Console.WriteLine($"Total event(s) added to Channel : {loggerA.ChannelTotalEventCount:N0}");
                         Console.WriteLine($"Total processed event(s) : {loggerA.ChannelProcessedEventCount:N0}");
-                        
+
                         Console.WriteLine();
 
                         Task.Delay(1).GetAwaiter().GetResult();
@@ -250,7 +257,7 @@ namespace FastLog.NetTest
         {
             while (loggerA.ChannelTotalEventCount < 100000)
             {
-               // TimeSpan waitTime = TimeSpan.FromMilliseconds(1);
+                // TimeSpan waitTime = TimeSpan.FromMilliseconds(1);
 
                 Exception exception = new InvalidCastException("ANPR engine cast is not valid",
                                         new CannotUnloadAppDomainException("Engine is not loaded", new AccessViolationException("Just kiddin U !")));
@@ -290,7 +297,7 @@ namespace FastLog.NetTest
 
                 _ = loggerA.LogException(new Exception("Test Exception !"));
 
-               // Task.Delay(waitTime).GetAwaiter().GetResult();
+                // Task.Delay(waitTime).GetAwaiter().GetResult();
 
 
 

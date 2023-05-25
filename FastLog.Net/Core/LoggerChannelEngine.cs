@@ -64,7 +64,11 @@ namespace FastLog.Core
                             HandleInMemoryEvents(EventModelFromChannel);
 
 
+
                             // Consume the LogEventModel on channel one by one with each logger agent in the agent list !
+
+
+                            // Pararllel.Foreach has been tested BUT normal foreach and Task.WhenAll is faster thean Parallel.Foreach in this case.
 
                             foreach (IAgent logger in Agents.AgentList)
                             {
@@ -80,11 +84,12 @@ namespace FastLog.Core
                                     if (!string.IsNullOrWhiteSpace(EventModelFromChannel.EventMessage))
                                     {
                                         // Important Warning : "Task.WhenAll" has serious performance issue here ,
-                                        // so use it just when we have more than 1 agent and a hevy IO waiting operation is used like Email or SMS send.
+                                        // so use it just when we have more than 1 agent and/or an hevy IO waiting operation is used like Email/SMS send , HTTP operation and etc.
                                         // "Agents.AgentList.Count() > 1" --> Prevent using "Task.WhenAll" if we have just 1 agent.
 
                                         if (Configuration.RunAgentsInParallel && Agents.AgentList.Count() > 1)
                                         {
+ 
                                             tasksList.Add(logger.ExecuteAgent(EventModelFromChannel, _cts.Token));
                                         }
                                         else
@@ -113,6 +118,9 @@ namespace FastLog.Core
                             {
                                 await Task.WhenAll(tasksList).ConfigureAwait(false);
                             }
+
+
+
 
                             // Interlocked.Increment(ref channelProcessedEventCount);
                             channelProcessedEventCount++;

@@ -80,7 +80,7 @@ namespace FastLog.Core
         /// <summary>
         /// (Optional) Run logger's agent(s) in seuential or parallel mode. ( default is false).
         /// WARNING : Run agent in parallel may impact the overall performance.
-        /// Just use it when we have more than 1 agent and/or an heavy IO bound waiting operation is used like sending Email or SMS and etc.
+        /// Just use it when we have more than 1 agent and/or an heavy IO bound waiting operation is used like Email/SMS send , HTTP operation and etc.
         /// </summary>
         public ConfigManager RunAgentsInParallelMode()
         {
