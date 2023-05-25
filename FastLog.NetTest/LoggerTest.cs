@@ -34,7 +34,7 @@ namespace FastLog.NetTest
             ConfigManager loggerConfig = ConfigManager.Create()
                                                       .WithLoggerName("ANPR® Logger")
                                                       .WithMaxEventsToKeepInMemory(1_000);
-                                                      //.RunAgentsInParallelMode();
+            //.RunAgentsInParallelMode();
 
 
 
@@ -67,7 +67,7 @@ namespace FastLog.NetTest
 
 
 
-            await Task.Run(() =>
+            _ = Task.Run(() =>
                 {
                     while (true)
                     {
@@ -89,17 +89,6 @@ namespace FastLog.NetTest
 
                         }
 
-                        Console.WriteLine();
-
-                        Console.WriteLine($"Remaining event(s) to process : {loggerA.ChannelEventCount:N0}");
-                        Console.WriteLine($"Total event(s) added to Channel : {loggerA.ChannelTotalEventCount:N0}");
-                        Console.WriteLine($"Total processed event(s) : {loggerA.ChannelProcessedEventCount:N0}");
-
-                        Console.WriteLine();
-
-                        Task.Delay(1).GetAwaiter().GetResult();
-
-
 
                     }
 
@@ -107,11 +96,35 @@ namespace FastLog.NetTest
 
 
 
+            await Task.Run(() =>
+            {
+                while (true)
+                {
+
+
+                    Console.WriteLine();
+
+                    Console.WriteLine($"Remaining event(s) to process : {loggerA.ChannelEventCount:N0}");
+                    Console.WriteLine($"Total event(s) added to Channel : {loggerA.ChannelTotalEventCount:N0}");
+                    Console.WriteLine($"Total processed event(s) : {loggerA.ChannelProcessedEventCount:N0}");
+
+                    Console.WriteLine();
+
+                    Task.Delay(1_000).GetAwaiter().GetResult();
+
+
+
+                }
+
+            });
+
+
+
         }
 
         private static void LoggerA_OnEventProcessed(object sender, LogEventModel e)
         {
-           // Console.WriteLine($"Event Processed : {e}");
+            // Console.WriteLine($"Event Processed : {e}");
         }
 
         private static void LoggerA_OnEventOccured(object sender, LogEventModel e)
@@ -263,7 +276,7 @@ namespace FastLog.NetTest
         {
             while (true)
             {
-                 TimeSpan waitTime = TimeSpan.FromMilliseconds(10);
+                TimeSpan waitTime = TimeSpan.FromMilliseconds(80);
 
                 Exception exception = new InvalidCastException("ANPR engine cast is not valid",
                                         new CannotUnloadAppDomainException("Engine is not loaded", new AccessViolationException("Just kiddin U !")));
