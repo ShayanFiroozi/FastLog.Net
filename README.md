@@ -1,4 +1,6 @@
-![alt tag](https://github.com/ShayanFiroozi/FastLog.Net/blob/master/FastLog.Net/Icon/FastLogNet.ico)
+<p align="center">
+ <img src="https://github.com/ShayanFiroozi/FastLog.Net/blob/master/FastLog.Net/Icon/FastLogNet.ico"
+</p>
 
 # FastLog.Net
 
