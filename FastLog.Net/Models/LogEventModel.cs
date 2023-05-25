@@ -22,7 +22,7 @@ namespace FastLog.Models
     /// <summary>
     /// Event Model class
     /// </summary>
-    public class LogEventModel
+    public sealed class LogEventModel
     {
 
         #region Constructors

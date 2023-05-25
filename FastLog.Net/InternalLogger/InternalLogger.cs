@@ -29,7 +29,7 @@ namespace FastLog.Internal
     /// Internal Logger class , resposible to log the exceptions and events which occured in the FastLog.Net
     /// Note : This class used Fluent Builder.
     /// </summary>
-    public class InternalLogger
+    public sealed class InternalLogger
     {
 
 

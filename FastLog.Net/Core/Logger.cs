@@ -12,6 +12,7 @@
 
 ---------------------------------------------------------------------------------------------*/
 
+using FastLog.Interfaces;
 using FastLog.Internal;
 using System;
 
@@ -21,7 +22,7 @@ namespace FastLog.Core
     /// <summary>
     /// Logger core class.
     /// </summary>
-    public sealed partial class Logger : IDisposable
+    public sealed partial class Logger : IFastLogger, IDisposable
     {
 
         #region Fluent Builder Methods
