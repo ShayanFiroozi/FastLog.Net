@@ -39,6 +39,8 @@ namespace FastLog.Core
         public Task StartLogger()
         {
 
+            
+
             List<Task> tasksList = null;
 
             if (Configuration.RunAgentsInParallel) tasksList = new List<Task>();
@@ -124,6 +126,19 @@ namespace FastLog.Core
 
                             // Interlocked.Increment(ref channelProcessedEventCount);
                             channelProcessedEventCount++;
+
+                            // Raise the event
+                            try
+                            {
+                                OnEventProcessed?.Invoke(this, EventModelFromChannel);
+                            }
+                            catch (Exception ex)
+                            {
+                                InternalLogger?.LogInternalException(ex);
+                            }
+
+
+                          
 
                         }
 

@@ -34,7 +34,7 @@ namespace FastLog.Helpers.ExtendedMethods
                             .Append(logEventModel.LogEventType.ToString())
                             .Append(']')
                             .Append(logEventModel.EventId != 0 ? $" [{logEventModel.EventId}]" : string.Empty)
-                            .Append(" -> ")
+                            .Append(" → ")
                             .Append(logEventModel.EventMessage);
 
 

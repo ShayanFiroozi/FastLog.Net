@@ -153,6 +153,18 @@ namespace FastLog.Core
                
                 Interlocked.Increment(ref channelTotalEventCount);
 
+                // Raise the event
+                try
+                {
+                    OnEventOccured?.Invoke(this, LogEvent);
+                }
+                catch (Exception ex)
+                {
+                    InternalLogger?.LogInternalException(ex);
+                }
+
+
+                // Put the event to the Channel.
                 return LoggerChannelWriter.WriteAsync(LogEvent, _cts.Token);
             }
             catch (Exception ex)
@@ -192,6 +204,18 @@ namespace FastLog.Core
 
                 Interlocked.Increment(ref channelTotalEventCount);
 
+                // Raise the event
+                try
+                {
+                    OnEventOccured?.Invoke(this, LogEvent);
+                }
+                catch (Exception ex)
+                {
+                    InternalLogger?.LogInternalException(ex);
+                }
+
+
+                // Put the event to the Channel.
                 return LoggerChannelWriter.WriteAsync(LogEvent, _cts.Token);
             }
             catch (Exception ex)

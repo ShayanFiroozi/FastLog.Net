@@ -13,6 +13,7 @@
 ---------------------------------------------------------------------------------------------*/
 
 using FastLog.Enums;
+using FastLog.Helpers.ExtendedMethods;
 using System;
 
 namespace FastLog.Models
@@ -97,7 +98,10 @@ namespace FastLog.Models
 
         #endregion
 
-
+        public override string ToString()
+        {
+            return this.ToPlainText();
+        }
 
     }
 

@@ -66,52 +66,64 @@ namespace FastLog.NetTest
 
             .BuildLogger();
 
+
+            loggerA.OnEventOccured += LoggerA_OnEventOccured;
+            loggerA.OnEventProcessed += LoggerA_OnEventProcessed;
+
             loggerA.StartLogger();
 
 
 
-            await Task.Run(() =>
-                {
-                    while (true)
-                    {
+            //await Task.Run(() =>
+            //    {
+            //        while (true)
+            //        {
 
 
 
-                        foreach (LogEventModel logEvent in loggerA.InMemoryEvents)
-                        {
+            //            foreach (LogEventModel logEvent in loggerA.InMemoryEvents)
+            //            {
 
-                            //Console.WriteLine(loggerA.InMemoryEvents.Count());
-                            //Console.WriteLine(loggerA.InMemoryEvents.First().EventMessage);
-
-
-                            //Console.WriteLine();
-
-                            // Just to access the property from another thread to test thread-satefy.
-                            int x = loggerA.InMemoryEvents.Count();
-                            string temp = loggerA.InMemoryEvents.First().EventMessage;
-
-                        }
-
-                        Console.WriteLine();
-                        Console.WriteLine($"Remaining event(s) to process : {loggerA.ChannelEventCount:N0}");
-                        Console.WriteLine($"Total event(s) added to Channel : {loggerA.ChannelTotalEventCount:N0}");
-                        Console.WriteLine($"Total processed event(s) : {loggerA.ChannelProcessedEventCount:N0}");
-
-                        Console.WriteLine();
-
-                        Task.Delay(1).GetAwaiter().GetResult();
+            //                //Console.WriteLine(loggerA.InMemoryEvents.Count());
+            //                //Console.WriteLine(loggerA.InMemoryEvents.First().EventMessage);
 
 
+            //                //Console.WriteLine();
 
-                    }
+            //                // Just to access the property from another thread to test thread-satefy.
+            //                int x = loggerA.InMemoryEvents.Count();
+            //                string temp = loggerA.InMemoryEvents.First().EventMessage;
 
-                });
+            //            }
+
+            //            Console.WriteLine();
+            //            Console.WriteLine($"Remaining event(s) to process : {loggerA.ChannelEventCount:N0}");
+            //            Console.WriteLine($"Total event(s) added to Channel : {loggerA.ChannelTotalEventCount:N0}");
+            //            Console.WriteLine($"Total processed event(s) : {loggerA.ChannelProcessedEventCount:N0}");
+
+            //            Console.WriteLine();
+
+            //            Task.Delay(1).GetAwaiter().GetResult();
+
+
+
+            //        }
+
+            //    });
 
 
 
         }
 
+        private static void LoggerA_OnEventProcessed(object sender, LogEventModel e)
+        {
+            Console.WriteLine($"Event Processed : {e}");
+        }
 
+        private static void LoggerA_OnEventOccured(object sender, LogEventModel e)
+        {
+            Console.WriteLine($"Event occured : {e}");
+        }
 
         public static async void CrazyTestWithMultiThreadMultiTask()
         {
