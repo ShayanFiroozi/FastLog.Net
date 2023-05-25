@@ -22,7 +22,7 @@ If you'd like to contribute, please read the [**How It Works**](https://github.c
 
 ## ❌ Limitations
 
-However **FastLog.Net** is thread-safe BUT it is **NOT** recommended to build two agents with same logging file , so this limitation applied to the FastLog.Net intentionally to prevent two or more agents write and manage same logging file.
+However **FastLog.Net** is thread-safe BUT it is **NOT** recommended to build two agents with same logging file , so this limitation applied to the FastLog.Net intentionally to prevent two or more agents write and manage the same logging file.
 
 ## ⁉ Known Issues
 
