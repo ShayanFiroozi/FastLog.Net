@@ -5,6 +5,8 @@
     <GenerateAssemblyInfo>false</GenerateAssemblyInfo>
     <Deterministic>false</Deterministic>
     <PlatformTarget>AnyCPU</PlatformTarget>
+    <ApplicationIcon>Icon\FastLogNet.ico</ApplicationIcon>
+    <PackageIcon>FastLogNet.png</PackageIcon>
   </PropertyGroup>
 
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|AnyCPU'">
@@ -28,7 +30,18 @@
   </ItemGroup>
 
   <ItemGroup>
+    <Content Include="Icon\FastLogNet.ico" />
+  </ItemGroup>
+
+  <ItemGroup>
     <PackageReference Include="System.Threading.Channels" Version="7.0.0" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <None Update="Icon\FastLogNet.png">
+      <Pack>True</Pack>
+      <PackagePath>\</PackagePath>
+    </None>
   </ItemGroup>
   
 
