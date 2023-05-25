@@ -11,7 +11,7 @@ FastLog.Net uses thread-safe queueing technique to enqueue the logging request(s
 
 As this is a new repository , there's no contributor yet! , But **FastLog.Net** welcomes and appreciates any contribution , pull request or bug report.
 
-If you'd like to contribute, please read the **How It Works** section and then take a look at [Todo.md](Todo.md) ! 😎
+If you'd like to contribute, please read the **How It Works** section and then take a look at [ToDo List](ToDo.md) to get involved ! 😎
 
 
 # How To Use
@@ -30,7 +30,7 @@ However **FastLog.Net** is thread-safe BUT it is **NOT** recommended to build tw
 License
 ---
 **FastLog.Net** is an open source software, licensed under the terms of MIT license.
-See [LICENSE.md](LICENSE.md) for more details.
+See [LICENSE](LICENSE.md) for more details.
 
 
 How to build
@@ -44,10 +44,10 @@ Use **Visual Studio 2022** and open the solution 'FastLog.Net.sln'.
 - .Net Framework 4.8
 
 
-Note : Since the **FastLog.Net** solution is supporting multi target frameworks , to build the solution successfully you should install all .Net versions above , otherwise you can easily exclude not interested framework(s) by editing [FastLog.Net.csproj](FastLog.Net project file).
+Note : Since the **FastLog.Net** solution is supporting multi target frameworks , to build the solution successfully you should install all .Net versions above , otherwise you can easily exclude not interested framework(s) by editing **TargetFrameworks** tag in the [FastLog.Net Project File](https://github.com/ShayanFiroozi/FastLog.Net/blob/master/FastLog.Net/FastLog.Net.csproj).
 
 # Donations
-If you would like to financially support **FastLog.Net**, first of all, thank you! Please read [DONATIONS.md](DONATIONS.md) for my crypto wallets !
+If you would like to financially support **FastLog.Net**, first of all, thank you! Please read [DONATIONS](DONATIONS.md) for my crypto wallets !
 
 # Version History
-Please read [CHANGELOG.md](CHANGELOG.md) for more and track changing details.
+Please read [CHANGELOG](CHANGELOG.md) for more and track changing details.
