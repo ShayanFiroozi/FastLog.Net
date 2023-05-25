@@ -13,13 +13,10 @@
 ---------------------------------------------------------------------------------------------*/
 
 using FastLog.Helpers;
-using FastLog.Internal;
 using FastLog.Models;
 using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Threading;
-using System.Threading.Channels;
 
 namespace FastLog.Core
 {
@@ -56,7 +53,7 @@ namespace FastLog.Core
         /// <summary>
         /// Count the remaining event(s) in the channel event queue. ( not processed yet !)
         /// </summary>
-        public long ChannelEventCount
+        public int ChannelEventCount
         {
             get
             {

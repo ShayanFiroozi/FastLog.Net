@@ -11,7 +11,7 @@ namespace FastLog.NetTest
 
         public static readonly InternalLogger InternalLoggerAgent = InternalLogger
                                                           .Create()
-                                                          .SaveInternalEventsToFile("D:\\Logs\\InternalLogger.LOG")
+                                                          .SaveInternalEventsToFile("Logs\\InternalLogger.LOG")
                                                           .DeleteTheLogFileWhenExceededTheMaximumSizeOf(100);
 
 

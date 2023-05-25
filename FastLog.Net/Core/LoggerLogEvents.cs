@@ -150,7 +150,11 @@ namespace FastLog.Core
                                              LogText,
                                              Details,
                                              EventId);
-               
+
+                // Just for sure !! in fact never gonna happen ! long Max value is "9,223,372,036,854,775,807"
+
+                if (channelTotalEventCount >= long.MaxValue) { channelTotalEventCount = 0; }
+
                 Interlocked.Increment(ref channelTotalEventCount);
 
                 // Raise the event
@@ -201,6 +205,10 @@ namespace FastLog.Core
             {
                 LogEventModel LogEvent = new LogEventModel(exception,
                                                            EventId);
+
+                // Just for sure !! in fact never gonna happen ! long Max value is "9,223,372,036,854,775,807"
+
+                if (channelTotalEventCount >= long.MaxValue) { channelTotalEventCount = 0; }
 
                 Interlocked.Increment(ref channelTotalEventCount);
 

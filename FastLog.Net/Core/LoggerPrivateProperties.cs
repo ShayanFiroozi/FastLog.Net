@@ -51,13 +51,14 @@ namespace FastLog.Core
         private List<LogEventModel> inMemoryEvents { get; } = new List<LogEventModel>();
 
         private long channelTotalEventCount = 0;
+
         private long channelProcessedEventCount = 0;
 
 
         #region Channel Properties
 
         /// <summary>
-        /// If more than LoggerChannelMaxCapacity event placed into the channel , the cannel will drop the oldest and then add the new one.
+        /// If more than "LoggerChannelMaxCapacity" event(s) placed into the channel , the cannel will drop the oldest and then add the new one.
         /// </summary>
         private const int LoggerChannelMaxCapacity = 1_000_000;
 

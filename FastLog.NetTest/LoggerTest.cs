@@ -20,7 +20,7 @@ namespace FastLog.NetTest
 
             InternalLogger internalLogger = InternalLogger.Create()
                                                           .UseJsonFormat()
-                                                          .SaveInternalEventsToFile("M:\\Logs\\InternalEventsLog.log")
+                                                          .SaveInternalEventsToFile("Logs\\InternalEventsLog.log")
                                                           .DeleteTheLogFileWhenExceededTheMaximumSizeOf(100);
             //.Beep()
             //  .BeepOnlyOnDebugMode()
@@ -45,14 +45,7 @@ namespace FastLog.NetTest
 
                                 .AddTextFileAgent()
                                    .UseJsonFormat()
-                                   .SaveLogToFile("M:\\Logs\\TestLog.json")
-                                   .DeleteTheLogFileWhenExceededTheMaximumSizeOf(10)
-                                    .BuildAgent()
-
-
-                                .AddTextFileAgent()
-                                   .UseJsonFormat()
-                                   .SaveLogToFile("M:\\Logs\\TestLog2.json")
+                                   .SaveLogToFile("Logs\\TestLog.json")
                                    .DeleteTheLogFileWhenExceededTheMaximumSizeOf(10)
                                     .BuildAgent()
 
@@ -74,42 +67,43 @@ namespace FastLog.NetTest
 
 
 
-            //await Task.Run(() =>
-            //    {
-            //        while (true)
-            //        {
+            await Task.Run(() =>
+                {
+                    while (true)
+                    {
 
 
 
-            //            foreach (LogEventModel logEvent in loggerA.InMemoryEvents)
-            //            {
+                        foreach (LogEventModel logEvent in loggerA.InMemoryEvents)
+                        {
 
-            //                //Console.WriteLine(loggerA.InMemoryEvents.Count());
-            //                //Console.WriteLine(loggerA.InMemoryEvents.First().EventMessage);
-
-
-            //                //Console.WriteLine();
-
-            //                // Just to access the property from another thread to test thread-satefy.
-            //                int x = loggerA.InMemoryEvents.Count();
-            //                string temp = loggerA.InMemoryEvents.First().EventMessage;
-
-            //            }
-
-            //            Console.WriteLine();
-            //            Console.WriteLine($"Remaining event(s) to process : {loggerA.ChannelEventCount:N0}");
-            //            Console.WriteLine($"Total event(s) added to Channel : {loggerA.ChannelTotalEventCount:N0}");
-            //            Console.WriteLine($"Total processed event(s) : {loggerA.ChannelProcessedEventCount:N0}");
-
-            //            Console.WriteLine();
-
-            //            Task.Delay(1).GetAwaiter().GetResult();
+                            //Console.WriteLine(loggerA.InMemoryEvents.Count());
+                            //Console.WriteLine(loggerA.InMemoryEvents.First().EventMessage);
 
 
+                            //Console.WriteLine();
 
-            //        }
+                            // Just to access the property from another thread to test thread-satefy.
+                            int x = loggerA.InMemoryEvents.Count();
+                            string temp = loggerA.InMemoryEvents.First().EventMessage;
 
-            //    });
+                        }
+
+                        Console.WriteLine();
+
+                        Console.WriteLine($"Remaining event(s) to process : {loggerA.ChannelEventCount:N0}");
+                        Console.WriteLine($"Total event(s) added to Channel : {loggerA.ChannelTotalEventCount:N0}");
+                        Console.WriteLine($"Total processed event(s) : {loggerA.ChannelProcessedEventCount:N0}");
+
+                        Console.WriteLine();
+
+                        Task.Delay(1).GetAwaiter().GetResult();
+
+
+
+                    }
+
+                });
 
 
 
@@ -117,12 +111,12 @@ namespace FastLog.NetTest
 
         private static void LoggerA_OnEventProcessed(object sender, LogEventModel e)
         {
-            Console.WriteLine($"Event Processed : {e}");
+           // Console.WriteLine($"Event Processed : {e}");
         }
 
         private static void LoggerA_OnEventOccured(object sender, LogEventModel e)
         {
-            Console.WriteLine($"Event occured : {e}");
+            //Console.WriteLine($"Event occured : {e}");
         }
 
         public static async void CrazyTestWithMultiThreadMultiTask()
@@ -267,9 +261,9 @@ namespace FastLog.NetTest
 
         public static void NormalTest()
         {
-            while (loggerA.ChannelTotalEventCount < 100000)
+            while (true)
             {
-                // TimeSpan waitTime = TimeSpan.FromMilliseconds(1);
+                 TimeSpan waitTime = TimeSpan.FromMilliseconds(10);
 
                 Exception exception = new InvalidCastException("ANPR engine cast is not valid",
                                         new CannotUnloadAppDomainException("Engine is not loaded", new AccessViolationException("Just kiddin U !")));
@@ -309,7 +303,7 @@ namespace FastLog.NetTest
 
                 _ = loggerA.LogException(new Exception("Test Exception !"));
 
-                // Task.Delay(waitTime).GetAwaiter().GetResult();
+                Task.Delay(waitTime).GetAwaiter().GetResult();
 
 
 
