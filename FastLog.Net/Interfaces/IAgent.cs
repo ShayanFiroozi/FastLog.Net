@@ -20,7 +20,7 @@ namespace FastLog.Interfaces
 {
 
     /// <summary>
-    /// Interface which all agents should be implemented.
+    /// Interface which all agents should implement.
     /// </summary>
     public interface IAgent
     {

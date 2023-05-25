@@ -33,7 +33,8 @@ namespace FastLog.NetTest
 
             ConfigManager loggerConfig = ConfigManager.Create()
                                                       .WithLoggerName("ANPR® Logger")
-                                                      .WithMaxEventsToKeepInMemory(1_000);
+                                                      .WithMaxEventsToKeepInMemory(1_000)
+                                                      .RunAgentsInParallelMode();
 
 
 
