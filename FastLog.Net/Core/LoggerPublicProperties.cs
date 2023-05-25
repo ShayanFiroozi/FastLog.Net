@@ -56,20 +56,33 @@ namespace FastLog.Core
         /// <summary>
         /// Count the remaining event(s) in the channel event queue. ( not processed yet !)
         /// </summary>
-        public long ChannelEventCount => LoggerChannelReader.Count;
+        public long ChannelEventCount
+        {
+            get
+            {
+                try
+                {
+                    return LoggerChannelReader.CanCount ? LoggerChannelReader.Count : -1;
+                }
+                catch
+                {
+                    return -1;
+                }
+            }
+        }
 
 
-     
+
         /// <summary>
         /// Count total event(s) added to channel (include processed and not processed events).
         /// </summary>
-        public long ChannelTotalEventCount => Interlocked.Read(ref channelTotalEventCount);
+        public long ChannelTotalEventCount => channelTotalEventCount; //Interlocked.Read(ref channelTotalEventCount);
 
 
         /// <summary>
         /// Count total processed ( executed ) event(s).
         /// </summary>
-        public long ChannelProcessedEventCount { get; private set; } = 0;
+        public long ChannelProcessedEventCount => channelProcessedEventCount; //Interlocked.Read(ref channelProcessedEventCount);
 
 
     }

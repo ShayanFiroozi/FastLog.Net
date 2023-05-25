@@ -79,18 +79,19 @@ namespace FastLog.NetTest
                             //Console.WriteLine();
 
                             // Just to access the property from another thread to test thread-satefy.
-                            _ = loggerA.InMemoryEvents.Count();
-                            _ = loggerA.InMemoryEvents.First().EventMessage;
+                            int x = loggerA.InMemoryEvents.Count();
+                            string temp = loggerA.InMemoryEvents.First().EventMessage;
 
                         }
 
                         Console.WriteLine();
+                        Console.WriteLine($"Remaining event(s) to process : {loggerA.ChannelEventCount:N0}");
                         Console.WriteLine($"Total event(s) added to Channel : {loggerA.ChannelTotalEventCount:N0}");
                         Console.WriteLine($"Total processed event(s) : {loggerA.ChannelProcessedEventCount:N0}");
-                        Console.WriteLine($"Remaining event(s) to process : {loggerA.ChannelEventCount:N0}");
+                        
                         Console.WriteLine();
 
-                        Task.Delay(3_000).GetAwaiter().GetResult();
+                        Task.Delay(1).GetAwaiter().GetResult();
 
 
 
@@ -246,9 +247,9 @@ namespace FastLog.NetTest
 
         public static void NormalTest()
         {
-            while (true)
+            while (loggerA.ChannelTotalEventCount < 100000)
             {
-                TimeSpan waitTime = TimeSpan.FromMilliseconds(1);
+               // TimeSpan waitTime = TimeSpan.FromMilliseconds(1);
 
                 Exception exception = new InvalidCastException("ANPR engine cast is not valid",
                                         new CannotUnloadAppDomainException("Engine is not loaded", new AccessViolationException("Just kiddin U !")));
@@ -288,7 +289,7 @@ namespace FastLog.NetTest
 
                 _ = loggerA.LogException(new Exception("Test Exception !"));
 
-                Task.Delay(waitTime).GetAwaiter().GetResult();
+               // Task.Delay(waitTime).GetAwaiter().GetResult();
 
 
 

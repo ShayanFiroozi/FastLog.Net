@@ -16,7 +16,9 @@ using FastLog.Interfaces;
 using FastLog.Models;
 using System;
 using System.Collections.Generic;
+using System.Diagnostics;
 using System.Linq;
+using System.Threading;
 using System.Threading.Tasks;
 
 namespace FastLog.Core
@@ -29,10 +31,10 @@ namespace FastLog.Core
     /// </summary>
     public sealed partial class Logger : IDisposable
     {
-       /// <summary>
-       /// Start the FastLog.Net logger core engine.
-       /// </summary>
-       /// <returns></returns>
+        /// <summary>
+        /// Start the FastLog.Net logger core engine.
+        /// </summary>
+        /// <returns></returns>
 
         public Task StartLogger()
         {
@@ -53,12 +55,12 @@ namespace FastLog.Core
                     {
                         IsLoggerRunning = true;
 
-                        
+
                         LogEventModel EventModelFromChannel = await LoggerChannelReader.ReadAsync(_cts.Token).ConfigureAwait(false);
 
                         if (EventModelFromChannel != null)
                         {
-                            
+
                             HandleInMemoryEvents(EventModelFromChannel);
 
 
@@ -108,10 +110,11 @@ namespace FastLog.Core
                                 await Task.WhenAll(tasksList).ConfigureAwait(false);
                             }
 
-                            ChannelProcessedEventCount++;
+                            // Interlocked.Increment(ref channelProcessedEventCount);
+                            channelProcessedEventCount++;
 
                         }
-
+                    
 
                     }
                     catch (Exception ex)
@@ -123,10 +126,10 @@ namespace FastLog.Core
 
 
 
-            },_cts.Token);
+            }, _cts.Token);
         }
 
-  
+
         public void StopLogger()
         {
             IsLoggerRunning = false;
