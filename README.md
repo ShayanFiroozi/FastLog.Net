@@ -5,7 +5,7 @@
 # FastLog.Net
 **FastLog.Net** is the fastest , most efficient and high performance logger for **.Net** 
  
-✔ Easy to use and develop , clean code , extensible agents and log model , and also design to be fully thread-safe.  
+✔ Easy to use and develop , clean code , extensible agents and log model , and also designed to be fully thread-safe.  
  
 ✔ FastLog.Net supports structured logging and enhanced Json format for [Exception](https://learn.microsoft.com/en-us/dotnet/api/system.exception?view=net-7.0) class.  
  
