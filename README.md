@@ -14,6 +14,8 @@ FastLog.Net uses thread-safe queueing technique to enqueue the logging request(s
 As this is a new repository , there's no contributor yet! , But **FastLog.Net** welcomes and appreciates any contribution , pull request or bug report.
 
 If you'd like to contribute, please read the [**How It Works**](https://github.com/ShayanFiroozi/FastLog.Net#-how-it-works) section and then take a look at [ToDo List](ToDo.md) to get involved ! 😎
+ 
+Note : The srouce code is fully commented.
 
 
 ## ❔ How To Use
@@ -24,7 +26,9 @@ If you'd like to contribute, please read the [**How It Works**](https://github.c
 
 ## ❌ Limitations
 
-However **FastLog.Net** is thread-safe BUT it is **NOT** recommended to build two agents with same logging file , so this limitation applied to the FastLog.Net intentionally to prevent two or more agents write and manage the same logging file.
+- However the **FastLog.Net** is thread-safe BUT it is **NOT** recommended to build two agents with same logging file , so this limitation applied to the FastLog.Net intentionally to prevent two or more agents write and manage the same logging file.
+
+- The **FastLog.Net** queue has been limited to handle up to the **1,000,000** logging events at the same time.This limition has been set to prevent uncontrolled memory usage.
 
 ## ⁉ Known Issues
 
