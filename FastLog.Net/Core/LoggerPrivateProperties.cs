@@ -13,6 +13,7 @@
 ---------------------------------------------------------------------------------------------*/
 
 using FastLog.Helpers;
+using FastLog.Interfaces;
 using FastLog.Internal;
 using FastLog.Models;
 using System;
@@ -48,7 +49,7 @@ namespace FastLog.Core
         /// </summary>
         private AgentsManager Agents { get; set; }
 
-        private List<LogEventModel> inMemoryEvents { get; } = new List<LogEventModel>();
+        private List<ILogEventModel> inMemoryEvents { get; } = new List<ILogEventModel>();
 
         private long channelTotalEventCount = 0;
 
@@ -62,12 +63,12 @@ namespace FastLog.Core
         /// </summary>
         private const int LoggerChannelMaxCapacity = 1_000_000;
 
-        private readonly Channel<LogEventModel> LoggerChannel =
-                   Channel.CreateBounded<LogEventModel>(new BoundedChannelOptions(LoggerChannelMaxCapacity)
+        private readonly Channel<ILogEventModel> LoggerChannel =
+                   Channel.CreateBounded<ILogEventModel>(new BoundedChannelOptions(LoggerChannelMaxCapacity)
                    { SingleReader = true, FullMode = BoundedChannelFullMode.DropOldest });
 
-        private readonly ChannelReader<LogEventModel> LoggerChannelReader;
-        private readonly ChannelWriter<LogEventModel> LoggerChannelWriter;
+        private readonly ChannelReader<ILogEventModel> LoggerChannelReader;
+        private readonly ChannelWriter<ILogEventModel> LoggerChannelWriter;
         #endregion
 
 

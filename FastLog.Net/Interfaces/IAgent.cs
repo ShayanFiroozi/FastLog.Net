@@ -26,9 +26,9 @@ namespace FastLog.Interfaces
     {
 
 #if NETFRAMEWORK || NETSTANDARD2_0
-        Task ExecuteAgent(LogEventModel logMessage, CancellationToken cancellationToken = default);
+        Task ExecuteAgent(ILogEventModel logMessage, CancellationToken cancellationToken = default);
 #else
-        internal Task ExecuteAgent(LogEventModel logMessage, CancellationToken cancellationToken = default);
+        internal Task ExecuteAgent(ILogEventModel logMessage, CancellationToken cancellationToken = default);
 #endif
 
 

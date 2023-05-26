@@ -33,7 +33,7 @@ namespace FastLog.Core
         /// Warning : If the count of in-memory-events reached the "MaxEventsToKeep" , this method will drop the oldet event in the list and then add new one.
         /// </summary>
         /// <param name="logEvent">Log Event to store inthe In-Memory-Event list.</param>
-        private void HandleInMemoryEvents(LogEventModel logEvent)
+        private void HandleInMemoryEvents(ILogEventModel logEvent)
         {
 
             if (Configuration.MaxEventsToKeep == 0) return;

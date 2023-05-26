@@ -58,7 +58,7 @@ namespace FastLog.Core
                         IsLoggerRunning = true;
 
 
-                        LogEventModel EventModelFromChannel = await LoggerChannelReader.ReadAsync(_cts.Token).ConfigureAwait(false);
+                        ILogEventModel EventModelFromChannel = await LoggerChannelReader.ReadAsync(_cts.Token).ConfigureAwait(false);
 
                         if (EventModelFromChannel != null)
                         {

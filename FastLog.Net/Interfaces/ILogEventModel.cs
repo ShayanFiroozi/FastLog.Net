@@ -24,6 +24,7 @@ namespace FastLog.Interfaces
         int EventId { get; }
         string EventMessage { get; }
         LogEventTypes LogEventType { get; }
+        Exception Exception { get; }
 
     }
 }

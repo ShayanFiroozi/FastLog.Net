@@ -13,6 +13,7 @@
 ---------------------------------------------------------------------------------------------*/
 
 using FastLog.Enums;
+using FastLog.Interfaces;
 using FastLog.Models;
 using System;
 using System.Text;
@@ -26,7 +27,7 @@ namespace FastLog.Helpers.ExtendedMethods
     internal static class LogeEventModelExtendedMethods
     {
 
-        public static string ToPlainText(this LogEventModel logEventModel)
+        public static string ToPlainText(this ILogEventModel logEventModel)
         {
             StringBuilder finalMessage = new StringBuilder();
 
@@ -73,7 +74,7 @@ namespace FastLog.Helpers.ExtendedMethods
 
 
 
-        public static string ToJsonText(this LogEventModel logEventModel)
+        public static string ToJsonText(this ILogEventModel logEventModel)
         {
             StringBuilder finalMessage = new StringBuilder();
 

@@ -12,6 +12,7 @@
 
 ---------------------------------------------------------------------------------------------*/
 
+using FastLog.Interfaces;
 using FastLog.Models;
 using System;
 
@@ -19,9 +20,9 @@ namespace FastLog.Core
 {
     public sealed partial class Logger
     {
-        public event EventHandler<LogEventModel> OnEventOccured;
+        public event EventHandler<ILogEventModel> OnEventOccured;
 
-        public event EventHandler<LogEventModel> OnEventProcessed;
+        public event EventHandler<ILogEventModel> OnEventProcessed;
 
     }
 }

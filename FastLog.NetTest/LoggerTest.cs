@@ -1,4 +1,5 @@
 ﻿using FastLog.Core;
+using FastLog.Interfaces;
 using FastLog.Internal;
 using FastLog.Models;
 using System;
@@ -74,7 +75,7 @@ namespace FastLog.NetTest
 
 
 
-                        foreach (LogEventModel logEvent in loggerA.InMemoryEvents)
+                        foreach (ILogEventModel logEvent in loggerA.InMemoryEvents)
                         {
 
                             //Console.WriteLine(loggerA.InMemoryEvents.Count());
@@ -122,12 +123,12 @@ namespace FastLog.NetTest
 
         }
 
-        private static void LoggerA_OnEventProcessed(object sender, LogEventModel e)
+        private static void LoggerA_OnEventProcessed(object sender, ILogEventModel e)
         {
             // Console.WriteLine($"Event Processed : {e}");
         }
 
-        private static void LoggerA_OnEventOccured(object sender, LogEventModel e)
+        private static void LoggerA_OnEventOccured(object sender, ILogEventModel e)
         {
             //Console.WriteLine($"Event occured : {e}");
         }

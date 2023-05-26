@@ -13,6 +13,7 @@
 ---------------------------------------------------------------------------------------------*/
 
 using FastLog.Enums;
+using FastLog.Interfaces;
 using FastLog.Models;
 using System;
 using System.Threading;
@@ -146,7 +147,7 @@ namespace FastLog.Core
 
             try
             {
-                LogEventModel LogEvent = new LogEventModel(LogType,
+                ILogEventModel LogEvent = new LogEventModel(LogType,
                                              LogText,
                                              Details,
                                              EventId);
@@ -203,7 +204,7 @@ namespace FastLog.Core
 
             try
             {
-                LogEventModel LogEvent = new LogEventModel(exception,
+                ILogEventModel LogEvent = new LogEventModel(exception,
                                                            EventId);
 
                 // Just for sure !! in fact never gonna happen ! long Max value is "9,223,372,036,854,775,807"

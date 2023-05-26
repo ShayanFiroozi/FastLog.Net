@@ -13,6 +13,7 @@
 ---------------------------------------------------------------------------------------------*/
 
 using FastLog.Helpers;
+using FastLog.Interfaces;
 using FastLog.Models;
 using System;
 using System.Collections.Generic;
@@ -28,7 +29,7 @@ namespace FastLog.Core
         /// <summary>
         /// Enumerates the last X logged event(s). X = "ConfigManager.MaxEventsToKeep" value;
         /// </summary>
-        public IEnumerable<LogEventModel> InMemoryEvents
+        public IEnumerable<ILogEventModel> InMemoryEvents
         {
             get
             {

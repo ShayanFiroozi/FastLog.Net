@@ -14,6 +14,7 @@
 
 using FastLog.Helpers;
 using FastLog.Helpers.ExtendedMethods;
+using FastLog.Interfaces;
 using FastLog.Models;
 using System;
 using System.Diagnostics;
@@ -211,7 +212,7 @@ namespace FastLog.Internal
 
 
 
-                LogEventModel LogToSave = new LogEventModel(exception);
+                ILogEventModel LogToSave = new LogEventModel(exception);
 
                 //LogEventModel LogToSave = new LogEventModel(LogEventTypes.EXCEPTION,
 
@@ -310,7 +311,7 @@ namespace FastLog.Internal
         /// Log internal events of FastLog.Net
         /// </summary>
         /// <param name="logEventModel"></param>
-        public void LogInternalSystemEvent(LogEventModel logEventModel)
+        public void LogInternalSystemEvent(ILogEventModel logEventModel)
         {
 
             try

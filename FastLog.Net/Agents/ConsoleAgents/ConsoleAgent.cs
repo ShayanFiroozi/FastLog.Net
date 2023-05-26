@@ -73,7 +73,7 @@ namespace FastLog.Agents.ConsoleAgents
         /// <param name="LogModel">Logging info</param>
         /// <param name="cancellationToken">CancellationToken for canceling the running task.</param>
         /// <returns>Task</returns>
-        public Task ExecuteAgent(LogEventModel LogModel, CancellationToken cancellationToken = default)
+        public Task ExecuteAgent(ILogEventModel LogModel, CancellationToken cancellationToken = default)
         {
 
 

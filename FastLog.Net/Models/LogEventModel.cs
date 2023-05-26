@@ -88,7 +88,7 @@ namespace FastLog.Models
         /// <summary>
         /// Store exception object here to access them "Logger.InMemoryEvents" class.
         /// </summary>
-        internal Exception Exception { get; private set; } = null;
+        public Exception Exception { get; private set; } = null;
 
         public LogEventTypes LogEventType { get; private set; }
 
