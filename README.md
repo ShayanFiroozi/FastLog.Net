@@ -124,10 +124,10 @@ If you'd like to contribute, please read the [**How It Works**](https://github.c
                               .BuildAgent()
  
  
-// Add a "TextFile Agent" with Plain format and will be re-created when reached to 10 megabytes.
+// Add a "TextFile Agent" with Plain format and will be re-created when reached to 20 megabytes.
                               .AddTextFileAgent()
                                .SaveLogToFile("Logs\\TestLogPlain.txt")
-                               .DeleteTheLogFileWhenExceededTheMaximumSizeOf(10)
+                               .DeleteTheLogFileWhenExceededTheMaximumSizeOf(20)
                               .BuildAgent()
  
  
