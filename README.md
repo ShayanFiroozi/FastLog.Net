@@ -26,7 +26,7 @@
     * ALERT  
     * DEBUG  
     * ERROR  
-    * EXCEPTION  (specially design for .Net [Exception](https://learn.microsoft.com/en-us/dotnet/api/system.exception?view=net-7.0) class to keep all details with nice json format)
+    * EXCEPTION  (specially designed for .Net [Exception](https://learn.microsoft.com/en-us/dotnet/api/system.exception?view=net-7.0) class to keep all details with nice json format)
     * SYSTEM  
     * SECURITY  
  <br/>  
