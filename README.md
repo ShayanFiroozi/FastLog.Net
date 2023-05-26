@@ -139,7 +139,20 @@ If you'd like to contribute, please read the [**How It Works**](https://github.c
  // Important : DO NOT await "StartLogger" method because it runs infinitely ! , Just call and discard the result ;)
       _= fastLogger.StartLogger();
  ``` 
+
+ ### Final Step :  
+  - **FastLog.Net** is ready , just call a logging method from anywhere of your code :  
  
+ ```csharp
+_= fastLogger.LogInfo("This is test logging INFO event);
+ 
+await fastLogger.LogException(new InvalidOperationException());
+ 
+await fastLogger.LogException(new Exception("This is a test exception i want to throw !!"));
+ 
+await fastLogger.LogSystem("The system is gonna be restarted !");
+ ```   
+      
  
  <br/>
  
