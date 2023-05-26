@@ -50,8 +50,11 @@
  <br/>  
  
  * **Internal Events Logger:**
-   * **FastLog.Net** has a powerful and structured internal logging system to log and monitor internal exceptions or event which occured in the library itself !
+   * **FastLog.Net** has a powerful and structured internal logging system to log and monitor internal exceptions or event which occured in the library itself !  
+  <br/>  
  
+ * **Thread Safety:**
+   * **FastLog.Net** has an internal queue list which is designed fully thread-safe , it's really not matter how many thread(s) call the logging methods simultaneously , it gives your request(s) and put in the queue and immediately release your thread ! Then process your logging agent(s) in the background.
  
 <br/>
 
