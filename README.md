@@ -11,7 +11,28 @@
  
 ✔ FastLog.Net uses thread-safe queueing technique to enqueue the logging request(s) and release your thread  
      almost immediately after you call a logging method.
- 
+
+<br/>
+
+## 💯Features
+ **FastLog.Net features :**
+ * Supported Logging Events :  
+    * INFO  
+    * NOTE  
+    * TODO  
+    * WARNING  
+    * ALERT  
+    * DEBUG  
+    * ERROR  
+    * EXCEPTION  (specially design for .Net [Exception](https://learn.microsoft.com/en-us/dotnet/api/system.exception?view=net-7.0) class to keep all details with nice json format)
+    * SYSTEM  
+    * SECURITY  
+ * Agents : 
+   * Text File Agent which supports both plaint text and json format with ability to handle log file max size.
+   * Colorized Console Agent which also supports text and json output.
+   * Beep agent (works only on Windows® OS) is resposible to make beep sound from BIOS or speaker with fully customizable event type.
+   
+  
 <br/>
 
 ## 🤝Contributions
