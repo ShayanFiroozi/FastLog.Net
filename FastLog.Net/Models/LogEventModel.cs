@@ -14,6 +14,7 @@
 
 using FastLog.Enums;
 using FastLog.Helpers.ExtendedMethods;
+using FastLog.Interfaces;
 using System;
 
 namespace FastLog.Models
@@ -22,7 +23,7 @@ namespace FastLog.Models
     /// <summary>
     /// Event Model class
     /// </summary>
-    public sealed class LogEventModel
+    public sealed class LogEventModel : ILogEventModel
     {
 
         #region Constructors
