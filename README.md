@@ -61,11 +61,11 @@
 <br/>
 
 ## 🤝Contributions
-As this is a new repository , there's no contributor yet! , But **FastLog.Net** welcomes and appreciates any contribution , pull request or bug report.
+Since this is a new repository , there's no contributor yet! , But **FastLog.Net** welcomes and appreciates any contribution , pull request or bug report.
 
-If you'd like to contribute, please read the [**How It Works**](https://github.com/ShayanFiroozi/FastLog.Net#-how-it-works) section and then take a look at [ToDo List](ToDo.md) to get involved !
+If you'd like to contribute, please read the [**How It Works**](https://github.com/ShayanFiroozi/FastLog.Net#-how-it-works) section and then take a look at [**ToDo List**](ToDo.md) to get involved !
  
-Note : The srouce code is fully commented.
+**Note** : The srouce code is fully commented.
 
 <br/>
  
@@ -74,6 +74,7 @@ Note : The srouce code is fully commented.
 <br/>
  
 ## ❓ How It Works
+ ### Soon...
 
 <br/>
  
@@ -92,7 +93,7 @@ Note : The srouce code is fully commented.
  
  ## © License
 **FastLog.Net** is an open source software, licensed under the terms of MIT license.
-See [LICENSE](LICENSE.md) for more details.
+See [**LICENSE**](LICENSE.md) for more details.
 
 <br/>
  
@@ -111,9 +112,9 @@ Note : Since the **FastLog.Net** solution is supporting multi target frameworks 
 <br/>
  
 ## Donations
-If you would like to financially support **FastLog.Net**, first of all, thank you! Please read [DONATIONS](DONATIONS.md) for my crypto wallets !
+If you would like to financially support **FastLog.Net**, first of all, thank you! Please read [**DONATIONS**](DONATIONS.md) for my crypto wallets !
 
 <br/>
  
 ## Version History
-Please read [CHANGELOG](CHANGELOG.md) for more and track changing details.
+Please read [**CHANGELOG**](CHANGELOG.md) for more and track changing details.
