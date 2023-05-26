@@ -80,7 +80,7 @@ If you'd like to contribute, please read the [**How It Works**](https://github.c
                                                  .DeleteTheLogFileWhenExceededTheMaximumSizeOf(100)
                                                  .PrintOnConsole();
  ```   
-   ***Notes**: Internal logger agent is responsible for logging the events occured in the FastLog.Net internally(including exceptions).*
+   ***Notes**: Internal logger agent is responsible for logging the events occured in the FastLog.Net internally (including exceptions).*
  
  <br/>
  
