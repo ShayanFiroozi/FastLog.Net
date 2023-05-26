@@ -4,10 +4,16 @@
 
 # FastLog.Net
 
-**FastLog.Net** is the fastest , most efficient and high performance logger for .Net  
-Easy to use and develop , clean code , extensible agents and fully thread-safe.  
-FastLog.Net supports structured logging and enhanced Json format for [Exception](https://learn.microsoft.com/en-us/dotnet/api/system.exception?view=net-7.0) class.  
-FastLog.Net uses thread-safe queueing technique to enqueue the logging request(s) and release your thread almost immediately after you call a logging method.
+**FastLog.Net** is the fastest , most efficient and high performance logger for **.Net** 
+ 
+✔ Easy to use and develop , clean code , extensible agents and fully thread-safe.  
+ 
+✔ FastLog.Net supports structured logging and enhanced Json format for [Exception](https://learn.microsoft.com/en-us/dotnet/api/system.exception?view=net-7.0) class.  
+ 
+✔ FastLog.Net uses thread-safe queueing technique to enqueue the logging request(s) and release your thread almost immediately  
+   after you call a logging method.
+ 
+<br/>
 
 ## 🤝Contributions
 
@@ -28,7 +34,7 @@ Note : The srouce code is fully commented.
 
 - However the **FastLog.Net** is thread-safe BUT it is **NOT** recommended to build two agents with same logging file , so this limitation applied to the FastLog.Net intentionally to prevent two or more agents write and manage the same logging file.
 
-- The **FastLog.Net** queue has been limited to handle up to the **1,000,000** logging events at the same time.This limition has been set to prevent uncontrolled memory usage.
+- The **FastLog.Net** queue has been limited to handle up to the **1,000,000** logging events at the same time.This limitation has been set to prevent uncontrolled memory usage.
 
 ## ⁉ Known Issues
 
