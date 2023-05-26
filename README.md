@@ -71,16 +71,27 @@ If you'd like to contribute, please read the [**How It Works**](https://github.c
  
 ## ❔ How To Use
  ### Step 1 :  
- - Build an **Internal Logger** agent with fluent builder pattern :  
+ - Build a **Internal Logger** agent with fluent builder pattern :  
  
  ```csharp
    InternalLogger internalLogger = InternalLogger.Create()
                                                  .UseJsonFormat()
                                                  .SaveInternalEventsToFile(@"Logs\InternalEventsLog.log")
-                                                 .DeleteTheLogFileWhenExceededTheMaximumSizeOf(100)
+                                                 .DeleteTheLogFileWhenExceededTheMaximumSizeOf(20)
                                                  .PrintOnConsole();
  ```   
-   ***Notes**: Internal logger agent is responsible for logging the events occured in the FastLog.Net internally (including exceptions).*
+   ***Note**: Internal logger agent is responsible for logging the events occured in the FastLog.Net internally (including exceptions).*  
+ 
+  ### Step 2 :  
+ - Build **Logger Configuration** with fluent builder pattern :  
+ 
+ ```csharp
+   ConfigManager loggerConfig = ConfigManager.Create()
+                                             .WithLoggerName("FastLog.Net® Logger")
+                                             .WithMaxEventsToKeepInMemory(1_000);
+ ```   
+       ***Note**: There is "**RunAgentsInParallelMode**" feature you can use to run agent(s) in parallel , but in most cases it's **NOT** recommended because may have considerable negative impact on performance.*
+ 
  
  <br/>
  
