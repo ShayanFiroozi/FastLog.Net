@@ -36,11 +36,11 @@
  
    * **Colorized Console Agent** which also supports text and json output.  
  
-   * **Beep Agent** (works only on Windows® OS) which is resposible to make [beep](https://learn.microsoft.com/en-us/dotnet/api/system.console.beep?view=net-7.0) sound from BIOS or speaker with fully customizable event type.  
+   * **Beep Agent** (works only on Windows® OS) which is resposible to make [beep](https://learn.microsoft.com/en-us/dotnet/api/system.console.beep?view=net-7.0) sound from BIOS or system speaker with fully customizable event type.  
  
    * **Debug/Trace Agents** help you to log your events on [debug](https://learn.microsoft.com/en-us/dotnet/api/system.diagnostics.debug?view=net-7.0) or [trace](https://learn.microsoft.com/en-us/dotnet/api/system.diagnostics.trace?view=net-7.0) system.  
  
-   * **Run Process Agent** will run a specific process in "Noraml" and "As administrator" privileges ,  based on a specific or all events.  
+   * **Run Process Agent** will run a specific process in "Noraml" or "As administrator" privileges ,  based on a specific or all events.  
  
    * **Method Execution Agent** will call a method in your code ,  based on a specific or all events.  
  
