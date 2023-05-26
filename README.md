@@ -16,7 +16,7 @@
 
 ## 💯Features
  **FastLog.Net features :**
- * Supported Logging Events :  
+ * **Supported Logging Events :**  
     * INFO  
     * NOTE  
     * TODO  
@@ -27,10 +27,11 @@
     * EXCEPTION  (specially design for .Net [Exception](https://learn.microsoft.com/en-us/dotnet/api/system.exception?view=net-7.0) class to keep all details with nice json format)
     * SYSTEM  
     * SECURITY  
- * Agents : 
-   * Text File Agent which supports both plaint text and json format with ability to handle log file max size.
-   * Colorized Console Agent which also supports text and json output.
-   * Beep agent (works only on Windows® OS) is resposible to make beep sound from BIOS or speaker with fully customizable event type.
+ * **Agents :** 
+   * **Text File Agent** which supports both plaint text and json format with ability to handle log file max size.
+   * **Colorized Console Agent** which also supports text and json output.
+   * **Beep Agent** (works only on Windows® OS) which is resposible to make [beep](https://learn.microsoft.com/en-us/dotnet/api/system.console.beep?view=net-7.0) sound from BIOS or speaker with fully customizable event type.
+   * **Debug/Trace Agents** help you to log your events on [debug](https://learn.microsoft.com/en-us/dotnet/api/system.diagnostics.debug?view=net-7.0) or [trace](https://learn.microsoft.com/en-us/dotnet/api/system.diagnostics.trace?view=net-7.0) system.
    
   
 <br/>
