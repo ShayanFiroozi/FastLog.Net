@@ -3,7 +3,6 @@
 </p>
 
 # FastLog.Net
-
 **FastLog.Net** is the fastest , most efficient and high performance logger for **.Net** 
  
 ✔ Easy to use and develop , clean code , extensible agents and fully thread-safe.  
@@ -16,37 +15,42 @@
 <br/>
 
 ## 🤝Contributions
-
 As this is a new repository , there's no contributor yet! , But **FastLog.Net** welcomes and appreciates any contribution , pull request or bug report.
 
 If you'd like to contribute, please read the [**How It Works**](https://github.com/ShayanFiroozi/FastLog.Net#-how-it-works) section and then take a look at [ToDo List](ToDo.md) to get involved !
  
 Note : The srouce code is fully commented.
 
-
+<br/>
+ 
 ## ❔ How To Use
 
-
+<br/>
+ 
 ## ❓ How It Works
 
-
+<br/>
+ 
 ## ❌ Limitations
 
 - However the **FastLog.Net** is thread-safe BUT it is **NOT** recommended to build two agents with same logging file , so this limitation applied to the FastLog.Net intentionally to prevent two or more agents write and manage the same logging file.
 
 - The **FastLog.Net** queue has been limited to handle up to the **1,000,000** logging events at the same time.This limitation has been set to prevent uncontrolled memory usage.
 
+<br/>
+ 
 ## ⁉ Known Issues
+ **Not Reported Yet!** 😎
 
-
-## © License
-
+<br/>
+ 
+ ## © License
 **FastLog.Net** is an open source software, licensed under the terms of MIT license.
 See [LICENSE](LICENSE.md) for more details.
 
-
+<br/>
+ 
 ## 🛠 How to build
-
 Use **Visual Studio 2022** and open the solution 'FastLog.Net.sln'.
 
 **FastLog.Net** solution is setup to support following .Net versions :
@@ -58,8 +62,12 @@ Use **Visual Studio 2022** and open the solution 'FastLog.Net.sln'.
 
 Note : Since the **FastLog.Net** solution is supporting multi target frameworks , to build the solution successfully you should install all .Net versions above , otherwise you can easily exclude not interested framework(s) by editing **TargetFrameworks** tag in the [FastLog.Net Project File](https://github.com/ShayanFiroozi/FastLog.Net/blob/master/FastLog.Net/FastLog.Net.csproj).
 
+<br/>
+ 
 ## Donations
 If you would like to financially support **FastLog.Net**, first of all, thank you! Please read [DONATIONS](DONATIONS.md) for my crypto wallets !
 
+<br/>
+ 
 ## Version History
 Please read [CHANGELOG](CHANGELOG.md) for more and track changing details.
