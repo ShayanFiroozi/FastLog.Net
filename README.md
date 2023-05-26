@@ -190,7 +190,7 @@ Use **Visual Studio 2022** and open the solution 'FastLog.Net.sln'.
 - .Net Framework 4.8
 
 
-Note : Since the **FastLog.Net** solution is supporting multi target frameworks , to build the solution successfully you should install all .Net versions above , otherwise you can easily exclude not interested framework(s) by editing **TargetFrameworks** tag in the [FastLog.Net Project File](https://github.com/ShayanFiroozi/FastLog.Net/blob/master/FastLog.Net/FastLog.Net.csproj).
+**Note** : Since the **FastLog.Net** solution is supporting multi target frameworks , to build the solution successfully you should install all .Net versions above , otherwise you can easily exclude not interested framework(s) by editing **TargetFrameworks** tag in the [FastLog.Net Project File](https://github.com/ShayanFiroozi/FastLog.Net/blob/master/FastLog.Net/FastLog.Net.csproj).
 
 <br/>
  
