@@ -1,5 +1,8 @@
 # FastLog.Net
-ToDo List : 
+## ToDo List : 
 
-1- Add user-defined data to the Event Model.
-2- Add file based configuration.
+- Add file based configuration : The current version of FastLog.Net only supports in-code configuration setup , so it is planned to develope the configuration class to also read the configuration from a setting file.
+- Major Refactor and use more memory efficient approach like Span<T>.
+- Add Lite DB Agent.
+- Add SQLite Agent.
+- Add SQL Server Agent.  
