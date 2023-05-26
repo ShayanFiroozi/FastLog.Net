@@ -1,10 +1,6 @@
-# Change Log
+# FastLog.Net Change Log :
+</br>
 
-## Current Version
-
--------
-
-
-## Previous Versions
-
--------
+## 1.0 ( 2023-05-26 )
+  * Change log created !
+ 
