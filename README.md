@@ -27,6 +27,7 @@
     * EXCEPTION  (specially design for .Net [Exception](https://learn.microsoft.com/en-us/dotnet/api/system.exception?view=net-7.0) class to keep all details with nice json format)
     * SYSTEM  
     * SECURITY  
+ <br/>  
  
  * **Agents :** 
    * **Text File Agent** which supports both plain text and json format with ability to handle log file max size.  
@@ -43,8 +44,13 @@
  
    * **Heavy Operation Simulator Agent** simulates an heavy IO bound operation (like email sending or http operation) , this agent is used for testing the FastLog.Net or create a delay intentionally between the agents.  
  
-      * **Note:** All agents support Event Type filtering ,  so you can easily specify your agent should be executed on which event type(s).  
-                  *For example: You can add a "Beep Agent" with "Exception" log event , so the beep agent will only execute on "Exceptions" not other logging events.*
+      * **Note:** All agents support Event Type filtering ,  so you can easily specify that your agent should be executed on which event type(s).  
+                  *For example: You can add a "Beep Agent" with "Exception" log event , so the beep agent will only execute on "Exceptions" not other logging events.*  
+ 
+ <br/>  
+ 
+ * **Internal Events Logger:**
+   * **FastLog.Net** has a powerful and structured internal logging system to log and monitor internal exceptions or event which occured in the library itself !
  
  
 <br/>
