@@ -11,7 +11,7 @@
 ✔ FastLog.Net supports structured logging and enhanced Json format for [Exception](https://learn.microsoft.com/en-us/dotnet/api/system.exception?view=net-7.0) class.  
  
 ✔ FastLog.Net uses thread-safe queueing technique to enqueue the logging request(s) and release your thread  
-   almost immediately after you call a logging method.
+    almost immediately after you call a logging method.
  
 <br/>
 
