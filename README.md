@@ -74,7 +74,7 @@ If you'd like to contribute, please read the [**How It Works**](https://github.c
  - Build a **Internal Logger** agent with fluent builder pattern :  
  
  ```csharp
-   InternalLogger internalLogger = InternalLogger.Create()
+ InternalLogger internalLogger = InternalLogger.Create()
                                                  .UseJsonFormat()
                                                  .SaveInternalEventsToFile(@"Logs\InternalEventsLog.log")
                                                  .DeleteTheLogFileWhenExceededTheMaximumSizeOf(20)
@@ -86,11 +86,45 @@ If you'd like to contribute, please read the [**How It Works**](https://github.c
  - Build **Logger Configuration** with fluent builder pattern :  
  
  ```csharp
-   ConfigManager loggerConfig = ConfigManager.Create()
+ ConfigManager loggerConfig = ConfigManager.Create()
                                              .WithLoggerName("FastLog.Net® Logger")
                                              .WithMaxEventsToKeepInMemory(1_000);
  ```   
-       ***`Note`**: There is "**RunAgentsInParallelMode**" feature you can use to run agent(s) in parallel , but in most cases it's **NOT** recommended because may have considerable negative impact on performance.*
+       ***`Note`**: There is "**RunAgentsInParallelMode**" feature you can use to run agent(s) in parallel , but in most cases it's **NOT** recommended because may have considerable negative impact on performance.*  
+ 
+   ### Step 3 :  
+ - Build **Logger** with fluent builder pattern :  
+ 
+ ```csharp
+ Logger fastLogger = Logger.Create()
+                            .WithInternalLogger(internalLogger)
+                            .WithConfiguration(loggerConfig)
+                            .WithAgents()
+
+                                .AddConsoleAgent()
+                                  .UseJsonFormat()
+                                .BuildAgent()
+
+                                .AddBeepAgent().BuildAgent()
+
+                                .AddDebugSystemAgent().BuildAgent()
+
+                                .AddTextFileAgent()
+                                  .UseJsonFormat()
+                                  .SaveLogToFile("Logs\\TestLog.json")
+                                  .DeleteTheLogFileWhenExceededTheMaximumSizeOf(10)
+                                .BuildAgent()
+
+
+                                   .AddTextFileAgent()
+                                     .SaveLogToFile("Logs\\TestLogPlain.txt")
+                                     .DeleteTheLogFileWhenExceededTheMaximumSizeOf(10)
+                                   .BuildAgent()
+
+                             .BuildLogger();
+ 
+ _= fastLogger.StartLogger();
+ ``` 
  
  
  <br/>
