@@ -41,7 +41,11 @@
  
    * **Method Execution Agent** will call a method in your code ,  based on a specific or all events.  
  
-   * **Heavy Operation Simulator Agent** simulates an heavy IO bound operation (like email sending or http operation) , this agent is used for testing the FastLog.Net or create a delay intentionally between the agents.
+   * **Heavy Operation Simulator Agent** simulates an heavy IO bound operation (like email sending or http operation) , this agent is used for testing the FastLog.Net or create a delay intentionally between the agents.  
+ 
+      * **Note:** All agents support Event Type filtering ,  so you can easily specify your agent should be executed on which event type(s).  
+                  *For example: You can add a "Beep Agent" with "Exception" log event , so the beep agent will only execute on "Exceptions" not other logging events.*
+ 
  
 <br/>
 
