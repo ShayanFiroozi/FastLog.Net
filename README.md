@@ -70,8 +70,19 @@ If you'd like to contribute, please read the [**How It Works**](https://github.c
 <br/>
  
 ## ❔ How To Use
-
-<br/>
+ ### Step 1 :  
+ - Build an **Internal Logger** agent with fluent builder pattern :  
+ 
+ ```csharp
+   InternalLogger internalLogger = InternalLogger.Create()
+                                                 .UseJsonFormat()
+                                                 .SaveInternalEventsToFile(@"Logs\InternalEventsLog.log")
+                                                 .DeleteTheLogFileWhenExceededTheMaximumSizeOf(100)
+                                                 .PrintOnConsole();
+ ```   
+   ***Notes**: Internal logger agent is responsible for logging the events occured in the FastLog.Net internally(including exceptions).*
+ 
+ <br/>
  
 ## ❓ How It Works
  ### Soon...
