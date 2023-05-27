@@ -55,7 +55,6 @@ namespace FastLog.Core
                      {
                          IsLoggerRunning = true;
 
-
                          ILogEventModel EventModelFromChannel = await LoggerChannelReader.ReadAsync(_cts.Token).ConfigureAwait(false);
 
                          if (EventModelFromChannel != null)
@@ -156,7 +155,7 @@ namespace FastLog.Core
 
            
 
-            return Task.Delay(10); // Delay is necessary for engine Task.Run to have enough time to get executed !
+            return Task.Delay(100); // Delay is necessary for engine Task.Run to have enough time to get executed !
         }
 
 
