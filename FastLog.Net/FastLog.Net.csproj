@@ -6,6 +6,17 @@
     <Deterministic>false</Deterministic>
     <PlatformTarget>AnyCPU</PlatformTarget>
     <ApplicationIcon>Icon\FastLogNet.ico</ApplicationIcon>
+    <Description>💯 High performance and fully thread-safe logger for .NET</Description>
+    <Title>FastLog.Net  , high performance logger for .NET</Title>
+    <PackageProjectUrl></PackageProjectUrl>
+    <PackageReadmeFile>README.md</PackageReadmeFile>
+    <RepositoryUrl>https://github.com/ShayanFiroozi/FastLog.Net</RepositoryUrl>
+    <GeneratePackageOnBuild>True</GeneratePackageOnBuild>
+    <Copyright>Copyright © 2023 TrendSoft® (MIT License)</Copyright>
+    <PackageTags>logger;log;logging;csharp;dotnet;net7;net6;net48;logging-library</PackageTags>
+    <PackageLicenseExpression>MIT</PackageLicenseExpression>
+    <PackageRequireLicenseAcceptance>True</PackageRequireLicenseAcceptance>
+    <Company>Shayan Firoozi &lt;shayan.firoozi@gmail.com&gt;</Company>
     <PackageIcon>FastLogNet.png</PackageIcon>
   </PropertyGroup>
 
@@ -34,14 +45,25 @@
   </ItemGroup>
 
   <ItemGroup>
-    <PackageReference Include="System.Threading.Channels" Version="7.0.0" />
-  </ItemGroup>
-
-  <ItemGroup>
-    <None Update="Icon\FastLogNet.png">
+    <None Include="..\README.md">
       <Pack>True</Pack>
       <PackagePath>\</PackagePath>
     </None>
+  </ItemGroup>
+
+  <ItemGroup>
+    <None Include="Icon\FastLogNet.ico">
+      <Pack>True</Pack>
+      <PackagePath>\</PackagePath>
+    </None>
+    <None Include="Icon\FastLogNet.png">
+      <Pack>True</Pack>
+      <PackagePath>\</PackagePath>
+    </None>
+  </ItemGroup>
+
+  <ItemGroup>
+    <PackageReference Include="System.Threading.Channels" Version="7.0.0" />
   </ItemGroup>
   
 
