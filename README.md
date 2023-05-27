@@ -56,7 +56,7 @@
   <br/>  
  
  * **Thread Safety:**
-   * **FastLog.Net** has an internal queue list which is designed fully thread-safe , it's really not matter how many thread(s) call the logging methods simultaneously , it gives your request(s) and put in the queue and immediately release your thread ! Then process your logging request(s) in the background.
+   * **FastLog.Net** has an internal queue list which is designed fully thread-safe , it's really not matter how many thread(s) call the logging methods simultaneously , it will get your request(s) and put in the queue and immediately release your thread ! Then process your logging request(s) in the background.
  
 <br/>
 
