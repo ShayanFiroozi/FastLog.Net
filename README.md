@@ -135,9 +135,9 @@ If you'd like to contribute, please read the [**How It Works**](https://github.c
                             .BuildLogger();
  
  
- // To Start the FastLog.Net engine.
- // Important : DO NOT await "StartLogger" method because it runs infinitely ! , Just call and discard the result ;)
-      _= fastLogger.StartLogger();
+ // Start the FastLog.Net engine in the background.
+ // Important : The StartLogger() MUST be awaited , otherwise the FastLog.Net engine does not start correctly.
+      await fastLogger.StartLogger();
  ``` 
 
  ### Final Step :  

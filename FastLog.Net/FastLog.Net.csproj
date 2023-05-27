@@ -8,7 +8,7 @@
     <ApplicationIcon>Icon\FastLogNet.ico</ApplicationIcon>
     <Description>💯 High performance and fully thread-safe logger for .NET</Description>
     <Title>FastLog.Net  , high performance logger for .NET</Title>
-    <PackageProjectUrl></PackageProjectUrl>
+    <PackageProjectUrl>https://github.com/ShayanFiroozi/FastLog.Net</PackageProjectUrl>
     <PackageReadmeFile>README.md</PackageReadmeFile>
     <RepositoryUrl>https://github.com/ShayanFiroozi/FastLog.Net</RepositoryUrl>
     <GeneratePackageOnBuild>True</GeneratePackageOnBuild>
@@ -18,6 +18,7 @@
     <PackageRequireLicenseAcceptance>True</PackageRequireLicenseAcceptance>
     <Company>Shayan Firoozi &lt;shayan.firoozi@gmail.com&gt;</Company>
     <PackageIcon>FastLogNet.png</PackageIcon>
+    <Version>1.1.8547</Version>
   </PropertyGroup>
 
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|AnyCPU'">
@@ -63,7 +64,7 @@
   </ItemGroup>
 
   <ItemGroup>
-    <PackageReference Include="System.Threading.Channels" Version="7.0.0" Condition="'$(TargetFramework)' == 'net48'"/>
+    <PackageReference Include="System.Threading.Channels" Version="7.0.0" Condition="'$(TargetFramework)' == 'net48'" />
   </ItemGroup>
   
 
