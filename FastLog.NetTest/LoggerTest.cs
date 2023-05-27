@@ -64,9 +64,9 @@ namespace FastLog.NetTest
             loggerA.OnEventOccured += LoggerA_OnEventOccured;
             loggerA.OnEventProcessed += LoggerA_OnEventProcessed;
 
-            loggerA.StartLogger();
+           await loggerA.StartLogger();
 
-
+            await loggerA.LogInfo("Test");
 
             _ = Task.Run(() =>
                 {
