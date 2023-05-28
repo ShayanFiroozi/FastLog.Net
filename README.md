@@ -136,8 +136,8 @@ If you'd like to contribute, please read the [**How It Works**](https://github.c
  
  
  // Start the FastLog.Net engine in the background.
- // Important : The StartLogger() MUST be awaited , otherwise the FastLog.Net engine does not start correctly.
-      await fastLogger.StartLogger();
+      fastLogger.StartLogger();
+
  ``` 
 
  ### Final Step :  
