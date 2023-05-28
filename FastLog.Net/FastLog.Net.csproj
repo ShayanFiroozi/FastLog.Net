@@ -9,16 +9,17 @@
     <Description>💯 High performance and fully thread-safe logger for .NET</Description>
     <Title>FastLog.Net  , high performance logger for .NET</Title>
     <PackageProjectUrl>https://github.com/ShayanFiroozi/FastLog.Net</PackageProjectUrl>
-    <PackageReadmeFile>README.md</PackageReadmeFile>
+    <PackageReadmeFile>README-Nuget.md</PackageReadmeFile>
     <RepositoryUrl>https://github.com/ShayanFiroozi/FastLog.Net</RepositoryUrl>
     <GeneratePackageOnBuild>True</GeneratePackageOnBuild>
     <Copyright>Copyright © 2023 TrendSoft® (MIT License)</Copyright>
     <PackageTags>logger;log;logging;csharp;dotnet;net7;net6;net48;logging-library</PackageTags>
     <PackageLicenseExpression>MIT</PackageLicenseExpression>
     <PackageRequireLicenseAcceptance>True</PackageRequireLicenseAcceptance>
-    <Company>Shayan Firoozi &lt;shayan.firoozi@gmail.com&gt;</Company>
+    <Company>TrendSoft®</Company>
     <PackageIcon>FastLogNet.png</PackageIcon>
     <Version>1.1.8548</Version>
+    <Authors>Shayan Firoozi &lt;shayan.firoozi@gmail.com&gt;</Authors>
   </PropertyGroup>
 
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|AnyCPU'">
@@ -46,13 +47,10 @@
   </ItemGroup>
 
   <ItemGroup>
-    <None Include="..\README.md">
+    <None Include="..\README-Nuget.md">
       <Pack>True</Pack>
       <PackagePath>\</PackagePath>
     </None>
-  </ItemGroup>
-
-  <ItemGroup>
     <None Include="Icon\FastLogNet.ico">
       <Pack>True</Pack>
       <PackagePath>\</PackagePath>
