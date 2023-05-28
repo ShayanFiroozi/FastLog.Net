@@ -71,7 +71,7 @@ If you'd like to contribute, please read the [**How It Works**](https://github.c
  
 ## ❔ How To Use
  ### Step 1 :  
- - Build a **Internal Logger** agent with fluent builder pattern :  
+ - Create the **Internal Logger** agent with fluent builder pattern :  
  
  ```csharp
  InternalLogger internalLogger = InternalLogger.Create()
@@ -83,7 +83,7 @@ If you'd like to contribute, please read the [**How It Works**](https://github.c
    ***`Note`**: Internal logger agent is responsible for logging the events occured in the FastLog.Net internally (including exceptions).*  
  
   ### Step 2 :  
- - Build **Logger Configuration** with fluent builder pattern :  
+ - Create the **Logger Configuration** with fluent builder pattern :  
  
  ```csharp
  ConfigManager loggerConfig = ConfigManager.Create()
@@ -93,7 +93,7 @@ If you'd like to contribute, please read the [**How It Works**](https://github.c
        ***`Note`**: There is "**RunAgentsInParallelMode**" feature you can use to run agent(s) in parallel , but in most cases it's **NOT** recommended because may have considerable negative impact on performance.*  
  
    ### Step 3 :  
- - Build **Logger** with fluent builder pattern :  
+ - Create the **Logger** with fluent builder pattern :  
  
  ```csharp
  Logger fastLogger = Logger.Create()
