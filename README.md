@@ -3,6 +3,8 @@
 </p>
 
 # FastLog.Net
+[![Nuget](https://img.shields.io/nuget/v/FastLog.Net)](https://www.nuget.org/packages/FastLog.Net/#readme-body-tab) 
+ 
 **FastLog.Net** is the fastest , most efficient and high performance logger for **.Net** 
  
 ✔ Easy to use and develop , clean code , extensible agents and log model , and also designed to be fully thread-safe.  
