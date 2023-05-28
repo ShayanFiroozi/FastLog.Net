@@ -9,5 +9,5 @@
 
 ### 1.1.8548 (2023-05-28)
   * Improve StartLogger().
-  * ExecuteOnDesignTime / ExecuteOnRunTime big fixed.
+  * ExecuteOnDesignTime / ExecuteOnRunTime bug fixed.
  
