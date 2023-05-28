@@ -5,5 +5,9 @@
   * Change log created !
 
 ## 1.1 ( 2023-05-27 )
-  * Fix StartLogger() await bug.
+  * Fix StartLogger() await bug.  
+
+### 1.1.8548 (2023-05-28)
+  * Improve StartLogger().
+  * ExecuteOnDesignTime / ExecuteOnRunTime big fixed.
  
