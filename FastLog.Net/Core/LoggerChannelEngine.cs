@@ -36,126 +36,138 @@ namespace FastLog.Core
         /// </summary>
         /// <returns></returns>
 
-        public Task StartLogger()
+        public void StartLogger()
         {
 
-            List<Task> tasksList = null;
-
-            if (Configuration.RunAgentsInParallel) tasksList = new List<Task>();
+            TaskCompletionSource<bool> IsEngineRunning = new TaskCompletionSource<bool>();
 
             // Logger core engine -> ( Channel Prodecure / Consumer approach )
 
-             Task.Run(async () =>
-             {
+            Task.Run(async () =>
+            {
 
-                 while (!LoggerChannelReader.Completion.IsCompleted && !_cts.IsCancellationRequested)
-                 {
+                List<Task> tasksList = null;
 
-                     try
-                     {
-                         IsLoggerRunning = true;
+                if (Configuration.RunAgentsInParallel) tasksList = new List<Task>();
 
-                         ILogEventModel EventModelFromChannel = await LoggerChannelReader.ReadAsync(_cts.Token).ConfigureAwait(false);
+                while (!LoggerChannelReader.Completion.IsCompleted && !_cts.IsCancellationRequested)
+                {
 
-                         if (EventModelFromChannel != null)
-                         {
+                    try
+                    {
 
-                             HandleInMemoryEvents(EventModelFromChannel);
+                        if (!IsLoggerRunning)
+                        {
+                            IsLoggerRunning = true;
+                            IsEngineRunning.SetResult(true); // Release the waiting thread to go on !!
+                        }
 
+                        // Awaiting for a log event to be put in the channel...
 
+                        ILogEventModel EventModelFromChannel = await LoggerChannelReader.ReadAsync(_cts.Token)
+                                                                                        .ConfigureAwait(false);
+                        // Consume the log event...
+                        if (EventModelFromChannel != null)
+                        {
 
-                             // Consume the LogEventModel on channel one by one with each logger agent in the agent list !
-
-
-                             // Pararllel.Foreach has been tested BUT normal foreach and Task.WhenAll is faster thean Parallel.Foreach in this case.
-
-                             foreach (IAgent logger in Agents.AgentList)
-                             {
-                                 if (logger is null)
-                                 {
-                                     continue;
-                                 }
-
-                                 if (!IsLoggerRunning) return;
-
-                                 try
-                                 {
-                                     if (!string.IsNullOrWhiteSpace(EventModelFromChannel.EventMessage))
-                                     {
-                                         // Important Warning : "Task.WhenAll" has serious performance issue here ,
-                                         // so use it just when we have more than 1 agent and/or an hevy IO waiting operation is used like Email/SMS send , HTTP operation and etc.
-                                         // "Agents.AgentList.Count() > 1" --> Prevent using "Task.WhenAll" if we have just 1 agent.
-
-                                         if (Configuration.RunAgentsInParallel && Agents.AgentList.Count() > 1)
-                                         {
-
-                                             tasksList.Add(logger.ExecuteAgent(EventModelFromChannel, _cts.Token));
-                                         }
-                                         else
-                                         {
-                                             await logger.ExecuteAgent(EventModelFromChannel, _cts.Token).ConfigureAwait(false);
-                                         }
-                                     }
-
-                                     else
-                                     {
-                                         continue;
-                                     }
-
-
-                                 }
-                                 catch (Exception ex)
-                                 {
-                                     InternalLogger?.LogInternalException(ex);
-                                 }
-
-
-                                 //Console.WriteLine($"{LoggerChannelReader.Count:N0} item(s) left in channel.");
-                             }
-
-                             if (Configuration.RunAgentsInParallel)
-                             {
-                                 await Task.WhenAll(tasksList).ConfigureAwait(false);
-                             }
+                            HandleInMemoryEvents(EventModelFromChannel);
 
 
 
-                             // Just for sure !! in fact never gonna happen ! long Max value is "9,223,372,036,854,775,807"
-
-                             if (channelProcessedEventCount >= long.MaxValue) { channelProcessedEventCount = 0; }
-                             channelProcessedEventCount++;
-
-                             // Interlocked.Increment(ref channelProcessedEventCount);
-
-                             // Raise the event
-                             try
-                             {
-                                 OnEventProcessed?.Invoke(this, EventModelFromChannel);
-                             }
-                             catch (Exception ex)
-                             {
-                                 InternalLogger?.LogInternalException(ex);
-                             }
+                            // Consume the LogEventModel on channel one by one with each logger agent in the agent list !
 
 
-                         }
+                            // Pararllel.Foreach has been tested BUT normal foreach and Task.WhenAll is faster thean Parallel.Foreach in this case.
+
+                            foreach (IAgent logger in Agents.AgentList)
+                            {
+                                if (logger is null)
+                                {
+                                    continue;
+                                }
+
+                                if (!IsLoggerRunning) return;
+
+                                try
+                                {
+                                    if (!string.IsNullOrWhiteSpace(EventModelFromChannel.EventMessage))
+                                    {
+                                        // Important Warning : "Task.WhenAll" has serious performance issue here ,
+                                        // so use it just when we have more than 1 agent and/or an hevy IO waiting operation is used like Email/SMS send , HTTP operation and etc.
+                                        // "Agents.AgentList.Count() > 1" --> Prevent using "Task.WhenAll" if we have just 1 agent.
+
+                                        if (Configuration.RunAgentsInParallel && Agents.AgentList.Count() > 1)
+                                        {
+
+                                            tasksList.Add(logger.ExecuteAgent(EventModelFromChannel, _cts.Token));
+                                        }
+                                        else
+                                        {
+                                            await logger.ExecuteAgent(EventModelFromChannel, _cts.Token).ConfigureAwait(false);
+                                        }
+                                    }
+
+                                    else
+                                    {
+                                        continue;
+                                    }
 
 
-                     }
-                     catch (Exception ex)
-                     {
-                         InternalLogger?.LogInternalException(ex);
-                     }
-
-                 }
+                                }
+                                catch (Exception ex)
+                                {
+                                    InternalLogger?.LogInternalException(ex);
+                                }
 
 
+                                //Console.WriteLine($"{LoggerChannelReader.Count:N0} item(s) left in channel.");
+                            }
 
-             }, _cts.Token).ConfigureAwait(false);
+                            if (Configuration.RunAgentsInParallel)
+                            {
+                                await Task.WhenAll(tasksList).ConfigureAwait(false);
+                            }
 
-           
 
-            return Task.Delay(100); // Delay is necessary for engine Task.Run to have enough time to get executed !
+
+                            // Just for sure !! in fact never gonna happen ! long Max value is "9,223,372,036,854,775,807"
+
+                            if (channelProcessedEventCount >= long.MaxValue) { channelProcessedEventCount = 0; }
+                            channelProcessedEventCount++;
+
+                            // Interlocked.Increment(ref channelProcessedEventCount);
+
+                            // Raise the event
+                            try
+                            {
+                                OnEventProcessed?.Invoke(this, EventModelFromChannel);
+                            }
+                            catch (Exception ex)
+                            {
+                                InternalLogger?.LogInternalException(ex);
+                            }
+
+
+                        }
+
+
+                    }
+                    catch (Exception ex)
+                    {
+                        InternalLogger?.LogInternalException(ex);
+                    }
+
+                }
+
+            }, _cts.Token).ConfigureAwait(false);
+
+
+
+            // Wait here for releasing signal from the "TaskCompletionSource".( after the engine run successfully)
+
+            IsEngineRunning.Task.Wait();
+
+
         }
 
 
