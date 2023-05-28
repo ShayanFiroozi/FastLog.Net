@@ -54,7 +54,7 @@ namespace FastLog.NetTest
 
 
 
-            // .AddConsoleAgent().UseJsonFormat().BuildAgent()
+                          .AddConsoleAgent().UseJsonFormat().ExecuteOnlyOnDesignTime().BuildAgent()
 
 
 

@@ -237,12 +237,12 @@ namespace FastLog.Core
                 }
 
 
-#if DEBUG
+
                 if (loggerAgents.Count(a => a is DebugSystemAgent) > 1)
                 {
                     throw new Exception("A \"DebugWindowLogger\" agent already exists on the agent list.");
                 }
-#endif
+
 
                 if (loggerAgents.Count(a => a is TraceSystemAgent) > 1)
                 {

@@ -12,12 +12,7 @@ namespace LogModuleTest
 
             LoggerTest.StartLoggers();
 
-            //Task.Delay(1_000).GetAwaiter().GetResult();
-
-
-            // LoggerTest.CrazyTestWithMultiThreadMultiTask();
-
-
+  
             // Test With 5 thread ( to test thread-safety)
             for (int i = 0; i < 5; i++)
             {

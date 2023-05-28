@@ -23,7 +23,7 @@ using System.Runtime.InteropServices;
 
 namespace FastLog.Internal
 {
-    
+
 
 
     /// <summary>
@@ -230,17 +230,18 @@ namespace FastLog.Internal
                 {
                     if (_PrintOnConsoleOnlyOnDebugMode)
                     {
-#if DEBUG
-                        Console.WriteLine();
-                        Console.BackgroundColor = ConsoleColor.Red;
-                        Console.Write($"Logger \"Internal Exception\" has been occured :");
-                        Console.ResetColor();
-                        Console.ForegroundColor = ConsoleColor.DarkRed;
+                        if (Debugger.IsAttached)
+                        {
+                            Console.WriteLine();
+                            Console.BackgroundColor = ConsoleColor.Red;
+                            Console.Write($"Logger \"Internal Exception\" has been occured :");
+                            Console.ResetColor();
+                            Console.ForegroundColor = ConsoleColor.DarkRed;
 
-                        Console.WriteLine($"{LogToSave.ToJsonText()}\n");
+                            Console.WriteLine($"{LogToSave.ToJsonText()}\n");
 
-                        Console.ResetColor();
-#endif
+                            Console.ResetColor();
+                        }
                     }
                     else
                     {
@@ -275,10 +276,11 @@ namespace FastLog.Internal
                     {
                         if (_BeepOnlyOnDebugMode)
                         {
-#if DEBUG
-                            // Note : "Beep" only works on Windows® OS.
-                            if (RuntimeInformation.IsOSPlatform(OSPlatform.Windows)) Console.Beep();
-#endif
+                            if (Debugger.IsAttached)
+                            {
+                                // Note : "Beep" only works on Windows® OS.
+                                if (RuntimeInformation.IsOSPlatform(OSPlatform.Windows)) Console.Beep();
+                            }
                         }
                         else
                         {

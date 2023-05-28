@@ -18,6 +18,7 @@ using FastLog.Interfaces;
 using FastLog.Internal;
 using System;
 using System.Collections.Generic;
+using System.Diagnostics;
 using System.Linq;
 
 namespace FastLog.Agents
@@ -36,8 +37,8 @@ namespace FastLog.Agents
 
         private protected InternalLogger InternalLogger = null;
         private readonly List<LogEventTypes> _registeredEvents = new List<LogEventTypes>();
-        private bool executeOnlyOnDebugMode { get; set; }
-        private bool executeOnlyOnReleaseMode { get; set; }
+        private bool executeOnlyOnDesignTime { get; set; }
+        private bool executeOnlyOnRuntime { get; set; }
         #endregion
 
 
@@ -101,15 +102,15 @@ namespace FastLog.Agents
         #region Execution Conditions
 
 
-        public AgentType ExecuteOnlyOnDebugMode()
+        public AgentType ExecuteOnlyOnDesignTime()
         {
-            executeOnlyOnDebugMode = true;
+            executeOnlyOnDesignTime = true;
             return (AgentType)this;
         }
 
-        public AgentType ExecuteOnlyOnReleaseMode()
+        public AgentType ExecuteOnlyOnRuntime()
         {
-            executeOnlyOnReleaseMode = true;
+            executeOnlyOnRuntime = true;
             return (AgentType)this;
         }
 
@@ -121,19 +122,7 @@ namespace FastLog.Agents
         private protected bool CanExecuteOnThidMode()
         {
 
-#if !RELEASE
-
-            if (executeOnlyOnReleaseMode) return false;
-
-#endif
-
-#if !DEBUG
-            if (executeOnlyOnDebugMode) return false;
-
-#endif
-
-            return true;
-
+            return (!Debugger.IsAttached || !executeOnlyOnRuntime) && (Debugger.IsAttached || !executeOnlyOnDesignTime);
         }
 
         #endregion
