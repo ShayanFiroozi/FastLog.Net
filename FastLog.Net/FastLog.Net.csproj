@@ -6,8 +6,8 @@
     <Deterministic>false</Deterministic>
     <PlatformTarget>AnyCPU</PlatformTarget>
     <ApplicationIcon>Icon\FastLogNet.ico</ApplicationIcon>
-    <Description>💯 High performance and fully thread-safe logger for .NET</Description>
-    <Title>FastLog.Net  , high performance logger for .NET</Title>
+    <Description>High performance and fully thread-safe logger for .NET 💯</Description>
+    <Title>FastLog.Net  , High Performance Logger for .NET</Title>
     <PackageProjectUrl>https://github.com/ShayanFiroozi/FastLog.Net</PackageProjectUrl>
     <PackageReadmeFile>README-Nuget.md</PackageReadmeFile>
     <RepositoryUrl>https://github.com/ShayanFiroozi/FastLog.Net</RepositoryUrl>
