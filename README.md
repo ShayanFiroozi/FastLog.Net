@@ -194,10 +194,10 @@ Use **Visual Studio 2022** and open the solution 'FastLog.Net.sln'.
 
 <br/>
  
-## Donations
+## 💲 Donations
 If you would like to financially support **FastLog.Net**, first of all, thank you! Please read [**DONATIONS**](DONATIONS.md) for my crypto wallets !
 
 <br/>
  
-## Version History
+## 🕙 Version History
 Please read [**CHANGELOG**](CHANGELOG.md) for more and track changing details.
