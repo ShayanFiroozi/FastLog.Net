@@ -22,25 +22,25 @@ namespace FastLog.Interfaces
 
 #if NETFRAMEWORK || NETSTANDARD2_0
 
-         ValueTask LogInfo(string LogText, string Details = "", int EventId = 0);
+        ValueTask LogInfo(string LogText, string Details = "", int EventId = 0);
 
-         ValueTask LogNote(string LogText, string Details = "", int EventId = 0);
+        ValueTask LogNote(string LogText, string Details = "", int EventId = 0);
 
-         ValueTask LogTodo(string LogText, string Details = "", int EventId = 0);
+        ValueTask LogTodo(string LogText, string Details = "", int EventId = 0);
 
-         ValueTask LogWarning(string LogText, string Details = "", int EventId = 0);
+        ValueTask LogWarning(string LogText, string Details = "", int EventId = 0);
 
-         ValueTask LogAlert(string LogText, string Details = "", int EventId = 0);
+        ValueTask LogAlert(string LogText, string Details = "", int EventId = 0);
 
-         ValueTask LogError(string LogText, string Details = "", int EventId = 0);
+        ValueTask LogError(string LogText, string Details = "", int EventId = 0);
 
-         ValueTask LogDebug(string LogText, string Details = "", int EventId = 0);
+        ValueTask LogDebug(string LogText, string Details = "", int EventId = 0);
 
-         ValueTask LogException(Exception exception, int EventId = 0, bool throwException = false);
+        ValueTask LogException(Exception exception, int EventId = 0, bool throwException = false);
 
-         ValueTask LogSystem(string LogText, string Details = "", int EventId = 0);
+        ValueTask LogSystem(string LogText, string Details = "", int EventId = 0);
 
-         ValueTask LogSecurity(string LogText, string Details = "", int EventId = 0);
+        ValueTask LogSecurity(string LogText, string Details = "", int EventId = 0);
 #else
 
         public ValueTask LogInfo(string LogText, string Details = "", int EventId = 0);

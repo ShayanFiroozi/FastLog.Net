@@ -13,7 +13,6 @@
 ---------------------------------------------------------------------------------------------*/
 
 using System.IO;
-using System.Threading;
 
 
 
@@ -34,7 +33,7 @@ namespace FastLog.Helpers
     /// </summary>
     internal static class ThreadSafeFileHelper
     {
-        
+
 
 
         public static void AppendAllText(string path, string content)

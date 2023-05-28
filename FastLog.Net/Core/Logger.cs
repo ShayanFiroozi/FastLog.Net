@@ -30,7 +30,7 @@ namespace FastLog.Core
         /// <summary>
         /// Builder Pattern : Keep it private to make it non accessible from the outside of the class !!
         /// </summary>
-        
+
         private Logger()
         {
             // Initialize Channels Reader/Writer
@@ -70,7 +70,7 @@ namespace FastLog.Core
             // Init AgentManager with "Internal Logger" & "Logger Name" dependencies.
             Agents = AgentsManager.Create(this) // pass the current logger to the AgeManager for builder pattern.
                                   .WithInternalLogger(InternalLogger);
-                                  //.WithLoggerName(Configuration.LoggerName);
+            //.WithLoggerName(Configuration.LoggerName);
 
             return this;
         }

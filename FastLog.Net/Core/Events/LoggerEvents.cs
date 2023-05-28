@@ -13,7 +13,6 @@
 ---------------------------------------------------------------------------------------------*/
 
 using FastLog.Interfaces;
-using FastLog.Models;
 using System;
 
 namespace FastLog.Core

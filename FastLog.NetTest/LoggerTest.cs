@@ -1,7 +1,6 @@
 ﻿using FastLog.Core;
 using FastLog.Interfaces;
 using FastLog.Internal;
-using FastLog.Models;
 using System;
 using System.Collections.Generic;
 using System.IO;
@@ -64,9 +63,9 @@ namespace FastLog.NetTest
             loggerA.OnEventOccured += LoggerA_OnEventOccured;
             loggerA.OnEventProcessed += LoggerA_OnEventProcessed;
 
-              loggerA.StartLogger();
+            loggerA.StartLogger();
 
-            _= loggerA.LogInfo("Test");
+            _ = loggerA.LogInfo("Test");
 
             _ = Task.Run(() =>
                 {

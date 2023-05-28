@@ -12,11 +12,11 @@ namespace LogModuleTest
 
             LoggerTest.StartLoggers();
 
-  
+
             // Test With 5 thread ( to test thread-safety)
             for (int i = 0; i < 5; i++)
             {
-                _= Task.Run(LoggerTest.NormalTest);
+                _ = Task.Run(LoggerTest.NormalTest);
             }
 
             await Task.Run(LoggerTest.NormalTest);

@@ -14,7 +14,6 @@
 
 using FastLog.Core;
 using FastLog.Interfaces;
-using FastLog.Models;
 using System;
 using System.Diagnostics;
 using System.Threading;
@@ -165,7 +164,7 @@ namespace FastLog.Agents.AdvancedAgents
             if (!CanExecuteOnThidMode()) return Task.CompletedTask;
 
 
-         
+
 
 
             try

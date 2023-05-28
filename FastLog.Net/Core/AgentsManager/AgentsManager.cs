@@ -79,7 +79,7 @@ namespace FastLog.Core
             return this;
         }
 
-    
+
         /// <summary>
         /// Build the logger object.
         /// </summary>

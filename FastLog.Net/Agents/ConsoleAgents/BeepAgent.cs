@@ -14,7 +14,6 @@
 
 using FastLog.Core;
 using FastLog.Interfaces;
-using FastLog.Models;
 using System;
 using System.Runtime.InteropServices;
 using System.Threading;

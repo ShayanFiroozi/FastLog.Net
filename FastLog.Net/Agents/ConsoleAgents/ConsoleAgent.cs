@@ -16,7 +16,6 @@ using FastLog.Core;
 using FastLog.Enums;
 using FastLog.Helpers.ExtendedMethods;
 using FastLog.Interfaces;
-using FastLog.Models;
 using System;
 using System.Threading;
 using System.Threading.Tasks;

@@ -14,7 +14,6 @@
 
 using FastLog.Enums;
 using FastLog.Interfaces;
-using FastLog.Models;
 using System;
 using System.Text;
 
