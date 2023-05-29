@@ -1,10 +1,8 @@
-![FastLog.Net Logo](https://github.com/ShayanFiroozi/FastLog.Net/blob/master/FastLog.Net/Icon/FastLogNet.ico "FastLog.Net , High Performance Logger for .Net").
-
 # **FastLog.Net**
 **FastLog.Net** is the fastest , most efficient and high performance logger for **.Net** 
  
-## **How To Use ❔**
- ### **Step 1 :**  
+## **How To Use ❔**  
+  **Step 1** 👇  
  - Build the **Internal Logger** agent with fluent builder pattern :  
  
  ```csharp
@@ -16,7 +14,7 @@
  ```   
    ***`Note`**: Internal logger agent is responsible for logging the events occured in the FastLog.Net internally (including exceptions).*  
  
-  ### **Step 2 :**  
+  **Step 2** 👇  
  - Build the **Logger Configuration** with fluent builder pattern :  
  
  ```csharp
@@ -26,7 +24,7 @@
  ```   
        ***`Note`**: There is "**RunAgentsInParallelMode**" feature you can use to run agent(s) in parallel , but in most cases it's **NOT** recommended because may have considerable negative impact on performance.*  
  
-   ### **Step 3 :**  
+  **Step 3** 👇  
  - Build the **Logger** with fluent builder pattern :  
  
  ```csharp
@@ -59,7 +57,7 @@
 
  ``` 
 
- ### Final Step :  
+   **Final Step** 👇  
   - **FastLog.Net** is ready , just call a logging method from anywhere of your code :  
  
  ```csharp

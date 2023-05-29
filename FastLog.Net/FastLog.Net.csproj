@@ -20,6 +20,12 @@
     <PackageIcon>FastLogNet.png</PackageIcon>
     <Version>1.1.8550</Version>
     <Authors>Shayan Firoozi &lt;shayan.firoozi@gmail.com&gt;</Authors>
+    <PackageReleaseNotes>✔ Improve Internal Logger Thread-Safety.
+✔ Add Nuget package address to the file header.
+✔ Improve FastLog.Net engine.
+✔ Improve Test App.
+✔ Add UTC Date Time to the file header.
+✔ Improve FastLog.Net Engine exceptions handling.</PackageReleaseNotes>
   </PropertyGroup>
 
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|AnyCPU'">
