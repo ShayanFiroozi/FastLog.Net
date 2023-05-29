@@ -58,8 +58,9 @@ namespace FastLog.Helpers
                        $" , Build: \"{SystemInformation.GetCurrentAssemblyBuildDate()}" +
                        $"\" ◄\n\n" +
 
-                       $"→ Log File: \"{logFile}\"\n" +
-                       $"→ Creation DateTime: \"{DateTime.Now.ToFriendlyDateTime()}\"\n\n" +
+                       $"→ Log File: \"{logFile}\"\n\n" +
+                       $"→ Creation DateTime (Local): \"{DateTime.Now.ToFriendlyDateTime()}\"\n" +
+                       $"→ Creation DateTime (UTC): \"{DateTime.Now.ToFriendlyDateTime(true)}\"\n\n" +
                        $"→ Machine Name: \"{SystemInformation.GetMachineName()}\"\n" +
 
                        $"→ OS: \"{SystemInformation.GetOSInfo()}" +
