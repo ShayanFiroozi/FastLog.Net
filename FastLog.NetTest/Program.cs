@@ -31,8 +31,8 @@ namespace LogModuleTest
         {
          
             string[] options = {
-                                "1- Internal Logger Test With Multi Threats (1,000 threads simultaneously)",
-                                "2- Logger Test With Multi Threats (1,000 threads simultaneously)",
+                                "1- Internal Logger Test With Multi Threats (1,000 tasks simultaneously)",
+                                "2- Logger Test With Multi Threats (1,000 tasks simultaneously)",
                                 "3- Exit",
                                };
             while (true)

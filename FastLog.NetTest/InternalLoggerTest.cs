@@ -17,7 +17,7 @@ namespace FastLog.NetTest
 
         public static async Task CrazyTestMultiThreadWithSameLogFile()
         {
-            Console.Write($"Internal Logger test has been started with");
+            Console.Write($"Internal Logger test has been started with 1,000 tasks.");
             Console.ForegroundColor = ConsoleColor.Green;
             Console.Write($" {"\"Logs\\InternalLogger.LOG"}...\"\n");
             Console.ResetColor();
