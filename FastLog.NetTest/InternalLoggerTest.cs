@@ -1,6 +1,6 @@
 ﻿using FastLog.Internal;
 using System;
-using System.IO;
+using System.Collections.Generic;
 using System.Threading.Tasks;
 
 namespace FastLog.NetTest
@@ -9,24 +9,30 @@ namespace FastLog.NetTest
     {
 
 
-        public static readonly InternalLogger InternalLoggerAgent = InternalLogger
-                                                          .Create()
-                                                          .SaveInternalEventsToFile("Logs\\InternalLogger.LOG")
-                                                          .DeleteTheLogFileWhenExceededTheMaximumSizeOf(100);
+        public static readonly InternalLogger InternalLoggerAgent = 
+                                                  InternalLogger.Create()
+                                                                .SaveInternalEventsToFile("Logs\\InternalLogger.LOG")
+                                                                .DeleteTheLogFileWhenExceededTheMaximumSizeOf(20);
 
 
-        public static void CrazyTestMultiThreadWithSameLogFile()
+        public static async Task CrazyTestMultiThreadWithSameLogFile()
         {
-            Parallel.For(0, 50_000, (i) =>
+            Console.Write($"Internal Logger test has been started with");
+            Console.ForegroundColor = ConsoleColor.Green;
+            Console.Write($" {"\"Logs\\InternalLogger.LOG"}...\"\n");
+            Console.ResetColor();
+
+            List<Task> taskList = new List<Task>();
+
+            // Create 1_000 simultaneously logging request to the same log file.
+            for (int i = 0; i < 1_000; i++)
             {
-                InternalLoggerAgent.LogInternalException(new InvalidCastException());
-                InternalLoggerAgent.LogInternalException(new InvalidOperationException());
-                InternalLoggerAgent.LogInternalException(new DivideByZeroException());
-                InternalLoggerAgent.LogInternalException(new FileNotFoundException());
-            });
+                taskList.Add(Task.Run(() => InternalLoggerAgent.LogInternalException(new InvalidCastException())));
+            }
 
+            await Task.WhenAll(taskList);
 
-            Task.Delay(20_000).GetAwaiter().GetResult();
+            Console.WriteLine($"Interal Logger test has been finished.");
 
         }
 
