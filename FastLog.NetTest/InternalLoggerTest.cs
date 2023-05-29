@@ -1,6 +1,8 @@
 ﻿using FastLog.Internal;
 using System;
 using System.Collections.Generic;
+using System.Diagnostics;
+using System.IO;
 using System.Threading.Tasks;
 
 namespace FastLog.NetTest
@@ -8,31 +10,47 @@ namespace FastLog.NetTest
     internal static class InternalLoggerTest
     {
 
+        private static string LogFile = Path.Combine(AppContext.BaseDirectory, "Logs\\InternalLogger.LOG");
+        private const short MaxLogFileSizeMB = 10;
+        private const int TotalTask = 10_000;
+       
 
-        public static readonly InternalLogger InternalLoggerAgent = 
+
+        public static readonly InternalLogger InternalLoggerAgent =
                                                   InternalLogger.Create()
-                                                                .SaveInternalEventsToFile("Logs\\InternalLogger.LOG")
-                                                                .DeleteTheLogFileWhenExceededTheMaximumSizeOf(20);
+                                                                .SaveInternalEventsToFile(LogFile)
+                                                                .DeleteTheLogFileWhenExceededTheMaximumSizeOf(MaxLogFileSizeMB);
 
 
-        public static async Task CrazyTestMultiThreadWithSameLogFile()
+        public static async Task CrazyTestMultiTasks()
         {
-            Console.Write($"Internal Logger test has been started with 1,000 tasks.");
-            Console.ForegroundColor = ConsoleColor.Green;
-            Console.Write($" {"\"Logs\\InternalLogger.LOG"}...\"\n");
-            Console.ResetColor();
-
+            Console.Write($"Internal Logger test has been started with {TotalTask:N0} tasks simultaneously...\n");
+            
             List<Task> taskList = new List<Task>();
 
-            // Create 1_000 simultaneously logging request to the same log file.
-            for (int i = 0; i < 1_000; i++)
+            Stopwatch stopwatch = new Stopwatch();
+            stopwatch.Start();
+
+          
+            for (int i = 0; i < TotalTask; i++)
             {
                 taskList.Add(Task.Run(() => InternalLoggerAgent.LogInternalException(new InvalidCastException())));
             }
 
             await Task.WhenAll(taskList);
 
-            Console.WriteLine($"Interal Logger test has been finished.");
+            stopwatch.Stop();
+
+            Console.Write($"Internal Logger test has been finished in ");
+            Console.ForegroundColor = ConsoleColor.Yellow;
+            Console.Write($"{stopwatch.ElapsedMilliseconds:N0} Millisecond(s).\n\n");
+            Console.ResetColor();
+
+            Console.ForegroundColor = ConsoleColor.Green;
+            Console.Write($"Log File : ");
+            Console.ResetColor();
+            Console.WriteLine($"{LogFile}\n");
+
 
         }
 

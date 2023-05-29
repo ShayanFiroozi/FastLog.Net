@@ -20,6 +20,8 @@ using System;
 using System.Diagnostics;
 using System.IO;
 using System.Runtime.InteropServices;
+using System.Runtime.InteropServices.ComTypes;
+using System.Threading;
 
 namespace FastLog.Internal
 {
@@ -49,6 +51,10 @@ namespace FastLog.Internal
 
         private bool useJsonFormat { get; set; } = false;
 
+
+        private long totalLogCount  = 0;
+
+        public long TotalLogCount => totalLogCount;
 
 
         #endregion
@@ -198,31 +204,13 @@ namespace FastLog.Internal
             try
             {
 
-                try
-                {
-                    CheckInternalExceptionsLogFileSize();
+                Interlocked.Increment(ref totalLogCount);
 
-                    // Create the new internal log file and add file header.
-                    if (!File.Exists(InternalLogFile))
-                    {
-                        ThreadSafeFileHelper.AppendAllText(InternalLogFile, FileHeader.GenerateFileHeader(InternalLogFile, "FastLog.Net Internal Logger"));
-                    }
-                }
-                catch { }
+                CheckLogFileSize();
 
 
 
                 ILogEventModel LogToSave = new LogEventModel(exception);
-
-                //LogEventModel LogToSave = new LogEventModel(LogEventTypes.EXCEPTION,
-
-                //   $"\nId : {exception.HResult}\n" +
-                //   $"Message : {exception.Message ?? "N/A"}\n",
-
-                //   $"InnerException : {exception.InnerException?.Message ?? "N/A"}\n" +
-                //   $"StackTrace : {exception.StackTrace ?? "N/A"}\n" +
-                //   $"Source : {exception.Source ?? "N/A"}\n" +
-                //   $"Target Site : {(exception.TargetSite != null ? exception.TargetSite.Name : "N/A")}");
 
 
 
@@ -266,8 +254,8 @@ namespace FastLog.Internal
 
 
 
-                // ATTENTION : There's a chance of "HostProtectionException" or "PlatformNotSupportedException" exception.
-
+                // Note : "Beep" only works on Windows® OS.
+                // ATTENTION : There's a possibility of "HostProtectionException" or "PlatformNotSupportedException" exception.
                 // For more info please visit : https://learn.microsoft.com/en-us/dotnet/api/system.console.beep?view=net-7.0
 
                 try
@@ -318,18 +306,9 @@ namespace FastLog.Internal
 
             try
             {
+                Interlocked.Increment(ref totalLogCount);
 
-                try
-                {
-                    CheckInternalExceptionsLogFileSize();
-
-                    // Create the new internal log file and add file header.
-                    if (!File.Exists(InternalLogFile))
-                    {
-                        ThreadSafeFileHelper.AppendAllText(InternalLogFile, FileHeader.GenerateFileHeader(InternalLogFile, "FastLog.Net Internal Logger"));
-                    }
-                }
-                catch { }
+                CheckLogFileSize();
 
 
                 if (_PrintOnConsole)
@@ -352,8 +331,8 @@ namespace FastLog.Internal
                     Debug.WriteLine(useJsonFormat ? logEventModel.ToJsonText() : logEventModel.ToPlainText());
                 }
 
-                // ATTENTION : There's a chance of "HostProtectionException" or "PlatformNotSupportedException" exception.
-
+                // Note : "Beep" only works on Windows® OS.
+                // ATTENTION : There's a possibility of "HostProtectionException" or "PlatformNotSupportedException" exception.
                 // For more info please visit : https://learn.microsoft.com/en-us/dotnet/api/system.console.beep?view=net-7.0
 
                 try
@@ -385,7 +364,7 @@ namespace FastLog.Internal
 
 
 
-        private void CheckInternalExceptionsLogFileSize()
+        private void CheckLogFileSize()
         {
             try
             {
@@ -394,22 +373,42 @@ namespace FastLog.Internal
                     return;
                 }
 
+
+                // Gain Lock
+                SlimReadWriteLock.GainWriteLock();
+
                 if (!File.Exists(InternalLogFile))
                 {
+                        // Write the file header after deletion
+                        File.AppendAllText(InternalLogFile, FileHeader.GenerateFileHeader(InternalLogFile, "FastLog.Net Internal Logger"));
+       
                     return;
                 }
 
-                if (ThreadSafeFileHelper.GetFileSize(InternalLogFile) >= InternalExceptionsMaxLogFileSizeMB)
-                {
-                    ThreadSafeFileHelper.DeleteFile(InternalLogFile);
 
-                    // May be NOT "Thread-Safe"
-                    //File.Delete(InternalExceptionsLogFile);
+
+                if (FileHelper.GetFileSizeMB(InternalLogFile) >= InternalExceptionsMaxLogFileSizeMB)
+                {
+                    File.Delete(InternalLogFile);
+
+                    if (!File.Exists(InternalLogFile))
+                    {
+                        // Write the file header after deletion
+                        File.AppendAllText(InternalLogFile, FileHeader.GenerateFileHeader(InternalLogFile, "FastLog.Net Internal Logger"));
+                    }
                 }
+
+
             }
             catch
             {
 
+            }
+
+            finally
+            {
+                // Release Lock
+                SlimReadWriteLock.RelaseWriteLock();
             }
 
         }

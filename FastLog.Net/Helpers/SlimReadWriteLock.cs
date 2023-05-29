@@ -20,11 +20,15 @@ namespace FastLog.Helpers
 {
     internal static class SlimReadWriteLock
     {
-        internal static ReaderWriterLockSlim Lock { get; private set; }
+        internal static ReaderWriterLockSlim Lock = new ReaderWriterLockSlim();
 
-        static SlimReadWriteLock()
-        {
-            Lock = new ReaderWriterLockSlim();
-        }
+       
+        internal static void GainReadLock() => Lock.EnterReadLock();
+        internal static void GainWriteLock() => Lock.EnterWriteLock();
+
+
+        internal static void ReleaseReadLock() => Lock.ExitReadLock();
+        internal static void RelaseWriteLock() => Lock.ExitWriteLock();
+
     }
 }

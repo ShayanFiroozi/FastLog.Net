@@ -31,8 +31,8 @@ namespace LogModuleTest
         {
          
             string[] options = {
-                                "1- Internal Logger Test With Multi Threats (1,000 tasks simultaneously)",
-                                "2- Logger Test With Multi Threats (1,000 tasks simultaneously)",
+                                "1- Internal Logger Test With Multi Threats (10,000 tasks simultaneously).",
+                                "2- Logger Test With Multi Threats (1,000 tasks simultaneously).",
                                 "3- Exit",
                                };
             while (true)
@@ -59,7 +59,7 @@ namespace LogModuleTest
                 {
                     case 1:
                         Console.Clear();
-                        await InternalLoggerTest.CrazyTestMultiThreadWithSameLogFile();
+                        await InternalLoggerTest.CrazyTestMultiTasks();
                         Console.WriteLine("\nPress any key to continue...");
                         Console.ReadLine();
                         break;

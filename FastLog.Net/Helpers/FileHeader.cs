@@ -42,6 +42,7 @@ namespace FastLog.Helpers
                → Current User: "Shayan"
 
                → Source Code: https://github.com/ShayanFiroozi/FastLog.Net
+               → Nuget Package: https://www.nuget.org/packages/FastLog.Net/
 
                --------------------------------------------------------------------------------
         */
@@ -70,7 +71,9 @@ namespace FastLog.Helpers
                        $"→ Logger Name: \"{(!string.IsNullOrWhiteSpace(LoggerName) ? LoggerName : "N/A")}\"\n" +
                        $"→ Current User: \"{SystemInformation.GetCurrentUserName()}\"\n\n" +
 
-                       $"→ Source Code: https://github.com/ShayanFiroozi/FastLog.Net\n\n" +
+                       $"→ Source Code: https://github.com/ShayanFiroozi/FastLog.Net\n" +
+                        $"→ Nuget Package: https://www.nuget.org/packages/FastLog.Net\n\n" +
+
                        $"{new string('-', 80)}\n\n";
             }
             catch (Exception ex)

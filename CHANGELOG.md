@@ -10,4 +10,8 @@
 ### 1.1.8548 (2023-05-28)
   * Improve StartLogger().
   * ExecuteOnDesignTime / ExecuteOnRunTime bug fixed.
+
+### 1.1.8550 (2023-05-30)
+  * Improve Internal Logger Thread-Safety.
+  * Add Nuget package address to the file header.
  
