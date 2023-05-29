@@ -13,6 +13,7 @@
 ---------------------------------------------------------------------------------------------*/
 
 using FastLog.Interfaces;
+using FastLog.Models;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -111,6 +112,11 @@ namespace FastLog.Core
 
 
                                 }
+                                catch (OperationCanceledException)
+                                {
+                                    InternalLogger?.LogInternalSystemEvent(new LogEventModel(Enums.LogEventTypes.SYSTEM, "FastLog.Net engine has been stopped.",
+                                        "Cancelation signal was received."));
+                                }
                                 catch (Exception ex)
                                 {
                                     InternalLogger?.LogInternalException(ex);
@@ -149,6 +155,12 @@ namespace FastLog.Core
 
 
                     }
+
+                    catch (OperationCanceledException)
+                    {
+                        InternalLogger?.LogInternalSystemEvent(new LogEventModel(Enums.LogEventTypes.SYSTEM, "FastLog.Net engine has been stopped.",
+                            "Cancelation signal was received."));
+                    }
                     catch (Exception ex)
                     {
                         InternalLogger?.LogInternalException(ex);
@@ -163,6 +175,12 @@ namespace FastLog.Core
             // Wait here for releasing signal from the "TaskCompletionSource".( after the engine run successfully)
 
             IsEngineRunning.Task.Wait();
+
+            try
+            {
+                InternalLogger?.LogInternalSystemEvent(new LogEventModel(Enums.LogEventTypes.SYSTEM, "FastLog.Net engine has been started."));
+            }
+            catch { }
 
 
         }

@@ -1,4 +1,18 @@
-﻿using FastLog.NetTest;
+﻿/*---------------------------------------------------------------------------------------------
+
+                ► FastLog.Net , High Performance Logger For .Net ◄
+
+
+
+ → Copyright (c) 2020-2023 Shayan Firoozi , Bandar Abbas , Iran , Under MIT License.
+
+ → Contact : <shayan.firoozi@gmail.com>
+
+ → GitHub repository : https://github.com/ShayanFiroozi/FastLog.Net
+
+---------------------------------------------------------------------------------------------*/
+
+using FastLog.NetTest;
 using System;
 using System.Threading.Tasks;
 
@@ -31,8 +45,8 @@ namespace LogModuleTest
         {
          
             string[] options = {
-                                "1- Internal Logger Test With Multi Threats (10,000 tasks simultaneously).",
-                                "2- Logger Test With Multi Threats (1,000 tasks simultaneously).",
+                                $"1- FastLog.Net \"Internal Logger\" Test With Multi Threats (10,000 tasks simultaneously).",
+                                $"2- FastLog.Net \"Logger\" Test With Multi Threats (10,000 tasks simultaneously).",
                                 "3- Exit",
                                };
             while (true)
@@ -59,12 +73,15 @@ namespace LogModuleTest
                 {
                     case 1:
                         Console.Clear();
-                        await InternalLoggerTest.CrazyTestMultiTasks();
+                        await InternalLoggerTest.CrazyTestWithMultiTasks();
                         Console.WriteLine("\nPress any key to continue...");
                         Console.ReadLine();
                         break;
                     case 2:
-                        //option2();
+                        Console.Clear();
+                        await LoggerTest.CrazyTestWithMultiTasks();
+                        Console.WriteLine("\nPress any key to continue...");
+                        Console.ReadLine();
                         break;
                     case 3:
                         Environment.Exit(0);
@@ -76,50 +93,6 @@ namespace LogModuleTest
 
             }
         }
-
-
-
-        //static async Task Main(string[] args)
-        //{
-
-        //    Console.WriteLine("");
-
-        //    Console.ForegroundColor = ConsoleColor.Yellow;
-        //    Console.WriteLine("FastLog.Net Test Module");
-
-        //    Console.ResetColor();
-
-        //    Console.WriteLine("");
-
-        //    Console.WriteLine("Choose");
-
-        //    await InternalLoggerTest.CrazyTestMultiThreadWithSameLogFile();
-
-        //    Console.Beep();
-
-        //    Console.ReadLine();
-
-
-
-
-        //    //LoggerTest.StartLoggers();
-
-
-
-
-        //    //// Test With 5 thread ( to test thread-safety)
-        //    //for (int i = 0; i < 5; i++)
-        //    //{
-        //    //    _ = Task.Run(LoggerTest.NormalTest);
-        //    //}
-
-        //    //await Task.Run(LoggerTest.NormalTest);
-
-
-
-        //}
-
-
 
     }
 
