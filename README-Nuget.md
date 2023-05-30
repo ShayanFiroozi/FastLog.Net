@@ -1,6 +1,5 @@
 [![Code Smells](https://sonarcloud.io/api/project_badges/measure?project=ShayanFiroozi_FastLog.Net&metric=code_smells)](https://sonarcloud.io/summary/new_code?id=ShayanFiroozi_FastLog.Net)
  [![Maintainability Rating](https://sonarcloud.io/api/project_badges/measure?project=ShayanFiroozi_FastLog.Net&metric=sqale_rating)](https://sonarcloud.io/summary/new_code?id=ShayanFiroozi_FastLog.Net)
- [![Security Rating](https://sonarcloud.io/api/project_badges/measure?project=ShayanFiroozi_FastLog.Net&metric=security_rating)](https://sonarcloud.io/summary/new_code?id=ShayanFiroozi_FastLog.Net)
  [![Bugs](https://sonarcloud.io/api/project_badges/measure?project=ShayanFiroozi_FastLog.Net&metric=bugs)](https://sonarcloud.io/summary/new_code?id=ShayanFiroozi_FastLog.Net)
  [![Vulnerabilities](https://sonarcloud.io/api/project_badges/measure?project=ShayanFiroozi_FastLog.Net&metric=vulnerabilities)](https://sonarcloud.io/summary/new_code?id=ShayanFiroozi_FastLog.Net)
  [![Security Rating](https://sonarcloud.io/api/project_badges/measure?project=ShayanFiroozi_FastLog.Net&metric=security_rating)](https://sonarcloud.io/summary/new_code?id=ShayanFiroozi_FastLog.Net)
@@ -78,6 +77,10 @@ await fastLogger.LogException(new Exception("This is a test exception i want to 
  
 await fastLogger.LogSystem("The system is gonna be restarted !");
  ```   
+  
+  
+ >:warning: Since the **FastLog.Net** uses the background engine to process the requested log event(s) , so we **MUST** await "**ProcessAllEventsInQueue()**" method until all request(s) in the queue be processed before the app/service termination.
+
 
 ## GitHub Repository
 Please visit FastLog.Net Github repository for source code and more info : [**FastLog.Net On GitHub**](https://github.com/ShayanFiroozi/FastLog.Net)
