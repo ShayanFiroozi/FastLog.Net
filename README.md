@@ -163,12 +163,11 @@ await fastLogger.LogException(new Exception("This is a test exception i want to 
 await fastLogger.LogSystem("The system is gonna be restarted !");
  ```   
       
- ***`WARNING`**: Since the FastLog.Net uses the background engine to process the requested log event(s) , so we MUST await "ProcessAllEventsInQueue()" method until all request(s) in the queue be processed before the app/service termination.
+ > **`WARNING`**: Since the FastLog.Net uses the background engine to process the requested log event(s) , so we MUST await "ProcessAllEventsInQueue()" method until all request(s) in the queue be processed before the app/service termination.
 
  ```csharp
  await ProcessAllEventsInQueue();
- ```  
-
+ ```
  <br/>
  
 ## ❓ How It Works
