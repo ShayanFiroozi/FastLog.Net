@@ -50,7 +50,8 @@ namespace LogModuleTest
             string[] options = {
                                 $"1- FastLog.Net \"Internal Logger\" Test With Multi Threats (10,000 tasks simultaneously).",
                                 $"2- FastLog.Net \"Logger\" Test With Multi Threats (10,000 tasks simultaneously).",
-                                "3- Exit",
+                                $"3- FastLog.Net \"Logger\" ForEver run test !!!.",
+                                "4- Exit",
                                };
             while (true)
             {
@@ -87,6 +88,13 @@ namespace LogModuleTest
                         Console.ReadLine();
                         break;
                     case 3:
+                        Console.ForegroundColor = ConsoleColor.Yellow;
+                        Console.Write($"\nThis test runs forever ! You have to stop it manually , press any key to continue...");
+                        Console.ResetColor();
+                        Console.ReadLine();
+                        await LoggerTest.ForEverRunTest();
+                        break;
+                    case 4:
                         LoggerTest.FastLogger.StopLogger();
                         Environment.Exit(0);
                         return;

@@ -92,5 +92,35 @@ namespace FastLog.NetTest
 
         }
 
+
+
+        public static async Task ForEverRunTest()
+        {
+            while (true)
+            {
+                // Add 100 log events suddenly !! to test the FastLog.Net engine.
+
+                for (int i = 0; i < 100; i++)
+                {
+                    await FastLogger.LogException(new InvalidCastException());
+                    await FastLogger.LogInfo("This is a ForEver run test and won't stop until you stop it manually !!");
+                    await FastLogger.LogTodo("Please like the FastLog.Net on GitHub : \"https://github.com/ShayanFiroozi/FastLog.Net\"");
+                }
+
+                // Note : If you have a good CPU , you can decrease the waiting milliseconds ;)
+                // WARNING : Watch your memory during the forever test because the memory will increase exponentially.
+
+                await Task.Delay(TimeSpan.FromMilliseconds(40));
+
+                Console.WriteLine($"Total Log Events: {FastLogger.QueueTotalEventCount:N0} , " +
+                                  $"Total Processed Log Events: {FastLogger.QueueProcessedEventCount:N0} , " +
+                                  $"Remaining Log Events in Queue : {FastLogger.QueueEventCount:N0}");
+
+            }
+        }
+
+
+
+
     }
 }
