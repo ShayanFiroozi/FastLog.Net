@@ -107,14 +107,19 @@ namespace FastLog.NetTest
                     await FastLogger.LogTodo("Please like the FastLog.Net on GitHub : \"https://github.com/ShayanFiroozi/FastLog.Net\"");
                 }
 
-                // Note : If you have a good CPU and also SSD ! you can decrease the waiting milliseconds ;)
-                // WARNING : Watch your memory during the forever test because the memory will increase exponentially.
+                // Note : If you have a good CPU and also a SSD ! you can decrease the waiting milliseconds ;)
+                // WARNING : Watch your memory during the forever test because the memory will increase exponentially for the time of processing events take more time than adding them to the queue.
 
                 await Task.Delay(TimeSpan.FromMilliseconds(50));
 
                 Console.WriteLine($"Total Log Events: {FastLogger.QueueTotalEventCount:N0} , " +
                                   $"Total Processed Log Events: {FastLogger.QueueProcessedEventCount:N0} , " +
                                   $"Remaining Log Events in Queue : {FastLogger.QueueEventCount:N0}");
+
+                if(Console.KeyAvailable) 
+                {
+                    break;
+                }
 
             }
         }
