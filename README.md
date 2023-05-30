@@ -56,8 +56,9 @@
  
    * **Heavy Operation Simulator Agent** simulates an heavy IO bound operation (like email sending or http operation) , this agent is used for testing the FastLog.Net or create a delay intentionally between the agents.  
  
-      * **Note:** All agents support Event Type filtering ,  so you can easily specify that your agent should be executed on which event type(s).  
-                  *For example: You can add a "Beep Agent" with "Exception" log event , so the beep agent will only execute on "Exceptions" not other logging events.*  
+ >ℹ **Note:**  
+All agents support Event Type filtering ,  so you can easily specify that your agent should be executed on which event type(s).  
+For example: You can add a "Beep Agent" with "Exception" log event , so the beep agent will only execute on "Exceptions" not other logging events.  
  
  <br/>  
  
@@ -75,7 +76,8 @@ Since this is a new repository , there's no contributor yet! , But **FastLog.Net
 
 If you'd like to contribute, please read the [**How It Works**](https://github.com/ShayanFiroozi/FastLog.Net#-how-it-works) section and then take a look at [**ToDo List**](ToDo.md) to get involved !
  
-**`Note`** : The srouce code is fully commented.
+>ℹ **Note:**  
+The srouce code is fully commented.
 
 <br/>
  
@@ -90,7 +92,8 @@ If you'd like to contribute, please read the [**How It Works**](https://github.c
                                                .DeleteTheLogFileWhenExceededTheMaximumSizeOf(20)
                                                .PrintOnConsole();
  ```   
-   ***`Note`**: Internal logger agent is responsible for logging the events occured in the FastLog.Net internally (including exceptions).*  
+>ℹ **Note:**  
+Internal logger agent is responsible for logging the events occured in the FastLog.Net internally (including exceptions).  
  
   ### Step 2 :  
  - Create the **Logger Configuration** with fluent builder pattern :  
@@ -100,7 +103,8 @@ If you'd like to contribute, please read the [**How It Works**](https://github.c
                                            .WithLoggerName("FastLog.Net® Logger")
                                            .WithMaxEventsToKeepInMemory(1_000);
  ```   
-       ***`Note`**: There is "**RunAgentsInParallelMode**" feature you can use to run agent(s) in parallel , but in most cases it's **NOT** recommended because may have considerable negative impact on performance.*  
+ >:warning: 
+There is "**RunAgentsInParallelMode**" feature you can use to run agent(s) in parallel , but in most cases it's **NOT** recommended because may have considerable negative impact on performance.  
  
    ### Step 3 :  
  - Create the **Logger** with fluent builder pattern :  
@@ -163,7 +167,7 @@ await fastLogger.LogException(new Exception("This is a test exception i want to 
 await fastLogger.LogSystem("The system is gonna be restarted !");
  ```   
       
- > **`WARNING`**: Since the FastLog.Net uses the background engine to process the requested log event(s) , so we MUST await "ProcessAllEventsInQueue()" method until all request(s) in the queue be processed before the app/service termination.
+ >:warning: Since the **FastLog.Net** uses the background engine to process the requested log event(s) , so we **MUST** await "ProcessAllEventsInQueue()" method until all request(s) in the queue be processed before the app/service termination.
 
  ```csharp
  await ProcessAllEventsInQueue();
@@ -204,7 +208,8 @@ Use **Visual Studio 2022** and open the solution 'FastLog.Net.sln'.
 - .Net Framework 4.8
 
 
-**Note** : Since the **FastLog.Net** solution is supporting multi target frameworks , to build the solution successfully you should install all .Net versions above , otherwise you can easily exclude not interested framework(s) by editing **TargetFrameworks** tag in the [FastLog.Net Project File](https://github.com/ShayanFiroozi/FastLog.Net/blob/master/FastLog.Net/FastLog.Net.csproj).
+>ℹ **Note:**  
+Since the **FastLog.Net** solution is supporting multi target frameworks , to build the solution successfully you should install all .Net versions above , otherwise you can easily exclude not interested framework(s) by editing **TargetFrameworks** tag in the [FastLog.Net Project File](https://github.com/ShayanFiroozi/FastLog.Net/blob/master/FastLog.Net/FastLog.Net.csproj).
 
 <br/>
  
