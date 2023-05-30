@@ -24,4 +24,6 @@
   * Refactor engine to be compatible with "ProcessAllEventsInQueue()" method.
   * Update FastLog.Net Test App To Use "ProcessAllEventsInQueue" Method.
   * Add "IsQueueEmpty" property.
+  * Refactor some methods to achieve better core readability and reliability.
+  * Add Forever run test !
  
