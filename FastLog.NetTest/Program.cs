@@ -12,6 +12,8 @@
 
 ---------------------------------------------------------------------------------------------*/
 
+using FastLog.Core;
+using FastLog.Internal;
 using FastLog.NetTest;
 using System;
 using System.Threading.Tasks;
@@ -43,7 +45,8 @@ namespace LogModuleTest
 
         public static async Task Main(string[] args)
         {
-         
+
+
             string[] options = {
                                 $"1- FastLog.Net \"Internal Logger\" Test With Multi Threats (10,000 tasks simultaneously).",
                                 $"2- FastLog.Net \"Logger\" Test With Multi Threats (10,000 tasks simultaneously).",

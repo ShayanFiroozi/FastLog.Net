@@ -186,15 +186,6 @@ namespace FastLog.Internal
         /// <exception cref="ArgumentException"></exception>
         public void LogInternalException(Exception exception)
         {
-            if (string.IsNullOrWhiteSpace(InternalLogFile))
-            {
-                throw new ArgumentException($"\"InternalLogFile\" parameter cannot be null or whitespace.", nameof(InternalLogFile));
-            }
-
-            if (InternalExceptionsMaxLogFileSizeMB <= 0)
-            {
-                throw new ArgumentException($"'\"InternalExceptionsMaxLogFileSizeMB\" parameter must be greater then zero.");
-            }
 
             if (exception is null)
             {
@@ -206,7 +197,10 @@ namespace FastLog.Internal
 
                 Interlocked.Increment(ref totalLogCount);
 
-                CheckLogFileSize();
+                if (!string.IsNullOrWhiteSpace(InternalLogFile))
+                {
+                    CheckLogFileSize();
+                }
 
 
 
@@ -274,17 +268,24 @@ namespace FastLog.Internal
                         }
                     }
                 }
-                catch { }
+                catch
+                {
+                    // Do not catch Beep low level API exceptions.
+                }
 
 
-                ThreadSafeFileHelper.AppendAllText(InternalLogFile,
+                if (!string.IsNullOrWhiteSpace(InternalLogFile))
+                {
+                    ThreadSafeFileHelper.AppendAllText(InternalLogFile,
                                                 $"{LogToSave.ToJsonText()}");
+                }
 
 
-   
+
             }
             catch
             {
+                // Can not catch Internal Logger's exceptions bevause the Internal Logger itself is design to catch and log the FastLoger.Net exceptions and events !!
             }
 
 
@@ -303,7 +304,10 @@ namespace FastLog.Internal
             {
                 Interlocked.Increment(ref totalLogCount);
 
-                CheckLogFileSize();
+                if (!string.IsNullOrWhiteSpace(InternalLogFile))
+                {
+                    CheckLogFileSize();
+                }
 
 
                 if (_PrintOnConsole)
@@ -338,14 +342,16 @@ namespace FastLog.Internal
                         if (RuntimeInformation.IsOSPlatform(OSPlatform.Windows)) Console.Beep();
                     }
                 }
-                catch 
+                catch
                 {
                     // Ignore the Beep exceptions.
                 }
 
-
-                ThreadSafeFileHelper.AppendAllText(InternalLogFile,
+                if (!string.IsNullOrWhiteSpace(InternalLogFile))
+                {
+                    ThreadSafeFileHelper.AppendAllText(InternalLogFile,
                                                 useJsonFormat ? logEventModel.ToJsonText() : logEventModel.ToPlainText());
+                }
 
             }
             catch
@@ -361,6 +367,8 @@ namespace FastLog.Internal
 
         private void CheckLogFileSize()
         {
+            bool IsLockGained = false;
+
             try
             {
                 if (string.IsNullOrWhiteSpace(InternalLogFile))
@@ -371,6 +379,7 @@ namespace FastLog.Internal
 
                 // Gain Lock
                 SlimReadWriteLock.GainWriteLock();
+                IsLockGained = true;
 
                 if (!File.Exists(InternalLogFile))
                 {
@@ -403,7 +412,7 @@ namespace FastLog.Internal
             finally
             {
                 // Release Lock
-                SlimReadWriteLock.RelaseWriteLock();
+                if (IsLockGained) SlimReadWriteLock.RelaseWriteLock();
             }
 
         }
