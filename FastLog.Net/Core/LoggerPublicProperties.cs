@@ -53,7 +53,7 @@ namespace FastLog.Core
         /// <summary>
         /// Count the remaining event(s) in the channel event queue. ( not processed yet !)
         /// </summary>
-        public int ChannelEventCount
+        public int QueueEventCount
         {
             get
             {
@@ -73,14 +73,19 @@ namespace FastLog.Core
         /// <summary>
         /// Count total event(s) added to channel (include processed and not processed events).
         /// </summary>
-        public long ChannelTotalEventCount => channelTotalEventCount; //Interlocked.Read(ref channelTotalEventCount);
+        public long QueueTotalEventCount => queueTotalEventCount; //Interlocked.Read(ref channelTotalEventCount);
 
 
         /// <summary>
         /// Count total processed ( executed ) event(s).
         /// </summary>
-        public long ChannelProcessedEventCount => channelProcessedEventCount; //Interlocked.Read(ref channelProcessedEventCount);
+        public long QueueProcessedEventCount => queueProcessedEventCount; //Interlocked.Read(ref channelProcessedEventCount);
 
+        /// <summary>
+        /// Indicates the event queue is empty or not.
+        /// </summary>
+        /// <returns></returns>
+        public bool IsQueueEmpty() => QueueEventCount == 0;
 
     }
 }

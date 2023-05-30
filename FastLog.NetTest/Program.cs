@@ -84,6 +84,7 @@ namespace LogModuleTest
                         Console.ReadLine();
                         break;
                     case 3:
+                        LoggerTest.FastLogger.StopLogger();
                         Environment.Exit(0);
                         break;
                     default:

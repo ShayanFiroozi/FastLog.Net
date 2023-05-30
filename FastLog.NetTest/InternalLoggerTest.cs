@@ -27,9 +27,9 @@ namespace FastLog.NetTest
         private static string LogFile = Path.Combine(AppContext.BaseDirectory, "Logs\\FastLog_InternalLogs.log");
         private const short MaxLogFileSizeMB = 10;
         private const int TotalTask = 10_000;
-       
 
 
+        // Build FastLog.Net internal logger with fluent builder pattern.
         public static readonly InternalLogger InternalLoggerAgent =
                                                   InternalLogger.Create()
                                                                 .SaveInternalEventsToFile(LogFile)

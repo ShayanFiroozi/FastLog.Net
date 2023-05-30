@@ -29,24 +29,32 @@ namespace FastLog.NetTest
         private const int TotalTask = 10_000;
 
 
+        // Build FastLog.Net configuration with fluent builder pattern.
+        private static ConfigManager fastLoggerConfig = ConfigManager.Create()
+                                                                     .WithLoggerName("FastLog.Net Crazy Test !");
 
+        // Build Fast Logger with fluent builder pattern.
         public static readonly Logger FastLogger =
                                Logger.Create().WithInternalLogger(InternalLoggerTest.InternalLoggerAgent)
-                                                                  .WithConfiguration(ConfigManager.Create().WithLoggerName("FastLog.Net Crazy Test !"))
-                                                                  .WithAgents()
-                                                                    .AddTextFileAgent()
-                                                                    .UseJsonFormat()
-                                                                    .SaveLogToFile(LogFile)
-                                                                    .DeleteTheLogFileWhenExceededTheMaximumSizeOf(MaxLogFileSizeMB)
-                                                                    .BuildAgent()
-                                     .BuildLogger();
+                                              .WithConfiguration(fastLoggerConfig)
+                                                 .WithAgents()
+                                                   .AddTextFileAgent()
+                                                    .UseJsonFormat()
+                                                    .SaveLogToFile(LogFile)
+                                                    .DeleteTheLogFileWhenExceededTheMaximumSizeOf(MaxLogFileSizeMB)
+                                                   .BuildAgent()
+                                      .BuildLogger();
 
 
+        static LoggerTest()
+        {
+            FastLogger.StartLogger();
+        }
 
 
         public static async Task CrazyTestWithMultiTasks()
         {
-            FastLogger.StartLogger();
+
 
             Console.Write($"FastLog.Net Logger test has been started with {TotalTask:N0} tasks simultaneously...\n");
 
@@ -62,16 +70,10 @@ namespace FastLog.NetTest
 
 
             // IMPORTANT : Since the FastLog.Net uses the background engine to process the requested log event(s) ,
-            // so we have to wait until all requests in the queue be processes before the app being terminated.
+            // so we HAVE TO await "ProcessAllEventsInQueue" method until all requests in the queue be processed before the app termination.
 
-            
-            // Until the queue is not empty
-            while (FastLogger.ChannelEventCount > 0) 
-            { 
-                await Task.Yield(); // Wait until all logs in the queue been processed.
-            }
+            await FastLogger.ProcessAllEventsInQueue();
 
-   
 
             stopwatch.Stop();
 
@@ -85,7 +87,7 @@ namespace FastLog.NetTest
             Console.ResetColor();
             Console.WriteLine($"{LogFile}\n");
 
-            FastLogger.StopLogger();
+
 
 
         }

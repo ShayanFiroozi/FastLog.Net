@@ -135,8 +135,8 @@ namespace FastLog.Core
 
                             // Just for sure !! in fact never gonna happen ! long Max value is "9,223,372,036,854,775,807"
 
-                            if (channelProcessedEventCount >= long.MaxValue) { channelProcessedEventCount = 0; }
-                            channelProcessedEventCount++;
+                            if (queueProcessedEventCount >= long.MaxValue) { queueProcessedEventCount = 0; }
+                            queueProcessedEventCount++;
 
                             // Interlocked.Increment(ref channelProcessedEventCount);
 
@@ -185,6 +185,18 @@ namespace FastLog.Core
 
         }
 
+        public async Task ProcessAllEventsInQueue()
+        {
+            // Wait until all queue's event been processed.
+
+            while (!IsQueueEmpty())
+            {
+                // Wait until all logs in the queue been processed or cancelation token signal was received.
+                 await Task.Delay(0, _cts.Token); 
+                //await Task.Yield();
+            }
+
+        }
 
         public void StopLogger()
         {

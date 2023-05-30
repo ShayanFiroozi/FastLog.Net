@@ -48,9 +48,9 @@ namespace FastLog.Core
 
         private List<ILogEventModel> inMemoryEvents { get; } = new List<ILogEventModel>();
 
-        private long channelTotalEventCount = 0;
+        private long queueTotalEventCount = 0;
 
-        private long channelProcessedEventCount = 0;
+        private long queueProcessedEventCount = 0;
 
 
         #region Channel Properties

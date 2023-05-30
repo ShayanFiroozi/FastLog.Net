@@ -154,9 +154,9 @@ namespace FastLog.Core
 
                 // Just for sure !! in fact never gonna happen ! long Max value is "9,223,372,036,854,775,807"
 
-                if (channelTotalEventCount >= long.MaxValue) { channelTotalEventCount = 0; }
+                if (queueTotalEventCount >= long.MaxValue) { queueTotalEventCount = 0; }
 
-                Interlocked.Increment(ref channelTotalEventCount);
+                Interlocked.Increment(ref queueTotalEventCount);
 
                 // Raise the event
                 try
@@ -209,9 +209,9 @@ namespace FastLog.Core
 
                 // Just for sure !! in fact never gonna happen ! long Max value is "9,223,372,036,854,775,807"
 
-                if (channelTotalEventCount >= long.MaxValue) { channelTotalEventCount = 0; }
+                if (queueTotalEventCount >= long.MaxValue) { queueTotalEventCount = 0; }
 
-                Interlocked.Increment(ref channelTotalEventCount);
+                Interlocked.Increment(ref queueTotalEventCount);
 
                 // Raise the event
                 try

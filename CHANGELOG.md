@@ -18,4 +18,10 @@
   * Improve Test App.
   * Add UTC Date Time to the file header.
   * Improve FastLog.Net Engine exceptions handling.
+
+### 1.1.8551 (2023-05-31)
+  * Add "ProcessAllEventsInQueue()" method
+  * Refactor engine to be compatible with "ProcessAllEventsInQueue()" method.
+  * Update FastLog.Net Test App To Use "ProcessAllEventsInQueue" Method.
+  * Add "IsQueueEmpty" property.
  
