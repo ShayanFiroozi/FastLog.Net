@@ -44,10 +44,9 @@ namespace FastLog.Core
             Task.Run(async () =>
             {
 
-                List<Task> tasksList = null;
+                Lazy<List<Task>> tasksList = new Lazy<List<Task>>();
 
-                if (Configuration.RunAgentsInParallel) tasksList = new List<Task>();
-
+                
                 while (!LoggerChannelReader.Completion.IsCompleted && !_cts.IsCancellationRequested)
                 {
 
@@ -92,12 +91,12 @@ namespace FastLog.Core
                                     {
                                         // Important Warning : "Task.WhenAll" has serious performance issue here ,
                                         // so use it just when we have more than 1 agent and/or an hevy IO waiting operation is used like Email/SMS send , HTTP operation and etc.
-                                        // "Agents.AgentList.Count() > 1" --> Prevent using "Task.WhenAll" if we have just 1 agent.
+                                        // "Agents.AgentList.Count() > 1" --> Prevents using "Task.WhenAll" if we have just 1 agent.
 
                                         if (Configuration.RunAgentsInParallel && Agents.AgentList.Count() > 1)
                                         {
 
-                                            tasksList.Add(logger.ExecuteAgent(EventModelFromChannel, _cts.Token));
+                                            tasksList.Value.Add(logger.ExecuteAgent(EventModelFromChannel, _cts.Token));
                                         }
                                         else
                                         {
@@ -126,7 +125,7 @@ namespace FastLog.Core
 
                             if (Configuration.RunAgentsInParallel)
                             {
-                                await Task.WhenAll(tasksList).ConfigureAwait(false);
+                                await Task.WhenAll(tasksList.Value).ConfigureAwait(false);
                             }
 
 
@@ -134,6 +133,7 @@ namespace FastLog.Core
                             // Just for sure !! in fact never gonna happen ! long Max value is "9,223,372,036,854,775,807"
 
                             if (queueProcessedEventCount >= long.MaxValue) { queueProcessedEventCount = 0; }
+
                             queueProcessedEventCount++;
 
 
