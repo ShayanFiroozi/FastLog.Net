@@ -28,25 +28,22 @@ namespace FastLog.Core
         /// <summary>
         /// Enumerates the last X logged event(s). X = "ConfigManager.MaxEventsToKeep" value;
         /// </summary>
-        public IEnumerable<ILogEventModel> InMemoryEvents
+        public IEnumerable<ILogEventModel> GetInMemoryEvents()
         {
-            get
+            // Grab the lock  
+            SlimReadWriteLock.Lock.EnterReadLock();
+
+            try
             {
-                // Grab the lock  
-                SlimReadWriteLock.Lock.EnterReadLock();
-
-                try
-                {
-                    // ToList() is highly necessary here to prevent race condition when accessing inMemoryEvents property.
-                    return inMemoryEvents.ToList();
-                }
-                finally
-                {
-                    // Release the lock
-                    SlimReadWriteLock.Lock.ExitReadLock();
-                }
-
+                // ToList() is highly necessary here to prevent race condition when accessing inMemoryEvents property.
+                return inMemoryEvents.ToList();
             }
+            finally
+            {
+                // Release the lock
+                SlimReadWriteLock.Lock.ExitReadLock();
+            }
+
         }
 
 

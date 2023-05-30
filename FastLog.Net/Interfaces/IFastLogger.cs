@@ -36,7 +36,7 @@ namespace FastLog.Interfaces
 
         ValueTask LogDebug(string LogText, string Details = "", int EventId = 0);
 
-        ValueTask LogException(Exception exception, int EventId = 0, bool throwException = false);
+        ValueTask LogException(Exception exception, int EventId = 0);
 
         ValueTask LogSystem(string LogText, string Details = "", int EventId = 0);
 
@@ -57,7 +57,7 @@ namespace FastLog.Interfaces
 
         public ValueTask LogDebug(string LogText, string Details = "", int EventId = 0);
 
-        public ValueTask LogException(Exception exception, int EventId = 0, bool throwException = false);
+        public ValueTask LogException(Exception exception, int EventId = 0);
 
         public ValueTask LogSystem(string LogText, string Details = "", int EventId = 0);
 

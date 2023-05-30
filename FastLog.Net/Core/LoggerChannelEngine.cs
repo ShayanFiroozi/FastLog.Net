@@ -177,7 +177,10 @@ namespace FastLog.Core
             {
                 InternalLogger?.LogInternalSystemEvent(new LogEventModel(Enums.LogEventTypes.SYSTEM, "FastLog.Net engine has been started."));
             }
-            catch { }
+            catch 
+            { 
+                // Ignore the exceptions , because if the Internal Logger itself throws an exception we can not do anything about that !
+            }
 
 
         }
