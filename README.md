@@ -183,7 +183,7 @@ await fastLogger.LogSystem("The system is gonna be restarted !");
 
 - However the **FastLog.Net** is thread-safe BUT it is **NOT** recommended to build two or more agents with the same logging file , so this limitation applied to the FastLog.Net intentionally to prevent two or more agents write and manage the same logging file.
 
-- The **FastLog.Net** queue has been limited to handle up to the **1,000,000** logging events at the same time.This limitation has been set to prevent uncontrolled memory usage.
+- The **FastLog.Net** queue has been limited to handle up to the **1,000,000** logging events at the **same time**.This limitation has been set to prevent uncontrolled memory usage.
 
 <br/>
  
