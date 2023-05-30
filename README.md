@@ -9,7 +9,6 @@
  [![Security Rating](https://sonarcloud.io/api/project_badges/measure?project=ShayanFiroozi_FastLog.Net&metric=security_rating)](https://sonarcloud.io/summary/new_code?id=ShayanFiroozi_FastLog.Net)
  [![Bugs](https://sonarcloud.io/api/project_badges/measure?project=ShayanFiroozi_FastLog.Net&metric=bugs)](https://sonarcloud.io/summary/new_code?id=ShayanFiroozi_FastLog.Net)
  [![Vulnerabilities](https://sonarcloud.io/api/project_badges/measure?project=ShayanFiroozi_FastLog.Net&metric=vulnerabilities)](https://sonarcloud.io/summary/new_code?id=ShayanFiroozi_FastLog.Net)
- [![Security Rating](https://sonarcloud.io/api/project_badges/measure?project=ShayanFiroozi_FastLog.Net&metric=security_rating)](https://sonarcloud.io/summary/new_code?id=ShayanFiroozi_FastLog.Net)
  [![Lines of Code](https://sonarcloud.io/api/project_badges/measure?project=ShayanFiroozi_FastLog.Net&metric=ncloc)](https://sonarcloud.io/summary/new_code?id=ShayanFiroozi_FastLog.Net)
  [![Duplicated Lines (%)](https://sonarcloud.io/api/project_badges/measure?project=ShayanFiroozi_FastLog.Net&metric=duplicated_lines_density)](https://sonarcloud.io/summary/new_code?id=ShayanFiroozi_FastLog.Net)
  
