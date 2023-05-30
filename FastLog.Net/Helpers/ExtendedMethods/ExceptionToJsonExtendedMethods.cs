@@ -55,9 +55,7 @@ namespace FastLog.Helpers.ExtendedMethods
                             .Append($"{new string(' ', spaceCount + 2)}\"Target Site\": \"{(exception.TargetSite == null ? "N/A" : exception.TargetSite.Name)}\"")
                             .Append($"\n{new string(' ', spaceCount)}}}");
 
-            //_ = finalMessage.Append("}\n");
-
-
+            
             return finalMessage.ToString();
 
         }

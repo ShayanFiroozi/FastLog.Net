@@ -122,8 +122,6 @@ namespace FastLog.Core
                                     InternalLogger?.LogInternalException(ex);
                                 }
 
-
-                                //Console.WriteLine($"{LoggerChannelReader.Count:N0} item(s) left in channel.");
                             }
 
                             if (Configuration.RunAgentsInParallel)
@@ -138,7 +136,6 @@ namespace FastLog.Core
                             if (queueProcessedEventCount >= long.MaxValue) { queueProcessedEventCount = 0; }
                             queueProcessedEventCount++;
 
-                            // Interlocked.Increment(ref channelProcessedEventCount);
 
                             // Raise the event
                             try
@@ -193,7 +190,6 @@ namespace FastLog.Core
             {
                 // Wait until all logs in the queue been processed or cancelation token signal was received.
                  await Task.Delay(0, _cts.Token); 
-                //await Task.Yield();
             }
 
         }

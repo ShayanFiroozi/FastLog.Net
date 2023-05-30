@@ -52,7 +52,7 @@ namespace FastLog.Internal
         private bool useJsonFormat { get; set; } = false;
 
 
-        private long totalLogCount  = 0;
+        private long totalLogCount = 0;
 
         public long TotalLogCount => totalLogCount;
 
@@ -188,12 +188,12 @@ namespace FastLog.Internal
         {
             if (string.IsNullOrWhiteSpace(InternalLogFile))
             {
-                throw new ArgumentException($"'{nameof(InternalLogFile)}' cannot be null or whitespace.", nameof(InternalLogFile));
+                throw new ArgumentException($"\"InternalLogFile\" parameter cannot be null or whitespace.", nameof(InternalLogFile));
             }
 
             if (InternalExceptionsMaxLogFileSizeMB <= 0)
             {
-                throw new ArgumentException($"'{nameof(InternalExceptionsMaxLogFileSizeMB)}' must be greater then zero.", nameof(InternalExceptionsMaxLogFileSizeMB));
+                throw new ArgumentException($"'\"InternalExceptionsMaxLogFileSizeMB\" parameter must be greater then zero.");
             }
 
             if (exception is null)
@@ -264,11 +264,8 @@ namespace FastLog.Internal
                     {
                         if (_BeepOnlyOnDebugMode)
                         {
-                            if (Debugger.IsAttached)
-                            {
-                                // Note : "Beep" only works on Windows® OS.
-                                if (RuntimeInformation.IsOSPlatform(OSPlatform.Windows)) Console.Beep();
-                            }
+                            if (Debugger.IsAttached && RuntimeInformation.IsOSPlatform(OSPlatform.Windows))
+                                Console.Beep();
                         }
                         else
                         {
@@ -284,9 +281,7 @@ namespace FastLog.Internal
                                                 $"{LogToSave.ToJsonText()}");
 
 
-                // May be NOT "Thread-Safe"
-                //File.AppendAllText(InternalExceptionsLogFile, $"{LogToSave.GetLogMessage(true)}\n");
-
+   
             }
             catch
             {
@@ -343,19 +338,19 @@ namespace FastLog.Internal
                         if (RuntimeInformation.IsOSPlatform(OSPlatform.Windows)) Console.Beep();
                     }
                 }
-                catch { }
+                catch 
+                {
+                    // Ignore the Beep exceptions.
+                }
 
 
                 ThreadSafeFileHelper.AppendAllText(InternalLogFile,
                                                 useJsonFormat ? logEventModel.ToJsonText() : logEventModel.ToPlainText());
 
-
-                // May be NOT "Thread-Safe"
-                //File.AppendAllText(InternalExceptionsLogFile, $"{LogToSave.GetLogMessage(true)}\n");
-
             }
             catch
             {
+                // Since the Internal Logger is responsible to log the FastLog.Net internal exceptions , so if in this point we should ignore any unwanted exceptions.
             }
 
 
@@ -379,9 +374,9 @@ namespace FastLog.Internal
 
                 if (!File.Exists(InternalLogFile))
                 {
-                        // Write the file header after deletion
-                        File.AppendAllText(InternalLogFile, FileHeader.GenerateFileHeader(InternalLogFile, "FastLog.Net Internal Logger"));
-       
+                    // Write the file header after deletion
+                    File.AppendAllText(InternalLogFile, FileHeader.GenerateFileHeader(InternalLogFile, "FastLog.Net Internal Logger"));
+
                     return;
                 }
 

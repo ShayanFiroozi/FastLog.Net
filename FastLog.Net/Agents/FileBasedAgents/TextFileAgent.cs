@@ -138,15 +138,15 @@ namespace FastLog.Agents.FileBaseAgents
         /// <summary>
         /// Execute the Agent.
         /// </summary>
-        /// <param name="LogModel">Logging info</param>
+        /// <param name="logModel">Logging info</param>
         /// <param name="cancellationToken">CancellationToken for canceling the running task.</param>
         /// <returns>Task</returns>
-        public Task ExecuteAgent(ILogEventModel LogModel, CancellationToken cancellationToken = default)
+        public Task ExecuteAgent(ILogEventModel logModel, CancellationToken cancellationToken = default)
         {
             if (!CanExecuteOnThidMode()) return Task.CompletedTask;
 
 
-            if (LogModel is null)
+            if (logModel is null)
             {
                 return Task.CompletedTask;
             }
@@ -164,7 +164,7 @@ namespace FastLog.Agents.FileBaseAgents
 
 
 
-                if (!CanThisEventTypeExecute(LogModel.LogEventType)) return Task.CompletedTask;
+                if (!CanThisEventTypeExecute(logModel.LogEventType)) return Task.CompletedTask;
 
 
                 // If the log file exceeded the maximum size , we delete it !!
@@ -179,43 +179,14 @@ namespace FastLog.Agents.FileBaseAgents
 
 
 
-                #region Non Thread-Safe attempt !  (Disabled)
-                // Note : This approach below will throw exception if "RunAgentsInParallel=true" , because it's is likely two or more threads access the file simultaneously.
-
-                //                    #region Not-Thread-Safe File Write Approach
-
-                //#if NETFRAMEWORK || NETSTANDARD2_0
-
-                //                    return Task.Run(() =>
-                //                    {
-                //                        try
-                //                        {
-                //                            File.AppendAllText(LogFile, useJsonFormat ? LogModel.ToJsonText() : LogModel.ToPlainText());
-                //                        }
-                //                        catch (Exception ex)
-                //                        {
-                //                            InternalLogger?.LogInternalException(ex);
-                //                        }
-                //                    }, cancellationToken);
-
-                //#else
-                //                    return File.AppendAllTextAsync(LogFile, useJsonFormat ? LogModel.ToJsonText() : LogModel.ToPlainText(), cancellationToken);
-                //#endif
-
-
-
-                //                    #endregion 
-                #endregion
-
-
-
+            
                 #region ThreadSafe File Write Approach
 
                 return Task.Run(() =>
                       {
                           try
                           {
-                              ThreadSafeFileHelper.AppendAllText(LogFile, useJsonFormat ? LogModel.ToJsonText() : LogModel.ToPlainText());
+                              ThreadSafeFileHelper.AppendAllText(LogFile, useJsonFormat ? logModel.ToJsonText() : logModel.ToPlainText());
                           }
                           catch (Exception ex)
                           {
@@ -252,8 +223,6 @@ namespace FastLog.Agents.FileBaseAgents
 
                 if (ThreadSafeFileHelper.GetFileSize(LogFile) >= MaxLogFileSizeMB)
                 {
-                    // May be not "Thread-Safe"
-                    //File.Delete(LogFile);
 
                     ThreadSafeFileHelper.DeleteFile(LogFile);
 

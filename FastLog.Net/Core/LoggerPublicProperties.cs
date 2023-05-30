@@ -79,7 +79,7 @@ namespace FastLog.Core
         /// <summary>
         /// Count total processed ( executed ) event(s).
         /// </summary>
-        public long QueueProcessedEventCount => queueProcessedEventCount; //Interlocked.Read(ref channelProcessedEventCount);
+        public long QueueProcessedEventCount => queueProcessedEventCount;
 
         /// <summary>
         /// Indicates the event queue is empty or not.

@@ -221,38 +221,34 @@ namespace FastLog.Core
         {
             foreach (IAgent agent in _logger.WithAgents().loggerAgents)
             {
-
-                if (agent is TextFileAgent)
+                //Check for duplicate log files in agents.
+                if (agent as TextFileAgent != null && loggerAgents.Where(a => a is TextFileAgent).Count(a => ((TextFileAgent)a).LogFile == ((TextFileAgent)agent).LogFile) > 1)
                 {
-                    if (loggerAgents.Where(a => a is TextFileAgent).Count(a => ((TextFileAgent)a).LogFile == ((TextFileAgent)agent).LogFile) > 1)
-                    {
-                        throw new Exception("A \"TextFileAgent\" agent with same log file already exists on the agent list.");
-                    }
-
+                    throw new NotSupportedException("A \"TextFileAgent\" agent with the same log file already exists on the agent list.");
                 }
 
                 if (loggerAgents.Count(a => a is ConsoleAgent) > 1)
                 {
-                    throw new Exception("A \"ConsoleLogger\" agent already exists on the agent list.");
+                    throw new NotSupportedException("A \"ConsoleLogger\" agent already exists on the agent list.");
                 }
 
 
 
                 if (loggerAgents.Count(a => a is DebugSystemAgent) > 1)
                 {
-                    throw new Exception("A \"DebugWindowLogger\" agent already exists on the agent list.");
+                    throw new NotSupportedException("A \"DebugWindowLogger\" agent already exists on the agent list.");
                 }
 
 
                 if (loggerAgents.Count(a => a is TraceSystemAgent) > 1)
                 {
-                    throw new Exception("A \"TraceSystemAgent\" agent already exists on the agent list.");
+                    throw new NotSupportedException("A \"TraceSystemAgent\" agent already exists on the agent list.");
                 }
 
 
                 if (loggerAgents.Count(a => a is BeepAgent) > 1)
                 {
-                    throw new Exception("A \"BeepAgent\" agent already exists on the agent list.");
+                    throw new NotSupportedException("A \"BeepAgent\" agent already exists on the agent list.");
                 }
 
             }

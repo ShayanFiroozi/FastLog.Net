@@ -130,7 +130,7 @@ namespace FastLog.Core
 
             if (!IsLoggerRunning)
             {
-                throw new Exception("The logger is not running , please call \"StartLogger\" to start the logger.");
+                throw new InvalidOperationException("The logger is not running , please call \"StartLogger\" to start the logger.");
 
             }
 
@@ -190,7 +190,7 @@ namespace FastLog.Core
         {
             if (!IsLoggerRunning)
             {
-                throw new Exception("The logger is not running , please call \"StartLogger\" to start the logger.");
+                throw new InvalidOperationException("The logger is not running , please call \"StartLogger\" to start the logger.");
             }
 
             if (exception is null)
