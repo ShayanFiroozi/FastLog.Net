@@ -336,11 +336,8 @@ namespace FastLog.Internal
 
                 try
                 {
-                    if (_Beep)
-                    {
-                        // Note : "Beep" works only on Windows® OS.
-                        if (RuntimeInformation.IsOSPlatform(OSPlatform.Windows)) Console.Beep();
-                    }
+                    if (_Beep && RuntimeInformation.IsOSPlatform(OSPlatform.Windows))
+                        Console.Beep();
                 }
                 catch
                 {
@@ -406,7 +403,7 @@ namespace FastLog.Internal
             }
             catch
             {
-
+                // Since the Internal Logger is responsible to log the FastLog.Net internal exceptions , so if in this point we should ignore any unwanted exceptions.
             }
 
             finally

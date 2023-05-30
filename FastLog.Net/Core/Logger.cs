@@ -62,7 +62,7 @@ namespace FastLog.Core
 
             if (InternalLogger == null)
             {
-                throw new ArgumentNullException($"The \"ApplyInternalLogger\" should be called first !");
+                throw new InvalidOperationException($"The \"ApplyInternalLogger\" should be called first !");
             }
 
             Configuration = configuration ?? throw new ArgumentNullException(nameof(configuration));

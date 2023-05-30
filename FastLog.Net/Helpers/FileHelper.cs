@@ -28,8 +28,15 @@ namespace FastLog.Helpers
             {
 
 
-                return string.IsNullOrWhiteSpace(fileName) ? (short)0 : !File.Exists(fileName) ? (short)0 :
+                if (string.IsNullOrWhiteSpace(fileName))
+                {
+                    return (short)0;
+                }
+                else
+                {
+                    return !File.Exists(fileName) ? (short)0 :
                 (short)(new FileInfo(fileName).Length / 1024 / 1024);
+                }
 
             }
             catch

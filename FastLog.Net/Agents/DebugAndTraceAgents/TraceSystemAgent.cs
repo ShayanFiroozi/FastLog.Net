@@ -68,9 +68,9 @@ namespace FastLog.Agents.DebugAndTraceAgents
         /// <param name="logModel">Logging info</param>
         /// <param name="cancellationToken">CancellationToken for canceling the running task.</param>
         /// <returns>Task</returns>
-        public Task ExecuteAgent(ILogEventModel logModel, CancellationToken cancellationToken = default)
+        public Task ExecuteAgent(ILogEventModel logEvent, CancellationToken cancellationToken = default)
         {
-            if (logModel is null)
+            if (logEvent is null)
             {
                 return Task.CompletedTask;
             }
@@ -84,10 +84,10 @@ namespace FastLog.Agents.DebugAndTraceAgents
             try
             {
 
-                if (!CanThisEventTypeExecute(logModel.LogEventType)) return Task.CompletedTask;
+                if (!CanThisEventTypeExecute(logEvent.LogEventType)) return Task.CompletedTask;
 
 
-                Trace.WriteLine(useJsonFormat ? logModel.ToJsonText() : logModel.ToPlainText());
+                Trace.WriteLine(useJsonFormat ? logEvent.ToJsonText() : logEvent.ToPlainText());
             }
             catch (Exception ex)
             {

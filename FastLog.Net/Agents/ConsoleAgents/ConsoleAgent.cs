@@ -72,12 +72,12 @@ namespace FastLog.Agents.ConsoleAgents
         /// <param name="logModel">Logging info</param>
         /// <param name="cancellationToken">CancellationToken for canceling the running task.</param>
         /// <returns>Task</returns>
-        public Task ExecuteAgent(ILogEventModel logModel, CancellationToken cancellationToken = default)
+        public Task ExecuteAgent(ILogEventModel logEvent, CancellationToken cancellationToken = default)
         {
 
 
 
-            if (logModel is null)
+            if (logEvent is null)
             {
                 return Task.CompletedTask;
             }
@@ -89,11 +89,11 @@ namespace FastLog.Agents.ConsoleAgents
             try
             {
 
-                if (!CanThisEventTypeExecute(logModel.LogEventType)) return Task.CompletedTask;
+                if (!CanThisEventTypeExecute(logEvent.LogEventType)) return Task.CompletedTask;
 
                 // Set the proper console forecolor
 
-                switch (logModel.LogEventType)
+                switch (logEvent.LogEventType)
                 {
                     case LogEventTypes.INFO:
                     case LogEventTypes.NOTE:
@@ -132,7 +132,7 @@ namespace FastLog.Agents.ConsoleAgents
                 }
 
 
-                Console.WriteLine(useJsonFormat ? logModel.ToJsonText() : logModel.ToPlainText());
+                Console.WriteLine(useJsonFormat ? logEvent.ToJsonText() : logEvent.ToPlainText());
 
 
             }

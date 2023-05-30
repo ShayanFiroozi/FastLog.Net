@@ -222,7 +222,7 @@ namespace FastLog.Core
             foreach (IAgent agent in _logger.WithAgents().loggerAgents)
             {
                 //Check for duplicate log files in agents.
-                if (agent as TextFileAgent != null && loggerAgents.Where(a => a is TextFileAgent).Count(a => ((TextFileAgent)a).LogFile == ((TextFileAgent)agent).LogFile) > 1)
+                if (agent is TextFileAgent && loggerAgents.Where(a => a is TextFileAgent).Count(a => ((TextFileAgent)a).LogFile == ((TextFileAgent)agent).LogFile) > 1)
                 {
                     throw new NotSupportedException("A \"TextFileAgent\" agent with the same log file already exists on the agent list.");
                 }

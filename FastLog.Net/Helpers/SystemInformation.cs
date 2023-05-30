@@ -106,10 +106,15 @@ namespace FastLog.Helpers
         {
             try
             {
-                return AppDomain.CurrentDomain.SetupInformation.TargetFrameworkName != null
-                    ? string.IsNullOrWhiteSpace(AppDomain.CurrentDomain?.SetupInformation?.TargetFrameworkName) ? "N/A" :
-                            AppDomain.CurrentDomain?.SetupInformation?.TargetFrameworkName
-                    : "N/A";
+                if (AppDomain.CurrentDomain.SetupInformation.TargetFrameworkName != null)
+                {
+                    return string.IsNullOrWhiteSpace(AppDomain.CurrentDomain?.SetupInformation?.TargetFrameworkName) ? "N/A" :
+                            AppDomain.CurrentDomain?.SetupInformation?.TargetFrameworkName;
+                }
+                else
+                {
+                    return "N/A";
+                }
             }
             catch
             {

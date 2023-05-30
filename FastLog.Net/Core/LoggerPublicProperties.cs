@@ -73,7 +73,7 @@ namespace FastLog.Core
         /// <summary>
         /// Count total event(s) added to channel (include processed and not processed events).
         /// </summary>
-        public long QueueTotalEventCount => queueTotalEventCount; //Interlocked.Read(ref channelTotalEventCount);
+        public long QueueTotalEventCount => queueTotalEventCount;
 
 
         /// <summary>

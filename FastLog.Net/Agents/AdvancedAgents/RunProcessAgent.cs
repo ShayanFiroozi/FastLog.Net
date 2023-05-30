@@ -152,10 +152,10 @@ namespace FastLog.Agents.AdvancedAgents
         /// <param name="logModel">This parameter will be ignored in this agent.</param>
         /// <param name="cancellationToken">CancellationToken for canceling the running task</param>
         /// <returns>Task</returns>
-        public Task ExecuteAgent(ILogEventModel logModel, CancellationToken cancellationToken = default)
+        public Task ExecuteAgent(ILogEventModel logEvent, CancellationToken cancellationToken = default)
         {
 
-            if (logModel is null)
+            if (logEvent is null)
             {
                 return Task.CompletedTask;
             }
@@ -170,7 +170,7 @@ namespace FastLog.Agents.AdvancedAgents
             try
             {
 
-                if (!CanThisEventTypeExecute(logModel.LogEventType)) return Task.CompletedTask;
+                if (!CanThisEventTypeExecute(logEvent.LogEventType)) return Task.CompletedTask;
 
 
                 RunProcess(WorkingDirectory, processToExecute, ExecutionArgument, useShellExecute, runAsAdministrator);
@@ -186,7 +186,7 @@ namespace FastLog.Agents.AdvancedAgents
         }
 
 
-        private Process RunProcess(string workingDirectory,
+        private void RunProcess(string workingDirectory,
                                                 string fileName,
                                                 string arguments = "",
                                                 bool UseShellExecute = false,
@@ -204,7 +204,7 @@ namespace FastLog.Agents.AdvancedAgents
                     Arguments = arguments,
                 };
 
-                return Process.Start(startInfo);
+                Process.Start(startInfo);
 
             }
 
@@ -212,8 +212,6 @@ namespace FastLog.Agents.AdvancedAgents
             {
                 InternalLogger?.LogInternalException(ex);
             }
-
-            return new Process();
 
         }
 
