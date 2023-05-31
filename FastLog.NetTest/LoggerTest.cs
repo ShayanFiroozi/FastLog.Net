@@ -66,6 +66,7 @@ namespace FastLog.NetTest
             {
                 // Put the log event on queue. ( IMPORTANT : The requests won't process here ! Just put them on queue.)
                 await FastLogger.LogException(new InvalidCastException());
+                await FastLogger.LogConsole("Please enter a number:");
             }
 
 

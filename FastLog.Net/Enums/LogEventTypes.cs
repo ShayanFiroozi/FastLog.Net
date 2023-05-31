@@ -29,7 +29,8 @@ namespace FastLog.Enums
         ERROR = 6,
         EXCEPTION = 7,
         SYSTEM = 8,
-        SECURITY = 9
+        SECURITY = 9,
+        CONSOLE = 10
     }
 
 

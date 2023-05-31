@@ -36,9 +36,10 @@
     * ALERT  
     * DEBUG  
     * ERROR  
-    * EXCEPTION  (specially designed for .Net [Exception](https://learn.microsoft.com/en-us/dotnet/api/system.exception?view=net-7.0) class to keep all details with nice json format)
+    * EXCEPTION → Specially designed for .Net [Exception](https://learn.microsoft.com/en-us/dotnet/api/system.exception?view=net-7.0) class to keep all details with nice json format.
     * SYSTEM  
     * SECURITY  
+    * CONSOLE → Designed to log the "Console Output".  
  <br/>  
  
  * **Agents :** 

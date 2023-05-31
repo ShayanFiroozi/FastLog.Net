@@ -112,6 +112,14 @@ namespace FastLog.Core
         }
 
 
+        public ValueTask LogConsole(string LogText,
+                                    string Details = "",
+                                    int EventId = 0)
+        {
+            return LogEventHelper(LogEventTypes.CONSOLE, LogText, Details, EventId);
+        }
+
+
 
 
         #region Helpers

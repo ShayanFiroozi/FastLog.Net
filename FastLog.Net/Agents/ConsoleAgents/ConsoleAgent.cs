@@ -82,6 +82,13 @@ namespace FastLog.Agents.ConsoleAgents
                 return Task.CompletedTask;
             }
 
+
+            // We won't process a console log on a "Console" agent !!
+            if (logEvent.LogEventType is LogEventTypes.CONSOLE)
+            {
+                return Task.CompletedTask;
+            }
+
             if (!CanExecuteOnThidMode()) return Task.CompletedTask;
 
 

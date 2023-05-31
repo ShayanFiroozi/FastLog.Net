@@ -26,4 +26,8 @@
   * Add "IsQueueEmpty" property.
   * Refactor some methods to achieve better code readability and reliability.
   * Add Forever run test !
+
+ ### ✔ 1.1.8552 (2023-06-01)
+   * Add "Console" event log which is used for logging the "Console Output".
+
  
