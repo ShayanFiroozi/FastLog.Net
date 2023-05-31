@@ -82,7 +82,7 @@ The srouce code is fully commented.
 <br/>
  
 ## ❔ How To Use
- ### Step 1 :  
+ ### Step 1 👇  
  - Create the **Internal Logger** agent with fluent builder pattern :  
  
  ```csharp
@@ -95,7 +95,7 @@ The srouce code is fully commented.
 > **Note**:  
 Internal logger agent is responsible for logging the events occured in the FastLog.Net internally (including exceptions).  
  
-  ### Step 2 :  
+  ### Step 2 👇  
  - Create the **Logger Configuration** with fluent builder pattern :  
  
  ```csharp
@@ -106,7 +106,7 @@ Internal logger agent is responsible for logging the events occured in the FastL
  > **Warning**:  
 There is "**RunAgentsInParallelMode**" feature you can use to run agent(s) in parallel , but in most cases it's **NOT** recommended because may have considerable negative impact on performance.  
  
-   ### Step 3 :  
+   ### Step 3 👇  
  - Create the **Logger** with fluent builder pattern :  
  
  ```csharp
@@ -154,7 +154,7 @@ There is "**RunAgentsInParallelMode**" feature you can use to run agent(s) in pa
 
  ``` 
 
- ### Final Step :  
+ ### Final Step 👇  
   - **FastLog.Net** is ready , just call a logging method from anywhere of your code :  
  
  ```csharp
