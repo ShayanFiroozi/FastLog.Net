@@ -20,12 +20,12 @@
     <PackageIcon>FastLogNet.png</PackageIcon>
     <Version>1.1.8551</Version>
     <Authors>Shayan Firoozi &lt;shayan.firoozi@gmail.com&gt;</Authors>
-    <PackageReleaseNotes>✔ Improve Internal Logger Thread-Safety.
-✔ Add Nuget package address to the file header.
-✔ Improve FastLog.Net engine.
-✔ Improve Test App.
-✔ Add UTC Date Time to the file header.
-✔ Improve FastLog.Net Engine exceptions handling.</PackageReleaseNotes>
+    <PackageReleaseNotes>✔ Add "ProcessAllEventsInQueue()" method
+✔ Refactor engine to be compatible with "ProcessAllEventsInQueue()" method.
+✔ Update FastLog.Net Test App To Use "ProcessAllEventsInQueue" Method.
+✔ Add "IsQueueEmpty" property.
+✔ Refactor some methods to achieve better code readability and reliability.
+✔ Add Forever run test !</PackageReleaseNotes>
   </PropertyGroup>
 
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|AnyCPU'">
