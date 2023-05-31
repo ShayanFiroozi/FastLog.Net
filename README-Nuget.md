@@ -21,8 +21,8 @@
                                                .DeleteTheLogFileWhenExceededTheMaximumSizeOf(20)
                                                .PrintOnConsole();
  ```   
- > ℹ**Note**:  
- > Internal logger agent is responsible for logging the events occured in the FastLog.Net internally (including exceptions).   
+> **Note**:  
+> Internal logger agent is responsible for logging the events occured in the FastLog.Net internally (including exceptions).   
  
   **Step 2** 👇  
  - Build the **Logger Configuration** with fluent builder pattern :  
@@ -32,8 +32,8 @@
                                            .WithLoggerName("FastLog.Net® Logger")
                                            .WithMaxEventsToKeepInMemory(1_000);
  ```   
- > ℹ**Note**:  
- > There is "**RunAgentsInParallelMode**" feature you can use to run agent(s) in parallel , but in most cases it's **NOT** recommended because may have considerable negative impact on performance.  
+> **Note**:  
+> There is "**RunAgentsInParallelMode**" feature you can use to run agent(s) in parallel , but in most cases it's **NOT** recommended because may have considerable negative impact on performance.  
  
   **Step 3** 👇  
  - Build the **Logger** with fluent builder pattern :  
