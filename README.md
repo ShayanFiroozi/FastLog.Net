@@ -56,7 +56,7 @@
  
    * **Heavy Operation Simulator Agent** simulates an heavy IO bound operation (like email sending or http operation) , this agent is used for testing the FastLog.Net or create a delay intentionally between the agents.  
  
- >ℹ **Note:**  
+ > **Note**:  
 All agents support Event Type filtering ,  so you can easily specify that your agent should be executed on which event type(s).  
 For example: You can add a "Beep Agent" with "Exception" log event , so the beep agent will only execute on "Exceptions" not other logging events.  
  
@@ -76,7 +76,7 @@ Since this is a new repository , there's no contributor yet! , But **FastLog.Net
 
 If you'd like to contribute, please read the [**How It Works**](https://github.com/ShayanFiroozi/FastLog.Net#-how-it-works) section and then take a look at [**ToDo List**](ToDo.md) to get involved !
  
->ℹ **Note:**  
+> **Note**:  
 The srouce code is fully commented.
 
 <br/>
@@ -92,7 +92,7 @@ The srouce code is fully commented.
                                                .DeleteTheLogFileWhenExceededTheMaximumSizeOf(20)
                                                .PrintOnConsole();
  ```   
->ℹ **Note:**  
+> **Note**:  
 Internal logger agent is responsible for logging the events occured in the FastLog.Net internally (including exceptions).  
  
   ### Step 2 :  
@@ -208,7 +208,7 @@ Use **Visual Studio 2022** and open the solution 'FastLog.Net.sln'.
 - .Net Framework 4.8
 
 
->ℹ **Note:**  
+> **Note**:  
 Since the **FastLog.Net** solution is supporting multi target frameworks , to build the solution successfully you should install all .Net versions above , otherwise you can easily exclude not interested framework(s) by editing **TargetFrameworks** tag in the [FastLog.Net Project File](https://github.com/ShayanFiroozi/FastLog.Net/blob/master/FastLog.Net/FastLog.Net.csproj).
 
 <br/>
