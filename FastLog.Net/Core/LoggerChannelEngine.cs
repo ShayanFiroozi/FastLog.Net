@@ -46,7 +46,7 @@ namespace FastLog.Core
 
                 Lazy<List<Task>> tasksList = new Lazy<List<Task>>();
 
-                
+
                 while (!LoggerChannelReader.Completion.IsCompleted && !_cts.IsCancellationRequested)
                 {
 
@@ -177,8 +177,8 @@ namespace FastLog.Core
             {
                 InternalLogger?.LogInternalSystemEvent(new LogEventModel(Enums.LogEventTypes.SYSTEM, "FastLog.Net engine has been started."));
             }
-            catch 
-            { 
+            catch
+            {
                 // Ignore the exceptions , because if the Internal Logger itself throws an exception we can not do anything about that !
             }
 
@@ -192,7 +192,7 @@ namespace FastLog.Core
             while (!IsQueueEmpty())
             {
                 // Wait until all logs in the queue been processed or cancelation token signal was received.
-                 await Task.Delay(0, _cts.Token); 
+                await Task.Delay(0, _cts.Token);
             }
 
         }
@@ -201,6 +201,15 @@ namespace FastLog.Core
         {
             IsLoggerRunning = false;
             _cts.Cancel();
+            try
+            {
+                InternalLogger?.LogInternalSystemEvent(new LogEventModel(Enums.LogEventTypes.SYSTEM, "FastLog.Net engine has been stopped.",
+                                                                                                                "Via StopLogger() method."));
+            }
+            catch
+            {
+                // Ignore the exceptions , because if the Internal Logger itself throws an exception we can not do anything about that !
+            }
         }
 
 
