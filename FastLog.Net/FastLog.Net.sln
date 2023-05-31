@@ -10,7 +10,6 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "SolutionItems", "SolutionIt
 		..\CHANGELOG.md = ..\CHANGELOG.md
 		..\DONATIONS.md = ..\DONATIONS.md
 		..\LICENSE.md = ..\LICENSE.md
-		..\README-Fa.md = ..\README-Fa.md
 		..\README-Nuget.md = ..\README-Nuget.md
 		..\README.md = ..\README.md
 		..\ToDo.md = ..\ToDo.md
