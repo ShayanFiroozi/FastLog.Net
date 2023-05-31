@@ -21,7 +21,8 @@
                                                .DeleteTheLogFileWhenExceededTheMaximumSizeOf(20)
                                                .PrintOnConsole();
  ```   
-   ***`Note`**: Internal logger agent is responsible for logging the events occured in the FastLog.Net internally (including exceptions).*  
+ > **Note**:  
+ > Internal logger agent is responsible for logging the events occured in the FastLog.Net internally (including exceptions).   
  
   **Step 2** 👇  
  - Build the **Logger Configuration** with fluent builder pattern :  
@@ -31,7 +32,8 @@
                                            .WithLoggerName("FastLog.Net® Logger")
                                            .WithMaxEventsToKeepInMemory(1_000);
  ```   
-       ***`Note`**: There is "**RunAgentsInParallelMode**" feature you can use to run agent(s) in parallel , but in most cases it's **NOT** recommended because may have considerable negative impact on performance.*  
+ > **Note**:  
+ > There is "**RunAgentsInParallelMode**" feature you can use to run agent(s) in parallel , but in most cases it's **NOT** recommended because may have considerable negative impact on performance.  
  
   **Step 3** 👇  
  - Build the **Logger** with fluent builder pattern :  
@@ -79,8 +81,7 @@ await fastLogger.LogException(new Exception("This is a test exception i want to 
 await fastLogger.LogSystem("The system is gonna be restarted !");
  ```   
   
-  
- >:warning: Since the **FastLog.Net** uses the background engine to process the requested log event(s) , so we **MUST** await "**ProcessAllEventsInQueue()**" method until all request(s) in the queue be processed before the app/service termination.
+>⚠ **Warning:**   Since the **FastLog.Net** uses the background engine to process the requested log event(s) , so we **MUST** await "**ProcessAllEventsInQueue()**" method until all request(s) in the queue be processed before the app/service termination.
 
 
 ## GitHub Repository
