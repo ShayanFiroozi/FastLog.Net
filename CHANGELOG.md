@@ -29,6 +29,6 @@
 
  ### ✔ 1.1.8552 (2023-06-01)
    * Add "Console" event log which is used for logging the "Console Output".
-   * Log the internal event when FastLog.Net engine stopped.
+   * Log the internal event when FastLog.Net engine has been stopped.
 
  

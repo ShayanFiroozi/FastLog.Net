@@ -18,14 +18,10 @@
     <PackageRequireLicenseAcceptance>True</PackageRequireLicenseAcceptance>
     <Company>TrendSoft®</Company>
     <PackageIcon>FastLogNet.png</PackageIcon>
-    <Version>1.1.8551</Version>
+    <Version>1.1.8552</Version>
     <Authors>Shayan Firoozi &lt;shayan.firoozi@gmail.com&gt;</Authors>
-    <PackageReleaseNotes>✔ Add "ProcessAllEventsInQueue()" method
-✔ Refactor engine to be compatible with "ProcessAllEventsInQueue()" method.
-✔ Update FastLog.Net Test App To Use "ProcessAllEventsInQueue" Method.
-✔ Add "IsQueueEmpty" property.
-✔ Refactor some methods to achieve better code readability and reliability.
-✔ Add Forever run test !</PackageReleaseNotes>
+    <PackageReleaseNotes>✔ Add "Console" event log which is used for logging the "Console Output".
+✔ Log the internal event when FastLog.Net engine has been stopped.</PackageReleaseNotes>
   </PropertyGroup>
 
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|AnyCPU'">
