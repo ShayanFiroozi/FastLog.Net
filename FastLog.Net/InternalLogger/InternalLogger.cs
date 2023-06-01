@@ -208,36 +208,7 @@ namespace FastLog.Internal
 
 
 
-                if (_PrintOnConsole)
-                {
-                    if (_PrintOnConsoleOnlyOnDebugMode)
-                    {
-                        if (Debugger.IsAttached)
-                        {
-                            Console.WriteLine();
-                            Console.BackgroundColor = ConsoleColor.Red;
-                            Console.Write($"Logger \"Internal Exception\" has been occured :");
-                            Console.ResetColor();
-                            Console.ForegroundColor = ConsoleColor.DarkRed;
-
-                            Console.WriteLine($"{LogToSave.ToJsonText()}\n");
-
-                            Console.ResetColor();
-                        }
-                    }
-                    else
-                    {
-                        Console.WriteLine();
-                        Console.BackgroundColor = ConsoleColor.Red;
-                        Console.Write($"Logger \"Internal Exception\" has been occured :");
-                        Console.ResetColor();
-                        Console.ForegroundColor = ConsoleColor.DarkRed;
-
-                        Console.WriteLine($"{LogToSave.ToJsonText()}\n");
-
-                        Console.ResetColor();
-                    }
-                }
+                PrintOnConsole(LogToSave);
 
 
                 if (_LogOnDebugWindow)
@@ -248,38 +219,13 @@ namespace FastLog.Internal
 
 
 
-                // Note : "Beep" only works on Windows® OS.
-                // ATTENTION : There's a possibility of "HostProtectionException" or "PlatformNotSupportedException" exception.
-                // For more info please visit : https://learn.microsoft.com/en-us/dotnet/api/system.console.beep?view=net-7.0
-
-                try
-                {
-                    if (_Beep)
-                    {
-                        if (_BeepOnlyOnDebugMode)
-                        {
-                            if (Debugger.IsAttached && RuntimeInformation.IsOSPlatform(OSPlatform.Windows))
-                                Console.Beep();
-                        }
-                        else
-                        {
-                            // Note : "Beep" only works on Windows® OS.
-                            if (RuntimeInformation.IsOSPlatform(OSPlatform.Windows)) Console.Beep();
-                        }
-                    }
-                }
-                catch
-                {
-                    // Do not catch Beep low level API exceptions.
-                }
-
-
                 if (!string.IsNullOrWhiteSpace(InternalLogFile))
                 {
-                    ThreadSafeFileHelper.AppendAllText(InternalLogFile,
-                                                $"{LogToSave.ToJsonText()}");
+                    ThreadSafeFileHelper.AppendAllText(InternalLogFile, useJsonFormat ? LogToSave.ToJsonText() : LogToSave.ToPlainText());
                 }
 
+
+                MakeBeepSound();
 
 
             }
@@ -414,7 +360,70 @@ namespace FastLog.Internal
 
         }
 
+        private void PrintOnConsole(ILogEventModel logToPrint)
+        {
+            if (_PrintOnConsole)
+            {
+                if (_PrintOnConsoleOnlyOnDebugMode)
+                {
+                    if (Debugger.IsAttached)
+                    {
+                        Console.WriteLine();
+                        Console.BackgroundColor = ConsoleColor.Red;
+                        Console.Write($"Logger \"Internal Exception\" has been occured :");
+                        Console.ResetColor();
+                        Console.ForegroundColor = ConsoleColor.DarkRed;
 
+                        Console.WriteLine($"{logToPrint.ToJsonText()}\n");
+
+                        Console.ResetColor();
+                    }
+                }
+                else
+                {
+                    Console.WriteLine();
+                    Console.BackgroundColor = ConsoleColor.Red;
+                    Console.Write($"Logger \"Internal Exception\" has been occured :");
+                    Console.ResetColor();
+                    Console.ForegroundColor = ConsoleColor.DarkRed;
+
+                    Console.WriteLine($"{logToPrint.ToJsonText()}\n");
+
+                    Console.ResetColor();
+                }
+            }
+        }
+
+
+
+        private void MakeBeepSound()
+        {
+            // Note : "Beep" only works on Windows® OS.
+            // ATTENTION : There's a possibility of "HostProtectionException" or "PlatformNotSupportedException" exception.
+            // For more info please visit : https://learn.microsoft.com/en-us/dotnet/api/system.console.beep?view=net-7.0
+
+            try
+            {
+                if (_Beep)
+                {
+                    if (_BeepOnlyOnDebugMode)
+                    {
+                        if (Debugger.IsAttached && RuntimeInformation.IsOSPlatform(OSPlatform.Windows))
+                            Console.Beep();
+                    }
+                    else
+                    {
+                        // Note : "Beep" only works on Windows® OS.
+                        if (RuntimeInformation.IsOSPlatform(OSPlatform.Windows)) Console.Beep();
+                    }
+                }
+            }
+            catch
+            {
+                // Do not catch Beep low level API exceptions.
+            }
+
+        }
 
     }
 

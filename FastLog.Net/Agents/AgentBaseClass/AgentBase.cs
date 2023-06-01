@@ -140,7 +140,7 @@ namespace FastLog.Agents
         /// <returns>Builder Pattern : AgentType</returns>
         public AgentType IncludeEventType(LogEventTypes logEventType)
         {
-            if (!_registeredEvents.Any(type => type == logEventType))
+            if (!_registeredEvents.Contains(logEventType))
             {
                 _registeredEvents.Add(logEventType);
             }

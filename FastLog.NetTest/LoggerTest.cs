@@ -26,7 +26,7 @@ namespace FastLog.NetTest
 
         private static string LogFile = Path.Combine(AppContext.BaseDirectory, "Logs\\FastLog_LoggerLogs.log");
         private const short MaxLogFileSizeMB = 20;
-        private const int TotalTask = 1_000;
+        private const int TotalTask = 10_000;
 
 
         // Build FastLog.Net configuration with fluent builder pattern.
@@ -39,7 +39,7 @@ namespace FastLog.NetTest
                                               .WithConfiguration(fastLoggerConfig)
                                                  .WithAgents()
                                                    .AddTextFileAgent()
-                                                    .UseJsonFormat()
+                                                    //.UseJsonFormat()
                                                     .SaveLogToFile(LogFile)
                                                     .DeleteTheLogFileWhenExceededTheMaximumSizeOf(MaxLogFileSizeMB)
                                                    .BuildAgent()
@@ -61,11 +61,13 @@ namespace FastLog.NetTest
             Stopwatch stopwatch = new Stopwatch();
             stopwatch.Start();
 
+            // (TotalTask / 2) because we will log two events instead of 1
 
-            for (int i = 0; i < TotalTask; i++)
+            for (int i = 0; i < (TotalTask / 2); i++)
             {
                 // Put the log event on queue. ( IMPORTANT : The requests won't process here ! Just put them on queue.)
                 await FastLogger.LogException(new InvalidCastException("This is the Exception i want to throw !!"));
+                await FastLogger.LogInfo("FastLog.Net , high performance logger for .Net");
 
             }
 

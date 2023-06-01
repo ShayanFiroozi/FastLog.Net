@@ -33,7 +33,7 @@ namespace FastLog.Core
         /// <summary>
         /// The task list for execute all agents in parallel.
         /// </summary>
- 
+
 
 
         /// <summary>
@@ -174,50 +174,38 @@ namespace FastLog.Core
 
         private async Task ProcessEventWithAllAgentsAsync(ILogEventModel eventModel)
         {
-            List<Task> tasksList = null;
-
-            // Initialize the taskList if we need it ( Lazy loading is another option )
-            if (Configuration.RunAgentsInParallel && Agents.AgentList.Count() > 1)
-            {
-                 tasksList = new List<Task>();
-            }
+            Lazy<List<Task>> LazyTaskList = new Lazy<List<Task>>();
 
 
             foreach (IAgent logger in Agents.AgentList)
             {
-
-                if (!IsLoggerRunning) return;
-
 
                 if (logger is null)
                 {
                     continue;
                 }
 
+                if (!IsLoggerRunning) return;
+
 
                 try
                 {
-                    if (!string.IsNullOrWhiteSpace(eventModel.EventMessage))
+                    if (string.IsNullOrWhiteSpace(eventModel.EventMessage)) continue;
+
+
+
+                    // Important Warning : "Task.WhenAll" has serious performance issue here ,
+                    // so use it just when we have more than 1 agent and/or an hevy IO waiting operation is used like Email/SMS send , HTTP operation and etc.
+
+                    if (Configuration.RunAgentsInParallel)
                     {
-                        // Important Warning : "Task.WhenAll" has serious performance issue here ,
-                        // so use it just when we have more than 1 agent and/or an hevy IO waiting operation is used like Email/SMS send , HTTP operation and etc.
-                        // "Agents.AgentList.Count() > 1" --> Prevents using "Task.WhenAll" if we have just 1 agent.
+                        LazyTaskList.Value.Add(logger.ExecuteAgent(eventModel, _cts.Token));
 
-                        if (Configuration.RunAgentsInParallel && Agents.AgentList.Count() > 1)
-                        {
-                            tasksList.Add(logger.ExecuteAgent(eventModel, _cts.Token));
-                        }
-                        else
-                        {
-                            await logger.ExecuteAgent(eventModel, _cts.Token).ConfigureAwait(false);
-                        }
                     }
-
                     else
                     {
-                        continue;
+                        await logger.ExecuteAgent(eventModel, _cts.Token).ConfigureAwait(false);
                     }
-
 
                 }
                 catch (OperationCanceledException)
@@ -232,11 +220,11 @@ namespace FastLog.Core
 
             }
 
-            
+
             if (Configuration.RunAgentsInParallel)
             {
                 // Await until all tasks have been fisnihed.
-                await Task.WhenAll(tasksList).ConfigureAwait(false);
+                await Task.WhenAll(LazyTaskList.Value).ConfigureAwait(false);
             }
 
 
