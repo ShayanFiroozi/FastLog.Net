@@ -39,7 +39,7 @@ namespace FastLog.NetTest
                                               .WithConfiguration(fastLoggerConfig)
                                                  .WithAgents()
                                                    .AddTextFileAgent()
-                                                    //.UseJsonFormat()
+                                                    .UseJsonFormat()
                                                     .SaveLogToFile(LogFile)
                                                     .DeleteTheLogFileWhenExceededTheMaximumSizeOf(MaxLogFileSizeMB)
                                                    .BuildAgent()

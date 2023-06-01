@@ -52,7 +52,7 @@ namespace FastLog.Core
             {
 
 
-                while (!LoggerChannelReader.Completion.IsCompleted && !_cts.IsCancellationRequested)
+                while (!(LoggerChannelReader.Completion.IsCompleted || _cts.IsCancellationRequested))
                 {
 
                     try
@@ -68,40 +68,35 @@ namespace FastLog.Core
 
                         ILogEventModel EventModelFromChannel = await LoggerChannelReader.ReadAsync(_cts.Token)
                                                                                         .ConfigureAwait(false);
-                        // Consume the log event...
-                        if (EventModelFromChannel != null)
+
+                        if (EventModelFromChannel == null) continue;
+
+
+                        HandleInMemoryEvents(EventModelFromChannel);
+
+                        // Consume the LogEventModel on channel one by one with each logger agent in the agent list !
+
+
+                        // Pararllel.Foreach has been tested BUT normal foreach and Task.WhenAll is faster thean Parallel.Foreach in this case.
+
+
+                        await ProcessEventWithAllAgentsAsync(EventModelFromChannel).ConfigureAwait(false);
+
+
+                        // Just for sure !! in fact never gonna happen ! long Max value is "9,223,372,036,854,775,807"
+
+                        if (queueProcessedEventCount >= long.MaxValue)
                         {
-
-                            HandleInMemoryEvents(EventModelFromChannel);
-
-                            // Consume the LogEventModel on channel one by one with each logger agent in the agent list !
-
-
-                            // Pararllel.Foreach has been tested BUT normal foreach and Task.WhenAll is faster thean Parallel.Foreach in this case.
-
-
-                            await ProcessEventWithAllAgentsAsync(EventModelFromChannel).ConfigureAwait(false);
-
-
-                            // Just for sure !! in fact never gonna happen ! long Max value is "9,223,372,036,854,775,807"
-
-                            if (queueProcessedEventCount >= long.MaxValue) { queueProcessedEventCount = 0; }
-
-                            queueProcessedEventCount++;
-
-
-                            // Raise the event
-                            try
-                            {
-                                OnEventProcessed?.Invoke(this, EventModelFromChannel);
-                            }
-                            catch (Exception ex)
-                            {
-                                InternalLogger?.LogInternalException(ex);
-                            }
-
-
+                            queueProcessedEventCount = 0;
                         }
+
+                        queueProcessedEventCount++;
+
+
+
+                        HandleEvents(EventModelFromChannel);
+
+                   
 
 
                     }
@@ -231,7 +226,18 @@ namespace FastLog.Core
         }
 
 
-
+        private void HandleEvents(ILogEventModel eventModel)
+        {
+            // Raise the event
+            try
+            {
+                OnEventProcessed?.Invoke(this, eventModel);
+            }
+            catch (Exception ex)
+            {
+                InternalLogger?.LogInternalException(ex);
+            }
+        }
 
 
     }

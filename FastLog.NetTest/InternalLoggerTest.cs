@@ -33,9 +33,8 @@ namespace FastLog.NetTest
         public static readonly InternalLogger InternalLoggerAgent =
                                                   InternalLogger.Create()
                                                                 .SaveInternalEventsToFile(LogFile)
-                                                                //.UseJsonFormat()
+                                                                .UseJsonFormat()
                                                                 .DeleteTheLogFileWhenExceededTheMaximumSizeOf(MaxLogFileSizeMB);
-                                                               // .PrintOnConsole();
 
 
         public static async Task CrazyTestWithMultiTasks()
