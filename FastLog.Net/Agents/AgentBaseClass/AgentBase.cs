@@ -157,7 +157,7 @@ namespace FastLog.Agents
         /// <returns>Builder Pattern : AgentType</returns>
         public AgentType ExcludeEventType(LogEventTypes logEventType)
         {
-            if (_registeredEvents.Any(type => type == logEventType))
+            if (_registeredEvents.Contains(logEventType))
             {
                 _registeredEvents.Remove(logEventType);
             }
@@ -202,7 +202,7 @@ namespace FastLog.Agents
         /// <param name="eventType">LogEventTypes</param>
         /// <returns>bool</returns>
         private protected bool CanThisEventTypeExecute(LogEventTypes eventType) =>
-                               RegisteredEvents.Any() && RegisteredEvents.Any(type => eventType == type);
+                               RegisteredEvents.Any() && RegisteredEvents.Contains(eventType);
 
         #endregion
 

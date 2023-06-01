@@ -31,4 +31,9 @@
    * Add "Console" event log which is used for logging the "Console Output".
    * Log the internal event when FastLog.Net engine has been stopped.
 
+
+ ### ✔ 1.1.8553 (2023-06-02)
+   * Add "ResetStatistics" method to reset the logger statistics.
+   * Improve core engine.
+   * Refactor some methods to achieve better code readability and reliability.
  

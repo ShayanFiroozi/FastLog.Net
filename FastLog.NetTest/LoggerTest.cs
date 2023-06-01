@@ -26,7 +26,7 @@ namespace FastLog.NetTest
 
         private static string LogFile = Path.Combine(AppContext.BaseDirectory, "Logs\\FastLog_LoggerLogs.log");
         private const short MaxLogFileSizeMB = 20;
-        private const int TotalTask = 10_000;
+        private const int TotalTask = 1_000;
 
 
         // Build FastLog.Net configuration with fluent builder pattern.
@@ -65,8 +65,8 @@ namespace FastLog.NetTest
             for (int i = 0; i < TotalTask; i++)
             {
                 // Put the log event on queue. ( IMPORTANT : The requests won't process here ! Just put them on queue.)
-                await FastLogger.LogException(new InvalidCastException());
-                await FastLogger.LogConsole("Please enter a number:");
+                await FastLogger.LogException(new InvalidCastException("This is the Exception i want to throw !!"));
+
             }
 
 
