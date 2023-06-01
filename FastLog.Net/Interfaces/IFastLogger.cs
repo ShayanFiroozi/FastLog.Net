@@ -41,6 +41,8 @@ namespace FastLog.Interfaces
         ValueTask LogSystem(string LogText, string Details = "", int EventId = 0);
 
         ValueTask LogSecurity(string LogText, string Details = "", int EventId = 0);
+
+        ValueTask LogConsole(string LogText, string Details = "", int EventId = 0);
 #else
 
         public ValueTask LogInfo(string LogText, string Details = "", int EventId = 0);
@@ -62,6 +64,8 @@ namespace FastLog.Interfaces
         public ValueTask LogSystem(string LogText, string Details = "", int EventId = 0);
 
         public ValueTask LogSecurity(string LogText, string Details = "", int EventId = 0);
+
+        public ValueTask LogConsole(string LogText, string Details = "", int EventId = 0);
 
 #endif
     }
