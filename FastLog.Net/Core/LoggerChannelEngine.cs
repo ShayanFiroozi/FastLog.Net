@@ -43,6 +43,10 @@ namespace FastLog.Core
 
         public void StartLogger()
         {
+            if(!Agents.AgentList.Any())
+            {
+                throw new InvalidOperationException("The logger can not start with no logging agent.");
+            }
 
             TaskCompletionSource<bool> IsEngineRunning = new TaskCompletionSource<bool>();
 
