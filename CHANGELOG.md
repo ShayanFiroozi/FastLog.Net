@@ -36,4 +36,5 @@
    * Add "ResetStatistics" method to reset the logger statistics.
    * Improve core engine.
    * Refactor some methods to achieve better code readability and reliability.
+   * Prevent engine start without logging agent(s).
  
