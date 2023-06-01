@@ -82,7 +82,7 @@ await fastLogger.LogSystem("The system is gonna be restarted !");
  ```   
   
 > ⚠**Warning**  
-> Since the **FastLog.Net** uses the background engine to process the requested log event(s) , so we **MUST** await "**ProcessAllEventsInQueue()**" method until all request(s) in the queue be processed before the app/service termination.
+> Since the **FastLog.Net** uses the background engine to process the requested log event(s) , so we **MUST** await "**ProcessAllEventsInQueue()**" method until all request(s) in the queue to be processed before the app/service termination.
 
 
 ## GitHub Repository
