@@ -46,7 +46,7 @@
  * **Agents :** 
    * **Text File Agent** which supports both plain text and json format with ability to handle log file max size.  
  
-   * **Colorized Console Agent** which also supports text and json output.  
+   * **Colorized Console Agent** which also supports text and json output. Uses [**FluentConsole.Net**](https://github.com/ShayanFiroozi/FluentConsole.Net)
  
    * **Beep Agent** (works only on Windows® OS) which is resposible to make [beep](https://learn.microsoft.com/en-us/dotnet/api/system.console.beep?view=net-7.0) sound from BIOS or system speaker with fully customizable event type.  
  
