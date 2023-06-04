@@ -16,6 +16,7 @@ using FastLog.Helpers;
 using FastLog.Helpers.ExtendedMethods;
 using FastLog.Interfaces;
 using FastLog.Models;
+using FluentConsoleNet;
 using System;
 using System.Diagnostics;
 using System.IO;
@@ -258,15 +259,26 @@ namespace FastLog.Internal
 
                 if (_PrintOnConsole)
                 {
-                    Console.WriteLine();
-                    Console.ForegroundColor = ConsoleColor.Yellow;
-                    Console.Write($"Logger \"Internal System Event\" has been occured :\n");
-                    Console.ResetColor();
-                    Console.ForegroundColor = ConsoleColor.DarkGray;
+                    FluentConsole.Console
+                                 .AddLineBreak(1)
+                                 .Write("Logger").AddSpace()
+                                 .WithFontColor(ConsoleColor.Yellow)
+                                 .Write("Internal System Event")
+                                 .ResetColor()
+                                 .AddSpace()
+                                 .WriteLine("has been occured :")
+                                 .WriteLine(useJsonFormat ? logEventModel.ToJsonText() : logEventModel.ToPlainText())
+                                 .Print();
 
-                    Console.WriteLine(useJsonFormat ? logEventModel.ToJsonText() : logEventModel.ToPlainText());
+                    //Console.WriteLine();
+                    //Console.ForegroundColor = ConsoleColor.Yellow;
+                    //Console.Write($"Logger \"Internal System Event\" has been occured :\n");
+                    //Console.ResetColor();
+                    //Console.ForegroundColor = ConsoleColor.DarkGray;
 
-                    Console.ResetColor();
+                    //Console.WriteLine(useJsonFormat ? logEventModel.ToJsonText() : logEventModel.ToPlainText());
+
+                    //Console.ResetColor();
                 }
 
 
@@ -368,28 +380,53 @@ namespace FastLog.Internal
                 {
                     if (Debugger.IsAttached)
                     {
-                        Console.WriteLine();
-                        Console.BackgroundColor = ConsoleColor.Red;
-                        Console.Write($"Logger \"Internal Exception\" has been occured :");
-                        Console.ResetColor();
-                        Console.ForegroundColor = ConsoleColor.DarkRed;
 
-                        Console.WriteLine($"{logToPrint.ToJsonText()}\n");
+                        FluentConsole.Console
+                                     .AddLineBreak(1)
+                                     .Write("Logger").AddSpace()
+                                     .WithBackColor(ConsoleColor.Red)
+                                     .Write("Internal Exception")
+                                     .ResetColor()
+                                     .AddSpace()
+                                     .WriteLine("has been occured :")
+                                     .WriteLine(useJsonFormat ? logToPrint.ToJsonText() : logToPrint.ToPlainText())
+                                     .Print();
 
-                        Console.ResetColor();
+
+                        //Console.WriteLine();
+                        //Console.BackgroundColor = ConsoleColor.Red;
+                        //Console.Write($"Logger \"Internal Exception\" has been occured :");
+                        //Console.ResetColor();
+                        //Console.ForegroundColor = ConsoleColor.DarkRed;
+
+                        //Console.WriteLine($"{logToPrint.ToJsonText()}\n");
+
+                        //Console.ResetColor();
                     }
                 }
                 else
                 {
-                    Console.WriteLine();
-                    Console.BackgroundColor = ConsoleColor.Red;
-                    Console.Write($"Logger \"Internal Exception\" has been occured :");
-                    Console.ResetColor();
-                    Console.ForegroundColor = ConsoleColor.DarkRed;
 
-                    Console.WriteLine($"{logToPrint.ToJsonText()}\n");
+                    FluentConsole.Console
+                                 .AddLineBreak(1)
+                                 .Write("Logger").AddSpace()
+                                 .WithBackColor(ConsoleColor.Red)
+                                 .Write("Internal Exception")
+                                 .ResetColor()
+                                 .AddSpace()
+                                 .WriteLine("has been occured :")
+                                 .WriteLine(useJsonFormat ? logToPrint.ToJsonText() : logToPrint.ToPlainText())
+                                 .Print();
 
-                    Console.ResetColor();
+                    //Console.WriteLine();
+                    //Console.BackgroundColor = ConsoleColor.Red;
+                    //Console.Write($"Logger \"Internal Exception\" has been occured :");
+                    //Console.ResetColor();
+                    //Console.ForegroundColor = ConsoleColor.DarkRed;
+
+                    //Console.WriteLine($"{logToPrint.ToJsonText()}\n");
+
+                    //Console.ResetColor();
                 }
             }
         }

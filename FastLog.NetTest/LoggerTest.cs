@@ -43,6 +43,8 @@ namespace FastLog.NetTest
                                                     .SaveLogToFile(LogFile)
                                                     .DeleteTheLogFileWhenExceededTheMaximumSizeOf(MaxLogFileSizeMB)
                                                    .BuildAgent()
+
+                                                 .AddConsoleAgent().BuildAgent()
                                       .BuildLogger();
 
 

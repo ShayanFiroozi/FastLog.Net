@@ -16,6 +16,7 @@ using FastLog.Core;
 using FastLog.Enums;
 using FastLog.Helpers.ExtendedMethods;
 using FastLog.Interfaces;
+using FluentConsoleNet;
 using System;
 using System.Threading;
 using System.Threading.Tasks;
@@ -76,6 +77,7 @@ namespace FastLog.Agents.ConsoleAgents
         {
 
 
+            ConsoleColor ProperConsoleColor = ConsoleColor.White;
 
             if (logEvent is null)
             {
@@ -105,41 +107,45 @@ namespace FastLog.Agents.ConsoleAgents
                     case LogEventTypes.INFO:
                     case LogEventTypes.NOTE:
                     case LogEventTypes.TODO:
-                        Console.ForegroundColor = ConsoleColor.White;
+                        ProperConsoleColor = ConsoleColor.White;
                         break;
 
                     case LogEventTypes.WARNING:
-                        Console.ForegroundColor = ConsoleColor.Yellow;
+                        ProperConsoleColor = ConsoleColor.Yellow;
                         break;
 
                     case LogEventTypes.ALERT:
-                        Console.ForegroundColor = ConsoleColor.DarkRed;
+                        ProperConsoleColor = ConsoleColor.DarkRed;
                         break;
 
                     case LogEventTypes.DEBUG:
-                        Console.ForegroundColor = ConsoleColor.DarkGray;
+                        ProperConsoleColor = ConsoleColor.DarkGray;
                         break;
 
                     case LogEventTypes.ERROR:
                     case LogEventTypes.EXCEPTION:
-                        Console.ForegroundColor = ConsoleColor.Red;
+                        ProperConsoleColor = ConsoleColor.Red;
                         break;
 
 
                     case LogEventTypes.SYSTEM:
-                        Console.ForegroundColor = ConsoleColor.Blue;
+                        ProperConsoleColor = ConsoleColor.Blue;
                         break;
 
                     case LogEventTypes.SECURITY:
-                        Console.ForegroundColor = ConsoleColor.Cyan;
+                        ProperConsoleColor = ConsoleColor.Cyan;
                         break;
 
                     default:
                         break;
                 }
 
+                FluentConsole.Console
+                             .WithFontColor(ProperConsoleColor)
+                             .WriteLine(useJsonFormat ? logEvent.ToJsonText() : logEvent.ToPlainText())
+                             .Print();
 
-                Console.WriteLine(useJsonFormat ? logEvent.ToJsonText() : logEvent.ToPlainText());
+                //Console.WriteLine(useJsonFormat ? logEvent.ToJsonText() : logEvent.ToPlainText());
 
 
             }

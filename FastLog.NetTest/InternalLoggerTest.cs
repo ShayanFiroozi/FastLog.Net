@@ -34,6 +34,7 @@ namespace FastLog.NetTest
                                                   InternalLogger.Create()
                                                                 .SaveInternalEventsToFile(LogFile)
                                                                 .UseJsonFormat()
+                                                                .PrintOnConsole()
                                                                 .DeleteTheLogFileWhenExceededTheMaximumSizeOf(MaxLogFileSizeMB);
 
 
