@@ -4,12 +4,15 @@
 ## ✔ 1.0 ( 2023-05-26 )
   * Change log created !
 
+
 ## ✔ 1.1 ( 2023-05-27 )
   * Fix StartLogger() await bug.  
+
 
 ### ✔ 1.1.8548 (2023-05-28)
   * Improve StartLogger().
   * ExecuteOnDesignTime / ExecuteOnRunTime bug fixed.
+
 
 ### ✔ 1.1.8550 (2023-05-30)
   * Improve Internal Logger Thread-Safety.
@@ -19,6 +22,7 @@
   * Add UTC Date Time to the file header.
   * Improve FastLog.Net Engine exceptions handling.
 
+
 ### ✔ 1.1.8551 (2023-05-31)
   * Add "ProcessAllEventsInQueue()" method
   * Refactor engine to be compatible with "ProcessAllEventsInQueue()" method.
@@ -26,6 +30,7 @@
   * Add "IsQueueEmpty" property.
   * Refactor some methods to achieve better code readability and reliability.
   * Add Forever run test !
+
 
  ### ✔ 1.1.8552 (2023-06-01)
    * Add "Console" event log which is used for logging the "Console Output".
@@ -37,4 +42,7 @@
    * Improve core engine.
    * Refactor some methods to achieve better code readability and reliability.
    * Prevent engine start without logging agent(s).
- 
+
+
+ ### ✔ 1.1.8555 (2023-06-04)
+   * Add FluentConsole.Net for better console color and performance.
