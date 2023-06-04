@@ -12,7 +12,7 @@
 [![Lines of Code](https://sonarcloud.io/api/project_badges/measure?project=ShayanFiroozi_FastLog.Net&metric=ncloc)](https://sonarcloud.io/summary/new_code?id=ShayanFiroozi_FastLog.Net)
 [![Duplicated Lines (%)](https://sonarcloud.io/api/project_badges/measure?project=ShayanFiroozi_FastLog.Net&metric=duplicated_lines_density)](https://sonarcloud.io/summary/new_code?id=ShayanFiroozi_FastLog.Net)
 [![Reliability Rating](https://sonarcloud.io/api/project_badges/measure?project=ShayanFiroozi_FastLog.Net&metric=reliability_rating)](https://sonarcloud.io/summary/new_code?id=ShayanFiroozi_FastLog.Net)
-[![License](https://img.shields.io/github/license/shayanfiroozi/fastlog.net)](https://img.shields.io/github/license/shayanfiroozi/fastlog.net)
+[![License](https://img.shields.io/github/license/shayanfiroozi/fastlog.net)](https://github.com/ShayanFiroozi/FastLog.Net/blob/master/LICENSE.md)
  
 **FastLog.Net** is the fastest , most efficient and high performance logger for **.Net** 
  
