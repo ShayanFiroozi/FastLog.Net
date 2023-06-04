@@ -145,7 +145,6 @@ namespace FastLog.Agents.ConsoleAgents
                              .WriteLine(useJsonFormat ? logEvent.ToJsonText() : logEvent.ToPlainText())
                              .Print();
 
-                //Console.WriteLine(useJsonFormat ? logEvent.ToJsonText() : logEvent.ToPlainText());
 
 
             }

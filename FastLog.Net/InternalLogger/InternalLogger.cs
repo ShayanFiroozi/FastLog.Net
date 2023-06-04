@@ -270,15 +270,6 @@ namespace FastLog.Internal
                                  .WriteLine(useJsonFormat ? logEventModel.ToJsonText() : logEventModel.ToPlainText())
                                  .Print();
 
-                    //Console.WriteLine();
-                    //Console.ForegroundColor = ConsoleColor.Yellow;
-                    //Console.Write($"Logger \"Internal System Event\" has been occured :\n");
-                    //Console.ResetColor();
-                    //Console.ForegroundColor = ConsoleColor.DarkGray;
-
-                    //Console.WriteLine(useJsonFormat ? logEventModel.ToJsonText() : logEventModel.ToPlainText());
-
-                    //Console.ResetColor();
                 }
 
 
@@ -392,16 +383,6 @@ namespace FastLog.Internal
                                      .WriteLine(useJsonFormat ? logToPrint.ToJsonText() : logToPrint.ToPlainText())
                                      .Print();
 
-
-                        //Console.WriteLine();
-                        //Console.BackgroundColor = ConsoleColor.Red;
-                        //Console.Write($"Logger \"Internal Exception\" has been occured :");
-                        //Console.ResetColor();
-                        //Console.ForegroundColor = ConsoleColor.DarkRed;
-
-                        //Console.WriteLine($"{logToPrint.ToJsonText()}\n");
-
-                        //Console.ResetColor();
                     }
                 }
                 else
@@ -417,16 +398,6 @@ namespace FastLog.Internal
                                  .WriteLine("has been occured :")
                                  .WriteLine(useJsonFormat ? logToPrint.ToJsonText() : logToPrint.ToPlainText())
                                  .Print();
-
-                    //Console.WriteLine();
-                    //Console.BackgroundColor = ConsoleColor.Red;
-                    //Console.Write($"Logger \"Internal Exception\" has been occured :");
-                    //Console.ResetColor();
-                    //Console.ForegroundColor = ConsoleColor.DarkRed;
-
-                    //Console.WriteLine($"{logToPrint.ToJsonText()}\n");
-
-                    //Console.ResetColor();
                 }
             }
         }
