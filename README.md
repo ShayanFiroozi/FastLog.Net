@@ -27,7 +27,7 @@
 
 <br/>
 
-## 💯Features
+## Features 💯
  **FastLog.Net features :**
  * **Supported Logging Events :**  
     * INFO  
@@ -73,7 +73,7 @@ For example: You can add a "Beep Agent" with "Exception" log event , so the beep
  
 <br/>
 
-## 🤝Contributions
+## Contributions 🤝
 Since this is a new repository , there's no contributor yet! , But **FastLog.Net** welcomes and appreciates any contribution , pull request or bug report.
 
 If you'd like to contribute, please read the [**How It Works**](https://github.com/ShayanFiroozi/FastLog.Net#-how-it-works) section and then take a look at [**ToDo List**](ToDo.md) to get involved !
@@ -83,7 +83,7 @@ The srouce code is fully commented.
 
 <br/>
  
-## ❔ How To Use
+## How To Use ❔
  ### Step 1 👇  
  - Create the **Internal Logger** agent with fluent builder pattern :  
  
@@ -177,12 +177,12 @@ await fastLogger.LogSystem("The system is gonna be restarted !");
  ```
  <br/>
  
-## ❓ How It Works
+## How It Works ❓
  ### Soon...
 
 <br/>
  
-## ❌ Limitations
+## Limitations ❌
 
 - However the **FastLog.Net** is thread-safe BUT it is **NOT** recommended to build two or more agents with the same logging file , so this limitation applied to the FastLog.Net intentionally to prevent two or more agents write and manage the same logging file.
 
@@ -216,10 +216,10 @@ Since the **FastLog.Net** solution is supporting multi target frameworks , to bu
 
 <br/>
  
-## 💲 Donations
+## Donations 💲
 If you would like to financially support **FastLog.Net**, first of all, thank you! Please read [**DONATIONS**](DONATIONS.md) for my crypto wallets !
 
 <br/>
  
-## 🕙 Version History
+## Version History 🕙
 Please read [**CHANGELOG**](CHANGELOG.md) for more and track changing details.
