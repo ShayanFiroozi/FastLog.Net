@@ -2,7 +2,7 @@
 </br>
 
 ## ✔ 1.1.8555 (2023-06-04)
-   * Add FluentConsole.Net for better console color and performance.
+   * Add **FluentConsole.Net** for better console color and performance.
 
 
 ## ✔ 1.1.8553 (2023-06-02)
