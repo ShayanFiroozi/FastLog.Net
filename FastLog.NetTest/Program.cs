@@ -98,7 +98,6 @@ namespace LogModuleTest
                         LoggerTest.FastLogger.StopLogger();
                         Environment.Exit(0);
                         return;
-                        break;
                     default:
                         Console.WriteLine("Please enter an integer value between 1 and " + options.Length);
                         break;

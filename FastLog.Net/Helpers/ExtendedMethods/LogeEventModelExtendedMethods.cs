@@ -26,16 +26,21 @@ namespace FastLog.Helpers.ExtendedMethods
     internal static class LogeEventModelExtendedMethods
     {
 
-        public static string ToPlainText(this ILogEventModel logEventModel)
+        public static string ToPlainText(this ILogEventModel logEventModel, bool IncludeEventType = true, bool IncludeDateTime = true)
         {
             StringBuilder finalMessage = new StringBuilder();
 
-            _ = finalMessage.Append('[')
-                            .Append(logEventModel.LogEventType.ToString())
-                            .Append(']')
-                            .Append(logEventModel.EventId != 0 ? $" [{logEventModel.EventId}]" : string.Empty)
-                            .Append(" → ")
-                            .Append(logEventModel.EventMessage);
+            if (IncludeEventType)
+            {
+                _ = finalMessage.Append('[')
+                                .Append(logEventModel.LogEventType.ToString())
+                                .Append(']')
+                                .Append(logEventModel.EventId != 0 ? $" [{logEventModel.EventId}]" : string.Empty)
+                                .Append(" → ");
+
+            }
+
+            _ = finalMessage.Append(logEventModel.EventMessage);
 
 
             if (!string.IsNullOrWhiteSpace(logEventModel.Details))
@@ -50,14 +55,18 @@ namespace FastLog.Helpers.ExtendedMethods
 
 
 
+            if (IncludeDateTime)
+            {
 
-            if (logEventModel.LogEventType != LogEventTypes.EXCEPTION)
-            {
-                _ = finalMessage.Append($" , DateTime: \"{logEventModel.DateTime.ToFriendlyDateTime()}\"");
-            }
-            else
-            {
-                _ = finalMessage.Append($"\nDateTime: \"{logEventModel.DateTime.ToFriendlyDateTime()}\"");
+                if (logEventModel.LogEventType != LogEventTypes.EXCEPTION)
+                {
+                    _ = finalMessage.Append($" , DateTime: \"{logEventModel.DateTime.ToFriendlyDateTime()}\"");
+                }
+                else
+                {
+                    _ = finalMessage.Append($"\nDateTime: \"{logEventModel.DateTime.ToFriendlyDateTime()}\"");
+                }
+
             }
 
 

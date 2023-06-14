@@ -1,8 +1,10 @@
 # FastLog.Net Change Log :
 </br>
 
-## ✔ 1.1.8564 (2023-06-13)
+## ✔ 1.1.8566 (2023-06-15)
    * Update **FluentConsole.Net**
+   * Add optional **EventType** and **DateTime** parameters on **ToPlainText()** extension method.
+   * Update **Test App.**
 
 
 ## ✔ 1.1.8555 (2023-06-04)

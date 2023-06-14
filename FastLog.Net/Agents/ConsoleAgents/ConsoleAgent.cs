@@ -17,6 +17,7 @@ using FastLog.Enums;
 using FastLog.Helpers.ExtendedMethods;
 using FastLog.Interfaces;
 using FluentConsoleNet;
+using FluentConsoleNet.Builder;
 using System;
 using System.Threading;
 using System.Threading.Tasks;
@@ -76,9 +77,6 @@ namespace FastLog.Agents.ConsoleAgents
         public Task ExecuteAgent(ILogEventModel logEvent, CancellationToken cancellationToken = default)
         {
 
-
-            ConsoleColor ProperConsoleColor = ConsoleColor.White;
-
             if (logEvent is null)
             {
                 return Task.CompletedTask;
@@ -86,10 +84,10 @@ namespace FastLog.Agents.ConsoleAgents
 
 
             // We won't process a console log on a "Console" agent !!
-            if (logEvent.LogEventType is LogEventTypes.CONSOLE)
-            {
-                return Task.CompletedTask;
-            }
+            //if (logEvent.LogEventType is LogEventTypes.CONSOLE)
+            //{
+            //    return Task.CompletedTask;
+            //}
 
             if (!CanExecuteOnThidMode()) return Task.CompletedTask;
 
@@ -105,48 +103,87 @@ namespace FastLog.Agents.ConsoleAgents
                 switch (logEvent.LogEventType)
                 {
                     case LogEventTypes.INFO:
+
+                        // Print on console
+                        FastConsole.PrintInfo(useJsonFormat ? logEvent.ToJsonText() : logEvent.ToPlainText(false,false));
+
+                        break;
+
                     case LogEventTypes.NOTE:
+
+                        // Print on console
+                        FastConsole.PrintNote(useJsonFormat ? logEvent.ToJsonText() : logEvent.ToPlainText(false, false));
+
+                        break;
+
                     case LogEventTypes.TODO:
-                        ProperConsoleColor = ConsoleColor.White;
+
+                        // Print on console
+                        FastConsole.PrintTodo(useJsonFormat ? logEvent.ToJsonText() : logEvent.ToPlainText(false, false));
+
                         break;
 
                     case LogEventTypes.WARNING:
-                        ProperConsoleColor = ConsoleColor.Yellow;
+
+                        // Print on console
+                        FastConsole.PrintWarning(useJsonFormat ? logEvent.ToJsonText() : logEvent.ToPlainText(false, false));
+
                         break;
 
                     case LogEventTypes.ALERT:
-                        ProperConsoleColor = ConsoleColor.DarkRed;
+
+                        // Print on console
+                        FastConsole.PrintAlert(useJsonFormat ? logEvent.ToJsonText() : logEvent.ToPlainText(false, false));
+
                         break;
 
                     case LogEventTypes.DEBUG:
-                        ProperConsoleColor = ConsoleColor.DarkGray;
+
+                        // Print on console
+                        FastConsole.PrintDebug(useJsonFormat ? logEvent.ToJsonText() : logEvent.ToPlainText(false, false));
+
                         break;
 
                     case LogEventTypes.ERROR:
+
+                        // Print on console
+                        FastConsole.PrintError(useJsonFormat ? logEvent.ToJsonText() : logEvent.ToPlainText(false, false));
+
+                        break;
+
                     case LogEventTypes.EXCEPTION:
-                        ProperConsoleColor = ConsoleColor.Red;
+
+                        // Print on console
+                        FastConsole.PrintException(logEvent.Exception, JsonFormat: useJsonFormat);
+
                         break;
 
 
                     case LogEventTypes.SYSTEM:
-                        ProperConsoleColor = ConsoleColor.Blue;
+
+                        // Print on console
+                        FastConsole.PrintSystem(useJsonFormat ? logEvent.ToJsonText() : logEvent.ToPlainText(false, false));
+
                         break;
 
                     case LogEventTypes.SECURITY:
-                        ProperConsoleColor = ConsoleColor.Cyan;
+
+                        // Print on console
+                        FastConsole.PrintSecurity(useJsonFormat ? logEvent.ToJsonText() : logEvent.ToPlainText(false, false));
+
+                        break;
+
+
+                    case LogEventTypes.CONSOLE:
+
+                        // Print on console
+                        FastConsole.PrintText(useJsonFormat ? logEvent.ToJsonText() : logEvent.ToPlainText(false, false));
+
                         break;
 
                     default:
                         break;
                 }
-
-#error Refactoring ...
-                FluentConsole.Console
-                             .WithFontColor(ProperConsoleColor)
-                             .WriteLine(useJsonFormat ? logEvent.ToJsonText() : logEvent.ToPlainText())
-                             .Print();
-
-
 
             }
             catch (Exception ex)

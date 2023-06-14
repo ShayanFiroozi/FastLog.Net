@@ -45,6 +45,7 @@ namespace FastLog.NetTest
                                                    .BuildAgent()
 
                                                  .AddConsoleAgent().BuildAgent()
+
                                       .BuildLogger();
 
 
@@ -68,8 +69,18 @@ namespace FastLog.NetTest
             for (int i = 0; i < (TotalTask / 2); i++)
             {
                 // Put the log event on queue. ( IMPORTANT : The requests won't process here ! Just put them on queue.)
-                await FastLogger.LogException(new InvalidCastException("This is the Exception i want to throw !!"));
                 await FastLogger.LogInfo("FastLog.Net , high performance logger for .Net");
+                await FastLogger.LogDebug("FastLog.Net , high performance logger for .Net");
+                await FastLogger.LogNote("FastLog.Net , high performance logger for .Net");
+                await FastLogger.LogError("FastLog.Net , high performance logger for .Net");
+                await FastLogger.LogConsole("FastLog.Net , high performance logger for .Net");
+                await FastLogger.LogSecurity("FastLog.Net , high performance logger for .Net");
+                await FastLogger.LogSystem("FastLog.Net , high performance logger for .Net");
+                await FastLogger.LogNote("FastLog.Net , high performance logger for .Net");
+                await FastLogger.LogWarning("FastLog.Net , high performance logger for .Net");
+                await FastLogger.LogAlert("FastLog.Net , high performance logger for .Net");
+                await FastLogger.LogException(new InvalidCastException("This is the Exception i want to throw !!"));
+
 
             }
 
@@ -107,9 +118,17 @@ namespace FastLog.NetTest
 
                 for (int i = 0; i < 20; i++)
                 {
-                    await FastLogger.LogException(new InvalidCastException());
-                    await FastLogger.LogInfo("This is a ForEver run test and won't stop until you stop it manually !!");
-                    await FastLogger.LogTodo("Please like the FastLog.Net on GitHub : \"https://github.com/ShayanFiroozi/FastLog.Net\"");
+                    await FastLogger.LogInfo("FastLog.Net , high performance logger for .Net");
+                    await FastLogger.LogDebug("FastLog.Net , high performance logger for .Net");
+                    await FastLogger.LogNote("FastLog.Net , high performance logger for .Net");
+                    await FastLogger.LogError("FastLog.Net , high performance logger for .Net");
+                    await FastLogger.LogConsole("FastLog.Net , high performance logger for .Net");
+                    await FastLogger.LogSecurity("FastLog.Net , high performance logger for .Net");
+                    await FastLogger.LogSystem("FastLog.Net , high performance logger for .Net");
+                    await FastLogger.LogNote("FastLog.Net , high performance logger for .Net");
+                    await FastLogger.LogWarning("FastLog.Net , high performance logger for .Net");
+                    await FastLogger.LogAlert("FastLog.Net , high performance logger for .Net");
+                    await FastLogger.LogException(new InvalidCastException("This is the Exception i want to throw !!"));
                 }
 
                 // Note : If you have a good CPU and also a SSD ! you can decrease the waiting milliseconds ;)
@@ -121,7 +140,7 @@ namespace FastLog.NetTest
                                   $"Total Processed Log Events: {FastLogger.QueueProcessedEventCount:N0} , " +
                                   $"Remaining Log Events in Queue : {FastLogger.QueueEventCount:N0}");
 
-                if(Console.KeyAvailable) 
+                if (Console.KeyAvailable)
                 {
                     break;
                 }
