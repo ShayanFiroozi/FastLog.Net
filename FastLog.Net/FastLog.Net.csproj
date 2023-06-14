@@ -63,7 +63,7 @@
   </ItemGroup>
 
   <ItemGroup>
-    <PackageReference Include="FluentConsole.Net" Version="1.0.8564" />
+    <PackageReference Include="FluentConsole.Net" Version="1.0.8565" />
     <PackageReference Include="System.Threading.Channels" Version="7.0.0" Condition="'$(TargetFramework)' == 'net48'" />
   </ItemGroup>
   

@@ -140,6 +140,7 @@ namespace FastLog.Agents.ConsoleAgents
                         break;
                 }
 
+#error Refactoring ...
                 FluentConsole.Console
                              .WithFontColor(ProperConsoleColor)
                              .WriteLine(useJsonFormat ? logEvent.ToJsonText() : logEvent.ToPlainText())
