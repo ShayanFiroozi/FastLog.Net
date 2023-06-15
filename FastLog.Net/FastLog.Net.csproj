@@ -18,12 +18,9 @@
     <PackageRequireLicenseAcceptance>True</PackageRequireLicenseAcceptance>
     <Company>TrendSoft®</Company>
     <PackageIcon>FastLogNet.png</PackageIcon>
-    <Version>1.1.8566</Version>
+    <Version>1.1.8566.1</Version>
     <Authors>Shayan Firoozi &lt;shayan.firoozi@gmail.com&gt;</Authors>
-    <PackageReleaseNotes>✔ 1.1.8566 (2023-06-15)
-  - Update "FluentConsole.Net"
-  - Add optional "EventType" and "DateTime" parameters on "ToPlainText()" extension method.
-  - Update "Test App."</PackageReleaseNotes>
+    <PackageReleaseNotes>Update FluentConsole.Net nuget package.</PackageReleaseNotes>
   </PropertyGroup>
 
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|AnyCPU'">
@@ -66,7 +63,7 @@
   </ItemGroup>
 
   <ItemGroup>
-    <PackageReference Include="FluentConsole.Net" Version="1.0.8566" />
+    <PackageReference Include="FluentConsole.Net" Version="1.0.8566.1" />
     <PackageReference Include="System.Threading.Channels" Version="7.0.0" Condition="'$(TargetFramework)' == 'net48'" />
   </ItemGroup>
   
