@@ -18,7 +18,7 @@
     <PackageRequireLicenseAcceptance>True</PackageRequireLicenseAcceptance>
     <Company>TrendSoft®</Company>
     <PackageIcon>FastLogNet.png</PackageIcon>
-    <Version>1.1.8566.1</Version>
+    <Version>1.1.8568</Version>
     <Authors>Shayan Firoozi &lt;shayan.firoozi@gmail.com&gt;</Authors>
     <PackageReleaseNotes>Update FluentConsole.Net nuget package.</PackageReleaseNotes>
   </PropertyGroup>
@@ -63,7 +63,7 @@
   </ItemGroup>
 
   <ItemGroup>
-    <PackageReference Include="FluentConsole.Net" Version="1.0.8566.1" />
+    <PackageReference Include="FluentConsole.Net" Version="1.0.8568" />
     <PackageReference Include="System.Threading.Channels" Version="7.0.0" Condition="'$(TargetFramework)' == 'net48'" />
   </ItemGroup>
   
