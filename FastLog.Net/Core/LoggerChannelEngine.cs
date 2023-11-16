@@ -43,7 +43,7 @@ namespace FastLog.Core
 
         public void StartLogger()
         {
-            if(!Agents.AgentList.Any())
+            if (!Agents.AgentList.Any())
             {
                 throw new InvalidOperationException("The logger can not start with no logging agent.");
             }
@@ -100,7 +100,7 @@ namespace FastLog.Core
 
                         HandleEvents(EventModelFromChannel);
 
-                   
+
 
 
                     }

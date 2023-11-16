@@ -90,7 +90,7 @@ namespace FastLog.Helpers
 
                 if (string.IsNullOrWhiteSpace(fileName))
                 {
-                    return (short)0;
+                    return 0;
                 }
                 else
                 {

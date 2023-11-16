@@ -17,7 +17,6 @@ using FastLog.Enums;
 using FastLog.Helpers.ExtendedMethods;
 using FastLog.Interfaces;
 using FluentConsoleNet;
-using FluentConsoleNet.Builder;
 using System;
 using System.Threading;
 using System.Threading.Tasks;
@@ -105,7 +104,7 @@ namespace FastLog.Agents.ConsoleAgents
                     case LogEventTypes.INFO:
 
                         // Print on console
-                        FastConsole.PrintInfo(useJsonFormat ? logEvent.ToJsonText() : logEvent.ToPlainText(false,false));
+                        FastConsole.PrintInfo(useJsonFormat ? logEvent.ToJsonText() : logEvent.ToPlainText(false, false));
 
                         break;
 

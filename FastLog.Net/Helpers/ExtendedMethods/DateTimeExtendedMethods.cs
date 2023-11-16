@@ -24,7 +24,7 @@ namespace FastLog.Helpers.ExtendedMethods
     /// </summary>
     internal static class DateTimeExtendedMethods
     {
-        public static string ToFriendlyDateTime(this DateTime dateTime, bool ToUTC = false) => $"{ToFriendlyDate(dateTime,ToUTC)} {ToFriendlyTime(dateTime, ToUTC)}";
+        public static string ToFriendlyDateTime(this DateTime dateTime, bool ToUTC = false) => $"{ToFriendlyDate(dateTime, ToUTC)} {ToFriendlyTime(dateTime, ToUTC)}";
 
         public static string ToFriendlyDate(this DateTime dateTime, bool ToUTC = false) => !ToUTC ? dateTime.ToString("yyyy-MM-dd") : dateTime.ToUniversalTime().ToString("yyyy-MM-dd");
 

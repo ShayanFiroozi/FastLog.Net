@@ -179,7 +179,7 @@ namespace FastLog.Agents.FileBaseAgents
 
 
 
-            
+
                 #region ThreadSafe File Write Approach
 
                 return Task.Run(() =>
