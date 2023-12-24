@@ -68,12 +68,8 @@ namespace FastLog.Helpers
 
                        $"→ .NET Runtime Version: \"{SystemInformation.GetDotNetRuntime()}\"\n\n" +
 
-
                        $"→ Logger Name: \"{(!string.IsNullOrWhiteSpace(LoggerName) ? LoggerName : "N/A")}\"\n" +
                        $"→ Current User: \"{SystemInformation.GetCurrentUserName()}\"\n\n" +
-
-                       $"→ Source Code: https://github.com/ShayanFiroozi/FastLog.Net\n" +
-                        $"→ Nuget Package: https://www.nuget.org/packages/FastLog.Net\n\n" +
 
                        $"{new string('-', 80)}\n\n";
             }
