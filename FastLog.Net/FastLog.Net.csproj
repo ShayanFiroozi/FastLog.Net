@@ -40,6 +40,10 @@
   </PropertyGroup>
 
   <ItemGroup>
+    <Compile Include="..\..\..\IRLPR\GlobalAssemblyInfo.cs" Link="GlobalAssemblyInfo.cs" />
+  </ItemGroup>
+
+  <ItemGroup>
     <ProjectReference Include="..\..\FluentConsole\FluentConsole.Net.csproj" />
   </ItemGroup>
   
