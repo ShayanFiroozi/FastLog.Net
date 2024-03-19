@@ -101,6 +101,7 @@ namespace FastLog.Core
                 {
                     StopLogger();
                     inMemoryEvents.Clear();
+                    _cts.Dispose();
 
                 }
 

@@ -1,7 +1,7 @@
 ﻿<Project Sdk="Microsoft.NET.Sdk">
 
   <PropertyGroup>
-	  <TargetFrameworks>net462;net48;net6.0-windows;net7.0-windows;net8.0-windows</TargetFrameworks>
+	  <TargetFrameworks>net48;net6.0-windows;net7.0-windows;net8.0-windows</TargetFrameworks>
     <CopyLocalLockFileAssemblies>true</CopyLocalLockFileAssemblies>
     <GenerateAssemblyInfo>false</GenerateAssemblyInfo>
     <Deterministic>false</Deterministic>
@@ -45,6 +45,11 @@
 
   <ItemGroup>
     <ProjectReference Include="..\..\FluentConsole\FluentConsole.Net.csproj" />
+  </ItemGroup>
+
+  <ItemGroup>
+	  <Reference Include="Microsoft.CSharp" Condition="'$(TargetFramework)' == 'net48'" />
+	  <PackageReference Include="System.Threading.Channels" Version="7.0.0" Condition="'$(TargetFramework)' == 'net48'" />
   </ItemGroup>
   
 
