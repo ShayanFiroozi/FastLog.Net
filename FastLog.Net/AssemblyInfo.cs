@@ -19,6 +19,6 @@ using System.Reflection;
 // General Information about an assembly is controlled through the following
 // set of attributes. Change these attribute values to modify the information
 // associated with an assembly.
-[assembly: AssemblyTitle("TrendSoft® High performance logger for .NET")]
+[assembly: AssemblyTitle("ResaGostar® High performance logger for .NET")]
 [assembly: AssemblyDescription("ثبت کننده وقایع برای دات نت")]
 [assembly: AssemblyProduct("ثبت کننده وقایع برای دات نت")]
