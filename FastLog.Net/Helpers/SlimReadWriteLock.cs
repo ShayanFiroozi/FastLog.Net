@@ -27,8 +27,20 @@ namespace FastLog.Helpers
         internal static void GainWriteLock() => Lock.EnterWriteLock();
 
 
-        internal static void ReleaseReadLock() => Lock.ExitReadLock();
-        internal static void RelaseWriteLock() => Lock.ExitWriteLock();
+        internal static void ReleaseReadLock()
+        {
+            if (Lock.IsReadLockHeld)
+            {
+                Lock.ExitReadLock();
+            }
+        }
 
+        internal static void RelaseWriteLock()
+        {
+            if (Lock.IsWriteLockHeld)
+            {
+                Lock.ExitWriteLock();
+            }
+        }
     }
 }

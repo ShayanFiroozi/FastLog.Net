@@ -34,12 +34,14 @@ namespace FastLog.Core
 
             if (Configuration.MaxEventsToKeep == 0) return;
 
+            // Grab the lock
+            SlimReadWriteLock.Lock.EnterWriteLock();
+
+
             try
             {
 
-                // Grab the lock
-                SlimReadWriteLock.Lock.EnterWriteLock();
-
+             
                 if (Configuration.MaxEventsToKeep == 0 && inMemoryEvents.Count != 0)
                 {
 

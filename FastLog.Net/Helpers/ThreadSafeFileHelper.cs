@@ -82,11 +82,11 @@ namespace FastLog.Helpers
 
         public static short GetFileSize(string fileName)
         {
+            // Set Status to Locked
+            SlimReadWriteLock.Lock.EnterReadLock();
 
             try
             {
-                // Set Status to Locked
-                SlimReadWriteLock.Lock.EnterReadLock();
 
                 if (string.IsNullOrWhiteSpace(fileName))
                 {

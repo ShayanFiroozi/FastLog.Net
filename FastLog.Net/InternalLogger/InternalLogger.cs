@@ -312,7 +312,9 @@ namespace FastLog.Internal
 
         private void CheckLogFileSize()
         {
-            bool IsLockGained = false;
+
+            // Gain Lock
+            SlimReadWriteLock.GainWriteLock();
 
             try
             {
@@ -322,9 +324,8 @@ namespace FastLog.Internal
                 }
 
 
-                // Gain Lock
-                SlimReadWriteLock.GainWriteLock();
-                IsLockGained = true;
+
+
 
                 if (!File.Exists(InternalLogFile))
                 {
@@ -357,7 +358,7 @@ namespace FastLog.Internal
             finally
             {
                 // Release Lock
-                if (IsLockGained) SlimReadWriteLock.RelaseWriteLock();
+                SlimReadWriteLock.RelaseWriteLock();
             }
 
         }
