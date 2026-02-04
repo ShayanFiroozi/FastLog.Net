@@ -7,7 +7,6 @@
     <Deterministic>false</Deterministic>
     <OutputPath>bin\$(Platform)\$(Configuration)</OutputPath>
     <Platforms>x86;x64</Platforms>
-    <PlatformTarget>AnyCPU</PlatformTarget>
   </PropertyGroup>
 
 
