@@ -12,11 +12,11 @@
 
 ---------------------------------------------------------------------------------------------*/
 
+using FastConsoleNet;
 using FastLog.Helpers;
 using FastLog.Helpers.ExtendedMethods;
 using FastLog.Interfaces;
 using FastLog.Models;
-using FluentConsoleNet;
 using System;
 using System.Diagnostics;
 using System.IO;
@@ -258,7 +258,7 @@ namespace FastLog.Internal
 
                 if (_PrintOnConsole)
                 {
-                    FluentConsole.Console
+                    FastConsole.ConsoleAgent
                                  .AddLineBreak(1)
                                  .Write("Logger").AddSpace()
                                  .WithFontColor(ConsoleColor.Yellow)
@@ -267,7 +267,7 @@ namespace FastLog.Internal
                                  .AddSpace()
                                  .WriteLine("has been occured :")
                                  .WriteLine(useJsonFormat ? logEventModel.ToJsonText() : logEventModel.ToPlainText())
-                                 .Print();
+                                 .Execute();
 
                 }
 
@@ -372,7 +372,7 @@ namespace FastLog.Internal
                     if (Debugger.IsAttached)
                     {
 
-                        FluentConsole.Console
+                        FastConsole.ConsoleAgent
                                      .AddLineBreak(1)
                                      .Write("Logger").AddSpace()
                                      .WithBackColor(ConsoleColor.Red)
@@ -381,14 +381,14 @@ namespace FastLog.Internal
                                      .AddSpace()
                                      .WriteLine("has been occured :")
                                      .WriteLine(useJsonFormat ? logToPrint.ToJsonText() : logToPrint.ToPlainText())
-                                     .Print();
+                                     .Execute();
 
                     }
                 }
                 else
                 {
 
-                    FluentConsole.Console
+                    FastConsole.ConsoleAgent
                                  .AddLineBreak(1)
                                  .Write("Logger").AddSpace()
                                  .WithBackColor(ConsoleColor.Red)
@@ -397,7 +397,7 @@ namespace FastLog.Internal
                                  .AddSpace()
                                  .WriteLine("has been occured :")
                                  .WriteLine(useJsonFormat ? logToPrint.ToJsonText() : logToPrint.ToPlainText())
-                                 .Print();
+                                 .Execute();
                 }
             }
         }

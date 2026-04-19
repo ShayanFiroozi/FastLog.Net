@@ -12,11 +12,11 @@
 
 ---------------------------------------------------------------------------------------------*/
 
+using FastConsoleNet;
 using FastLog.Core;
 using FastLog.Enums;
 using FastLog.Helpers.ExtendedMethods;
 using FastLog.Interfaces;
-using FluentConsoleNet;
 using System;
 using System.Threading;
 using System.Threading.Tasks;
