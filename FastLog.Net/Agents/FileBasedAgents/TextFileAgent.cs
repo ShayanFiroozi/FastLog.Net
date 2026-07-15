@@ -1,4 +1,4 @@
-﻿/*---------------------------------------------------------------------------------------------
+/*---------------------------------------------------------------------------------------------
 
                 ► FastLog.Net , High Performance Logger For .Net ◄
 
@@ -95,9 +95,11 @@ namespace FastLog.Agents.FileBaseAgents
             try
             {
 
-                if (!Directory.Exists(Path.GetDirectoryName(LogFile)))
+                string directoryName = Path.GetDirectoryName(LogFile);
+
+                if (!string.IsNullOrWhiteSpace(directoryName) && !Directory.Exists(directoryName))
                 {
-                    _ = Directory.CreateDirectory(Path.GetDirectoryName(LogFile));
+                    _ = Directory.CreateDirectory(directoryName);
                 }
 
             }
@@ -157,7 +159,9 @@ namespace FastLog.Agents.FileBaseAgents
 
                 // This is necessary to prevent repeatedly internal exception if the destination path ("Directory" or "Drive") ...
                 // are not exist or ready.
-                if (!Directory.Exists(Path.GetDirectoryName(LogFile)))
+                string directoryName = Path.GetDirectoryName(LogFile);
+
+                if (!string.IsNullOrWhiteSpace(directoryName) && !Directory.Exists(directoryName))
                 {
                     return Task.CompletedTask;
                 }
@@ -249,4 +253,3 @@ namespace FastLog.Agents.FileBaseAgents
     }
 
 }
-

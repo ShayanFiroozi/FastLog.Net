@@ -1,4 +1,4 @@
-﻿/*---------------------------------------------------------------------------------------------
+/*---------------------------------------------------------------------------------------------
 
                 ► FastLog.Net , High Performance Logger For .Net ◄
 
@@ -17,6 +17,7 @@ using FastLog.Models;
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Threading;
 using System.Threading.Tasks;
 
 namespace FastLog.Core
@@ -43,35 +44,64 @@ namespace FastLog.Core
 
         public void StartLogger()
         {
-            if (!Agents.AgentList.Any())
+            lock (LoggerLifecycleSync)
             {
-                throw new InvalidOperationException("The logger can not start with no logging agent.");
+                if (IsLoggerRunning)
+                {
+                    return;
+                }
+
+                if (_cts.IsCancellationRequested)
+                {
+                    throw new InvalidOperationException("The logger can not be restarted after it has been stopped.");
+                }
+
+                if (!Agents.AgentList.Any())
+                {
+                    throw new InvalidOperationException("The logger can not start with no logging agent.");
+                }
+
+                TaskCompletionSource<bool> IsEngineRunning = new TaskCompletionSource<bool>();
+
+                // Logger core engine -> ( Channel Prodecure / Consumer approach )
+                LoggerEngineTask = Task.Run(() => RunLoggerEngineAsync(IsEngineRunning));
+
+                // Wait here for releasing signal from the "TaskCompletionSource".( after the engine run successfully)
+                // Otherwise the method execution will be fisnihed BEFORE the engine starts successfully.
+                IsEngineRunning.Task.Wait();
             }
 
-            TaskCompletionSource<bool> IsEngineRunning = new TaskCompletionSource<bool>();
-
-            // Logger core engine -> ( Channel Prodecure / Consumer approach )
-
-            _ = Task.Run(async () =>
+            try
             {
+                InternalLogger?.LogInternalSystemEvent(new LogEventModel(Enums.LogEventTypes.SYSTEM, "FastLog.Net engine has been started."));
+            }
+            catch
+            {
+                // Ignore the exceptions , because if the Internal Logger itself throws an exception we can not do anything about that !
+            }
 
+
+        }
+
+
+        private async Task RunLoggerEngineAsync(TaskCompletionSource<bool> isEngineRunning)
+        {
+            try
+            {
+                IsLoggerRunning = true;
+                isEngineRunning.TrySetResult(true); // Release the waiting thread to go on !!
 
                 while (!(LoggerChannelReader.Completion.IsCompleted || _cts.IsCancellationRequested))
                 {
+                    QueuedLogEvent queuedLogEvent = null;
 
                     try
                     {
-
-                        if (!IsLoggerRunning)
-                        {
-                            IsLoggerRunning = true;
-                            IsEngineRunning.SetResult(true); // Release the waiting thread to go on !!
-                        }
-
                         // Awaiting for a log event to be put in the channel...
+                        queuedLogEvent = await LoggerChannelReader.ReadAsync(_cts.Token)
+                                                                 .ConfigureAwait(false);
 
-                        ILogEventModel EventModelFromChannel = await LoggerChannelReader.ReadAsync(_cts.Token)
-                                                                                        .ConfigureAwait(false);
+                        ILogEventModel EventModelFromChannel = queuedLogEvent?.LogEvent;
 
                         if (EventModelFromChannel == null) continue;
 
@@ -114,46 +144,63 @@ namespace FastLog.Core
                     {
                         InternalLogger?.LogInternalException(ex);
                     }
+                    finally
+                    {
+                        if (queuedLogEvent != null)
+                        {
+                            Volatile.Write(ref lastCompletedLoggerChannelSequence, queuedLogEvent.Sequence);
+                        }
+                    }
 
                 }
-
-            }, _cts.Token).ConfigureAwait(false);
-
-
-
-            // Wait here for releasing signal from the "TaskCompletionSource".( after the engine run successfully)
-            // Otherwise the method execution will be fisnihed BEFORE the engine starts successfully.
-
-            IsEngineRunning.Task.Wait();
-
-            try
-            {
-                InternalLogger?.LogInternalSystemEvent(new LogEventModel(Enums.LogEventTypes.SYSTEM, "FastLog.Net engine has been started."));
             }
-            catch
+            catch (Exception ex)
             {
-                // Ignore the exceptions , because if the Internal Logger itself throws an exception we can not do anything about that !
+                isEngineRunning.TrySetException(ex);
+                InternalLogger?.LogInternalException(ex);
             }
+            finally
+            {
+                IsLoggerRunning = false;
 
-
+                if (!isEngineRunning.Task.IsCompleted)
+                {
+                    isEngineRunning.TrySetCanceled();
+                }
+            }
         }
+
 
         public async Task ProcessAllEventsInQueue()
         {
-            // Wait until all queue's event been processed.
+            long targetSequence;
 
-            while (!IsQueueEmpty())
+            lock (LoggerChannelWriteSync)
             {
-                // Wait until all logs in the queue been processed or cancelation token signal was received.
-                await Task.Delay(0, _cts.Token);
+                targetSequence = Volatile.Read(ref lastEnqueuedLoggerChannelSequence);
+            }
+
+            // Wait until every event that was queued before this method was called has either
+            // completed processing or was removed by the channel's configured DropOldest policy.
+            while (Volatile.Read(ref lastCompletedLoggerChannelSequence) < targetSequence)
+            {
+                await Task.Delay(1, _cts.Token).ConfigureAwait(false);
             }
 
         }
 
         public void StopLogger()
         {
-            IsLoggerRunning = false;
-            _cts.Cancel();
+            lock (LoggerLifecycleSync)
+            {
+                IsLoggerRunning = false;
+
+                if (!_cts.IsCancellationRequested)
+                {
+                    _cts.Cancel();
+                }
+            }
+
             try
             {
                 InternalLogger?.LogInternalSystemEvent(new LogEventModel(Enums.LogEventTypes.SYSTEM, "FastLog.Net engine has been stopped.",

@@ -1,4 +1,4 @@
-﻿/*---------------------------------------------------------------------------------------------
+/*---------------------------------------------------------------------------------------------
 
                 ► FastLog.Net , High Performance Logger For .Net ◄
 
@@ -18,6 +18,7 @@ using System;
 using System.Collections.Generic;
 using System.Threading;
 using System.Threading.Channels;
+using System.Threading.Tasks;
 
 namespace FastLog.Core
 {
@@ -39,7 +40,11 @@ namespace FastLog.Core
 
         internal ConfigManager Configuration;
 
-        private bool IsLoggerRunning = false;
+        private volatile bool IsLoggerRunning = false;
+
+        private readonly object LoggerLifecycleSync = new object();
+
+        private Task LoggerEngineTask = null;
 
         /// <summary>
         /// Active agent(s) defined in the logger agent list.
@@ -52,6 +57,14 @@ namespace FastLog.Core
 
         private long queueProcessedEventCount = 0;
 
+        private readonly object LoggerChannelWriteSync = new object();
+
+        private long nextLoggerChannelSequence = 0;
+
+        private long lastEnqueuedLoggerChannelSequence = 0;
+
+        private long lastCompletedLoggerChannelSequence = 0;
+
 
         #region Channel Properties
 
@@ -60,15 +73,27 @@ namespace FastLog.Core
         /// </summary>
         private const int LoggerChannelMaxCapacity = 1_000_000;
 
-        private readonly Channel<ILogEventModel> LoggerChannel =
-                   Channel.CreateBounded<ILogEventModel>(new BoundedChannelOptions(LoggerChannelMaxCapacity)
+        private readonly Channel<QueuedLogEvent> LoggerChannel =
+                   Channel.CreateBounded<QueuedLogEvent>(new BoundedChannelOptions(LoggerChannelMaxCapacity)
                    { SingleReader = true, FullMode = BoundedChannelFullMode.DropOldest });
 
-        private readonly ChannelReader<ILogEventModel> LoggerChannelReader;
-        private readonly ChannelWriter<ILogEventModel> LoggerChannelWriter;
+        private readonly ChannelReader<QueuedLogEvent> LoggerChannelReader;
+        private readonly ChannelWriter<QueuedLogEvent> LoggerChannelWriter;
         #endregion
 
 
+        private sealed class QueuedLogEvent
+        {
+            internal QueuedLogEvent(long sequence, ILogEventModel logEvent)
+            {
+                Sequence = sequence;
+                LogEvent = logEvent;
+            }
+
+            internal long Sequence { get; }
+
+            internal ILogEventModel LogEvent { get; }
+        }
 
 
     }

@@ -1,4 +1,4 @@
-﻿/*---------------------------------------------------------------------------------------------
+/*---------------------------------------------------------------------------------------------
 
                 ► FastLog.Net , High Performance Logger For .Net ◄
 
@@ -27,7 +27,7 @@ namespace FastLog.Agents.AdvancedAgents
     /// Note : This class uses "Builder" pattern.
     /// </summary>
 
-    public sealed class RunProcessAgent : BaseAgent<MethodExecutionAgent>, IAgent
+    public sealed class RunProcessAgent : BaseAgent<RunProcessAgent>, IAgent
     {
 
 
@@ -204,7 +204,10 @@ namespace FastLog.Agents.AdvancedAgents
                     Arguments = arguments,
                 };
 
-                Process.Start(startInfo);
+                using (Process process = Process.Start(startInfo))
+                {
+                    // Releasing the local Process component does not terminate the started process.
+                }
 
             }
 
@@ -221,6 +224,3 @@ namespace FastLog.Agents.AdvancedAgents
     }
 
 }
-
-
-

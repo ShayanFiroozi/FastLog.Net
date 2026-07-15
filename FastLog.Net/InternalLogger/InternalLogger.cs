@@ -1,4 +1,4 @@
-﻿/*---------------------------------------------------------------------------------------------
+/*---------------------------------------------------------------------------------------------
 
                 ► FastLog.Net , High Performance Logger For .Net ◄
 
@@ -90,9 +90,11 @@ namespace FastLog.Internal
             InternalLogFile = filename;
 
 
-            if (!Directory.Exists(Path.GetDirectoryName(InternalLogFile)))
+            string directoryName = Path.GetDirectoryName(InternalLogFile);
+
+            if (!string.IsNullOrWhiteSpace(directoryName) && !Directory.Exists(directoryName))
             {
-                _ = Directory.CreateDirectory(Path.GetDirectoryName(InternalLogFile));
+                _ = Directory.CreateDirectory(directoryName);
             }
 
 
@@ -337,7 +339,8 @@ namespace FastLog.Internal
 
 
 
-                if (FileHelper.GetFileSizeMB(InternalLogFile) >= InternalExceptionsMaxLogFileSizeMB)
+                if (InternalExceptionsMaxLogFileSizeMB > 0 &&
+                    FileHelper.GetFileSizeMB(InternalLogFile) >= InternalExceptionsMaxLogFileSizeMB)
                 {
                     File.Delete(InternalLogFile);
 
@@ -436,4 +439,3 @@ namespace FastLog.Internal
     }
 
 }
-

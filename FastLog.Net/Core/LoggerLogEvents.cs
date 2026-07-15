@@ -1,4 +1,4 @@
-﻿/*---------------------------------------------------------------------------------------------
+/*---------------------------------------------------------------------------------------------
 
                 ► FastLog.Net , High Performance Logger For .Net ◄
 
@@ -171,7 +171,7 @@ namespace FastLog.Core
 
 
                 // Put the event to the Channel.
-                return LoggerChannelWriter.WriteAsync(LogEvent, _cts.Token);
+                return EnqueueLogEvent(LogEvent);
             }
             catch (Exception ex)
             {
@@ -226,7 +226,7 @@ namespace FastLog.Core
 
 
                 // Put the event to the Channel.
-                return LoggerChannelWriter.WriteAsync(LogEvent, _cts.Token);
+                return EnqueueLogEvent(LogEvent);
             }
             catch (Exception ex)
             {
@@ -239,6 +239,32 @@ namespace FastLog.Core
             return default;
 #endif
         }
+
+
+        private ValueTask EnqueueLogEvent(ILogEventModel logEvent)
+        {
+            lock (LoggerChannelWriteSync)
+            {
+                long sequence = ++nextLoggerChannelSequence;
+                QueuedLogEvent queuedLogEvent = new QueuedLogEvent(sequence, logEvent);
+
+                if (LoggerChannelWriter.TryWrite(queuedLogEvent))
+                {
+                    Volatile.Write(ref lastEnqueuedLoggerChannelSequence, sequence);
+                    return default;
+                }
+
+                return EnqueueLogEventSlowAsync(queuedLogEvent);
+            }
+        }
+
+
+        private async ValueTask EnqueueLogEventSlowAsync(QueuedLogEvent queuedLogEvent)
+        {
+            await LoggerChannelWriter.WriteAsync(queuedLogEvent, _cts.Token).ConfigureAwait(false);
+            Volatile.Write(ref lastEnqueuedLoggerChannelSequence, queuedLogEvent.Sequence);
+        }
+
         #endregion
 
 

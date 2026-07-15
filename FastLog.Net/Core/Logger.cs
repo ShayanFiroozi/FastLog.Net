@@ -1,4 +1,4 @@
-﻿/*---------------------------------------------------------------------------------------------
+/*---------------------------------------------------------------------------------------------
 
                 ► FastLog.Net , High Performance Logger For .Net ◄
 
@@ -12,9 +12,12 @@
 
 ---------------------------------------------------------------------------------------------*/
 
+using FastLog.Helpers;
 using FastLog.Interfaces;
 using FastLog.Internal;
 using System;
+using System.Threading;
+using System.Threading.Tasks;
 
 namespace FastLog.Core
 {
@@ -86,11 +89,11 @@ namespace FastLog.Core
 
         #region DisposeMethods
 
-        private bool disposed = false;
+        private int disposed = 0;
 
         private void Dispose(bool disposing)
         {
-            if (disposed)
+            if (Interlocked.Exchange(ref disposed, 1) != 0)
             {
                 return;
             }
@@ -100,8 +103,26 @@ namespace FastLog.Core
                 try
                 {
                     StopLogger();
-                    inMemoryEvents.Clear();
-                    _cts.Dispose();
+
+                    SlimReadWriteLock.Lock.EnterWriteLock();
+
+                    try
+                    {
+                        inMemoryEvents.Clear();
+                    }
+                    finally
+                    {
+                        SlimReadWriteLock.Lock.ExitWriteLock();
+                    }
+
+                    Task loggerEngineTask;
+
+                    lock (LoggerLifecycleSync)
+                    {
+                        loggerEngineTask = LoggerEngineTask;
+                    }
+
+                    DisposeCancellationTokenSourceAfterEngineStops(loggerEngineTask);
 
                 }
 
@@ -111,9 +132,31 @@ namespace FastLog.Core
                 }
             }
 
-            disposed = true;
-
         }
+
+
+        private void DisposeCancellationTokenSourceAfterEngineStops(Task loggerEngineTask)
+        {
+            if (loggerEngineTask == null || loggerEngineTask.IsCompleted)
+            {
+                _cts.Dispose();
+                return;
+            }
+
+            _ = loggerEngineTask.ContinueWith(completedTask =>
+            {
+                try
+                {
+                    _ = completedTask.Exception;
+                    _cts.Dispose();
+                }
+                catch (Exception ex)
+                {
+                    InternalLogger?.LogInternalException(ex);
+                }
+            }, CancellationToken.None, TaskContinuationOptions.ExecuteSynchronously, TaskScheduler.Default);
+        }
+
 
         public void Dispose()
         {
