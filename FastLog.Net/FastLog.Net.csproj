@@ -2,6 +2,7 @@
 
   <PropertyGroup>
 	  <TargetFrameworks>net8.0-windows</TargetFrameworks>
+	  <Configurations>Debug;Release</Configurations>
     <CopyLocalLockFileAssemblies>true</CopyLocalLockFileAssemblies>
     <GenerateAssemblyInfo>false</GenerateAssemblyInfo>
     <Deterministic>false</Deterministic>
