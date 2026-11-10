@@ -1,47 +1,24 @@
 ﻿<Project Sdk="Microsoft.NET.Sdk">
-
   <PropertyGroup>
     <PlatformTarget>AnyCPU</PlatformTarget>
-	  <TargetFrameworks>net8.0-windows</TargetFrameworks>
-	  <Configurations>Debug;Release</Configurations>
+    <TargetFrameworks>net8.0-windows</TargetFrameworks>
+    <Configurations>Debug;Release</Configurations>
     <CopyLocalLockFileAssemblies>true</CopyLocalLockFileAssemblies>
     <GenerateAssemblyInfo>false</GenerateAssemblyInfo>
     <Deterministic>false</Deterministic>
     <OutputPath>bin\$(Platform)\$(Configuration)</OutputPath>
     <Platforms>AnyCPU</Platforms>
   </PropertyGroup>
-
-
-  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|AnyCPU'">
-    <PlatformTarget>AnyCPU</PlatformTarget>
-    <DebugType>none</DebugType>
-    <DebugSymbols>false</DebugSymbols>
-    <Optimize>True</Optimize>
-  </PropertyGroup>
-
-
-
-  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|AnyCPU'">
-    <PlatformTarget>AnyCPU</PlatformTarget>
-    <DefineConstants>DEBUG;TRACE</DefineConstants>
-    <DebugType>full</DebugType>
-    <Optimize>False</Optimize>
-  </PropertyGroup>
-
-
-
+  <Import Project="..\..\..\IRLPR\Build\Configurations\Release.AnyCPU.props" />
+  <Import Project="..\..\..\IRLPR\Build\Configurations\Debug.AnyCPU.props" />
   <ItemGroup>
     <Compile Include="..\..\..\IRLPR\GlobalAssemblyInfo.cs" Link="GlobalAssemblyInfo.cs" />
   </ItemGroup>
-
   <ItemGroup>
-	  <Reference Include="Microsoft.CSharp" Condition="'$(TargetFramework)' == 'net48'" />
-	  <PackageReference Include="System.Threading.Channels" Version="9.0.3" Condition="'$(TargetFramework)' == 'net48'" />
+    <Reference Include="Microsoft.CSharp" Condition="'$(TargetFramework)' == 'net48'" />
+    <PackageReference Include="System.Threading.Channels" Version="9.0.3" Condition="'$(TargetFramework)' == 'net48'" />
   </ItemGroup>
-
   <ItemGroup>
     <ProjectReference Include="..\..\FastConsoleNet\FastConsole\FastConsoleNet.csproj" />
   </ItemGroup>
-  
-
 </Project>
