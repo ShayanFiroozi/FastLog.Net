@@ -21,4 +21,7 @@
   <ItemGroup>
     <ProjectReference Include="..\..\FastConsoleNet\FastConsole\FastConsoleNet.csproj" />
   </ItemGroup>
+  <ItemGroup>
+    <Compile Remove="Factories\FileAndConsoleLoggerFactory.cs" />
+  </ItemGroup>
 </Project>
